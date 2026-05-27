@@ -10,7 +10,7 @@
 ![crates](https://img.shields.io/badge/crates-13-orange?style=flat-square&logo=rust&logoColor=white)
 ![loc](https://img.shields.io/badge/rust%20LOC-136k-lightgrey?style=flat-square)
 
-A complete Rust port of [ForgottenServer](https://github.com/otland/forgottenserver), the open-source C++ Tibia MMORPG server emulator. The C++ source lives at `./forgottenserver/` (vendored, read-only) and is the authoritative reference for all behavior.
+A complete Rust port of [ForgottenServer](https://github.com/otland/forgottenserver), the open-source C++ Tibia MMORPG server emulator.
 
 ---
 
@@ -61,6 +61,7 @@ docker compose up --build
 ```
 
 This will:
+
 1. Pull MariaDB 11 and start the `db` service.
 2. Mount `schema.sql` and run `docker/poketibia-mariadb-init/00-init-tibia-dbs.sh` on first start, creating the `tibia_rs` database and applying the full schema automatically.
 3. Wait for the DB health check to pass before starting the server.
