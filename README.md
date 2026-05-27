@@ -1,6 +1,6 @@
 # forgottenserver-rust
 
-A complete Rust port of [ForgottenServer](https://github.com/opentibiabr/forgottenserver), the open-source C++ Tibia MMORPG server emulator. The C++ source lives at `./forgottenserver/` (vendored, read-only) and is the authoritative reference for all behavior.
+A complete Rust port of [ForgottenServer](https://github.com/otland/forgottenserver), the open-source C++ Tibia MMORPG server emulator.
 
 ---
 
