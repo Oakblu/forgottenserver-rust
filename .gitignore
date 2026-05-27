@@ -3,6 +3,7 @@ forgottenserver/
 manifest_parts/
 manifest_shards/
 target/
+otclient/
 
 AI_MIGRATION_CONTEXT.md
 DEPENDENCY_GRAPH.md
@@ -14,3 +15,5 @@ cpp_symbol_manifest.json
 rust_symbol_manifest.json
 
 AUDIT_PASS_A.csv
+
+config.lua
