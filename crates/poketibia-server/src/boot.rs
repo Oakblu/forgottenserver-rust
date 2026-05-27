@@ -236,7 +236,7 @@ pub fn connect_database(
             let db = MariaDbDatabase::connect(&cfg)
                 .map_err(|e| anyhow!("MariaDB connect failed: {e}"))?;
             // Idempotent — no-op if schema already present.
-            const SCHEMA: &str = include_str!("../../../../forgottenserver/schema.sql");
+            const SCHEMA: &str = include_str!("../../../schema.sql");
             db.bootstrap_schema_if_needed(SCHEMA)
                 .map_err(|e| anyhow!("MariaDB schema bootstrap failed: {e}"))?;
             Ok(Box::new(db))

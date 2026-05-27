@@ -27,7 +27,7 @@ WORKDIR /usr/src/forgottenserver-rust
 COPY Cargo.toml ./Cargo.toml
 COPY Cargo.lock ./Cargo.lock
 COPY crates ./crates
-# boot.rs embeds schema.sql at compile time via include_str!("../../../../forgottenserver/schema.sql").
+# boot.rs embeds schema.sql at compile time via include_str!("./schema.sql").
 # From crates/poketibia-server/src/ the 4 ".." land at /usr/src/, so the file must live here:
 COPY forgottenserver/schema.sql /usr/src/forgottenserver/schema.sql
 

@@ -54,7 +54,7 @@ fn schema_bootstrap_is_idempotent_when_schema_already_present() {
     let db = connect();
     // The test DB is bootstrapped by the docker init script. Re-running
     // bootstrap should detect the `players` table and short-circuit.
-    let schema = include_str!("../../../../forgottenserver/schema.sql");
+    let schema = include_str!("../../../schema.sql");
     db.bootstrap_schema_if_needed(schema).unwrap();
     // Second call: still no-op, still no error.
     db.bootstrap_schema_if_needed(schema).unwrap();
