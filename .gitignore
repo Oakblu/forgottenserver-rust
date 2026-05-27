@@ -1,13 +1,16 @@
+audit_patches/
+forgottenserver/
 manifest_parts/
 manifest_shards/
 target/
-audit_patches/
 
+AI_MIGRATION_CONTEXT.md
+DEPENDENCY_GRAPH.md
 MIGRATION_DELTA.md
 MIGRATION_LEDGER.*
 MIGRATION.md
-DEPENDENCY_GRAPH.md
-AUDIT_PASS_A.csv
 
-rust_symbol_manifest.json
 cpp_symbol_manifest.json
+rust_symbol_manifest.json
+
+AUDIT_PASS_A.csv
