@@ -115,12 +115,12 @@ pub fn start_listeners(modules: &Modules) -> Result<()> {
     Ok(())
 }
 
-/// Check that `config_path` exists before attempting to load it.
+/// Check that `config_path` is a file before attempting to load it.
 ///
 /// Returns a descriptive `Err` with recovery instructions if the file is
-/// missing, so users see an actionable message instead of a raw IO error.
+/// missing or is a directory, so users see an actionable message instead of a raw IO error.
 pub fn validate_config_path(config_path: &Path) -> Result<()> {
-    if !config_path.exists() {
+    if !config_path.is_file() {
         return Err(anyhow!(
             "Config file not found: {}\nTo fix: copy config.lua.dist to config.lua and edit the settings.\n  cp config.lua.dist config.lua",
             config_path.display()
@@ -323,8 +323,8 @@ mod tests {
 
     #[test]
     fn validate_config_path_existing_file_returns_ok() {
-        // Use a path that is guaranteed to exist without extra dependencies.
-        let result = validate_config_path(std::path::Path::new(env!("CARGO_MANIFEST_DIR")));
-        assert!(result.is_ok(), "expected Ok for existing path, got: {result:?}");
+        let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml");
+        let result = validate_config_path(&path);
+        assert!(result.is_ok(), "expected Ok for existing file, got: {result:?}");
     }
 }

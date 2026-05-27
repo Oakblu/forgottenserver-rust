@@ -92,7 +92,7 @@ fn main() -> ExitCode {
     let cli = parse_cli();
 
     if let Err(e) = boot::validate_config_path(&cli.config_path) {
-        eprintln!("[FATAL] {e}");
+        eprintln!("[FATAL] {e:#}");
         return ExitCode::from(1);
     }
 
