@@ -1,18 +1,17 @@
 #!/bin/bash
 #
-# 00-init-tibia-dbs.sh — Initialize `tibia_cpp` and `tibia_rs` databases.
+# 00-init-tibia-dbs.sh — Initialize databases for the forgottenserver stack.
 #
 # Mounted into the db container at
 # /docker-entrypoint-initdb.d/00-init-tibia-dbs.sh. Runs once on first
-# container start (before any 01-*.sql scripts), creates the two logical
-# databases used by the harness side-by-side stack, grants permissions
-# to the existing `forgottenserver` user, and applies schema.sql to
-# each database.
+# container start, creates the databases used by the server and harness,
+# grants permissions to the existing `forgottenserver` user, and applies
+# schema.sql to each.
 #
-# The C++ forgottenserver service connects to tibia_cpp; the Rust port
-# connects to tibia_rs. This gives the harness's persisted-state diff
-# lane (lane 5) a clean per-side snapshot surface without cross-
-# contamination.
+# forgottenserver — production/dev database (matches config.lua default)
+# tibia_cpp       — C++ reference server database (harness lane)
+# tibia_rs        — Rust port database (harness lane)
+# tibia_test      — E2E test database (harness lane)
 #
 # Schema source is mounted at /opt/tfs-schema.sql by docker-compose.yml.
 
@@ -25,9 +24,9 @@ if [ ! -f "$SCHEMA" ]; then
   exit 1
 fi
 
-echo "Initializing tibia_cpp, tibia_rs, and tibia_test databases..."
+echo "Initializing forgottenserver, tibia_cpp, tibia_rs, and tibia_test databases..."
 
-for db in tibia_cpp tibia_rs tibia_test; do
+for db in forgottenserver tibia_cpp tibia_rs tibia_test; do
   echo "  → creating database '$db'"
   mariadb -uroot -p"$MARIADB_ROOT_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS \`$db\` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
   echo "  → granting permissions on '$db' to 'forgottenserver'"

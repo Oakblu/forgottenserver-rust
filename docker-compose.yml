@@ -7,7 +7,7 @@ services:
       MARIADB_ROOT_PASSWORD: root_secret
       MARIADB_USER: forgottenserver
       MARIADB_PASSWORD: forgottenserver
-      MARIADB_DATABASE: tibia_rs
+      MARIADB_DATABASE: forgottenserver
     volumes:
       - ./schema.sql:/opt/tfs-schema.sql:ro
       - ./docker/mariadb-init:/docker-entrypoint-initdb.d:ro
