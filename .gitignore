@@ -15,5 +15,7 @@ cpp_symbol_manifest.json
 rust_symbol_manifest.json
 
 AUDIT_PASS_A.csv
+.DS_Store
+*/.DS_Store
 
 config.lua
