@@ -91,6 +91,11 @@ fn main() -> ExitCode {
     print_banner();
     let cli = parse_cli();
 
+    if let Err(e) = boot::validate_config_path(&cli.config_path) {
+        eprintln!("[FATAL] {e}");
+        return ExitCode::from(1);
+    }
+
     let modules = match boot::initialise_modules(&cli.config_path, &cli.data_dir) {
         Ok(m) => m,
         Err(e) => {

@@ -115,6 +115,20 @@ pub fn start_listeners(modules: &Modules) -> Result<()> {
     Ok(())
 }
 
+/// Check that `config_path` exists before attempting to load it.
+///
+/// Returns a descriptive `Err` with recovery instructions if the file is
+/// missing, so users see an actionable message instead of a raw IO error.
+pub fn validate_config_path(config_path: &Path) -> Result<()> {
+    if !config_path.exists() {
+        return Err(anyhow!(
+            "Config file not found: {}\nTo fix: copy config.lua.dist to config.lua and edit the settings.\n  cp config.lua.dist config.lua",
+            config_path.display()
+        ));
+    }
+    Ok(())
+}
+
 // ---------------------------------------------------------------------------
 // Signal handling (boot step 17)
 // ---------------------------------------------------------------------------
@@ -290,5 +304,27 @@ mod tests {
         request_shutdown();
         assert!(shutdown_requested());
         SHUTDOWN.store(false, Ordering::SeqCst);
+    }
+
+    #[test]
+    fn validate_config_path_missing_file_returns_err_with_hint() {
+        let result = validate_config_path(std::path::Path::new("/nonexistent/xyz/config.lua"));
+        let err = result.expect_err("expected Err for nonexistent path");
+        let msg = format!("{err}");
+        assert!(
+            msg.contains("Config file not found"),
+            "error should name the problem: {msg}"
+        );
+        assert!(
+            msg.contains("cp config.lua.dist config.lua"),
+            "error should include recovery command: {msg}"
+        );
+    }
+
+    #[test]
+    fn validate_config_path_existing_file_returns_ok() {
+        // Use a path that is guaranteed to exist without extra dependencies.
+        let result = validate_config_path(std::path::Path::new(env!("CARGO_MANIFEST_DIR")));
+        assert!(result.is_ok(), "expected Ok for existing path, got: {result:?}");
     }
 }
