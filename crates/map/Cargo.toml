@@ -1,0 +1,11 @@
+[package]
+name = "forgottenserver-map"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+forgottenserver-common = { path = "../common" }
+forgottenserver-items = { path = "../items" }
+
+[dev-dependencies]
+tempfile = "3"

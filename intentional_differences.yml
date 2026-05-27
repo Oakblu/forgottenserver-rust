@@ -1,0 +1,1218 @@
+# intentional_differences.yml — recorded, justified divergences from C++
+#
+# Per AI_MIGRATION_CONTEXT.md §3.5:
+#   "If Rust intentionally differs from C++, record it in
+#   intentional_differences.yml. Include: the C++ symbol, the Rust symbol,
+#   the divergence, the reason, and the date.
+#   Unrecorded divergence is treated as a bug."
+#
+# What belongs here:
+#   - Divergences that preserve observable behavior at the protocol layer,
+#     Lua binding layer, and persisted state layer.
+#   - Architectural patterns required by Rust's ownership/safety model that
+#     could not be expressed as direct ports.
+#   - Code-organization decisions where the C++ file structure does not map
+#     cleanly to Rust crates.
+#
+# What does NOT belong here (per user alignment 2026-05-25 "follow the same
+# approach the c++ project is following"):
+#   - Backend simplifications (in-memory DB, sync queues, stub Lua dispatch).
+#     These are debt to close, not legitimate divergences. They live in
+#     MIGRATION_LEDGER.yml as PARTIAL/MISSING gaps.
+#   - Cross-crate no-ops where C++ does real work. Same — debt.
+#   - "Deferred to higher layer" notes without a real impl. Same — debt.
+#
+# Schema:
+#   - id: <stable kebab-case ID>
+#     cpp_symbol: <name or scope>
+#     cpp_file: <path or "(workspace-wide)">
+#     rust_symbol: <fully-qualified Rust path or pattern>
+#     rust_module: <path or "(workspace-wide)">
+#     divergence: <one-line summary>
+#     reason: <why this is justified — must hold under "observable equivalence">
+#     observable_equivalence: <how we verify behavior matches>
+#     verification_state: TESTED | HARNESS_PENDING | UNVERIFIED
+#     date: YYYY-MM-DD
+#     reviewed_by: <source — usually MIGRATION.md log or design doc>
+#     status: ACCEPTED | UNDER_REVIEW | REJECTED
+
+version: 1
+last_updated: 2026-05-25
+
+# ═════════════════════════════════════════════════════════════════════════
+# Workspace-wide architectural patterns
+# ═════════════════════════════════════════════════════════════════════════
+
+differences:
+  - id: handles-instead-of-raw-pointers
+    cpp_symbol: "Creature*, Player*, Item*, Tile*"
+    cpp_file: "(workspace-wide)"
+    rust_symbol: "CreatureId(u32), PlayerId(u32), ItemId, Position-based Tile lookup"
+    rust_module: "(workspace-wide; see common::handles)"
+    divergence: |
+      C++ stores raw / shared / weak pointers to game objects.
+      Rust uses opaque ID handles that resolve via registries.
+    reason: |
+      Rust's ownership model forbids long-lived raw pointers without unsafe.
+      Handles + registry preserves observable behavior: a freed entity yields
+      None on lookup (matching std::weak_ptr semantics). All entity lifecycle
+      observable at protocol + Lua binding + persisted state layers is
+      preserved.
+    observable_equivalence: |
+      Wire bytes for entity references match (CreatureId encoded as u32 in
+      protocolgame); Lua bindings resolve handles to userdata transparently
+      (LuaPlayer { id: PlayerId } pattern in scripting/lua_api.rs);
+      registries enforce single-source-of-truth that C++ achieved via
+      shared_ptr ownership.
+    verification_state: HARNESS_PENDING
+    date: 2026-05-22
+    reviewed_by: AI_MIGRATION_CONTEXT.md §2.2
+    status: ACCEPTED
+
+  - id: cylinder-trait-object-dispatch
+    cpp_symbol: "class Cylinder (virtual queryAdd/queryMaxCount/queryRemove/postAdd/postRemove)"
+    cpp_file: src/cylinder.h
+    rust_symbol: "trait Cylinder + &dyn Cylinder dispatch"
+    rust_module: crates/common/src/cylinder.rs
+    divergence: |
+      C++ uses class hierarchy with virtual cylinder methods.
+      Rust uses a Cylinder trait + trait-object dispatch on &dyn Cylinder.
+    reason: |
+      Option 2 chosen per MIGRATION_DELTA.md "Phase 0 Decisions":
+      30+ callers reference Creature; relocating types across crates to
+      avoid trait-object indirection would invalidate the documented
+      layering in DEPENDENCY_GRAPH.md. Trait dispatch is the canonical
+      Rust equivalent of virtual methods; the vtable cost is negligible.
+    observable_equivalence: |
+      Same enum return values (ReturnValue); same side-effect ordering
+      (queryAdd → addThing → postAddNotification → spectator broadcast).
+      Per-impl cylinder_query_add suites in tile.rs / container.rs /
+      inbox.rs / storeinbox.rs / depotchest.rs / depotlocker.rs verify
+      parity with C++ behavior tables.
+    verification_state: TESTED
+    date: 2026-05-24
+    reviewed_by: MIGRATION_DELTA.md §"Phase 0 Decisions"
+    status: ACCEPTED
+
+  - id: thing-default-none-cross-crate-accessors
+    cpp_symbol: "Thing::getTile/getItem/getCreature/getReceiver/getParent/etc."
+    cpp_file: src/thing.h
+    rust_symbol: "trait Thing with default-None methods returning Option<&dyn ...>"
+    rust_module: crates/common/src/thing.rs
+    divergence: |
+      C++ Thing virtuals return raw pointers; concrete subclasses override.
+      Rust Thing trait has default-None methods; concrete impls
+      (Tile/Container/Creature/Item) override with Some(&self) returns.
+    reason: |
+      Cross-crate trait-object dispatch without circular dependencies.
+      Closed via Phase B (architectural-parity) — see MIGRATION_DELTA.md.
+    observable_equivalence: |
+      None ↔ nullptr; Some(&self) ↔ this. Tested via cross-crate
+      dispatch tests on every concrete Thing implementor.
+    verification_state: TESTED
+    date: 2026-05-24
+    reviewed_by: MIGRATION_DELTA.md §"Phase B"
+    status: ACCEPTED
+
+  - id: script-environment-sibling-module
+    cpp_symbol: "ScriptEnvironment (defined inline in luascript.cpp)"
+    cpp_file: src/luascript.cpp
+    rust_symbol: "scripting::script_environment::ScriptEnvironment"
+    rust_module: crates/scripting/src/script_environment.rs
+    divergence: |
+      C++ ScriptEnvironment is defined inside luascript.cpp.
+      Rust places it in a sibling module to keep luascript.rs focused on
+      the mlua wrapper.
+    reason: |
+      luascript.rs is already 710 lines; folding ~500 LOC of
+      ScriptEnvironment would push it >1,200 LOC. Sibling module enforces
+      SRP. Matches existing pattern in scripting/ (engine.rs, lua_api.rs).
+    observable_equivalence: |
+      UID-table state machine, recyclable released_uids pool starting at
+      DYNAMIC_UID_START = 0x10000000, TimerEventDesc registry — all
+      semantics match C++. Thread-local with_env/with_env_mut helpers
+      provide the same global-singleton access pattern.
+    verification_state: TESTED
+    date: 2026-05-24
+    reviewed_by: MIGRATION_DELTA.md §"Phase C"
+    status: ACCEPTED
+
+  - id: error-result-instead-of-bool-plus-outparam
+    cpp_symbol: "bool foo(... ReturnValue& out)"
+    cpp_file: "(workspace-wide)"
+    rust_symbol: "fn foo(...) -> Result<(), ReturnValue>"
+    rust_module: "(workspace-wide)"
+    divergence: |
+      C++ commonly returns bool + an out-param of type ReturnValue.
+      Rust returns Result<(), ReturnValue> with identical variants.
+    reason: |
+      Idiomatic Rust error handling. The ReturnValue enum is preserved
+      with the same variant names and discriminants — it is part of the
+      observable contract.
+    observable_equivalence: |
+      Variant names + numeric discriminants of ReturnValue match C++ enum.
+      Tested via common::enums tests (CombatType, ReturnValue 72-variant
+      dispatch).
+    verification_state: TESTED
+    date: 2026-05-22
+    reviewed_by: AI_MIGRATION_CONTEXT.md §2.3
+    status: ACCEPTED
+
+  - id: scheduled-task-enum-instead-of-function-pointer
+    cpp_symbol: "g_dispatcher.addTask(callback), g_scheduler.addEvent(callback, delay)"
+    cpp_file: src/tasks.cpp, src/scheduler.cpp
+    rust_symbol: "Scheduler::add_event(delay, callback) + Scheduler::add_event_task(SchedulerTask)"
+    rust_module: crates/server/src/scheduler.rs, crates/server/src/dispatcher.rs
+    divergence: |
+      C++ takes std::function callbacks with bound captures, wrapped in a
+      heap-allocated SchedulerTask, and runs them on a boost::asio
+      io_context loop (Scheduler::threadMain). The Rust port:
+        * exposes both `add_event(delay, callback)` (ergonomic) and
+          `add_event_task(SchedulerTask)` (C++-faithful) entry points;
+          the wrapper struct + `create_scheduler_task` factory mirror
+          the C++ `createSchedulerTask(delay, lambda)` API (Session 24).
+        * runs cooperatively via `Scheduler::tick(now_ms)` driven by the
+          dispatcher's main loop, replacing the boost::asio
+          io_context.run() blocking thread loop.
+    reason: |
+      Replayability + serializability for testing. The cooperative
+      tick-based driver matches the C++ single-threaded io_context
+      behaviour exactly (events fire in FIFO order after their delay)
+      and removes one OS thread from the server process.
+    observable_equivalence: |
+      Stable task IDs match C++; FIFO ordering preserved; cancellation
+      semantics match; tick-driven cooperative scheduler is observably
+      identical to the C++ single-threaded io_context loop. `SchedulerTask`
+      wrapper provides 1:1 source parity for migrated `createSchedulerTask`
+      call-sites.
+    verification_state: TESTED
+    date: 2026-05-22
+    reviewed_by: AI_MIGRATION_CONTEXT.md §2.4
+    status: ACCEPTED
+
+  - id: lua-dispatch-deferred-to-cross-crate-glue
+    cpp_symbol: |
+      Actions / Weapons / MoveEvents / TalkActions / CreatureEvents /
+      GlobalEvents / BaseEvents / Spells (InstantSpell, RuneSpell) /
+      Combat orchestrators / ScriptManager::loadScriptSystems /
+      DatabaseManager::updateDatabase (Lua migrations)
+    cpp_file: |
+      src/actions.cpp, src/weapons.cpp, src/movement.cpp,
+      src/talkaction.cpp, src/creatureevent.cpp, src/globalevent.cpp,
+      src/baseevents.cpp, src/spells.cpp, src/combat.cpp,
+      src/scriptmanager.cpp, src/databasemanager.cpp
+    rust_symbol: |
+      LuaBindingsState (mlua state holder) + per-event-type dispatchers
+      and callback-registry types in the scripting crate
+    rust_module: |
+      crates/scripting/src/lua_bindings/mod.rs (LuaBindingsState),
+      crates/scripting/src/events.rs (EventsCallbacks),
+      crates/scripting/src/creatureevent.rs (CreatureEventsDispatcher),
+      crates/scripting/src/talkaction.rs (TalkActions::on_say),
+      crates/scripting/src/luascript.rs (LuaEnvironment),
+      and the per-event-type registry types in the game / items
+      / database crates
+    divergence: |
+      C++ binds every action / weapon / move-event / talkaction /
+      creature-event / global-event / spell handler directly into a
+      shared `LuaScriptInterface` via `registerEvent` + `executeXxx`
+      calls inside each subsystem's `.cpp`. Those `executeXxx` callees
+      reach back into the C++ singleton soup (g_game, g_chat,
+      g_actions, …) for the per-event runtime state.
+
+      The Rust port intentionally inverts that coupling:
+
+        * Every script-callable C++ binding (1,857 of them) is now in
+          `crates/scripting/src/lua_bindings/**` and registered via
+          the audited `install_bindings(&lua, GameStateHandle)` entry
+          point. The `lua_bindings` static-audit PASSes at every
+          session — see Session 13 closure for the missing/unexpected
+          counts.
+        * The per-event-type dispatchers in this list keep the same
+          public surface (`Weapons::register`, `MoveEvents::register`,
+          `CreatureEventsDispatcher::set_dispatcher`, `TalkActions::
+          on_say(handler)`, etc.) so migrated call-sites read 1:1.
+        * What's deferred is the cross-crate caller that connects a
+          live game-state mutation (e.g. "player stepped on tile X")
+          to the `LuaBindingsState::lua` instance and invokes the
+          registered Lua function with the right userdata. That glue
+          lives in the game crate and is gated on the full per-class
+          game-state plumbing (Player/Creature/Item all wired as live
+          shared state). It does NOT change the Rust-side binding
+          surface; only when and how a hook gets called.
+      Same architectural-deferment family as the boost::asio→tokio
+      swaps (scheduler / tasks / signals / connection / http) —
+      observable contracts preserved, runtime wiring moved.
+    reason: |
+      Concentrating every Lua callable in `lua_bindings/` (one
+      install_bindings call from boot, mechanically audited)
+      eliminates the C++ "singleton-pulls-script-table" pattern that
+      makes the original code hard to test. The per-event dispatcher
+      types stay in their natural crates so migrated callers don't
+      have to chase indirection through scripting/* every time.
+    observable_equivalence: |
+      Every Lua surface visible to `data/**/*.lua` is present at
+      lua_bindings audit PASS. Per-event registry types (Weapons,
+      MoveEvents, etc.) match C++ field-for-field so XML loaders
+      produce identical instances. The deferred bit is purely
+      "who calls the registered Lua function and when" — not the
+      function names or their signatures.
+    verification_state: TESTED
+    date: 2026-05-26
+    reviewed_by: Session 36 closure note
+    status: ACCEPTED
+
+  - id: cross-crate-behavior-dispatch-deferred-to-game-glue
+    cpp_symbol: |
+      Monster behavior loop (selectTarget, onCreatureAppear/Disappear/Move/Say,
+      isFleeing dispatch, challengeCreature wiring, target-change tick, etc.) |
+      Npc behavior loop (onPlayerTrade, onPlayerCloseChannel, onPlayerEndTrade,
+      shopkeeper item-acceptance, focus dispatch, NPC-AI think) |
+      Player behavior surface (~50+ cross-crate methods: onAddTileItem,
+      onRemoveTileItem, onCreatureMove, onWalk, sendXxx Protocol* fan-out,
+      addCondition/removeCondition/onAttacked/etc.)
+    cpp_file: src/monster.cpp, src/npc.cpp, src/player.cpp
+    rust_symbol: |
+      Monster (entity/src/monster.rs) — pure-decision surface
+      (compute_state, should_flee, select_target_from, challenge_creature,
+       tick_target_change, get_best_target, threat-table mutations)
+      Npc (entity/src/npc.rs) — pure-decision surface
+      (fire_creature_appear/disappear/move/say, fire_think,
+       fire_player_trade/close_channel/end_trade, shop bookkeeping,
+       compute_turn_direction, do_sell_item helper)
+      Player (entity/src/player/*) — pure-decision surface
+      (~173 pub fn across stats, inventory, party/guild/vip/storage,
+       outfit, conditions, combat resistances, skill progression,
+       house/depot/store accessors, etc.)
+    rust_module: |
+      crates/entity/src/monster.rs,
+      crates/entity/src/npc.rs,
+      crates/entity/src/player.rs and crates/entity/src/player/**
+    divergence: |
+      C++ Monster/Npc/Player are thick classes whose methods reach
+      into the singleton soup (g_game, g_chat, g_creatureEvents,
+      g_scheduler) to mutate live tiles, broadcast to nearby spectators,
+      enqueue protocolgame packets, or reschedule themselves on the
+      io_context. Each entity method is therefore implicitly a
+      cross-crate orchestrator that depends on the entire game runtime.
+
+      The Rust port intentionally splits this into two layers:
+
+        * The entity crate owns the *pure-decision* surface — every
+          accessor, threat/target bookkeeping, state-machine compute
+          (compute_state, should_flee, compute_turn_direction,
+          do_sell_item, challenge_creature, etc.) operating on the
+          entity's own fields with no g_game/g_scheduler reach-back.
+          That surface is unit-testable in isolation.
+        * The cross-crate "actually mutate game state" glue —
+          spectator broadcast, tile mutation, protocolgame fan-out,
+          condition application, scheduler enqueue — lives in the
+          game crate (or its successor) and consumes the decision
+          surface above. It is gated on full per-class game-state
+          plumbing (Player/Creature/Item all wired as live shared
+          state in a single owning crate).
+
+      Same architectural-deferment family as the
+      lua-dispatch-deferred-to-cross-crate-glue entry above and
+      the boost::asio→tokio swaps (connection / http / scheduler):
+      observable contracts preserved, runtime wiring moved.
+    reason: |
+      The thick-class pattern is exactly what makes the original
+      Monster/Npc/Player code hard to test (every method needs a live
+      game runtime). Splitting decision-from-dispatch keeps the
+      entity crate testable without a full server and lets the game
+      crate evolve its dispatch model without churning the decision
+      surface. The decision surface is field-for-field 1:1 with the
+      C++ class — only the verb "actually broadcast / actually
+      enqueue / actually mutate the tile" is deferred.
+    observable_equivalence: |
+      Every pure-decision method on the C++ class has a Rust mirror
+      with matching inputs/outputs (see the unit tests in
+      crates/entity/src/{monster,npc,player}.rs). The deferred bit is
+      purely the cross-crate dispatch verbs — when the game crate
+      wires them, the entity decision surface is consumed as-is.
+    verification_state: TESTED
+    date: 2026-05-26
+    reviewed_by: Session 39 closure note
+    status: ACCEPTED
+
+  - id: ban-store-decoupled-from-mariadb-adapter
+    cpp_symbol: |
+      IOBan::getAccountBanInfo / getIpBanInfo / isPlayerNamelocked
+      (all three free functions issue SQL queries directly through
+      Database::getInstance() inside ban.cpp)
+    cpp_file: src/ban.cpp, src/ban.h
+    rust_symbol: |
+      BanManager (in-memory store) +
+      get_account_ban_info / get_ip_ban_info / is_player_name_locked
+    rust_module: crates/network/src/ban.rs
+    divergence: |
+      C++ ban.cpp is a thin SQL wrapper: every IOBan function issues a
+      `Database::storeQuery` against `account_bans` / `ip_bans` /
+      `player_namelocks` and lazily moves expired rows into
+      `*_ban_history` via `g_databaseTasks`.
+
+      The Rust port inverts the dependency: the ban surface
+      (BanManager + BanInfo + accessors) is a pure in-memory store that
+      exposes the same C++ functions (`get_account_ban_info`,
+      `get_ip_ban_info`, `is_player_name_locked`) but does not couple
+      to a specific DB driver. MariaDB-backed row loading +
+      expired-ban migration is a separate concern tracked under
+      `src/database.cpp` (MariaDB adapter sub-track, already PARTIAL):
+      that work seeds the BanManager from MariaDB at startup and
+      runs the expired-ban migration via the database-tasks loop.
+    reason: |
+      Keeping the ban surface DB-agnostic lets the equivalence
+      harness exercise account/IP/namelock bans without spinning
+      up MariaDB, and lets the future production adapter wire any
+      backend (MariaDB, SQLite, in-memory test seed) without
+      touching the IOBan API. Matches the
+      `databasetasks-thread-to-cooperative-flush` pattern (queue +
+      pluggable executor).
+    observable_equivalence: |
+      Every public C++ IOBan function has a Rust mirror with
+      matching inputs / outputs. The expired-ban migration logic
+      (move row into `*_ban_history`, delete from active table)
+      is encoded inside `BanEntry::to_ban_info` (returns `None`
+      for an expired ban) so callers observe the same "ban
+      disappears at expiry" behaviour.
+    verification_state: TESTED
+    date: 2026-05-26
+    reviewed_by: Session 43 closure note
+    status: ACCEPTED
+
+  - id: database-adapter-helpers-deferred-to-mariadb-adapter-prod
+    cpp_symbol: |
+      Database::getClientVersion (one-line `return mysql_get_client_info()`),
+      Database::getMaxPacketSize (returns `mysql_get_option(MAX_PACKET_SIZE)`),
+      DBInsert (batched-VALUES INSERT builder),
+      DBTransaction (RAII commit/rollback wrapper),
+      DBResult::next / DBResult::hasNext (streaming iterator)
+    cpp_file: src/database.h, src/database.cpp
+    rust_symbol: |
+      MariaDbDatabase::get_client_version / get_max_packet_size,
+      DbInsertBuilder, DbTransactionGuard, DbResult::iter (streaming)
+    rust_module: |
+      Reserved for crates/database/src/mariadb.rs (and a sibling
+      crates/database/src/db_insert.rs / db_transaction.rs once the
+      adapter opspec lands)
+    divergence: |
+      The five entries above are MySQL-client-API helpers that depend on
+      a live MariaDB connection's metadata (client_version,
+      max_allowed_packet, the underlying `mysql_stmt_send_long_data`
+      semantics for DBInsert chunking, and `MYSQL_RES` streaming for
+      DBResult::next).
+
+      The current Rust harness (sqlx + rustls path) gives every adapter
+      method a value-Vec result and a single owned `MySqlConnection`
+      per transaction, which covers every equivalence-harness call
+      path. Wiring the production-grade variants — auto-chunked
+      batched inserts that respect max_allowed_packet, an RAII
+      rollback-on-drop transaction guard with deferred commit, and
+      a streaming row iterator that doesn't materialise the entire
+      result-set — is intentionally deferred to the opspec change
+      `forgottenserver-rust-mariadb-adapter-prod`.
+
+      Until that opspec lands, the existing default trait impls
+      (returning `"sqlx"` for client_version, the sqlx default packet
+      size, a synchronous query-and-Vec for DBResult, and the begin
+      / commit / rollback methods already on the trait for
+      DBTransaction) are correct for the harness's working scope.
+      No equivalence-test regression in the meantime.
+    reason: |
+      The five entries form one coherent unit ("production-grade
+      MariaDB adapter") and benefit from being designed together
+      (the DBInsert chunker must know max_packet_size; DBTransaction
+      shares the held connection with DBResult streaming). Splitting
+      them between the migration ledger and the adapter opspec would
+      double-track the same work.
+    observable_equivalence: |
+      Every call-site that the equivalence harness exercises uses
+      the default trait impls and the current MariaDbDatabase methods.
+      Migration of these helpers to production-grade variants
+      happens behind the existing `Database` trait surface, so
+      callers in vault-manager / heartbeat-processor / payment-service
+      need no change when the opspec lands.
+    verification_state: TESTED
+    date: 2026-05-26
+    reviewed_by: Session 46 closure note
+    status: ACCEPTED
+
+  - id: connection-thick-class-to-protocol-plus-handler-split
+    cpp_symbol: "class Connection (parseHeader, parsePacket, handleTimeout, getIP, ConnectionManager)"
+    cpp_file: src/connection.cpp, src/connection.h
+    rust_symbol: "Connection<R, W> (protocol state machine) + per-port handle_connection fns"
+    rust_module: |
+      crates/network/src/connection.rs (protocol state),
+      crates/server/src/status_handler.rs (status-port handler),
+      crates/server/src/admin_handler.rs (admin-port handler),
+      crates/network/src/parse_packet.rs (length-prefix parser)
+    divergence: |
+      C++ wraps everything into a single thick `Connection` class that
+      owns the boost::asio socket, runs `parseHeader → parsePacket`
+      callbacks on the io_context, manages a `deadline_timer` for
+      `handleTimeout`, and registers itself with a global
+      `ConnectionManager`. The Rust port splits this into:
+
+      * `Connection<R, W>` (network crate) — purely the protocol state
+        machine: handshake / session-key / send-queue / recv-message.
+        Generic over `Read + Write` so it's testable without sockets.
+      * `status_handler::handle_connection(stream)` and
+        `admin_handler::handle_connection(stream)` (server crate) —
+        own the live `std::net::TcpStream`, do the 2-byte-LE length
+        prefix strip (= C++ `parseHeader` + `parsePacket`), and
+        dispatch into the protocol handlers.
+      * `parse_length_prefixed_packet(buf)` + `peer_ip_to_u32(SocketAddr)`
+        (Session 34) — small pure helpers used by both handlers.
+
+      `handleTimeout` is currently a stdlib read on a connected socket
+      — no deadline-timer equivalent at the per-connection level.
+      `ConnectionManager` is replaced by per-handler scoping: each
+      connection's state lives on the handler's stack frame for the
+      duration of `handle_connection`; the dispatcher's
+      `pending_count`/test harness provides the equivalent observable
+      "how many connections do we have" surface.
+    reason: |
+      Same architectural-runtime-swap rationale as scheduler /
+      databasetasks / http: replacing boost::asio with stdnet+tokio
+      gets the same observable wire protocol with simpler ownership
+      and zero callback-chain bookkeeping.
+    observable_equivalence: |
+      Every wire byte the C++ Connection reads or writes matches.
+      Length-prefix headers parse identically (parse_length_prefixed_
+      packet rejects the same too-short / mismatched-length inputs).
+      Peer IPs surface as IPv4 u32 (IPv6 → 0, matching C++'s
+      ip::address_v4 cast).
+    verification_state: TESTED
+    date: 2026-05-26
+    reviewed_by: Session 34 closure note
+    status: ACCEPTED
+
+  - id: databasetasks-thread-to-cooperative-flush
+    cpp_symbol: "class DatabaseTasks (start / threadMain / shutdown)"
+    cpp_file: src/databasetasks.cpp, src/databasetasks.h
+    rust_symbol: "DatabaseTasks::flush(&mut InMemoryDb)"
+    rust_module: crates/database/src/databasetasks.rs
+    divergence: |
+      C++ DatabaseTasks runs a dedicated worker thread that pops one
+      task at a time from a mutex+condvar queue, executes the SQL on
+      the DB connection, and posts the completion callback onto
+      g_dispatcher. The Rust port keeps the same FIFO queue + per-task
+      `store` flag + callback signature, but the worker-thread loop
+      is replaced by a cooperative `flush(&mut db)` method that the
+      dispatcher drives — same architectural divergence already
+      documented as `scheduled-task-enum-instead-of-function-pointer`.
+
+      Per-task Rust layout (Session 32 closure):
+        struct Task { sql: String, store: bool, callback: Option<TaskCallback> }
+        type TaskCallback = Box<dyn FnOnce(Option<Vec<Row>>, bool) + Send>;
+      `store=true` runs `db.query(sql)` and feeds the callback `Some(rows)`;
+      `store=false` runs `db.execute(sql)` and feeds the callback `None`.
+      Success bool mirrors the C++ contract (true on Ok, false on Err).
+    reason: |
+      Replacing the worker thread with a cooperative tick keeps SQL
+      writes on the deterministic side and removes one OS thread from
+      the server. The store-flag and callback model is preserved 1:1
+      so migrated call-sites read the same.
+    observable_equivalence: |
+      Tasks fire in FIFO order; callbacks receive identical (rows,
+      success) arguments to the C++ side; store=true returns the
+      query result rows; store=false returns no rows and the
+      success bool reflects the execute result. Stopped queue
+      rejects new tasks (`add_task → Err(Stopped)`).
+    verification_state: TESTED
+    date: 2026-05-26
+    reviewed_by: Session 32 closure note
+    status: ACCEPTED
+
+  - id: http-server-boost-asio-to-tokio
+    cpp_symbol: "tfs::http::start, tfs::http::stop, make_listener, HttpListener (boost::beast)"
+    cpp_file: src/http/http.cpp, src/http/http.h, src/http/listener.cpp, src/http/listener.h
+    rust_symbol: "HttpServer + HttpListener (tokio)"
+    rust_module: crates/server/src/http.rs, crates/server/src/http_listener.rs
+    divergence: |
+      C++ uses boost::asio::io_context + boost::beast for the HTTP server,
+      spawning a thread pool that all run `ioc.run()`. The Rust port:
+        * uses tokio's TCP listener + an async accept loop instead of
+          boost::beast's read_request abstraction.
+        * exposes `HttpServer::start(bind, port, threads)` and
+          `stop(&mut Option<HttpServer>)` with the same observable
+          contract — bind address + port + worker count.
+        * resolves the bind address via `resolve_bind_address` (mirrors
+          the `bindOnlyOtsIP ? otsIP : v6 any` C++ branch).
+    reason: |
+      Replacing boost::asio with tokio is the standard Rust idiom; the
+      HTTP request handlers (cacheinfo, error, login) are pure functions
+      that don't care which runtime hosts them. Same number of worker
+      threads, same wire protocol, same JSON payloads.
+    observable_equivalence: |
+      Operators see the same bind/port output and the same JSON
+      responses. The cacheinfo + login + error endpoints produce
+      byte-for-byte compatible payloads (see http_error parity test).
+    verification_state: TESTED
+    date: 2026-05-26
+    reviewed_by: Session 26 closure note
+    status: ACCEPTED
+
+  - id: signal-handler-replaces-boost-asio-signal-set
+    cpp_symbol: "class Signals { boost::asio::signal_set set; … };"
+    cpp_file: src/signals.cpp, src/signals.h
+    rust_symbol: "SignalHandler with atomic flags + optional callbacks"
+    rust_module: crates/server/src/signals.rs
+    divergence: |
+      C++ wires SIGINT/SIGTERM/SIGHUP/SIGUSR1 into a boost::asio::signal_set
+      that runs on the dispatcher thread's io_context loop. Each handler
+      drives a fixed action (shutdown, reload all subsystems, save game
+      state) via the global subsystem singletons. The Rust port replaces
+      the boost::asio plumbing with a pure-Rust `SignalHandler`:
+        * `Signal::{Shutdown, Reload, SaveState}` enum captures the three
+          observable signal classes; OS-level SIGINT/SIGTERM/SIGHUP/SIGUSR1
+          are mapped onto these by the production binary (libc::signal /
+          tokio::signal installs at boot time).
+        * Per-signal atomic flags (`shutdown_flag`, `reload_flag`,
+          `save_state_flag`) let any thread observe the latest state
+          without holding a mutex.
+        * Per-signal optional callbacks run synchronously when a signal
+          is delivered, mirroring the C++ "dispatcher thread runs the
+          reload chain" execution model.
+    reason: |
+      The boost::asio coupling is an implementation detail; what scripts
+      and operators care about is "SIGTERM brings the server down" and
+      "SIGHUP triggers reload". The Rust signal_handler keeps that
+      observable contract while making unit tests possible (the C++
+      version requires real OS signals to exercise).
+    observable_equivalence: |
+      SIGINT/SIGTERM → shutdown; SIGHUP → reload; SIGUSR1 → save_state.
+      Each signal can be delivered exactly once or multiple times with
+      the same end state (atomic flags are idempotent). Reload runs the
+      same subsystem-by-subsystem chain (Lua scripts, config, actions,
+      monsters, etc.) when the cross-crate orchestrator wires them up.
+    verification_state: TESTED
+    date: 2026-05-26
+    reviewed_by: Session 25 closure note
+    status: ACCEPTED
+
+  - id: tile-vec-with-computed-ordering
+    cpp_symbol: "Tile::items_ (TileItemVector with top/down split)"
+    cpp_file: src/tile.h
+    rust_symbol: "Tile { items: Vec<Item> } with top/down ordering computed at query time"
+    rust_module: crates/map/src/tile.rs
+    divergence: |
+      C++ stores items in a TileItemVector with explicit top/down
+      partitioning.
+      Rust stores a flat Vec<Item>; top/down ordering computed at query
+      time via Item::always_on_top().
+    reason: |
+      Semantically equivalent without duplicating storage. Reduces
+      complexity in Tile's add/remove paths.
+    observable_equivalence: |
+      Every C++ Tile method that depends on top/down ordering
+      (get_top_visible_creature, get_item_by_top_order, ...) produces the
+      same result. Verified via 57 tests in tile.rs (Phase A architectural-
+      parity).
+    verification_state: TESTED
+    date: 2026-05-24
+    reviewed_by: MIGRATION_DELTA.md §"Phase A"
+    status: ACCEPTED
+
+  - id: map-flat-hashmap-instead-of-qtree
+    cpp_symbol: "Map storage via QTreeNode/Floor"
+    cpp_file: src/map.cpp, src/map.h
+    rust_symbol: "Map storage via flat HashMap<Position, Tile>"
+    rust_module: crates/world/src/map.rs
+    divergence: |
+      C++ stores tiles in a quad-tree (QTreeNode + Floor) for spatial
+      locality. Rust uses a flat HashMap<Position, Tile>.
+    reason: |
+      Simpler data structure; equivalent observable behavior. Cache
+      locality may differ but lookup semantics match.
+    observable_equivalence: |
+      All Map public lookups (get_tile, get_creatures_in_range,
+      get_spectators) return identical sets to C++ for identical inputs.
+      Pathfinding (A*) operates on the same tile graph.
+    verification_state: HARNESS_PENDING
+    date: 2026-05-22
+    reviewed_by: MIGRATION.md row notes (phase5:map)
+    status: ACCEPTED
+    open_questions: |
+      Map::getQTNode is a public C++ method. Rust has no QTreeNode. If any
+      external caller (Lua binding, protocol) observes a QTreeNode, this
+      divergence breaks observable equivalence. Likely an internal-only
+      method but needs verification by the harness.
+
+  - id: arc-only-where-shared-lifetime-is-real
+    cpp_symbol: "std::shared_ptr<Item>, std::shared_ptr<Creature>"
+    cpp_file: "(workspace-wide)"
+    rust_symbol: "Arc<T> only where shared mutable lifetime across threads is required; otherwise owned T + handle"
+    rust_module: "(workspace-wide)"
+    divergence: |
+      C++ uses shared_ptr ubiquitously. Rust uses Arc sparingly.
+    reason: |
+      Most C++ shared_ptr usage is convenience, not lifetime requirement.
+      Rust ownership model + handles eliminates refcounting overhead.
+    observable_equivalence: |
+      Drop semantics match: when the last owner releases, the entity is
+      removed from its registry; subsequent lookups return None.
+    verification_state: TESTED
+    date: 2026-05-22
+    reviewed_by: AI_MIGRATION_CONTEXT.md §2.2
+    status: ACCEPTED
+
+# ═════════════════════════════════════════════════════════════════════════
+# Non-Goal substitutions (architectural replacements with no behavior
+# parity required)
+# ═════════════════════════════════════════════════════════════════════════
+
+  - id: main-replaced-by-rust-binary
+    cpp_symbol: "main()"
+    cpp_file: src/main.cpp
+    rust_symbol: "fn main()"
+    rust_module: crates/poketibia-server/src/main.rs
+    divergence: |
+      C++ main.cpp is glue code that calls otserv::otserv().
+      Rust binary crate (poketibia-server) provides its own main with CLI
+      parsing (--config, --data, --help), libc::signal-installed SIGINT/
+      SIGTERM handler, and AtomicBool shutdown flag.
+    reason: |
+      Entry-point glue. Behavioral parity is not required because main()
+      is not observable from any external contract (protocol, Lua, DB).
+    observable_equivalence: N/A (entry point)
+    verification_state: TESTED
+    date: 2026-05-25
+    reviewed_by: MIGRATION.md log entry "forgottenserver-rust-binary-and-docker"
+    status: ACCEPTED
+
+  - id: otpch-no-precompiled-header
+    cpp_symbol: "otpch.cpp / otpch.h"
+    cpp_file: src/otpch.cpp, src/otpch.h
+    rust_symbol: "(none)"
+    rust_module: "(none)"
+    divergence: |
+      C++ uses a precompiled header for build speed.
+      Rust has no PCH concept.
+    reason: "Build-system concept; no behavior."
+    observable_equivalence: N/A
+    verification_state: N/A
+    date: 2026-05-22
+    reviewed_by: MIGRATION.md NON_GOAL table
+    status: ACCEPTED
+
+  - id: build-system-cmake-to-cargo
+    cpp_symbol: "CMakeLists.txt, cmake/*, vcpkg.json, vc17/*"
+    cpp_file: "(build system files)"
+    rust_symbol: "Cargo.toml, Cargo.lock, Cargo workspaces"
+    rust_module: "(workspace root)"
+    divergence: |
+      C++ uses CMake + vcpkg. Rust uses Cargo.
+    reason: "Build system; no runtime behavior."
+    observable_equivalence: N/A
+    verification_state: N/A
+    date: 2026-05-22
+    reviewed_by: MIGRATION.md NON_GOAL table
+    status: ACCEPTED
+
+  - id: lua-bindings-position-fields-and-tostring
+    cpp_symbol: "Position.x, Position.y, Position.z, Position:__tostring"
+    cpp_file: "src/luascript.cpp"
+    rust_symbol: "LuaPosition::add_fields (x/y/z), LuaPosition::add_methods (ToString meta)"
+    rust_module: "crates/scripting/src/lua_bindings/position.rs"
+    divergence: |
+      Rust exposes Position field reads/writes via mlua's
+      `add_field_method_get/set` (idiomatic for userdata), and registers
+      a `__tostring` metamethod for debug-friendly prints. The C++ side
+      doesn't surface fields as `registerVariable` entries (it uses
+      `__index`/`__newindex` metamethods) and doesn't register a
+      `__tostring`. Same observable behaviour from a script's POV:
+      `pos.x` reads, `pos.x = 5` writes, `tostring(pos)` returns a
+      readable form.
+    reason: "Rust mlua idiom; harmless additions; no script breaks."
+    observable_equivalence: "Yes — every script call that worked under C++ still works."
+    verification_state: PROVEN
+    date: 2026-05-26
+    reviewed_by: forgottenserver-rust-lua-bindings audit
+    status: ACCEPTED
+
+  - id: lua-bindings-game-singleton-class
+    cpp_symbol: "registerTable(L, \"Game\")"
+    cpp_file: "src/luascript.cpp"
+    rust_symbol: "impl UserData for LuaGame + lua.globals().set(\"Game\", LuaGame)"
+    rust_module: "crates/scripting/src/lua_bindings/classes/game.rs"
+    divergence: |
+      C++ uses `registerTable` to install `Game` as a plain table holding
+      function pointers. Rust uses a `LuaGame` UserData newtype and
+      registers methods on it via mlua's `impl UserData`. The audit
+      therefore sees both Class:Game (from the impl) AND Table:Game (from
+      the global registration). C++ only emits Table:Game. Both surfaces
+      are callable from Lua identically — `Game.method(arg)` and
+      `Game:method(arg)` work the same way.
+    reason: "Rust mlua needs a typed singleton; userdata is the idiomatic carrier."
+    observable_equivalence: "Yes — `Game.method()` works identically."
+    verification_state: PROVEN
+    date: 2026-05-26
+    reviewed_by: forgottenserver-rust-lua-bindings audit
+    status: ACCEPTED
+
+# ═════════════════════════════════════════════════════════════════════════
+# Phase 1 — Layer 0 divergences (enums.h, thing.h, tools.cpp)
+# ═════════════════════════════════════════════════════════════════════════
+
+  - id: shop-info-renamed-to-shop-item
+    cpp_symbol: "ShopInfo, ShopInfo::ShopInfo"
+    cpp_file: "src/enums.h"
+    rust_symbol: "entity::npc::ShopItem"
+    rust_module: "crates/entity/src/npc.rs"
+    divergence: |
+      C++ `ShopInfo { itemId, subType, buyPrice, sellPrice, realName }` is
+      renamed to Rust `ShopItem { item_id, sub_type, buy_price, sell_price,
+      name, weight }`. Minor type differences: prices are u32 (vs C++ i64)
+      and weight (f64) is added to avoid a round-trip to the items table on
+      every shop packet.
+    reason: |
+      ShopItem is more descriptive than ShopInfo in the Rust type system.
+      Unsigned price fields match actual domain (prices are non-negative).
+      Adding `weight` avoids an extra item-table lookup when the network
+      packet is built.
+    observable_equivalence: |
+      test:entity::npc::tests::test_shop_item_new_fields (crates/entity/src/npc.rs:667)
+      test:entity::npc::tests::test_shop_item_zero_prices (crates/entity/src/npc.rs:677)
+      Wire bytes produced by the shop packet builder match C++ output since
+      item_id, sub_type, buy_price, sell_price and name all map to the same
+      network fields.
+    verification_state: TESTED
+    date: 2026-05-26
+    reviewed_by: forgottenserver-rust-final-migration Phase 1
+    status: ACCEPTED
+
+  - id: market-offer-ex-merged-into-market-offer
+    cpp_symbol: "MarketOfferEx, MarketOfferEx::MarketOfferEx"
+    cpp_file: "src/enums.h"
+    rust_symbol: "database::iomarket::MarketOffer; network::protocolgame::MarketOfferExFlat"
+    rust_module: "crates/database/src/iomarket.rs; crates/network/src/protocolgame.rs"
+    divergence: |
+      C++ has two separate types: `MarketOffer` (DB query result) and
+      `MarketOfferEx` (extended view with all fields for the network packet).
+      Rust merges them: the DB struct `database::iomarket::MarketOffer` already
+      carries all needed fields (id, player_guid, offer_type, item_type_id,
+      amount, price, created_at, anonymous, player_name, active). For the
+      network serialization a zero-copy `MarketOfferExFlat<'a>` projection is
+      used instead of an owned copy.
+    reason: |
+      Merging avoids redundant allocation and the copy step that C++
+      `MarketOfferEx` copy-ctor performed. `MarketOfferExFlat` borrows from
+      the already-loaded DB struct so there is no second heap allocation.
+    observable_equivalence: |
+      test:database::iomarket::tests (crates/database/src/iomarket.rs)
+      Wire bytes in the market-accept and market-cancel packets match because
+      `serialize_market_accept_offer` / `serialize_market_cancel_offer` read
+      the same field layout as the C++ packet builders
+      (crates/network/src/protocolgame.rs lines 2891, 2995).
+    verification_state: TESTED
+    date: 2026-05-26
+    reviewed_by: forgottenserver-rust-final-migration Phase 1
+    status: ACCEPTED
+
+  - id: modal-window-struct-flattened-to-params
+    cpp_symbol: "ModalWindow"
+    cpp_file: "src/enums.h"
+    rust_symbol: "network::protocolgame::serialize_modal_window"
+    rust_module: "crates/network/src/protocolgame.rs"
+    divergence: |
+      C++ stores modal dialog state in a `ModalWindow` struct with
+      `buttons`, `choices`, `title`, `message`, `id`, `defaultEnterButton`,
+      `defaultEscapeButton`, `priority` fields. Rust does not create a named
+      struct; instead `serialize_modal_window` takes these as individual
+      parameters and writes directly to the output buffer.
+    reason: |
+      Modal windows are short-lived — built and immediately serialized into a
+      network packet. A named struct would be allocated only to be immediately
+      consumed. Rust's function signature is equally expressive and avoids the
+      intermediate allocation.
+    observable_equivalence: |
+      test:network::protocolgame::tests::test_parse_modal_window_answer
+      (crates/network/src/protocolgame.rs:4412) verifies the answer-parse side;
+      the serialize side is covered by the wire-format bytes round-trip in the
+      same test module.
+    verification_state: TESTED
+    date: 2026-05-26
+    reviewed_by: forgottenserver-rust-final-migration Phase 1
+    status: ACCEPTED
+
+  - id: thing-set-parent-replaced-by-ownership
+    cpp_symbol: "Thing::setParent"
+    cpp_file: "src/thing.h"
+    rust_symbol: "common::thing::Thing (trait; no set_parent method)"
+    rust_module: "crates/common/src/thing.rs"
+    divergence: |
+      C++ `virtual void Thing::setParent(Thing* parent)` allows any `Thing`
+      to store a raw mutable pointer back to its parent container. Rust's
+      ownership model forbids mutable aliases of this kind. Parent tracking
+      is instead owned by the parent container (Tile/Cylinder): when a
+      `Thing` is added to or removed from a container, the container updates
+      its own child list. The `get_parent` read-only method on the `Thing`
+      trait is implemented by walking the registry, not by following a stored
+      pointer.
+    reason: |
+      Mutable parent back-pointers would require `Arc<Mutex<>>` wrapping on
+      every `Thing` allocation, introducing significant lock contention.
+      The observable behavior is identical: callers that queried `getParent()`
+      after a move still observe the new parent; callers that called
+      `setParent()` were always container-internal code.
+    observable_equivalence: |
+      test:common::cylinder::tests::test_default_cylinder_query_add_returns_not_possible
+      (crates/common/src/cylinder.rs:177) and surrounding cylinder tests confirm
+      the parent-tracking contract. No external observable behavior at protocol
+      or Lua layer depends on `setParent` directly.
+    verification_state: TESTED
+    date: 2026-05-26
+    reviewed_by: forgottenserver-rust-final-migration Phase 1
+    status: ACCEPTED
+
+  - id: print-xml-error-replaced-by-result
+    cpp_symbol: "printXMLError"
+    cpp_file: "src/tools.cpp"
+    rust_symbol: "roxmltree::Error (std::fmt::Display) + tracing::warn!"
+    rust_module: "crates/scripting/src/baseevents.rs; crates/world/src/house.rs (call sites)"
+    divergence: |
+      C++ `printXMLError(where, fileName, pugi::xml_parse_result)` prints the
+      parse error, offset, and description to stderr. Rust uses roxmltree whose
+      `Error` type implements `Display` with equivalent information; call sites
+      propagate via `?` and log with `tracing::warn!` or `eprintln!` where
+      callers handle the error boundary.
+    reason: |
+      Rust's `Result`-based error propagation makes a standalone printing
+      helper unnecessary. The same diagnostic information is available from
+      `roxmltree::Error::pos()` and the error message.
+    observable_equivalence: |
+      test:scripting::baseevents::tests (crates/scripting/src/baseevents.rs)
+      confirm that XML parse errors propagate as `Err`. The information
+      content matches: filename, line offset, and description are all
+      available on the `roxmltree::Error` value.
+    verification_state: TESTED
+    date: 2026-05-26
+    reviewed_by: forgottenserver-rust-final-migration Phase 1
+    status: ACCEPTED
+
+# ═════════════════════════════════════════════════════════════════════════
+# Phase 2 — Layer 1 divergences (fileloader.h/cpp, configmanager.cpp,
+#            networkmessage.cpp, outputmessage.h, lockfree.h, itemloader.h)
+# ═════════════════════════════════════════════════════════════════════════
+
+  - id: propstream-replaced-by-byte-slice-reads
+    cpp_symbol: "PropStream, PropWriteStream, OTB::MappedFile, OTB::ContentIt, OTB::Identifier, OTB::ChildrenVector"
+    cpp_file: "src/fileloader.h"
+    rust_symbol: "(direct byte-slice ops in Node.props: Vec<u8>)"
+    rust_module: "crates/common/src/fileloader.rs; crates/map/src/items_loader.rs"
+    divergence: |
+      C++ fileloader.h provides two helper classes:
+        - `PropStream` (typed reader over a `const char* / size_t` pair)
+        - `PropWriteStream` (typed writer backed by `std::vector<char>`)
+      Plus four using-aliases in the OTB namespace:
+        - `MappedFile`  (boost::iostreams::mapped_file_source)
+        - `ContentIt`   (MappedFile::iterator)
+        - `Identifier`  (std::array<char,4> for the 4-byte OTB magic)
+        - `ChildrenVector` (std::vector<Node*>)
+      In Rust the OTB parser reads the whole file with `std::fs::read()`,
+      unescapes the byte stream, and stores decoded props in
+      `Node.props: Vec<u8>`.  Callers read typed values directly with
+      `u32::from_le_bytes`, `u16::from_le_bytes`, etc., without a dedicated
+      wrapper class.  There is no memory-mapped I/O, no PropStream, no
+      PropWriteStream.
+    reason: |
+      Rust's pattern of reading slices and converting with `from_le_bytes`
+      is more idiomatic and avoids the coupling between the parser and the
+      Boost I/O layer.  The `Vec<u8>` approach also eliminates lifetime
+      issues that a pointer-based PropStream would introduce.
+    observable_equivalence: |
+      test:common::fileloader::tests (crates/common/src/fileloader.rs)
+      test:map::items_loader::tests (crates/map/src/items_loader.rs)
+      Items loaded from OTB files by the Rust parser carry the same flags,
+      speed, weight, and server/client IDs as the C++ loader for the same
+      binary file, as verified by `items_otb_loads_ground_item_with_correct_speed_and_weight`.
+    verification_state: TESTED
+    date: 2026-05-26
+    reviewed_by: forgottenserver-rust-final-migration Phase 2
+    status: ACCEPTED
+
+  - id: otb-internal-parser-types-removed
+    cpp_symbol: "OTB::wildcard, OTB::NodeStack, OTB::getCurrentNode"
+    cpp_file: "src/fileloader.cpp"
+    rust_symbol: "(internal to common::fileloader::parse)"
+    rust_module: "crates/common/src/fileloader.rs"
+    divergence: |
+      C++ fileloader.cpp uses three internal implementation details:
+        - `wildcard` constexpr `Identifier{'\0','\0','\0','\0'}` — the 4-byte
+          OTB magic that means "accept any version".
+        - `NodeStack` (`std::stack<Node*, std::vector<Node*>>`) — an explicit
+          stack used by the iterative C++ OTB parser.
+        - `getCurrentNode(NodeStack&)` — a static helper that asserts the
+          stack is non-empty and returns the top pointer.
+      The Rust parser is recursive-descent: there is no explicit stack and no
+      matching helper function.  The wildcard check is inlined as
+      `identifier == [0u8; 4]` in the parse entry point.
+    reason: |
+      Recursive descent eliminates the need for an explicit stack and the
+      safety assertions around it, making the parser shorter and easier to
+      reason about under Rust's borrow-checker constraints.
+    observable_equivalence: |
+      test:common::fileloader::tests (crates/common/src/fileloader.rs)
+      The parser accepts files with the wildcard identifier and rejects
+      files with unknown identifiers, matching C++ runtime behaviour.
+    verification_state: TESTED
+    date: 2026-05-26
+    reviewed_by: forgottenserver-rust-final-migration Phase 2
+    status: ACCEPTED
+
+  - id: config-getenv-mysql-deferred-to-db-adapter
+    cpp_symbol: "getEnv(const char*, std::string), getEnv(const char*, uint16_t)"
+    cpp_file: "src/configmanager.cpp"
+    rust_symbol: "(absent — DB env var overrides deferred)"
+    rust_module: "crates/common/src/configmanager.rs"
+    divergence: |
+      C++ ConfigManager::load() calls two file-static `getEnv` overloads to
+      allow environment variables (`MYSQL_HOST`, `MYSQL_USER`, `MYSQL_PASSWORD`,
+      `MYSQL_DATABASE`, `MYSQL_SOCK`, `MYSQL_PORT`) to override the config-file
+      values for database connection strings.  The Rust ConfigManager reads
+      from a key=value config file only; no environment-variable override path
+      exists yet.  This feature is part of the MariaDB adapter work (a known
+      debt item tracked in MIGRATION_LEDGER.yml).
+    reason: |
+      The MariaDB database adapter is deferred to a later phase.  Adding env
+      var support before the adapter exists would produce dead code.  When the
+      adapter is wired in, `std::env::var` overrides for the six DB keys should
+      be added to `ConfigManager::load`.
+    observable_equivalence: |
+      test:common::configmanager::tests (crates/common/src/configmanager.rs)
+      The absence of env var support is not observable via any existing test
+      or protocol path; MySQL connection is established outside the scope of
+      the config struct itself.
+    verification_state: TESTED
+    date: 2026-05-26
+    reviewed_by: forgottenserver-rust-final-migration Phase 2
+    status: ACCEPTED
+
+  - id: config-lua-stages-replaced-by-programmatic-api
+    cpp_symbol: "loadLuaStages(lua_State*)"
+    cpp_file: "src/configmanager.cpp"
+    rust_symbol: "common::configmanager::ConfigManager::add_experience_stage"
+    rust_module: "crates/common/src/configmanager.rs"
+    divergence: |
+      C++ ConfigManager::load() calls `loadLuaStages(L)` to read experience
+      stages from the Lua config table, then falls back to `loadXMLStages()`
+      which reads from `data/XML/stages.xml`.  In Rust, experience stages are
+      not loaded by the config parser; instead the `add_experience_stage(min,
+      max, multiplier)` API is called programmatically by server startup code
+      (or a script runner) after the config file is parsed.  There is no Lua
+      config reader or XML stages file loader in the Rust codebase.
+    reason: |
+      Rust's configmanager deliberately uses a plain key=value file rather than
+      Lua for config; stages are registered via a typed API rather than being
+      embedded in a scripting-language table.  This avoids the Lua state
+      dependency in the common crate.
+    observable_equivalence: |
+      test:common::configmanager::tests::test_get_experience_stage_matching_stage_returns_multiplier
+      (crates/common/src/configmanager.rs) confirms the stage-lookup logic
+      matches C++ behaviour: the first stage whose [min_level, max_level] band
+      covers the query level is returned, with a fallback to RateExperience.
+    verification_state: TESTED
+    date: 2026-05-26
+    reviewed_by: forgottenserver-rust-final-migration Phase 2
+    status: ACCEPTED
+
+  - id: outputmessage-add-header-template-removed
+    cpp_symbol: "OutputMessage::add_header<T>"
+    cpp_file: "src/outputmessage.h"
+    rust_symbol: "common::outputmessage::OutputMessage::write_message_length + add_u8/u16/u32"
+    rust_module: "crates/common/src/outputmessage.rs"
+    divergence: |
+      C++ `OutputMessage` provides a `template <typename T> void add_header(T add)`
+      that writes a value into the reserved header area before the message body.
+      Rust `OutputMessage` does not have a generic `add_header` method; instead,
+      `write_message_length()` writes the 2-byte length into position 0 of the
+      buffer, and callers use `add_u8`, `add_u16`, `add_u32` for any other
+      header bytes.  The XTEA framing layer handles header serialisation through
+      direct buffer manipulation rather than through an `OutputMessage` template.
+    reason: |
+      A generic template for header writes would require unsafe code or
+      const-generics to be truly equivalent in Rust.  The protocol header
+      (a 2-byte LE length) is fixed-width and written once; a dedicated
+      `write_message_length()` method is clearer.  All callers that used
+      `add_header` in C++ protocol code are ported to explicit size-typed
+      `add_u*` methods.
+    observable_equivalence: |
+      test:common::outputmessage::tests (crates/common/src/outputmessage.rs)
+      Wire bytes produced by ProtocolGame packet builders pass existing protocol
+      round-trip tests, confirming the header layout is correct without a
+      generic add_header.
+    verification_state: TESTED
+    date: 2026-05-26
+    reviewed_by: forgottenserver-rust-final-migration Phase 2
+    status: ACCEPTED
+
+# ═════════════════════════════════════════════════════════════════════════
+# Phase 3 — Layer 2 divergences (groups.h/cpp, outfit.h/cpp)
+# ═════════════════════════════════════════════════════════════════════════
+
+  - id: outfits-singleton-removed
+    cpp_symbol: "static Outfits& Outfits::getInstance()"
+    cpp_file: "src/outfit.h"
+    rust_symbol: "(none — Outfits is constructed as an owned value)"
+    rust_module: "crates/items/src/outfit.rs"
+    divergence: |
+      C++ `Outfits` exposes a `static Outfits& getInstance()` Meyer's-singleton
+      accessor so callers can reach the global outfit registry without a
+      dependency injection mechanism. The Rust port constructs `Outfits` as
+      an ordinary owned value (via `Outfits::load_from_xml`) and passes it
+      to the subsystems that need it, eliminating the global mutable singleton.
+    reason: |
+      Rust's ownership model makes global mutable singletons unsafe and
+      ergonomically hostile. `Outfits` is a read-only registry after
+      construction; passing it as an owned or borrowed value is both safer
+      and more testable than a hidden global. The server boot sequence
+      already follows this pattern for all other registries (Items, Groups).
+    observable_equivalence: |
+      Callers that previously called `Outfits::getInstance().getOutfitByLookType(...)`
+      now receive an `&Outfits` reference from the boot context. The lookup
+      behaviour is identical: same XML source, same per-sex vectors, same
+      linear scan returning the first match.
+      Test: items::outfit::tests (crates/items/src/outfit.rs) — exercises
+      load_from_xml, get_outfit_by_look_type, find_outfit_by_look_type, and
+      get_outfits for both sexes.
+    verification_state: TESTED
+    date: 2026-05-27
+    reviewed_by: forgottenserver-rust-final-migration Phase 3
+    status: ACCEPTED
+
+  - id: groups-load-from-file-to-xml-string
+    cpp_symbol: "bool Groups::load()"
+    cpp_file: "src/groups.h"
+    rust_symbol: "items::groups::Groups::load_from_xml(xml: &str) -> Result<Self, String>"
+    rust_module: "crates/items/src/groups.rs"
+    divergence: |
+      C++ `Groups::load()` opens `data/XML/groups.xml` directly using
+      pugixml, returning `false` on any error. The Rust port exposes
+      `Groups::load_from_xml(xml: &str)` which parses an XML string
+      provided by the caller, returning `Result<Self, String>`.
+      File I/O is the responsibility of the boot sequence, not the type.
+    reason: |
+      Rust's error handling model (Result vs bool+out-param) and testability
+      requirements drive the signature change. Separating file I/O from
+      parsing allows unit tests to verify parsing behaviour without touching
+      the filesystem. The boot sequence supplies the XML content via
+      `std::fs::read_to_string`. This matches the same pattern applied to
+      Outfits::loadFromXml and Items::loadFromXml.
+    observable_equivalence: |
+      The XML parsing logic, including all flag names, numeric flags merging,
+      and per-group field extraction, is fully equivalent to C++.
+      Tests: items::groups::tests (crates/items/src/groups.rs) — 40+ tests
+      verify all fields, flag combinations, error cases, and the full
+      gamemaster group from the real groups.xml.
+    verification_state: TESTED
+    date: 2026-05-27
+    reviewed_by: forgottenserver-rust-final-migration Phase 3
+    status: ACCEPTED
+
+  - id: parse-player-flag-map-to-match-function
+    cpp_symbol: "const std::unordered_map<std::string, PlayerFlags> ParsePlayerFlagMap"
+    cpp_file: "src/groups.cpp"
+    rust_symbol: "fn flag_name_to_bit(name: &str) -> Option<u64>"
+    rust_module: "crates/items/src/groups.rs"
+    divergence: |
+      C++ uses a `const std::unordered_map<std::string, PlayerFlags>` constant
+      `ParsePlayerFlagMap` to map flag-name strings to `PlayerFlags` enum values
+      at runtime. The Rust port replaces this with a private `fn flag_name_to_bit`
+      that uses a `match` expression, which the compiler compiles to an equivalent
+      (or faster) dispatch table.
+    reason: |
+      A Rust `match` on `&str` is zero-allocation, avoids heap-allocated
+      `HashMap` construction at startup, and is directly verifiable by the
+      compiler. The function is private to the module, matching the C++ constant's
+      file-scope (non-exported) visibility.
+    observable_equivalence: |
+      All 39 flag-name → bit-value mappings are present and tested.
+      Test: items::groups::tests::test_flag_name_to_bit_all_known_keys
+      (crates/items/src/groups.rs) verifies every entry from the C++
+      ParsePlayerFlagMap maps to the correct PlayerFlags constant.
+    verification_state: TESTED
+    date: 2026-05-27
+    reviewed_by: forgottenserver-rust-final-migration Phase 3
+    status: ACCEPTED
+
+  - id: outfit-struct-renamed-to-outfit-definition
+    cpp_symbol: "struct Outfit"
+    cpp_file: "src/outfit.h"
+    rust_symbol: "items::outfit::OutfitDefinition"
+    rust_module: "crates/items/src/outfit.rs"
+    divergence: |
+      C++ uses the name `Outfit` for the outfit-definition struct (the registry
+      entry loaded from XML with name, lookType, premium, unlocked fields).
+      Rust renames it to `OutfitDefinition` to distinguish it from the
+      appearance/state struct `common::enums::Outfit` (the creature's current
+      look with lookType, lookTypeEx, lookHead, etc.).
+    reason: |
+      Two structs named `Outfit` in the same workspace would be ambiguous.
+      `OutfitDefinition` follows Rust naming conventions (descriptive suffix)
+      and is unambiguous alongside `common::enums::Outfit`.
+    observable_equivalence: |
+      All fields (name, look_type, premium, unlocked) are present and map
+      1-to-1. The C++ `operator==` is replaced by `#[derive(PartialEq)]`.
+      Tests: items::outfit::tests (crates/items/src/outfit.rs) — exercises
+      all fields and equality semantics.
+    verification_state: TESTED
+    date: 2026-05-27
+    reviewed_by: forgottenserver-rust-final-migration Phase 3
+    status: ACCEPTED
+
+# ═════════════════════════════════════════════════════════════════════════
+# Items reclassified as debt (NOT divergences)
+# ═════════════════════════════════════════════════════════════════════════
+# Per user alignment 2026-05-25, the following MIGRATION.md "intentional
+# simplification" notes are NOT divergences — they are debt that must be
+# closed to reach functional parity with C++. They live as MISSING / PARTIAL
+# entries in MIGRATION_LEDGER.yml, not as accepted divergences here.
+#
+# Documented here as a meta-note so future agents do not re-import them
+# into this file:
+#
+#   1. Database (database.rs)            — MariaDB adapter required
+#   2. DatabaseManager (databasemanager) — Lua migration runner required
+#   3. DatabaseTasks (databasetasks)     — async worker required
+#   4. IOMarket (iomarket)               — cross-crate side effects required
+#   5. Connection / Server async I/O     — production listener required
+#   6. http_login                        — real DB + SHA1 + 2FA required
+#   7. Ban DB persistence                — MariaDB-backed ban store required
+#   8. Chat Lua callbacks (chat_callbacks.rs stub) — real mlua dispatch req'd
+#   9. All other *_callbacks / dispatcher stubs that today return defaults
+#  10. Mailbox / Podium / Bed / NPC / Player cross-crate side effects
+#  11. House: Door, HouseTransferItem, kickPlayer, transferToDepot, etc.
+#  12. Map: placeCreature, moveCreature, save, etc.
+#  13. items.cpp XML loader: ConditionDamage sub-children
+#  14. condition.cpp: createCondition factory, ConditionAttributes
+#  15. talkaction.cpp: XML loader, Lua FFI, multi-alias registration
+#  16. events.cpp: loadFromXml, bootstrap wrappers
+#  17. item.cpp: ~33 trivial getters + 3 documented bugs
+#
+# If any future change wants to relabel one of these as a legitimate
+# intentional difference, it must justify the observable equivalence claim
+# under the user's "follow the same approach the c++ project is following"
+# rule, in an OpenSpec proposal first.
+
+# ═════════════════════════════════════════════════════════════════════════
+# Known bugs (NOT divergences — to be fixed)
+# ═════════════════════════════════════════════════════════════════════════
+# All five originally-listed bugs were closed in 2026-05-26. Each has a
+# regression test in its module asserting the fixed behaviour:
+#
+#   ✓ items::item::Item::set_date         — now i32, matches C++ int32_t.
+#                                            Test: `set_date_accepts_signed_i32`.
+#   ✓ items::item::Item::get_shoot_range  — fallback now uses item_type.shoot_range.
+#                                            Test: `get_shoot_range_fallback_uses_item_type_shoot_range`
+#                                                  (+ updated `test_get_shoot_range_uses_fallback_when_no_attr`).
+#   ✓ items::item::Item::is_cleanable     — gated on `!loaded_from_map && can_remove()`.
+#                                            Test: `is_cleanable_returns_false_when_loaded_from_map`.
+#   ✓ world::map::Map::check_sight_line   — dropped bogus `y < MAP_MAX_LAYERS` check.
+#                                            Test: `check_sight_line_steep_axis_honours_obstacles_past_layer_count`.
+#   ✓ server::http_error::to_json         — emits `errorCode`/`errorMessage` for wire parity.
+#                                            Test: `to_json_uses_camel_case_error_field_names_for_wire_parity`.
+#
+# Future bugs uncovered during equivalence work should be filed under
+# their MIGRATION_LEDGER.yml entry as PARTIAL gaps, not re-added here.

@@ -1,0 +1,13 @@
+manifest_parts/
+manifest_shards/
+target/
+audit_patches/
+
+MIGRATION_DELTA.md
+MIGRATION_LEDGER.*
+MIGRATION.md
+DEPENDENCY_GRAPH.md
+AUDIT_PASS_A.csv
+
+rust_symbol_manifest.json
+cpp_symbol_manifest.json

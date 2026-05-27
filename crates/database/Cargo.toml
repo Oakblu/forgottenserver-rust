@@ -1,0 +1,23 @@
+[package]
+name = "forgottenserver-database"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = []
+# Compile the MariaDB backend (sqlx + tokio). Default-off so unit tests
+# stay lightweight; the production binary enables this via its own feature.
+mariadb = ["dep:sqlx", "dep:tokio"]
+# Run the integration tests in tests/mariadb_integration.rs against a
+# testcontainer-managed MariaDB. Requires Docker.
+mariadb-integration = ["mariadb", "dep:testcontainers"]
+
+[dependencies]
+forgottenserver-common = { path = "../common" }
+forgottenserver-items = { path = "../items" }
+forgottenserver-entity = { path = "../entity" }
+
+# Optional: MariaDB backend
+sqlx           = { workspace = true, optional = true }
+tokio          = { workspace = true, optional = true }
+testcontainers = { workspace = true, optional = true }

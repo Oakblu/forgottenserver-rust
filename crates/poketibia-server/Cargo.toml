@@ -1,0 +1,40 @@
+[package]
+name = "poketibia-server"
+version = "0.1.0"
+edition = "2021"
+description = "Bootable binary entrypoint for the Rust port of forgottenserver."
+
+[lib]
+name = "poketibia_server"
+path = "src/lib.rs"
+
+[[bin]]
+name = "poketibia-server"
+path = "src/main.rs"
+
+[features]
+default = ["mariadb", "lua-scripting"]
+# Compile the binary with the MariaDB backend wired in. When enabled,
+# `--db-backend=mariadb` (the default if config provides credentials)
+# connects to a real MariaDB at startup. Disabling keeps the binary
+# small and InMemoryDb-only for local dev without Docker.
+mariadb = ["forgottenserver-database/mariadb"]
+# Compile the binary with the embedded mlua state + the Rust-side
+# C++→Lua bindings installed at boot. Default-on so `data/**/*.lua`
+# scripts can run against the Rust port. Disabling skips Lua entirely
+# (smaller binary, no script support).
+lua-scripting = ["forgottenserver-scripting/lua-scripting"]
+
+[dependencies]
+forgottenserver-common    = { path = "../common" }
+forgottenserver-items     = { path = "../items" }
+forgottenserver-map       = { path = "../map" }
+forgottenserver-entity    = { path = "../entity" }
+forgottenserver-world     = { path = "../world" }
+forgottenserver-database  = { path = "../database" }
+forgottenserver-game      = { path = "../game" }
+forgottenserver-scripting = { path = "../scripting" }
+forgottenserver-network   = { path = "../network" }
+forgottenserver-server    = { path = "../server" }
+anyhow                    = "1"
+libc                      = "0.2"

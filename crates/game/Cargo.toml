@@ -1,0 +1,14 @@
+[package]
+name = "forgottenserver-game"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+forgottenserver-common = { path = "../common" }
+forgottenserver-items = { path = "../items" }
+forgottenserver-map = { path = "../map" }
+forgottenserver-entity = { path = "../entity" }
+forgottenserver-world = { path = "../world" }
+forgottenserver-database = { path = "../database" }
+bitflags = "2"
+roxmltree = "0.20"

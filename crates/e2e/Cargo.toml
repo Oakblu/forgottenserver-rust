@@ -1,0 +1,12 @@
+[package]
+name = "forgottenserver-e2e"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+e2e = []
+
+[dev-dependencies]
+testcontainers = { workspace = true }
+tokio          = { workspace = true }
+tempfile       = "3"

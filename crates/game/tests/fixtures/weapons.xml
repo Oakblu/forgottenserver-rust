@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<weapons>
+  <melee id="2376" level="20" attack="30" defense="15">
+    <vocation name="Paladin"/>
+    <vocation name="Royal Paladin"/>
+  </melee>
+  <distance id="2456" level="30" attack="50" defense="0">
+    <vocation name="Paladin"/>
+  </distance>
+  <wand id="2180" level="7" mana="2" min="8" max="18" type="earth">
+    <vocation name="Druid"/>
+  </wand>
+</weapons>

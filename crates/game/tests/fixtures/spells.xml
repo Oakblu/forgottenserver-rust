@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spells>
+  <spell name="Fire Ball" words="exevo gran mas flam" mana="110" level="8" element="fire">
+    <vocation name="Sorcerer"/>
+    <vocation name="Master Sorcerer"/>
+  </spell>
+  <spell name="Terra Wave" words="exevo mas tera" mana="150" level="15" element="earth">
+    <vocation name="Druid"/>
+  </spell>
+  <unknown-type something="ignored"/>
+</spells>

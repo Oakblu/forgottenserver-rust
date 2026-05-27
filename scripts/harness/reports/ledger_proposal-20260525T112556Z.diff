@@ -1,0 +1,8 @@
+# Proposed MIGRATION_LEDGER.yml transitions
+
+1 transition(s) proposed:
+
+- `src/luascript.cpp`: DONE → PARTIAL
+  reason: 1857 of 1857 Lua bindings missing in Rust (static audit)
+
+Review each proposal and edit `MIGRATION_LEDGER.yml` directly if accepted.
