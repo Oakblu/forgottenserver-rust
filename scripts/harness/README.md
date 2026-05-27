@@ -12,14 +12,14 @@ From the repo root:
 
 ```bash
 # All lanes (requires the side-by-side stack to be up):
-make -C apps/poketibia/forgottenserver-rust harness
+make harness
 
 # Subset of lanes:
-HARNESS_LANES=wire_replay,otbm_diff make -C apps/poketibia/forgottenserver-rust harness
+HARNESS_LANES=wire_replay,otbm_diff make harness
 
 # Stack management only:
-make -C apps/poketibia/forgottenserver-rust harness-up
-make -C apps/poketibia/forgottenserver-rust harness-down
+make harness-up
+make harness-down
 ```
 
 ## Lanes
@@ -98,8 +98,8 @@ For unit-test contexts (no Docker), pass `--db-backend=in-memory`.
 
 ```bash
 # Production / harness:
-poketibia-server --config /srv/config.lua --db-backend=mariadb
+tfs --config /srv/config.lua --db-backend=mariadb
 
 # Local dev without MariaDB:
-poketibia-server --config /srv/config.lua --db-backend=in-memory
+tfs --config /srv/config.lua --db-backend=in-memory
 ```

@@ -1,15 +1,15 @@
-# `poketibia-server` — bootable binary
+# `tfs` — bootable binary
 
 The runnable entrypoint for the Rust port of `forgottenserver`. This crate
 wires the ten library crates of the workspace (`forgottenserver-{common,
 items, map, entity, world, database, game, scripting, network, server}`)
-into a single `poketibia-server` binary that mirrors the C++
+into a single `tfs` binary that mirrors the C++
 `forgottenserver/src/otserv.cpp` `main()` flow.
 
 ## Usage
 
 ```bash
-poketibia-server [--config <path>] [--data <dir>]
+tfs [--config <path>] [--data <dir>]
 
   --config <path>   Path to config.lua (default: ./config.lua)
   --data   <dir>    Path to data/ directory (default: ./data)
@@ -73,11 +73,11 @@ Per the design's "PARTIAL outcomes surface as warnings, not panics" rule:
 
 ```bash
 # Unit + integration tests (uses the bundled data/ symlink)
-cargo test -p poketibia-server
+cargo test -p tfs
 
 # Live boot (no MariaDB required — only the status port needs binding)
-cargo run --release -p poketibia-server -- \
-  --config crates/poketibia-server/tests/fixtures/config.lua \
+cargo run --release -p tfs -- \
+  --config crates/tfs/tests/fixtures/config.lua \
   --data data
 ```
 

@@ -23,8 +23,8 @@
 # lib.sh lives at scripts/harness/lib.sh, so the harness root is the same dir.
 HARNESS_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 HARNESS_REPORTS_DIR="$HARNESS_DIR/reports"
-# scripts/harness → scripts → forgottenserver-rust → poketibia → monorepo root
-REPO_ROOT="$(cd -- "$HARNESS_DIR/../../../../.." >/dev/null 2>&1 && pwd)"
+# scripts/harness → scripts → forgottenserver-rust root
+REPO_ROOT="$(cd -- "$HARNESS_DIR/../../.." >/dev/null 2>&1 && pwd)"
 
 # ─── Color helpers ───────────────────────────────────────────────────────────
 harness::color() { printf "\033[%sm%s\033[0m" "$1" "$2"; }
@@ -35,7 +35,7 @@ harness::fail()  { echo "$(harness::color "1;31" "[FAIL]") $*" >&2; }
 
 # ─── Service definitions ─────────────────────────────────────────────────────
 HARNESS_SERVICES=(
-  poketibia-mariadb
+  db
   forgottenserver-cpp
   forgottenserver-rust
 )
@@ -63,17 +63,17 @@ harness::down() {
 }
 
 # ─── harness::ready ──────────────────────────────────────────────────────────
-# Block until poketibia-mariadb is healthy AND both servers report Online.
+# Block until db is healthy AND both servers report Online.
 # Returns 0 on success, 1 on timeout. Default timeout: 120 seconds.
 # Usage: harness::ready [timeout_seconds]
 harness::ready() {
   local timeout="${1:-120}"
   local i
 
-  harness::info "Waiting for poketibia-mariadb to report healthy (max ${timeout}s)..."
+  harness::info "Waiting for db to report healthy (max ${timeout}s)..."
   for i in $(seq 1 "$timeout"); do
     local health
-    health=$(docker inspect --format='{{.State.Health.Status}}' monorepo-poketibia-mariadb-1 2>/dev/null || echo "starting")
+    health=$(docker inspect --format='{{.State.Health.Status}}' forgottenserver-rust-db-1 2>/dev/null || echo "starting")
     if [ "$health" = "healthy" ]; then
       harness::ok "MariaDB healthy after ${i}s"
       break

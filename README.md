@@ -39,10 +39,10 @@ crates/
   scripting/        LuaScriptInterface, *Events, *Functions  (luascript.cpp/h)
   network/          Protocol*, NetworkMessage, Connection  (protocol*.cpp/h)
   server/           entry point, boot, scheduler  (main.cpp, server.cpp)
-  poketibia-server/ runnable binary that wires all crates together
+  tfs/              runnable binary that wires all crates together
 data/               game data: items.otb, world map, Lua scripts, XML configs
 schema.sql          MariaDB schema (auto-applied on first DB start)
-docker/             DB init scripts
+docker/mariadb-init/ DB init scripts
 ```
 
 ---
@@ -62,7 +62,7 @@ docker compose up --build
 This will:
 
 1. Pull MariaDB 11 and start the `db` service.
-2. Mount `schema.sql` and run `docker/poketibia-mariadb-init/00-init-tibia-dbs.sh` on first start, creating the `tibia_rs` database and applying the full schema automatically.
+2. Mount `schema.sql` and run `docker/mariadb-init/00-init-tibia-dbs.sh` on first start, creating the `tibia_rs` database and applying the full schema automatically.
 3. Wait for the DB health check to pass before starting the server.
 4. Build the `server` image from this repo and start it.
 
@@ -162,8 +162,8 @@ cargo clippy --workspace --lib --tests -- -D warnings
 cargo fmt --all
 
 # Run locally without Docker (status port only, no DB required)
-cargo run --release -p poketibia-server -- \
-  --config crates/poketibia-server/tests/fixtures/config.lua \
+cargo run --release -p tfs -- \
+  --config crates/tfs/tests/fixtures/config.lua \
   --data data
 ```
 

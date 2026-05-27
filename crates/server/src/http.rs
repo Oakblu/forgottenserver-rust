@@ -2,7 +2,7 @@
 //!
 //! The C++ original uses a single namespace-scoped `boost::asio::io_context`
 //! and a `std::vector<std::thread>` of worker threads driven from
-//! `apps/poketibia/forgottenserver/src/http/http.cpp`. This Rust port preserves
+//! `forgottenserver/src/http/http.cpp`. This Rust port preserves
 //! the observable behaviour of the two free functions:
 //!
 //! * `start(bind_only_ots_ip, ots_ip, port, threads)`

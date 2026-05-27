@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# smoke.sh — Bring up the parity-test trio (poketibia-mariadb +
+# smoke.sh — Bring up the parity-test trio (db +
 # forgottenserver-cpp + forgottenserver-rust), wait for both servers to
 # reach their "Server Online" banner, then probe each status port and
 # capture the responses for comparison.
@@ -16,7 +16,7 @@
 # rerunning back-to-back is safe.
 #
 # Usage:
-#   apps/poketibia/forgottenserver-rust/scripts/smoke.sh
+#   scripts/smoke.sh
 #
 # Run from the monorepo root (the script chdir's there itself for safety).
 
@@ -40,18 +40,18 @@ fail()  { echo "$(color "1;31" "[FAIL]") $*" >&2; }
 
 cleanup() {
   info "Tearing down the parity-test trio..."
-  docker compose stop poketibia-mariadb forgottenserver-cpp forgottenserver-rust >/dev/null 2>&1 || true
-  docker compose rm -f poketibia-mariadb forgottenserver-cpp forgottenserver-rust >/dev/null 2>&1 || true
+  docker compose stop db forgottenserver-cpp forgottenserver-rust >/dev/null 2>&1 || true
+  docker compose rm -f db forgottenserver-cpp forgottenserver-rust >/dev/null 2>&1 || true
 }
 trap cleanup EXIT
 
 # ─── 1. Bring up MariaDB ──────────────────────────────────────────────────
-info "Starting poketibia-mariadb..."
-docker compose up -d poketibia-mariadb >/dev/null
+info "Starting db..."
+docker compose up -d db >/dev/null
 
-info "Waiting for poketibia-mariadb to report healthy (max 60 s)..."
+info "Waiting for db to report healthy (max 60 s)..."
 for i in $(seq 1 60); do
-  health=$(docker inspect --format='{{.State.Health.Status}}' monorepo-poketibia-mariadb-1 2>/dev/null || echo "starting")
+  health=$(docker inspect --format='{{.State.Health.Status}}' forgottenserver-rust-db-1 2>/dev/null || echo "starting")
   if [ "$health" = "healthy" ]; then
     ok "MariaDB healthy after ${i} s"
     break

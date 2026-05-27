@@ -1,4 +1,4 @@
-//! `poketibia-server` — binary entrypoint.
+//! `tfs` — binary entrypoint.
 //!
 //! Mirrors the C++ `forgottenserver/src/otserv.cpp` `main()` flow. Per the
 //! design's "PARTIAL outcomes surface, not panics" rule, each subsystem's
@@ -8,8 +8,8 @@
 use std::path::PathBuf;
 use std::process::ExitCode;
 
-use poketibia_server::boot;
-use poketibia_server::boot::DbBackend;
+use tfs::boot;
+use tfs::boot::DbBackend;
 
 fn print_banner() {
     println!("The Forgotten Server (Rust port)");
@@ -61,7 +61,7 @@ fn parse_cli() -> CliArgs {
             }
             "--help" | "-h" => {
                 println!(
-                    "Usage: poketibia-server [--config <path>] [--data <dir>] \
+                    "Usage: tfs [--config <path>] [--data <dir>] \
                      [--db-backend auto|in-memory|mariadb]\n\
                      \n\
                      Options:\n\

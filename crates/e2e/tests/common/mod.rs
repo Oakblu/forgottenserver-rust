@@ -3,15 +3,13 @@
 use std::net::SocketAddr;
 use std::time::Duration;
 
-fn monorepo_root() -> std::path::PathBuf {
+fn repo_root() -> std::path::PathBuf {
     let manifest_dir = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    // Use pnpm-workspace.yaml as the canonical monorepo root marker —
-    // docker-compose.yml also exists in apps/poketibia/ (an intermediate dir)
-    // and would produce a wrong root when walked from this crate's CARGO_MANIFEST_DIR.
+    // crates/e2e → crates → repo root (where Cargo.toml workspace lives)
     manifest_dir
         .ancestors()
-        .find(|p| p.join("pnpm-workspace.yaml").exists() && p.join("apps/poketibia").exists())
-        .expect("could not locate monorepo root (expected pnpm-workspace.yaml and apps/poketibia/)")
+        .find(|p| p.join("Cargo.toml").exists() && p.join("docker-compose.yml").exists())
+        .expect("could not locate repo root (expected Cargo.toml + docker-compose.yml)")
         .to_path_buf()
 }
 
@@ -43,11 +41,10 @@ impl ServerFixture {
             // (via `mariadb < schema.sql`).  This avoids the DELIMITER //
             // syntax error that occurs when the server's own bootstrap code
             // tries to execute the raw SQL file.
-            let repo_root = monorepo_root();
-            let schema_path = repo_root
-                .join("apps/poketibia/forgottenserver/schema.sql");
+            let repo_root = repo_root();
+            let schema_path = repo_root.join("schema.sql");
             let init_script_path = repo_root
-                .join("apps/poketibia/forgottenserver-rust/docker/poketibia-mariadb-init/00-init-tibia-dbs.sh");
+                .join("docker/mariadb-init/00-init-tibia-dbs.sh");
 
             let mariadb = GenericImage::new("mariadb", "11")
                 // "ready for connections" on stderr fires TWICE: once for the
@@ -64,7 +61,7 @@ impl ServerFixture {
                 .with_env_var("MARIADB_PASSWORD", "forgottenserver")
                 .with_mount(Mount::bind_mount(
                     schema_path.to_str().expect("schema path not UTF-8"),
-                    "/opt/poketibia-schema.sql",
+                    "/opt/tfs-schema.sql",
                 ))
                 .with_mount(Mount::bind_mount(
                     init_script_path.to_str().expect("init script path not UTF-8"),

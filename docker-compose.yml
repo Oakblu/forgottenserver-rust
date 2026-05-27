@@ -1,3 +1,5 @@
+name: forgottenserver-rust
+
 services:
   db:
     image: mariadb:11
@@ -7,8 +9,8 @@ services:
       MARIADB_PASSWORD: forgottenserver
       MARIADB_DATABASE: tibia_rs
     volumes:
-      - ./schema.sql:/opt/poketibia-schema.sql:ro
-      - ./docker/poketibia-mariadb-init:/docker-entrypoint-initdb.d:ro
+      - ./schema.sql:/opt/tfs-schema.sql:ro
+      - ./docker/mariadb-init:/docker-entrypoint-initdb.d:ro
       - db-data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]

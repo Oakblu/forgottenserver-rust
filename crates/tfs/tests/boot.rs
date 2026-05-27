@@ -1,14 +1,13 @@
-//! Integration tests for the `poketibia-server` binary crate's boot sequence.
+//! Integration tests for the `tfs` binary crate's boot sequence.
 //!
 //! These tests exercise the 18-step `mainLoader()` equivalent end-to-end using
-//! the real `data/` directory (symlinked to `apps/poketibia/forgottenserver/data`)
-//! and a minimal fixture `config.lua`. They run without a MariaDB instance —
-//! database wiring degrades gracefully per the design's "PARTIAL outcomes are
-//! surfaced, not panics" rule.
+//! the real `data/` directory and a minimal fixture `config.lua`. They run
+//! without a MariaDB instance — database wiring degrades gracefully per the
+//! design's "PARTIAL outcomes are surfaced, not panics" rule.
 
 use std::path::PathBuf;
 
-use poketibia_server::boot::{
+use tfs::boot::{
     initialise_modules, install_signal_handlers, request_shutdown, shutdown_requested,
 };
 
@@ -17,8 +16,8 @@ fn fixtures_dir() -> PathBuf {
 }
 
 fn workspace_data_dir() -> PathBuf {
-    // crates/poketibia-server/Cargo.toml's parent's parent is the workspace
-    // root; `data/` is the symlink to ../forgottenserver/data.
+    // crates/tfs/Cargo.toml's parent's parent is the workspace root;
+    // `data/` is the game data directory.
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../..")
         .join("data")

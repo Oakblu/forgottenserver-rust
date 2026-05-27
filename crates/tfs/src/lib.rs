@@ -1,4 +1,4 @@
-//! `poketibia-server` — bootable binary entrypoint for the Rust port of
+//! `tfs` — bootable binary entrypoint for the Rust port of
 //! forgottenserver.
 //!
 //! This crate is intentionally thin: it owns the binary's `main()` flow and

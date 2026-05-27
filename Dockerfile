@@ -22,22 +22,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /usr/src/forgottenserver-rust
 
 # Copy the entire forgottenserver-rust workspace. The COPY honours the
-# .dockerignore at apps/poketibia/forgottenserver-rust/.dockerignore so
-# target/, .git/, etc. are excluded.
+# .dockerignore so target/, .git/, etc. are excluded.
 COPY Cargo.toml ./Cargo.toml
 COPY Cargo.lock ./Cargo.lock
 COPY crates ./crates
 # boot.rs embeds schema.sql at compile time via include_str!("./schema.sql").
-# From crates/poketibia-server/src/ the 4 ".." land at /usr/src/, so the file must live here:
+# From crates/tfs/src/ the 4 ".." land at /usr/src/, so the file must live here:
 COPY forgottenserver/schema.sql /usr/src/forgottenserver/schema.sql
 
 # Build the release binary. BuildKit cache mounts speed up rebuilds on
 # subsequent `docker build` invocations sharing the same builder.
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/usr/src/forgottenserver-rust/target \
-    cargo build --release --bin poketibia-server \
- && cp /usr/src/forgottenserver-rust/target/release/poketibia-server \
-       /usr/local/bin/poketibia-server
+    cargo build --release --bin tfs \
+ && cp /usr/src/forgottenserver-rust/target/release/tfs \
+       /usr/local/bin/tfs
 
 # ─── Stage 2: runtime ────────────────────────────────────────────────────
 FROM debian:bookworm-slim
@@ -51,16 +50,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=build /usr/local/bin/poketibia-server /bin/poketibia-server
+COPY --from=build /usr/local/bin/tfs /bin/tfs
 
 # Game data (items.otb, weapons.xml, etc.) — comes from the C++ vendored
 # tree via the data symlink in the Rust workspace.
 COPY forgottenserver/data /srv/data/
 
 # Default config — overridable via a bind-mount on /srv/config.lua.
-COPY crates/poketibia-server/tests/fixtures/config.lua /srv/config.lua
+COPY crates/tfs/tests/fixtures/config.lua /srv/config.lua
 
 EXPOSE 7171 7172 8080
 WORKDIR /srv
-ENTRYPOINT ["/bin/poketibia-server"]
+ENTRYPOINT ["/bin/tfs"]
 CMD ["--config", "/srv/config.lua", "--data", "/srv/data"]

@@ -667,10 +667,10 @@ differences:
     cpp_symbol: "main()"
     cpp_file: src/main.cpp
     rust_symbol: "fn main()"
-    rust_module: crates/poketibia-server/src/main.rs
+    rust_module: crates/tfs/src/main.rs
     divergence: |
       C++ main.cpp is glue code that calls otserv::otserv().
-      Rust binary crate (poketibia-server) provides its own main with CLI
+      Rust binary crate (tfs) provides its own main with CLI
       parsing (--config, --data, --help), libc::signal-installed SIGINT/
       SIGTERM handler, and AtomicBool shutdown flag.
     reason: |

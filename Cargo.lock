@@ -1725,24 +1725,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b4596b6d070b27117e987119b4dac604f3c58cfb0b191112e24771b2faeac1a6"
 
 [[package]]
-name = "poketibia-server"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "forgottenserver-common",
- "forgottenserver-database",
- "forgottenserver-entity",
- "forgottenserver-game",
- "forgottenserver-items",
- "forgottenserver-map",
- "forgottenserver-network",
- "forgottenserver-scripting",
- "forgottenserver-server",
- "forgottenserver-world",
- "libc",
-]
-
-[[package]]
 name = "portable-atomic"
 version = "1.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2824,6 +2806,24 @@ dependencies = [
  "tokio-stream",
  "tokio-util",
  "url",
+]
+
+[[package]]
+name = "tfs"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "forgottenserver-common",
+ "forgottenserver-database",
+ "forgottenserver-entity",
+ "forgottenserver-game",
+ "forgottenserver-items",
+ "forgottenserver-map",
+ "forgottenserver-network",
+ "forgottenserver-scripting",
+ "forgottenserver-server",
+ "forgottenserver-world",
+ "libc",
 ]
 
 [[package]]

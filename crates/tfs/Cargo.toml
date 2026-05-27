@@ -1,15 +1,15 @@
 [package]
-name = "poketibia-server"
+name = "tfs"
 version = "0.1.0"
 edition = "2021"
 description = "Bootable binary entrypoint for the Rust port of forgottenserver."
 
 [lib]
-name = "poketibia_server"
+name = "tfs"
 path = "src/lib.rs"
 
 [[bin]]
-name = "poketibia-server"
+name = "tfs"
 path = "src/main.rs"
 
 [features]

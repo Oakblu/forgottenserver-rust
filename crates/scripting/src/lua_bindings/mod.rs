@@ -7,7 +7,7 @@
 //! ## Architecture
 //!
 //! ```text
-//! poketibia-server::boot::initialise_modules
+//! tfs::boot::initialise_modules
 //!   └─ constructs GameState                       (Arc<Mutex<GameState>>)
 //!   └─ constructs LuaBindingsState                (owns mlua::Lua)
 //!        └─ install_bindings(&lua, game_state)
@@ -60,7 +60,7 @@ impl Default for GameStateHandle {
 }
 
 /// Holds the Lua state for the server. Stored on `Modules` in
-/// `poketibia-server::boot` so the binary owns it for the process
+/// `tfs::boot` so the binary owns it for the process
 /// lifetime.
 pub struct LuaBindingsState {
     pub lua: mlua::Lua,

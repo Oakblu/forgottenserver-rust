@@ -63,11 +63,11 @@ for lane in "${LANES[@]}"; do
 done
 
 # ─── Ledger writer (Phase 6) ─────────────────────────────────────────────────
-LEDGER_WRITER="$REPO_ROOT/apps/poketibia/forgottenserver-rust/target/release/harness-ledger-writer"
+LEDGER_WRITER="$REPO_ROOT/target/release/harness-ledger-writer"
 if [ -x "$LEDGER_WRITER" ]; then
   harness::info "Running ledger writer..."
   "$LEDGER_WRITER" \
-    --ledger "$REPO_ROOT/apps/poketibia/forgottenserver-rust/MIGRATION_LEDGER.yml" \
+    --ledger "$REPO_ROOT/MIGRATION_LEDGER.yml" \
     --reports "$HARNESS_RUN_REPORT" \
     --out "$HARNESS_REPORTS_DIR/ledger_proposal-$TIMESTAMP.diff" || true
 fi

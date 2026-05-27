@@ -13,21 +13,20 @@ Utility scripts for the Rust port of forgottenserver.
 ## `smoke.sh` in detail
 
 ```bash
-# From the monorepo root:
-apps/poketibia/forgottenserver-rust/scripts/smoke.sh
+# From the repo root:
+scripts/smoke.sh
 ```
 
 The script:
 
-1. `docker compose up -d poketibia-mariadb` and waits for `healthy` (max 60 s).
+1. `docker compose up -d db` and waits for `healthy` (max 60 s).
 2. `docker compose up -d --build forgottenserver-cpp forgottenserver-rust`.
 3. Waits for both servers' `Server Online` log lines (max 120 s).
 4. Sends the binary Tibia info-request frame `06 00 ff ff 01 1f` to each
    server's status port (C++ on 7371, Rust on 7471) and captures the
    responses.
 5. If responses match byte-for-byte: prints `PASS` and exits 0.
-6. If responses differ: writes
-   `apps/poketibia/forgottenserver-rust/SMOKE_DIVERGENCE.md` documenting
+6. If responses differ: writes `SMOKE_DIVERGENCE.md` documenting
    the divergence, prints `WARN`, and exits 0 (the bootable-binary
    milestone's goal is that the stack runs; byte-parity is out-of-scope
    per `binary-and-docker`'s Non-Goals — see the `forgottenserver-rust-
@@ -48,9 +47,9 @@ slate (idempotent across back-to-back invocations).
 
 ### Documented divergence
 
-`apps/poketibia/forgottenserver-rust/SMOKE_DIVERGENCE.md` is regenerated
-on each run when responses differ. It is **safe to commit** — the file's
-purpose is to make the current parity state grep-able and reviewable.
+`SMOKE_DIVERGENCE.md` is regenerated on each run when responses differ.
+It is **safe to commit** — the file's purpose is to make the current
+parity state grep-able and reviewable.
 
 To clear it after parity is reached: delete the file, then re-run
 `smoke.sh` — if responses match, the script will not recreate it.

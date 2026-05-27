@@ -2253,7 +2253,7 @@ pub fn serialize_inventory_item(slot: u8, item: Option<(u8, ItemTypeMeta)>) -> V
 //
 // Each function mirrors the byte layout of the corresponding C++
 // `ProtocolGame::send*` method in
-// `apps/poketibia/forgottenserver/src/protocolgame.cpp`.  Source lines
+// `forgottenserver/src/protocolgame.cpp`.  Source lines
 // are cited per function.  Signatures take plain data so this crate has
 // no cross-crate `Player` dependency.
 

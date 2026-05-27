@@ -10,7 +10,7 @@ members = [
     "crates/scripting",
     "crates/network",
     "crates/server",
-    "crates/poketibia-server",
+    "crates/tfs",
     "crates/harness-tools",
     "crates/e2e",
 ]

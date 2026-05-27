@@ -24,9 +24,9 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 source "$SCRIPT_DIR/../lib.sh"
 
 # ─── Paths ───────────────────────────────────────────────────────────────────
-CPP_LUASCRIPT="$REPO_ROOT/apps/poketibia/forgottenserver/src/luascript.cpp"
-RUST_SCRIPTING="$REPO_ROOT/apps/poketibia/forgottenserver-rust/crates/scripting/src"
-AUDIT_BIN="$REPO_ROOT/apps/poketibia/forgottenserver-rust/target/release/lua-static-audit"
+CPP_LUASCRIPT="$REPO_ROOT/forgottenserver/src/luascript.cpp"
+RUST_SCRIPTING="$REPO_ROOT/crates/scripting/src"
+AUDIT_BIN="$REPO_ROOT/target/release/lua-static-audit"
 REPORT_OUT="$HARNESS_REPORTS_DIR/lua_bindings-static.json"
 
 # ─── Sanity checks ───────────────────────────────────────────────────────────
@@ -44,7 +44,7 @@ fi
 
 if [ ! -x "$AUDIT_BIN" ]; then
   harness::warn "lua-static-audit binary missing; building release..."
-  (cd "$REPO_ROOT/apps/poketibia/forgottenserver-rust" && \
+  (cd "$REPO_ROOT" && \
    cargo build --release -p harness-tools --bin lua-static-audit >/dev/null 2>&1) || {
     harness::fail "Failed to build lua-static-audit"
     harness::report "{\"lane\":\"lua_bindings\",\"sub_lane\":\"static\",\"status\":\"ERROR\",\"reason\":\"build failed\"}"

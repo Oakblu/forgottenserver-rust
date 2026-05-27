@@ -2,14 +2,14 @@
 //!
 //! These tests require:
 //!   1. The `mariadb-integration` feature enabled.
-//!   2. A running `poketibia-mariadb` container with the `tibia_test`
+//!   2. A running `db` container with the `tibia_test`
 //!      logical database (provisioned by
-//!      `docker/poketibia-mariadb-init/00-init-tibia-dbs.sh`).
+//!      `docker/mariadb-init/00-init-tibia-dbs.sh`).
 //!   3. Port 13306 reachable from the test host (mapped by docker-
 //!      compose).
 //!
 //! Run with:
-//!   docker compose up -d poketibia-mariadb
+//!   docker compose up -d db
 //!   cargo test -p forgottenserver-database --features mariadb-integration \
 //!       --test mariadb_integration -- --test-threads=1
 //!
@@ -39,7 +39,7 @@ fn test_config() -> MariaDbConfig {
 
 fn connect() -> MariaDbDatabase {
     MariaDbDatabase::connect(&test_config())
-        .expect("MariaDbDatabase::connect failed — is poketibia-mariadb up?")
+        .expect("MariaDbDatabase::connect failed — is the db container up? (docker compose up -d db)")
 }
 
 /// Wipe a table; used to reset between tests that need committed state.

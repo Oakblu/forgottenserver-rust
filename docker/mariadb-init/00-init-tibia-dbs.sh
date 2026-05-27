@@ -2,7 +2,7 @@
 #
 # 00-init-tibia-dbs.sh — Initialize `tibia_cpp` and `tibia_rs` databases.
 #
-# Mounted into the poketibia-mariadb container at
+# Mounted into the db container at
 # /docker-entrypoint-initdb.d/00-init-tibia-dbs.sh. Runs once on first
 # container start (before any 01-*.sql scripts), creates the two logical
 # databases used by the harness side-by-side stack, grants permissions
@@ -14,12 +14,11 @@
 # lane (lane 5) a clean per-side snapshot surface without cross-
 # contamination.
 #
-# Schema source is mounted at /opt/poketibia-schema.sql by the root
-# docker-compose.yml (see the poketibia-mariadb service definition).
+# Schema source is mounted at /opt/tfs-schema.sql by docker-compose.yml.
 
 set -euo pipefail
 
-SCHEMA="/opt/poketibia-schema.sql"
+SCHEMA="/opt/tfs-schema.sql"
 
 if [ ! -f "$SCHEMA" ]; then
   echo "ERROR: schema not found at $SCHEMA" >&2

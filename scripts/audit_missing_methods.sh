@@ -14,9 +14,10 @@
 
 set -u
 
-ROOT="/Users/pablohpsilva/Documents/monorepo/apps/poketibia"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+ROOT="$(cd -- "$SCRIPT_DIR/.." >/dev/null 2>&1 && pwd)"
 CPP_SRC="$ROOT/forgottenserver/src"
-RUST_CRATES="$ROOT/forgottenserver-rust/crates"
+RUST_CRATES="$ROOT/crates"
 
 snake_case() {
   # CamelCase / camelCase  →  snake_case (lowercase, underscore-separated)

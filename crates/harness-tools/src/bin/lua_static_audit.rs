@@ -7,8 +7,8 @@
 //!
 //! Usage:
 //!   lua-static-audit \
-//!     --cpp  apps/poketibia/forgottenserver/src/luascript.cpp \
-//!     --rust apps/poketibia/forgottenserver-rust/crates/scripting/src \
+//!     --cpp  forgottenserver/src/luascript.cpp \
+//!     --rust crates/scripting/src \
 //!     --out  scripts/harness/reports/lua_bindings-static.json
 //!
 //! Exit codes:
