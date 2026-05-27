@@ -141,7 +141,7 @@ setmetatable(_G, {
 local _orig_dofile = dofile
 local _base = "{base}"
 dofile = function(path)
-    if path == nil then return _orig_dofile() end
+    if path == nil then error("dofile: path argument is required") end
     if path:sub(1,1) ~= "/" and path:sub(2,2) ~= ":" then
         path = _base .. "/" .. path
     end
