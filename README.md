@@ -1,204 +1,232 @@
 # forgottenserver-rust
 
-Rust migration of the ForgottenServer C++ MMORPG server.
+A complete Rust port of [ForgottenServer](https://github.com/opentibiabr/forgottenserver), the open-source C++ Tibia MMORPG server emulator. The C++ source lives at `./forgottenserver/` (vendored, read-only) and is the authoritative reference for all behavior.
 
 ---
 
-## Playing Locally with Docker
+## Why Rust
 
-This guide covers running the **C++ ForgottenServer** (located at `../forgottenserver/`) + **OTClient** in Docker on macOS so you can play the game. All steps are reproducible from scratch.
+The C++ codebase is correct and battle-tested, but carries structural constraints that make long-term maintenance hard:
 
-### Architecture
-
-```
-macOS Host
-├── Docker Desktop
-│   └── compose network
-│       ├── db   (mariadb:11 — internal only)
-│       └── tfs  (forgottenserver — ports 7171/7172/8080 → host)
-└── XQuartz (X11 server on :0)
-    └── otclient container (docker run with X11 forwarding)
-```
-
-OTClient runs as a standalone `docker run` (not in compose) because interactive X11 display access is incompatible with detached compose on macOS.
+- **Memory safety.** The C++ server uses raw pointers, manual reference counting (`std::shared_ptr`), and intrusive parent pointers throughout. Rust eliminates entire classes of use-after-free, data-race, and null-dereference bugs at compile time.
+- **Fearless concurrency.** The original dispatcher/scheduler model relies on shared mutable globals (`g_game`, `g_chat`). Rust's ownership model enforces explicit data access patterns, making concurrent game logic auditable and safe by construction.
+- **Modern tooling.** Cargo, `clippy`, `rustfmt`, and `cargo test` provide a fast, consistent development loop that the CMake + vcpkg C++ build cannot match.
+- **Behavior-preserving migration.** The port is strictly behavior-preserving: every observable C++ behavior is reproduced identically before any refactor is allowed. The C++ source is the spec; the Rust crates are the implementation.
 
 ---
 
-### Prerequisites (one-time setup)
+## Project structure
 
-**Docker Desktop** — must be running.
-
-```bash
-docker --version        # 24+ required
-docker compose version  # v2.x required
 ```
-
-**XQuartz** — required for the GUI client on macOS.
-
-```bash
-brew install --cask xquartz
-# After install: log out and log back in (XQuartz hooks into the session at login)
-```
-
-**Configure XQuartz to allow TCP connections** (required for Docker X11 forwarding):
-
-```bash
-defaults write org.xquartz.X11 nolisten_tcp 0
-# Fully quit XQuartz and relaunch it
-```
-
-Alternatively: open XQuartz → Preferences → Security → check **"Allow connections from network clients"**.
-
----
-
-### Step 1 — Start the server stack
-
-The `docker-compose.yml` at `../docker-compose.yml` (relative to this repo, at `apps/poketibia/docker-compose.yml`) orchestrates MariaDB and ForgottenServer.
-
-```bash
-cd /path/to/apps/poketibia
-
-# First boot: builds the TFS image from source (~5–10 min)
-docker compose up --build -d
-
-# Watch logs — wait for "Game server running on port 7172"
-docker compose logs -f tfs
-
-# Check service health
-docker compose ps
-```
-
-The `db` service must reach `(healthy)` before `tfs` starts (enforced by `depends_on: condition: service_healthy`).
-
----
-
-### Step 2 — Create a game account and character
-
-ForgottenServer has no web interface. Insert rows directly into MariaDB:
-
-```bash
-# Create account
-docker compose exec db \
-  mariadb -u forgottenserver -ptfs_secret forgottenserver \
-  -e "INSERT INTO accounts (name, password, type, email)
-      VALUES ('myaccount', SHA1('password123'), 1, 'me@local.dev');"
-
-# Create character
-docker compose exec db \
-  mariadb -u forgottenserver -ptfs_secret forgottenserver \
-  -e "INSERT INTO players (name, group_id, account_id, level, vocation,
-                            health, healthmax, mana, manamax, soul, cap,
-                            sex, town_id, looktype, posx, posy, posz)
-      SELECT 'MyHero', 1, id, 1, 0,
-             150, 150, 0, 0, 100, 400, 1, 1, 136, 160, 55, 7
-      FROM accounts WHERE name='myaccount';"
+crates/
+  common/           shared types, constants, enums  (tools.h, enums.h)
+  items/            Item, Container, ItemType registry  (items.cpp/h)
+  map/              Map, Tile, Position, SpectatorVec  (map.cpp/h)
+  entity/           Player, Creature, Monster, Npc  (creature.cpp, player.cpp …)
+  world/            IOLoginData, IOMapSerialize, world load  (iologindata.cpp …)
+  database/         Database, DBResult, DatabaseTasks  (database.cpp/h)
+  game/             Game, combat, conditions, vocations  (game.cpp/h)
+  scripting/        LuaScriptInterface, *Events, *Functions  (luascript.cpp/h)
+  network/          Protocol*, NetworkMessage, Connection  (protocol*.cpp/h)
+  server/           entry point, boot, scheduler  (main.cpp, server.cpp)
+  poketibia-server/ runnable binary that wires all crates together
+forgottenserver/    vendored C++ source (read-only reference)
+data/               game data: items.otb, world map, Lua scripts, XML configs
+schema.sql          MariaDB schema
+docker/             DB init scripts (applied automatically on first start)
 ```
 
 ---
 
-### Step 3 — Clone and build OTClient (one-time, ~15–20 min)
+## Running with Docker
+
+### Prerequisites
+
+- Docker Desktop v24+ with `docker compose` v2
+
+### Step 1 — Build the server image
+
+The Dockerfile expects to be invoked from the **monorepo root** so that both the Rust workspace and the vendored C++ data directory are in scope:
 
 ```bash
-cd /path/to/apps/poketibia
-git clone https://github.com/opentibiabr/otclient
-cd otclient
-docker build -t otclient:local .
+docker build \
+  -f apps/poketibia/forgottenserver-rust/Dockerfile \
+  -t forgottenserver-rust:latest \
+  .
 ```
 
-OTClient uses a 3-stage Ubuntu + vcpkg build. The first build is slow; subsequent builds use the Docker layer cache.
+First build: ~3–5 minutes (compiles Rust crates + vendored Lua 5.4).
+Subsequent builds: <30 s with BuildKit layer cache.
 
----
+### Step 2 — Start MariaDB and apply the schema
 
-### Step 4 — Launch OTClient with X11 forwarding
+The init script at `docker/poketibia-mariadb-init/00-init-tibia-dbs.sh` runs automatically on the first container start. It creates the `tibia_rs` database and applies `schema.sql` before any connections are accepted. Mount both the schema and the init directory as shown below:
 
 ```bash
-# Ensure XQuartz is running
-open -a XQuartz
+docker run -d \
+  --name forgottenserver-db \
+  --health-cmd="healthcheck.sh --connect --innodb_initialized" \
+  --health-interval=5s \
+  --health-retries=12 \
+  -e MARIADB_ROOT_PASSWORD=root_secret \
+  -e MARIADB_USER=forgottenserver \
+  -e MARIADB_PASSWORD=forgottenserver \
+  -e MARIADB_DATABASE=tibia_rs \
+  -v "$(pwd)/schema.sql:/opt/poketibia-schema.sql:ro" \
+  -v "$(pwd)/docker/poketibia-mariadb-init:/docker-entrypoint-initdb.d:ro" \
+  mariadb:11
+```
 
-# Authorize Docker loopback to connect to X11
-xhost + 127.0.0.1
+Wait for the DB to pass its health check before proceeding:
 
-# Verify DISPLAY is :0
-echo $DISPLAY   # should print :0
+```bash
+until [ "$(docker inspect --format='{{.State.Health.Status}}' forgottenserver-db 2>/dev/null)" = "healthy" ]; do
+  echo "Waiting for DB…"; sleep 3
+done
+echo "DB is healthy — schema applied."
+```
 
-# Run the client
+### Step 3 — Run the server
+
+```bash
 docker run --rm -it \
-  -e DISPLAY=host.docker.internal:0 \
-  -v /tmp/.X11-unix:/tmp/.X11-unix \
-  --name otclient \
-  otclient:local
+  --name forgottenserver-rust \
+  --link forgottenserver-db:db \
+  -p 7171:7171 -p 7172:7172 -p 8080:8080 \
+  forgottenserver-rust:latest
 ```
 
-The game client window will appear on your macOS desktop through XQuartz.
+Expected output:
 
-**If the window doesn't open (X11 auth error)**, try the explicit LAN IP form:
-
-```bash
-MY_IP=$(ifconfig en0 | grep "inet " | awk '{print $2}')
-xhost + "$MY_IP"
-docker run --rm -it \
-  -e DISPLAY="${MY_IP}:0" \
-  -v /tmp/.X11-unix:/tmp/.X11-unix \
-  --name otclient \
-  otclient:local
+```
+The Forgotten Server (Rust port)
+>> Loaded 38284 items, 0 spells, 316 weapons, 9 NPCs, 0 Lua scripts.
+>> Forgotten Server Online! (Rust port)
+>> Send SIGINT (Ctrl-C) or SIGTERM to shut down.
 ```
 
----
+Press Ctrl-C for a clean shutdown.
 
-### Step 5 — Connect in the client UI
-
-When the OTClient window appears, enter:
-
-| Field    | Value         |
-|----------|---------------|
-| Server   | `127.0.0.1`   |
-| Port     | `7171`        |
-| Account  | `myaccount`   |
-| Password | `password123` |
-
----
-
-### Verification
+### Step 4 — Verify
 
 ```bash
-# DB healthy?
-docker compose ps                      # "db" should show "(healthy)"
+# Status port should be reachable
+nc -zv 127.0.0.1 7171
 
-# Server ports open?
-nc -zv 127.0.0.1 7171                  # "Connection ... succeeded!"
-nc -zv 127.0.0.1 7172
-
-# TFS responding to status query?
+# Raw TFS status probe
 printf '\x06\x00\xff\xff\x79\x6c\x00\x00' | nc -w 2 127.0.0.1 7171 | xxd | head
-
-# Player logged in?
-docker compose logs tfs | grep -i "MyHero"
 ```
 
 ---
 
-### Lifecycle
+## docker-compose example
+
+For a repeatable local stack, create a `docker-compose.yml` at the **monorepo root**:
+
+```yaml
+services:
+  db:
+    image: mariadb:11
+    environment:
+      MARIADB_ROOT_PASSWORD: root_secret
+      MARIADB_USER: forgottenserver
+      MARIADB_PASSWORD: forgottenserver
+      MARIADB_DATABASE: tibia_rs
+    volumes:
+      - ./apps/poketibia/forgottenserver-rust/schema.sql:/opt/poketibia-schema.sql:ro
+      - ./apps/poketibia/forgottenserver-rust/docker/poketibia-mariadb-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      retries: 12
+
+  server:
+    build:
+      context: .
+      dockerfile: apps/poketibia/forgottenserver-rust/Dockerfile
+    ports:
+      - "7171:7171"
+      - "7172:7172"
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+```
 
 ```bash
-# Stop (preserves all player data in the named volume)
-docker compose down
+docker compose up --build
+```
 
-# Wipe all data and start fresh
-docker compose down -v && docker compose up --build -d
+The `depends_on: condition: service_healthy` ensures the server only starts after MariaDB has finished initialising and applying the schema.
 
-# Rebuild only TFS after C++ changes
-docker compose build tfs && docker compose up -d tfs
+---
+
+## Importing database data
+
+These commands assume the DB container is running as `forgottenserver-db` with the credentials above.
+
+### From a SQL dump
+
+```bash
+docker exec -i forgottenserver-db \
+  mariadb -u forgottenserver -pforgottenserver tibia_rs \
+  < /path/to/your/backup.sql
+```
+
+### From a compressed dump
+
+```bash
+gunzip -c backup.sql.gz | docker exec -i forgottenserver-db \
+  mariadb -u forgottenserver -pforgottenserver tibia_rs
+```
+
+### Create an account and character manually
+
+```bash
+# Account
+docker exec -i forgottenserver-db \
+  mariadb -u forgottenserver -pforgottenserver tibia_rs -e \
+  "INSERT INTO accounts (name, password, type, email)
+   VALUES ('myaccount', SHA1('password123'), 1, 'me@local.dev');"
+
+# Character
+docker exec -i forgottenserver-db \
+  mariadb -u forgottenserver -pforgottenserver tibia_rs -e \
+  "INSERT INTO players
+     (name, group_id, account_id, level, vocation,
+      health, healthmax, mana, manamax, soul, cap,
+      sex, town_id, looktype, posx, posy, posz)
+   SELECT 'MyHero', 1, id, 1, 0,
+          150, 150, 0, 0, 100, 400, 1, 1, 136, 160, 55, 7
+   FROM accounts WHERE name='myaccount';"
+```
+
+### Verify imported data
+
+```bash
+docker exec -i forgottenserver-db \
+  mariadb -u forgottenserver -pforgottenserver tibia_rs \
+  -e "SELECT id, name, level FROM players LIMIT 20;"
 ```
 
 ---
 
-### Troubleshooting
+## Development
 
-| Symptom | Cause | Fix |
-|---|---|---|
-| TFS exits immediately | DB not ready | Wait for `db (healthy)`, then `docker compose restart tfs` |
-| "Cannot connect to database" in TFS logs | Wrong host/password | Verify `mysqlHost = "db"` and `mysqlPass = "tfs_secret"` in `../forgottenserver/config.lua` lines 80/82 |
-| OTClient: black window or immediate close | X11 not authorized | Run `xhost + 127.0.0.1` before `docker run` |
-| "No protocol specified" in XQuartz | TCP disabled or wrong DISPLAY | Ensure `nolisten_tcp 0` and restart XQuartz; verify `echo $DISPLAY` is `:0` |
-| Client: "Cannot connect to server" | Wrong IP in client UI | Use `127.0.0.1:7171` exactly (not `localhost`) |
-| Schema errors in DB logs on restart | Init script re-run attempted | Safe to ignore — schema uses `CREATE TABLE IF NOT EXISTS` throughout |
+```bash
+# Unit tests
+cargo test --lib --workspace
+
+# Lint
+cargo clippy --workspace --lib --tests -- -D warnings
+
+# Format
+cargo fmt --all
+
+# Run locally without Docker (no DB required for the status port)
+cargo run --release -p poketibia-server -- \
+  --config crates/poketibia-server/tests/fixtures/config.lua \
+  --data data
+```
+
+See `MIGRATION_LEDGER.yml` for per-symbol migration status and `AI_MIGRATION_CONTEXT.md` for architecture decisions and C++ → Rust mapping.
