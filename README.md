@@ -40,7 +40,6 @@ crates/
   network/          Protocol*, NetworkMessage, Connection  (protocol*.cpp/h)
   server/           entry point, boot, scheduler  (main.cpp, server.cpp)
   poketibia-server/ runnable binary that wires all crates together
-forgottenserver/    vendored C++ source (read-only reference)
 data/               game data: items.otb, world map, Lua scripts, XML configs
 schema.sql          MariaDB schema (auto-applied on first DB start)
 docker/             DB init scripts
@@ -168,4 +167,3 @@ cargo run --release -p poketibia-server -- \
   --data data
 ```
 
-See `MIGRATION_LEDGER.yml` for per-symbol migration status and `AI_MIGRATION_CONTEXT.md` for architecture decisions and C++ → Rust mapping.
