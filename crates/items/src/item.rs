@@ -4306,7 +4306,11 @@ mod tests {
 
     #[test]
     fn test_get_plural_name_falls_back_to_type() {
-        let it = ItemTypeData { id: 1, plural_name: "swords".to_string(), ..Default::default() };
+        let it = ItemTypeData {
+            id: 1,
+            plural_name: "swords".to_string(),
+            ..Default::default()
+        };
         let item = Item::new(Arc::new(it), 1);
         assert_eq!(item.get_plural_name(), "swords");
     }
@@ -4326,7 +4330,11 @@ mod tests {
 
     #[test]
     fn test_get_plural_name_attribute_override_wins() {
-        let it = ItemTypeData { id: 1, plural_name: "swords".to_string(), ..Default::default() };
+        let it = ItemTypeData {
+            id: 1,
+            plural_name: "swords".to_string(),
+            ..Default::default()
+        };
         let mut item = Item::new(Arc::new(it), 1);
         item.set_attribute(
             ItemAttribute::PluralName,
@@ -4337,14 +4345,22 @@ mod tests {
 
     #[test]
     fn test_get_article_falls_back_to_type() {
-        let it = ItemTypeData { id: 1, article: "a".to_string(), ..Default::default() };
+        let it = ItemTypeData {
+            id: 1,
+            article: "a".to_string(),
+            ..Default::default()
+        };
         let item = Item::new(Arc::new(it), 1);
         assert_eq!(item.get_article(), "a");
     }
 
     #[test]
     fn test_get_article_attribute_override_wins() {
-        let it = ItemTypeData { id: 1, article: "a".to_string(), ..Default::default() };
+        let it = ItemTypeData {
+            id: 1,
+            article: "a".to_string(),
+            ..Default::default()
+        };
         let mut item = Item::new(Arc::new(it), 1);
         item.set_attribute(
             ItemAttribute::Article,
@@ -4380,7 +4396,11 @@ mod tests {
 
     #[test]
     fn test_set_sub_type_fluid_container() {
-        let it = ItemTypeData { id: 1, group: ItemGroup::Fluid, ..Default::default() };
+        let it = ItemTypeData {
+            id: 1,
+            group: ItemGroup::Fluid,
+            ..Default::default()
+        };
         let mut item = Item::new(Arc::new(it), 1);
         item.set_sub_type(7);
         assert_eq!(item.get_fluid_type(), 7);
@@ -4388,7 +4408,11 @@ mod tests {
 
     #[test]
     fn test_set_sub_type_splash() {
-        let it = ItemTypeData { id: 1, group: ItemGroup::Splash, ..Default::default() };
+        let it = ItemTypeData {
+            id: 1,
+            group: ItemGroup::Splash,
+            ..Default::default()
+        };
         let mut item = Item::new(Arc::new(it), 1);
         item.set_sub_type(3);
         assert_eq!(item.get_fluid_type(), 3);
@@ -4404,7 +4428,11 @@ mod tests {
 
     #[test]
     fn test_set_sub_type_charges() {
-        let it = ItemTypeData { id: 1, charges: 10, ..Default::default() };
+        let it = ItemTypeData {
+            id: 1,
+            charges: 10,
+            ..Default::default()
+        };
         let mut item = Item::new(Arc::new(it), 1);
         item.set_sub_type(5);
         assert_eq!(item.get_charges(), 5);
@@ -4425,7 +4453,11 @@ mod tests {
 
     #[test]
     fn test_set_default_subtype_no_charges() {
-        let it = ItemTypeData { id: 1, charges: 0, ..Default::default() };
+        let it = ItemTypeData {
+            id: 1,
+            charges: 0,
+            ..Default::default()
+        };
         let mut item = Item::new(Arc::new(it), 5);
         item.set_default_subtype();
         assert_eq!(item.get_item_count(), 1);
@@ -4434,7 +4466,12 @@ mod tests {
 
     #[test]
     fn test_set_default_subtype_stackable_with_charges() {
-        let it = ItemTypeData { id: 1, stackable: true, charges: 20, ..Default::default() };
+        let it = ItemTypeData {
+            id: 1,
+            stackable: true,
+            charges: 20,
+            ..Default::default()
+        };
         let mut item = Item::new(Arc::new(it), 1);
         item.set_default_subtype();
         assert_eq!(item.get_item_count(), 20);
@@ -4442,7 +4479,12 @@ mod tests {
 
     #[test]
     fn test_set_default_subtype_non_stackable_with_charges() {
-        let it = ItemTypeData { id: 1, stackable: false, charges: 30, ..Default::default() };
+        let it = ItemTypeData {
+            id: 1,
+            stackable: false,
+            charges: 30,
+            ..Default::default()
+        };
         let mut item = Item::new(Arc::new(it), 1);
         item.set_default_subtype();
         assert_eq!(item.get_charges(), 30);
@@ -4466,7 +4508,11 @@ mod tests {
 
     #[test]
     fn test_is_ground_tile_true() {
-        let it = ItemTypeData { id: 1, group: ItemGroup::Ground, ..Default::default() };
+        let it = ItemTypeData {
+            id: 1,
+            group: ItemGroup::Ground,
+            ..Default::default()
+        };
         let item = Item::new(Arc::new(it), 1);
         assert!(item.is_ground_tile());
     }
@@ -4480,7 +4526,11 @@ mod tests {
 
     #[test]
     fn test_is_magic_field_true() {
-        let it = ItemTypeData { id: 1, type_kind: ItemTypeKind::MagicField, ..Default::default() };
+        let it = ItemTypeData {
+            id: 1,
+            type_kind: ItemTypeKind::MagicField,
+            ..Default::default()
+        };
         let item = Item::new(Arc::new(it), 1);
         assert!(item.is_magic_field());
     }
@@ -4494,7 +4544,11 @@ mod tests {
 
     #[test]
     fn test_is_podium_true() {
-        let it = ItemTypeData { id: 1, type_kind: ItemTypeKind::Podium, ..Default::default() };
+        let it = ItemTypeData {
+            id: 1,
+            type_kind: ItemTypeKind::Podium,
+            ..Default::default()
+        };
         let item = Item::new(Arc::new(it), 1);
         assert!(item.is_podium());
     }
@@ -4508,21 +4562,33 @@ mod tests {
 
     #[test]
     fn test_has_walk_stack_true() {
-        let it = ItemTypeData { id: 1, walk_stack: true, ..Default::default() };
+        let it = ItemTypeData {
+            id: 1,
+            walk_stack: true,
+            ..Default::default()
+        };
         let item = Item::new(Arc::new(it), 1);
         assert!(item.has_walk_stack());
     }
 
     #[test]
     fn test_has_walk_stack_false() {
-        let it = ItemTypeData { id: 1, walk_stack: false, ..Default::default() };
+        let it = ItemTypeData {
+            id: 1,
+            walk_stack: false,
+            ..Default::default()
+        };
         let item = Item::new(Arc::new(it), 1);
         assert!(!item.has_walk_stack());
     }
 
     #[test]
     fn test_is_supply_true() {
-        let it = ItemTypeData { id: 1, supply: true, ..Default::default() };
+        let it = ItemTypeData {
+            id: 1,
+            supply: true,
+            ..Default::default()
+        };
         let item = Item::new(Arc::new(it), 1);
         assert!(item.is_supply());
     }

@@ -79,7 +79,9 @@ fn game_login_records_server_response() {
         .set_read_timeout(Some(Duration::from_secs(3)))
         .unwrap();
 
-    stream.write_all(packet).expect("failed to send login packet");
+    stream
+        .write_all(packet)
+        .expect("failed to send login packet");
     let _ = stream.shutdown(std::net::Shutdown::Write);
 
     let mut response = Vec::new();
