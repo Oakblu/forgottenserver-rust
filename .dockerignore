@@ -1,0 +1,23 @@
+# Build artifacts
+target/
+scripts/manifest_extractor/target/
+
+# Version control
+.git/
+forgottenserver/.git/
+otclient/.git/
+
+# Large vendored trees not needed for the server build
+otclient/
+forgottenserver/src/
+forgottenserver/vc17/
+forgottenserver/cmake/
+
+# Audit / migration tooling
+audit_patches/
+manifest_parts/
+manifest_shards/
+scripts/
+
+# Misc
+*.DS_Store

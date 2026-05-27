@@ -1,27 +1,13 @@
 # syntax=docker/dockerfile:1.6
 #
 # Multi-stage build for the Rust port of forgottenserver.
+# Build context: repo root (forgottenserver-rust/).
 #
-# Build context: **monorepo root** (so the data/ symlink at
-# apps/poketibia/forgottenserver-rust/data → ../forgottenserver/data
-# resolves to a real path during COPY).
+# Build:   docker build -t forgottenserver-rust:latest .
+# Or:      docker compose up --build
 #
-# Build:
-#     docker build \
-#       -f apps/poketibia/forgottenserver-rust/Dockerfile \
-#       -t forgottenserver-rust:latest \
-#       .
-#
-# Run (status port only — no MariaDB needed since database wiring is
-# currently PARTIAL per architectural-parity scope):
-#     docker run --rm -p 7171:7171 forgottenserver-rust:latest
-#
-# Expected image size: ~80–120 MB (release binary 1.1 MB + debian-slim base
-# + ca-certificates). Target: < 250 MB.
-#
-# Expected cold-cache build time: 3–5 minutes (mlua's vendored Lua 5.4 is
-# the longest single compilation step; rsa + num-bigint-dig also slow).
-# With registry + target caches via BuildKit, incremental builds are <30 s.
+# Expected image size: ~80–120 MB (release binary + debian-slim base).
+# Cold-cache build: ~3–5 min. Incremental with BuildKit cache: <30 s.
 
 # ─── Stage 1: build ──────────────────────────────────────────────────────
 FROM rust:1-slim-bookworm AS build
@@ -38,12 +24,12 @@ WORKDIR /usr/src/forgottenserver-rust
 # Copy the entire forgottenserver-rust workspace. The COPY honours the
 # .dockerignore at apps/poketibia/forgottenserver-rust/.dockerignore so
 # target/, .git/, etc. are excluded.
-COPY apps/poketibia/forgottenserver-rust/Cargo.toml ./Cargo.toml
-COPY apps/poketibia/forgottenserver-rust/Cargo.lock ./Cargo.lock
-COPY apps/poketibia/forgottenserver-rust/crates ./crates
+COPY Cargo.toml ./Cargo.toml
+COPY Cargo.lock ./Cargo.lock
+COPY crates ./crates
 # boot.rs embeds schema.sql at compile time via include_str!("../../../../forgottenserver/schema.sql").
 # From crates/poketibia-server/src/ the 4 ".." land at /usr/src/, so the file must live here:
-COPY apps/poketibia/forgottenserver/schema.sql /usr/src/forgottenserver/schema.sql
+COPY forgottenserver/schema.sql /usr/src/forgottenserver/schema.sql
 
 # Build the release binary. BuildKit cache mounts speed up rebuilds on
 # subsequent `docker build` invocations sharing the same builder.
@@ -69,11 +55,10 @@ COPY --from=build /usr/local/bin/poketibia-server /bin/poketibia-server
 
 # Game data (items.otb, weapons.xml, etc.) — comes from the C++ vendored
 # tree via the data symlink in the Rust workspace.
-COPY apps/poketibia/forgottenserver/data /srv/data/
+COPY forgottenserver/data /srv/data/
 
 # Default config — overridable via a bind-mount on /srv/config.lua.
-COPY apps/poketibia/forgottenserver-rust/crates/poketibia-server/tests/fixtures/config.lua \
-     /srv/config.lua
+COPY crates/poketibia-server/tests/fixtures/config.lua /srv/config.lua
 
 EXPOSE 7171 7172 8080
 WORKDIR /srv

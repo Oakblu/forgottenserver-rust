@@ -1,0 +1,30 @@
+services:
+  db:
+    image: mariadb:11
+    environment:
+      MARIADB_ROOT_PASSWORD: root_secret
+      MARIADB_USER: forgottenserver
+      MARIADB_PASSWORD: forgottenserver
+      MARIADB_DATABASE: tibia_rs
+    volumes:
+      - ./schema.sql:/opt/poketibia-schema.sql:ro
+      - ./docker/poketibia-mariadb-init:/docker-entrypoint-initdb.d:ro
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  server:
+    build: .
+    ports:
+      - "7171:7171"
+      - "7172:7172"
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db-data:
