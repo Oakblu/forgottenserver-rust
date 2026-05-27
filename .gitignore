@@ -18,4 +18,4 @@ AUDIT_PASS_A.csv
 .DS_Store
 */.DS_Store
 
-config.lua
+/config.lua
