@@ -81,6 +81,21 @@ impl LuaEnvironment {
         self.lua.load(code).eval()
     }
 
+    /// Execute a single Lua file by path (equivalent to C++ `loadFile`).
+    ///
+    /// Returns `Err(String)` with `[FATAL]` prefix on read or execution failure.
+    pub fn load_file(&mut self, path: &std::path::Path) -> Result<(), String> {
+        let content = std::fs::read_to_string(path).map_err(|e| {
+            format!("[FATAL] Failed to read {}: {e}", path.display())
+        })?;
+        let name = path.to_string_lossy().into_owned();
+        self.lua
+            .load(&content)
+            .set_name(name.as_str())
+            .exec()
+            .map_err(|e| format!("[FATAL] Failed to load {}: {e}", path.display()))
+    }
+
     /// Load all `.lua` files from `lib_dir` recursively (including nested `lib/` dirs).
     ///
     /// Fatal: returns `Err(String)` with a `[FATAL]` prefix if the directory is

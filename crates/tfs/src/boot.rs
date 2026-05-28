@@ -86,6 +86,15 @@ pub fn initialise_modules(config_path: &Path, data_dir: &Path) -> Result<Modules
         // depend on a game-state-providing trait.
         match LuaEnvironment::new(GameStateHandle::default()) {
             Ok(mut env) => {
+                // Load the global compat/core lib entry point first (data/lib/lib.lua).
+                // This defines helpers like `createFunctions` used by scripts/lib/*.lua.
+                let global_lib = data_dir.join("lib").join("lib.lua");
+                if global_lib.exists() {
+                    if let Err(e) = env.load_file(&global_lib) {
+                        eprintln!("{e}");
+                        return Err(anyhow!("{e}"));
+                    }
+                }
                 let lib_dir = data_dir.join("scripts").join("lib");
                 if lib_dir.exists() {
                     match env.load_lib_scripts(&lib_dir) {
