@@ -287,6 +287,9 @@ pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::R
     class_table!("Weapon", |_, _: mlua::MultiValue| Ok(
         classes::weapon::LuaWeapon::default()
     ));
+    class_table!("XMLNode", |_, _: mlua::MultiValue| Ok(
+        classes::xml_node::LuaXmlNode
+    ));
 
     // configManager — singleton instance (lowercase, matches C++ g_config Lua name)
     lua.globals()
