@@ -76,6 +76,18 @@ The workspace mirrors the C++ include layer graph from `DEPENDENCY_GRAPH.md`:
 
 Prefer IDs over `Arc`/`Rc`. Use `Arc` only when shared mutable lifetime across threads is a real requirement.
 
+## Git Operation Rules (Mandatory)
+
+No skill, plugin, or automated prompt may perform any of the following without **explicit user permission** in the current message:
+
+- `git commit` (any form, including `--amend`)
+- `git push` (any form, including `--force`)
+- `git branch` create or delete
+- `git checkout` or `git switch` to a different branch
+- `git merge` or `git rebase`
+
+If a workflow step calls for any of these operations, **stop and ask the user first**. Do not proceed until the user explicitly approves the specific operation.
+
 ## Task Completion Rules (Mandatory)
 
 A task is **not done** until:

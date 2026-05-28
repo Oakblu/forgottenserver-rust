@@ -215,6 +215,47 @@ pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::R
     // methods. Registering the unit struct as a global gives audit-visible
     // `Game:method` entries without needing per-call game-state plumbing.
     lua.globals().set("Game", classes::game::LuaGame)?;
+    // Class constructor globals — each is a Lua function that creates a new instance.
+    // Scripts call e.g. `local spell = Spell("name")` or `local c = Combat.new()`.
+    lua.globals().set(
+        "Spell",
+        lua.create_function(|_, _args: mlua::MultiValue| Ok(classes::spell::LuaSpell::default()))?,
+    )?;
+    lua.globals().set(
+        "Combat",
+        lua.create_function(|_, _: ()| Ok(classes::combat::LuaCombat::default()))?,
+    )?;
+    lua.globals().set(
+        "TalkAction",
+        lua.create_function(|_, _: ()| Ok(classes::talk_action::LuaTalkAction::default()))?,
+    )?;
+    lua.globals().set(
+        "Action",
+        lua.create_function(|_, _: ()| Ok(classes::action::LuaAction::default()))?,
+    )?;
+    lua.globals().set(
+        "Condition",
+        lua.create_function(|_, _: ()| Ok(classes::condition::LuaCondition::default()))?,
+    )?;
+    lua.globals().set(
+        "CreatureEvent",
+        lua.create_function(|_, _: ()| Ok(classes::creature_event::LuaCreatureEvent::default()))?,
+    )?;
+    lua.globals().set(
+        "GlobalEvent",
+        lua.create_function(|_, _: ()| Ok(classes::global_event::LuaGlobalEvent))?,
+    )?;
+    lua.globals().set(
+        "MoveEvent",
+        lua.create_function(|_, _: ()| Ok(classes::move_event::LuaMoveEvent::default()))?,
+    )?;
+    lua.globals().set(
+        "XMLDocument",
+        lua.create_function(|_, _: ()| Ok(classes::xml_document::LuaXmlDocument))?,
+    )?;
+    // configManager — singleton instance (lowercase, matches C++ g_config Lua name)
+    lua.globals()
+        .set("configManager", classes::config_manager::LuaConfigManager)?;
     Ok(())
 }
 
@@ -322,5 +363,31 @@ mod tests {
 
         let good: mlua::Value = env.lua.globals().get("good_loaded").unwrap();
         assert_eq!(good, mlua::Value::Boolean(true));
+    }
+
+    #[test]
+    fn lua_environment_new_installs_class_globals() {
+        let env = LuaEnvironment::new(GameStateHandle::default()).unwrap();
+        for global in &[
+            "Spell", "Combat", "TalkAction", "Action", "Condition",
+            "CreatureEvent", "GlobalEvent", "MoveEvent", "XMLDocument",
+        ] {
+            let val: mlua::Value = env.lua.globals().get(*global).unwrap();
+            assert!(
+                !matches!(val, mlua::Value::Nil),
+                "expected global '{}' to be non-nil after install_bindings",
+                global
+            );
+        }
+    }
+
+    #[test]
+    fn lua_environment_new_installs_config_manager_global() {
+        let env = LuaEnvironment::new(GameStateHandle::default()).unwrap();
+        let val: mlua::Value = env.lua.globals().get("configManager").unwrap();
+        assert!(
+            !matches!(val, mlua::Value::Nil),
+            "expected global 'configManager' to be non-nil"
+        );
     }
 }

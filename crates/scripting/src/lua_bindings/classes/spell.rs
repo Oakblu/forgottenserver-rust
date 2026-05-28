@@ -15,6 +15,39 @@ impl LuaSpell {
     }
 }
 
+impl Default for LuaSpell {
+    fn default() -> Self {
+        use forgottenserver_game::spells::SpellGroup;
+        Self(Spell {
+            name: String::new(),
+            words: String::new(),
+            spell_id: 0,
+            mana_cost: 0,
+            mana_percent: 0,
+            soul_cost: 0,
+            min_level: 0,
+            magic_level: 0,
+            required_vocations: Vec::new(),
+            cooldown: 1000,
+            group_cooldown: 1000,
+            secondary_group_cooldown: 0,
+            group: SpellGroup::None,
+            secondary_group: SpellGroup::None,
+            premium: false,
+            enabled: true,
+            learnable: false,
+            need_target: false,
+            need_weapon: false,
+            self_target: false,
+            blocking_solid: false,
+            blocking_creature: false,
+            aggressive: true,
+            pz_lock: false,
+            range: -1,
+        })
+    }
+}
+
 impl<'lua> mlua::FromLua<'lua> for LuaSpell {
     fn from_lua(value: mlua::Value<'lua>, _lua: &'lua mlua::Lua) -> mlua::Result<Self> {
         match value {

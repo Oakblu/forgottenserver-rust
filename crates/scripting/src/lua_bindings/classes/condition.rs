@@ -21,6 +21,20 @@ impl LuaCondition {
     }
 }
 
+impl Default for LuaCondition {
+    fn default() -> Self {
+        use forgottenserver_common::enums::ConditionId;
+        Self(ConditionBase::new(
+            ConditionId::Default,
+            0,
+            -1,
+            false,
+            0,
+            false,
+        ))
+    }
+}
+
 impl<'lua> mlua::FromLua<'lua> for LuaCondition {
     fn from_lua(value: mlua::Value<'lua>, _lua: &'lua mlua::Lua) -> mlua::Result<Self> {
         match value {
