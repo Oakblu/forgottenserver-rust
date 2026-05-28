@@ -86,11 +86,15 @@ pub fn initialise_modules(config_path: &Path, data_dir: &Path) -> Result<Modules
         // depend on a game-state-providing trait.
         match LuaEnvironment::new(GameStateHandle::default()) {
             Ok(mut env) => {
-                // Load the global compat/core lib entry point first (data/lib/lib.lua).
-                // This defines helpers like `createFunctions` used by scripts/lib/*.lua.
-                let global_lib = data_dir.join("lib").join("lib.lua");
-                if global_lib.exists() {
-                    if let Err(e) = env.load_file(&global_lib) {
+                // Load data/lib/compat/compat.lua first; it defines `createFunctions`
+                // (and other compatibility helpers) used by data/scripts/lib/*.lua.
+                // The full data/lib/lib.lua also loads data/lib/core/ which depends on
+                // Player, Creature, etc. — classes not yet fully registered. We load
+                // only the compat layer here; core lib loading follows once all class
+                // globals are wired.
+                let compat_lib = data_dir.join("lib").join("compat").join("compat.lua");
+                if compat_lib.exists() {
+                    if let Err(e) = env.load_file(&compat_lib) {
                         eprintln!("{e}");
                         return Err(anyhow!("{e}"));
                     }
