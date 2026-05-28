@@ -1,14 +1,14 @@
 # forgottenserver-rust
 
-![tests](https://img.shields.io/badge/tests-6255%20passing-brightgreen?style=flat-square)
-![coverage](https://img.shields.io/badge/coverage-94.85%25-brightgreen?style=flat-square)
+![tests](https://img.shields.io/badge/tests-6306%20passing-brightgreen?style=flat-square)
+![coverage](https://img.shields.io/badge/coverage-95.07%25-brightgreen?style=flat-square)
 ![build](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)
 ![rust](https://img.shields.io/badge/rust-1.94-orange?style=flat-square&logo=rust&logoColor=white)
 ![license](https://img.shields.io/badge/license-GPL--2.0-blue?style=flat-square)
 ![docker](https://img.shields.io/badge/docker-compose-2496ED?style=flat-square&logo=docker&logoColor=white)
 ![mariadb](https://img.shields.io/badge/mariadb-11-003545?style=flat-square&logo=mariadb&logoColor=white)
 ![crates](https://img.shields.io/badge/crates-13-orange?style=flat-square&logo=rust&logoColor=white)
-![loc](https://img.shields.io/badge/rust%20LOC-136k-lightgrey?style=flat-square)
+![loc](https://img.shields.io/badge/rust%20LOC-430k-lightgrey?style=flat-square)
 
 A complete Rust port of [ForgottenServer](https://github.com/otland/forgottenserver), the open-source C++ Tibia MMORPG server emulator.
 

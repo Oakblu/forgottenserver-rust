@@ -88,6 +88,17 @@ No skill, plugin, or automated prompt may perform any of the following without *
 
 If a workflow step calls for any of these operations, **stop and ask the user first**. Do not proceed until the user explicitly approves the specific operation.
 
+## Worktree-First Development (Mandatory)
+
+All feature work, bug fixes, and migration tasks must be done in a git worktree whenever possible. Never work directly on the main working tree unless the task is a trivial one-line config change.
+
+1. **Create a worktree** for any non-trivial task before writing code.
+2. **Merge back** to the current local branch only after the work inside the worktree is complete (implementation written, tests pass, clippy clean).
+3. **After merging**, immediately run the full verification suite on the receiving branch:
+   - `cargo test --lib --workspace` — must pass with zero failures.
+   - `cargo clippy --workspace --lib --tests -- -D warnings` — must produce zero warnings or errors.
+4. If verification fails post-merge, the merge is not done — fix the failures before proceeding.
+
 ## No Stub Functions (Mandatory)
 
 Never create stub functions — not as placeholders, not as scaffolding, not as "temporary" skeletons. This applies everywhere:
