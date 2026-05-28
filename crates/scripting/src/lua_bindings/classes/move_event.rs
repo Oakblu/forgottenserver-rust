@@ -145,9 +145,7 @@ mod tests {
     #[test]
     fn move_event_type_accepts_integer() {
         let lua = fresh_lua();
-        let result = lua
-            .load("local m = MoveEvent(); m:type(0)")
-            .exec();
+        let result = lua.load("local m = MoveEvent(); m:type(0)").exec();
         assert!(
             result.is_ok(),
             "MoveEvent:type with integer should still work: {result:?}"
@@ -157,9 +155,7 @@ mod tests {
     #[test]
     fn slot_accepts_string_ring() {
         let lua = fresh_lua();
-        let result = lua
-            .load(r#"local m = MoveEvent(); m:slot("ring")"#)
-            .exec();
+        let result = lua.load(r#"local m = MoveEvent(); m:slot("ring")"#).exec();
         assert!(
             result.is_ok(),
             "MoveEvent:slot with string 'ring' should not error: {result:?}"
@@ -169,9 +165,7 @@ mod tests {
     #[test]
     fn slot_accepts_string_head() {
         let lua = fresh_lua();
-        let result = lua
-            .load(r#"local m = MoveEvent(); m:slot("head")"#)
-            .exec();
+        let result = lua.load(r#"local m = MoveEvent(); m:slot("head")"#).exec();
         assert!(
             result.is_ok(),
             "MoveEvent:slot with string 'head' should not error: {result:?}"
@@ -181,9 +175,7 @@ mod tests {
     #[test]
     fn slot_accepts_integer_regression() {
         let lua = fresh_lua();
-        let result = lua
-            .load("local m = MoveEvent(); m:slot(9)")
-            .exec();
+        let result = lua.load("local m = MoveEvent(); m:slot(9)").exec();
         assert!(
             result.is_ok(),
             "MoveEvent:slot with integer should still work: {result:?}"

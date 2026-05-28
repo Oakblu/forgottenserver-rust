@@ -882,7 +882,11 @@ mod tests {
             let top: mlua::Value = engine.lua.globals().get("top_loaded").unwrap();
             assert_eq!(top, mlua::Value::Boolean(true));
             let nested: mlua::Value = engine.lua.globals().get("fireball_loaded").unwrap();
-            assert_eq!(nested, mlua::Value::Boolean(true), "script in subdir must be loaded");
+            assert_eq!(
+                nested,
+                mlua::Value::Boolean(true),
+                "script in subdir must be loaded"
+            );
         }
 
         #[test]
@@ -898,7 +902,11 @@ mod tests {
             let active: mlua::Value = engine.lua.globals().get("active_loaded").unwrap();
             assert_eq!(active, mlua::Value::Boolean(true));
             let disabled: mlua::Value = engine.lua.globals().get("disabled_loaded").unwrap();
-            assert_eq!(disabled, mlua::Value::Nil, "#disabled.lua must not be loaded");
+            assert_eq!(
+                disabled,
+                mlua::Value::Nil,
+                "#disabled.lua must not be loaded"
+            );
         }
 
         #[test]
@@ -916,7 +924,11 @@ mod tests {
             let main: mlua::Value = engine.lua.globals().get("main_loaded").unwrap();
             assert_eq!(main, mlua::Value::Boolean(true));
             let helpers: mlua::Value = engine.lua.globals().get("helpers_loaded").unwrap();
-            assert_eq!(helpers, mlua::Value::Nil, "lib/helpers.lua must not be loaded");
+            assert_eq!(
+                helpers,
+                mlua::Value::Nil,
+                "lib/helpers.lua must not be loaded"
+            );
         }
 
         #[test]

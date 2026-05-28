@@ -5,8 +5,8 @@
 #![cfg(feature = "lua-scripting")]
 #![allow(dead_code)]
 
-use mlua::{UserData, UserDataMethods, Value};
 use super::xml_node::LuaXmlNode;
+use mlua::{UserData, UserDataMethods, Value};
 
 #[derive(Debug, Clone, Default)]
 pub struct LuaXmlDocument;
@@ -61,7 +61,8 @@ mod tests {
     fn xml_doc_child_children_iterable() {
         let lua = fresh_lua();
         let result = lua
-            .load(r#"
+            .load(
+                r#"
                 local doc = XMLDocument("test")
                 local actions = doc:child("actions")
                 local count = 0
@@ -69,9 +70,17 @@ mod tests {
                     count = count + 1
                 end
                 return count
-            "#)
+            "#,
+            )
             .eval::<i64>();
-        assert!(result.is_ok(), "iterating children() should not error: {result:?}");
-        assert_eq!(result.unwrap(), 0, "stub children() should yield zero items");
+        assert!(
+            result.is_ok(),
+            "iterating children() should not error: {result:?}"
+        );
+        assert_eq!(
+            result.unwrap(),
+            0,
+            "stub children() should yield zero items"
+        );
     }
 }

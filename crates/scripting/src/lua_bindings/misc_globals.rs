@@ -69,7 +69,8 @@ pub fn install(lua: &mlua::Lua) -> mlua::Result<()> {
     // TFS uses this to distinguish the scripts-interface path from the
     // legacy XML-event path.  This server always uses the scripts interface.
     let is_scripts_interface = lua.create_function(|_, _: ()| Ok(true))?;
-    lua.globals().set("isScriptsInterface", is_scripts_interface)?;
+    lua.globals()
+        .set("isScriptsInterface", is_scripts_interface)?;
 
     // ── PacketHandler(opcode) — returns a plain table ───────────────────────
     // C++ wires incoming packet opcodes to named Lua handler functions.
@@ -85,8 +86,14 @@ pub fn install(lua: &mlua::Lua) -> mlua::Result<()> {
         };
         let tbl = lua.create_table()?;
         tbl.set("packetType", packet_type)?;
-        tbl.set("register", lua.create_function(|_, _: mlua::MultiValue| Ok(()))?)?;
-        tbl.set("clear", lua.create_function(|_, _: mlua::MultiValue| Ok(()))?)?;
+        tbl.set(
+            "register",
+            lua.create_function(|_, _: mlua::MultiValue| Ok(()))?,
+        )?;
+        tbl.set(
+            "clear",
+            lua.create_function(|_, _: mlua::MultiValue| Ok(()))?,
+        )?;
         Ok(tbl)
     })?;
     lua.globals().set("PacketHandler", packet_handler)?;
@@ -119,37 +126,43 @@ mod tests {
         let result = lua
             .load("local area = createCombatArea({{0,1,0},{1,1,1},{0,1,0}}); return area ~= nil")
             .eval::<bool>();
-        assert!(result.is_ok(), "createCombatArea should not error: {result:?}");
+        assert!(
+            result.is_ok(),
+            "createCombatArea should not error: {result:?}"
+        );
         assert!(result.unwrap(), "createCombatArea should return non-nil");
     }
 
     #[test]
     fn is_scripts_interface_returns_true() {
         let lua = fresh_lua();
-        let result = lua
-            .load("return isScriptsInterface()")
-            .eval::<bool>();
-        assert!(result.is_ok(), "isScriptsInterface should not error: {result:?}");
+        let result = lua.load("return isScriptsInterface()").eval::<bool>();
+        assert!(
+            result.is_ok(),
+            "isScriptsInterface should not error: {result:?}"
+        );
         assert!(result.unwrap(), "isScriptsInterface should return true");
     }
 
     #[test]
     fn packet_handler_is_callable() {
         let lua = fresh_lua();
-        let result = lua
-            .load("PacketHandler(0x9F, function() end)")
-            .exec();
+        let result = lua.load("PacketHandler(0x9F, function() end)").exec();
         assert!(result.is_ok(), "PacketHandler should not error: {result:?}");
     }
 
     #[test]
     fn packet_handler_returns_non_nil() {
         let lua = fresh_lua();
-        let result = lua
-            .load("return PacketHandler(0xE1) ~= nil")
-            .eval::<bool>();
-        assert!(result.is_ok(), "PacketHandler(0xE1) should not error: {result:?}");
-        assert!(result.unwrap(), "PacketHandler should return a non-nil value");
+        let result = lua.load("return PacketHandler(0xE1) ~= nil").eval::<bool>();
+        assert!(
+            result.is_ok(),
+            "PacketHandler(0xE1) should not error: {result:?}"
+        );
+        assert!(
+            result.unwrap(),
+            "PacketHandler should return a non-nil value"
+        );
     }
 
     #[test]
@@ -158,7 +171,10 @@ mod tests {
         let result = lua
             .load("local h = PacketHandler(0xE1); function h.onReceive() end")
             .exec();
-        assert!(result.is_ok(), "field assignment on PacketHandler result should not error: {result:?}");
+        assert!(
+            result.is_ok(),
+            "field assignment on PacketHandler result should not error: {result:?}"
+        );
     }
 
     #[test]
@@ -167,7 +183,10 @@ mod tests {
         let result = lua
             .load(r#"return type(openLevelDoors) == "table""#)
             .eval::<bool>();
-        assert!(result.is_ok(), "openLevelDoors check should not error: {result:?}");
+        assert!(
+            result.is_ok(),
+            "openLevelDoors check should not error: {result:?}"
+        );
         assert!(result.unwrap(), "openLevelDoors should be a table");
     }
 
@@ -177,7 +196,10 @@ mod tests {
         let result = lua
             .load(r#"return type(openQuestDoors) == "table""#)
             .eval::<bool>();
-        assert!(result.is_ok(), "openQuestDoors check should not error: {result:?}");
+        assert!(
+            result.is_ok(),
+            "openQuestDoors check should not error: {result:?}"
+        );
         assert!(result.unwrap(), "openQuestDoors should be a table");
     }
 }

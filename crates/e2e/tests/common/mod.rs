@@ -43,8 +43,7 @@ impl ServerFixture {
             // tries to execute the raw SQL file.
             let repo_root = repo_root();
             let schema_path = repo_root.join("schema.sql");
-            let init_script_path = repo_root
-                .join("docker/mariadb-init/00-init-tibia-dbs.sh");
+            let init_script_path = repo_root.join("docker/mariadb-init/00-init-tibia-dbs.sh");
 
             let mariadb = GenericImage::new("mariadb", "11")
                 // "ready for connections" on stderr fires TWICE: once for the
@@ -64,7 +63,9 @@ impl ServerFixture {
                     "/opt/tfs-schema.sql",
                 ))
                 .with_mount(Mount::bind_mount(
-                    init_script_path.to_str().expect("init script path not UTF-8"),
+                    init_script_path
+                        .to_str()
+                        .expect("init script path not UTF-8"),
                     "/docker-entrypoint-initdb.d/00-init-tibia-dbs.sh",
                 ))
                 .start()
@@ -113,8 +114,7 @@ mapAuthor = "Komic"
             );
 
             let config_path = config_dir.path().join("config.lua");
-            std::fs::write(&config_path, &config_content)
-                .expect("failed to write test config.lua");
+            std::fs::write(&config_path, &config_content).expect("failed to write test config.lua");
 
             // ── 3. forgottenserver-rust ────────────────────────────────────
             let server = GenericImage::new("monorepo-forgottenserver-rust", "latest")

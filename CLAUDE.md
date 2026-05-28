@@ -106,8 +106,9 @@ A task is **not done** until:
 1. The implementation is written.
 2. Tests for that implementation are written and **pass**. If tests fail, the task is still open — go back and fix it.
 3. `cargo test --lib --workspace` (or the relevant scoped test command) completes without failures.
+4. `cargo clippy --workspace --lib --tests -- -D warnings` completes with **zero errors and zero warnings**. Any clippy output is a blocker — go back and fix it.
 
-There are no exceptions. "It compiles" or "it looks right" is not done. Passing tests is done.
+There are no exceptions. "It compiles" or "it looks right" is not done. Passing tests and a clean lint are done.
 
 ## Agent Failure / Timeout Recovery
 

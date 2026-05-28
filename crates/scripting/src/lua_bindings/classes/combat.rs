@@ -114,9 +114,7 @@ mod tests {
     #[test]
     fn set_parameter_still_accepts_integer() {
         let lua = fresh_lua();
-        let result = lua
-            .load("local c = Combat(); c:setParameter(3, 42)")
-            .exec();
+        let result = lua.load("local c = Combat(); c:setParameter(3, 42)").exec();
         assert!(
             result.is_ok(),
             "setParameter with integer should still work: {result:?}"

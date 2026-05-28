@@ -85,9 +85,8 @@ impl LuaEnvironment {
     ///
     /// Returns `Err(String)` with `[FATAL]` prefix on read or execution failure.
     pub fn load_file(&mut self, path: &std::path::Path) -> Result<(), String> {
-        let content = std::fs::read_to_string(path).map_err(|e| {
-            format!("[FATAL] Failed to read {}: {e}", path.display())
-        })?;
+        let content = std::fs::read_to_string(path)
+            .map_err(|e| format!("[FATAL] Failed to read {}: {e}", path.display()))?;
         let name = path.to_string_lossy().into_owned();
         self.lua
             .load(&content)
@@ -108,23 +107,19 @@ impl LuaEnvironment {
             ));
         }
         let mut paths = Vec::new();
-        crate::engine::collect_lua_files(lib_dir, &mut paths, false).map_err(|e| {
-            format!("[FATAL] Failed to scan lib dir {}: {e}", lib_dir.display())
-        })?;
+        crate::engine::collect_lua_files(lib_dir, &mut paths, false)
+            .map_err(|e| format!("[FATAL] Failed to scan lib dir {}: {e}", lib_dir.display()))?;
         paths.sort();
         let mut loaded = 0usize;
         for path in &paths {
-            let source = std::fs::read_to_string(path).map_err(|e| {
-                format!("[FATAL] Failed to read Lua lib {}: {e}", path.display())
-            })?;
+            let source = std::fs::read_to_string(path)
+                .map_err(|e| format!("[FATAL] Failed to read Lua lib {}: {e}", path.display()))?;
             let name = path.to_string_lossy();
             self.lua
                 .load(&source)
                 .set_name(name.as_ref())
                 .exec()
-                .map_err(|e| {
-                    format!("[FATAL] Failed to load Lua lib {}: {e}", path.display())
-                })?;
+                .map_err(|e| format!("[FATAL] Failed to load Lua lib {}: {e}", path.display()))?;
             loaded += 1;
         }
         Ok(loaded)
@@ -254,13 +249,22 @@ pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::R
     // compat.lua calls Game.getMounts() at module level to build a lookup table.
     {
         let game_tbl: mlua::Table = lua.globals().get("Game")?;
-        game_tbl.set("getMounts", lua.create_function(|lua, _: ()| lua.create_table())?)?;
-        game_tbl.set("setWorldLight", lua.create_function(|_, _: mlua::MultiValue| Ok(()))?)?;
+        game_tbl.set(
+            "getMounts",
+            lua.create_function(|lua, _: ()| lua.create_table())?,
+        )?;
+        game_tbl.set(
+            "setWorldLight",
+            lua.create_function(|_, _: mlua::MultiValue| Ok(()))?,
+        )?;
         game_tbl.set("getWorldTime", lua.create_function(|_, _: ()| Ok(0i64))?)?;
         // Returns an empty table until the item registry is accessible from scripting.
         // Scripts iterate: `for index, currency in pairs(Game.getCurrencyItems()) do`
         // so an empty table causes a no-op loop rather than a nil-call error.
-        game_tbl.set("getCurrencyItems", lua.create_function(|lua, _: ()| lua.create_table())?)?;
+        game_tbl.set(
+            "getCurrencyItems",
+            lua.create_function(|lua, _: ()| lua.create_table())?,
+        )?;
     }
 
     class_table!("Spell", |_, _: mlua::MultiValue| Ok(
@@ -304,10 +308,22 @@ pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::R
     //   colon: configManager:getBoolean(key)   → args = [table, key]  — both ignored.
     {
         let config_tbl = lua.create_table()?;
-        config_tbl.set("getString", lua.create_function(|_, _: mlua::MultiValue| Ok("".to_string()))?)?;
-        config_tbl.set("getNumber", lua.create_function(|_, _: mlua::MultiValue| Ok(0i64))?)?;
-        config_tbl.set("getBoolean", lua.create_function(|_, _: mlua::MultiValue| Ok(false))?)?;
-        config_tbl.set("getFloat", lua.create_function(|_, _: mlua::MultiValue| Ok(0.0f64))?)?;
+        config_tbl.set(
+            "getString",
+            lua.create_function(|_, _: mlua::MultiValue| Ok("".to_string()))?,
+        )?;
+        config_tbl.set(
+            "getNumber",
+            lua.create_function(|_, _: mlua::MultiValue| Ok(0i64))?,
+        )?;
+        config_tbl.set(
+            "getBoolean",
+            lua.create_function(|_, _: mlua::MultiValue| Ok(false))?,
+        )?;
+        config_tbl.set(
+            "getFloat",
+            lua.create_function(|_, _: mlua::MultiValue| Ok(0.0f64))?,
+        )?;
         lua.globals().set("configManager", config_tbl)?;
     }
 
@@ -328,15 +344,28 @@ pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::R
     // just sets table fields, which works fine on plain tables. Full UserData constructors
     // follow when each class is fully wired; for now nil-indexing errors are prevented.
     for name in &[
-        "Player", "Creature", "Monster", "Npc",
-        "Item", "Container", "Teleport", "Podium",
-        "Tile", "ItemType", "Vocation",
-        "Guild", "Group", "Party", "House",
+        "Player",
+        "Creature",
+        "Monster",
+        "Npc",
+        "Item",
+        "Container",
+        "Teleport",
+        "Podium",
+        "Tile",
+        "ItemType",
+        "Vocation",
+        "Guild",
+        "Group",
+        "Party",
+        "House",
         "MonsterType",
         // compat.lua module-level: `numberToVariant = Variant`, `Variant.getNumber` etc.
         "Variant",
         // Used by scripts (Town, Loot, MonsterSpell) as constructor/namespace tables
-        "Town", "Loot", "MonsterSpell",
+        "Town",
+        "Loot",
+        "MonsterSpell",
     ] {
         lua.globals().set(*name, lua.create_table()?)?;
     }
@@ -444,7 +473,10 @@ mod tests {
 
         let mut env = LuaEnvironment::new(GameStateHandle::default()).unwrap();
         let count = env.load_scripts(dir.path(), dir.path());
-        assert_eq!(count, 1, "one good script must be counted despite one bad script");
+        assert_eq!(
+            count, 1,
+            "one good script must be counted despite one bad script"
+        );
 
         let good: mlua::Value = env.lua.globals().get("good_loaded").unwrap();
         assert_eq!(good, mlua::Value::Boolean(true));
@@ -454,8 +486,15 @@ mod tests {
     fn lua_environment_new_installs_class_globals() {
         let env = LuaEnvironment::new(GameStateHandle::default()).unwrap();
         for global in &[
-            "Spell", "Combat", "TalkAction", "Action", "Condition",
-            "CreatureEvent", "GlobalEvent", "MoveEvent", "XMLDocument",
+            "Spell",
+            "Combat",
+            "TalkAction",
+            "Action",
+            "Condition",
+            "CreatureEvent",
+            "GlobalEvent",
+            "MoveEvent",
+            "XMLDocument",
         ] {
             let val: mlua::Value = env.lua.globals().get(*global).unwrap();
             assert!(

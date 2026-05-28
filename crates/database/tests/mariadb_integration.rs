@@ -38,8 +38,9 @@ fn test_config() -> MariaDbConfig {
 }
 
 fn connect() -> MariaDbDatabase {
-    MariaDbDatabase::connect(&test_config())
-        .expect("MariaDbDatabase::connect failed — is the db container up? (docker compose up -d db)")
+    MariaDbDatabase::connect(&test_config()).expect(
+        "MariaDbDatabase::connect failed — is the db container up? (docker compose up -d db)",
+    )
 }
 
 /// Wipe a table; used to reset between tests that need committed state.

@@ -115,7 +115,10 @@ pub fn initialise_modules(config_path: &Path, data_dir: &Path) -> Result<Modules
                 let count = if scripts_dir.exists() {
                     env.load_scripts(&scripts_dir, data_dir)
                 } else {
-                    eprintln!("[WARN] Lua scripts dir not found: {}", scripts_dir.display());
+                    eprintln!(
+                        "[WARN] Lua scripts dir not found: {}",
+                        scripts_dir.display()
+                    );
                     0
                 };
                 (Some(env), count)
@@ -363,6 +366,9 @@ mod tests {
     fn validate_config_path_existing_file_returns_ok() {
         let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml");
         let result = validate_config_path(&path);
-        assert!(result.is_ok(), "expected Ok for existing file, got: {result:?}");
+        assert!(
+            result.is_ok(),
+            "expected Ok for existing file, got: {result:?}"
+        );
     }
 }

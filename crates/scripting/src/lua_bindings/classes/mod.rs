@@ -14,8 +14,8 @@
 
 pub mod action;
 pub mod combat;
-pub mod config_manager;
 pub mod condition;
+pub mod config_manager;
 pub mod container;
 pub mod creature;
 pub mod creature_event;
