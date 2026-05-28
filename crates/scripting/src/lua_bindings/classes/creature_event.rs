@@ -9,11 +9,13 @@
 #![cfg(feature = "lua-scripting")]
 #![allow(dead_code)]
 
-use mlua::{UserData, UserDataMethods, Value};
+use mlua::{UserData, UserDataMethods};
 
 #[derive(Debug, Clone, Default)]
 pub struct LuaCreatureEvent {
+    pub name: String,
     pub event_type: i64,
+    pub registered_callbacks: Vec<String>,
 }
 
 impl LuaCreatureEvent {
@@ -41,14 +43,27 @@ impl UserData for LuaCreatureEvent {
             this.event_type = t;
             Ok(())
         });
-        methods.add_method_mut("register", |_, _this, ()| Ok(true));
+        methods.add_method_mut("register", |lua, this, ()| {
+            let store = lua
+                .app_data_ref::<crate::lua_bindings::LuaCreatureEventStore>()
+                .ok_or_else(|| mlua::Error::runtime("LuaCreatureEventStore not initialized"))?;
+            store
+                .0
+                .lock()
+                .map_err(|_| mlua::Error::runtime("lock poisoned"))?
+                .push(this.clone());
+            Ok(true)
+        });
         // Allow field assignment (e.g. `creatureevent.onDeath = function() end`).
         // Lua scripts assign handler functions as fields; we accept but don't
         // store them here (real wiring happens in the dispatcher).
-        methods.add_meta_method_mut("__newindex", |_, _this, (_k, _v): (Value, Value)| Ok(()));
-        // Callback setters — record but don't dispatch (real wiring needs
-        // the CreatureEventsDispatcher hookup in scripting/engine).
-        for name in &[
+        methods.add_meta_method_mut(
+            "__newindex",
+            |_, _this, (_k, _v): (mlua::Value, mlua::Value)| Ok(()),
+        );
+        // Callback setters — record callback name so callers can inspect which
+        // handlers have been registered. Real dispatch wiring happens in the engine.
+        for cb_name in &[
             "onLogin",
             "onLogout",
             "onReconnect",
@@ -63,13 +78,21 @@ impl UserData for LuaCreatureEvent {
             "onManaChange",
             "onExtendedOpcode",
         ] {
-            methods.add_method_mut(*name, |_, _this, _cb: Value| Ok(()));
+            let cb_name_owned = cb_name.to_string();
+            methods.add_method_mut(*cb_name, move |_, this, _cb: mlua::Value| {
+                if !this.registered_callbacks.contains(&cb_name_owned) {
+                    this.registered_callbacks.push(cb_name_owned.clone());
+                }
+                Ok(())
+            });
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+
     fn fresh_lua() -> mlua::Lua {
         let lua = mlua::Lua::new();
         crate::lua_bindings::install_bindings(
@@ -78,6 +101,33 @@ mod tests {
         )
         .unwrap();
         lua
+    }
+
+    #[test]
+    fn creature_event_callback_setter_records_name() {
+        let lua = fresh_lua();
+        lua.globals().set("ce", LuaCreatureEvent::default()).unwrap();
+        lua.load(r#"ce:onLogin(function() end)"#).exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("ce").unwrap();
+        let borrowed = ud.borrow::<LuaCreatureEvent>().unwrap();
+        assert!(borrowed.registered_callbacks.contains(&"onLogin".to_string()));
+    }
+
+    #[test]
+    fn creature_event_register_stores_in_store() {
+        use crate::lua_bindings::LuaCreatureEventStore;
+        let lua = mlua::Lua::new();
+        let store = LuaCreatureEventStore::default();
+        lua.set_app_data(store.clone());
+        crate::lua_bindings::install_bindings(&lua, crate::lua_bindings::GameStateHandle::default()).unwrap();
+        lua.load(r#"
+            local ce = CreatureEvent("Login")
+            function ce.onLogin(player) end
+            ce:register()
+        "#).exec().unwrap();
+        let guard = store.0.lock().unwrap();
+        assert_eq!(guard.len(), 1);
+        assert_eq!(guard[0].name, "Login");
     }
 
     #[test]

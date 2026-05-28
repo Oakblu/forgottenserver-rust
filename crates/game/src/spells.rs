@@ -19,6 +19,20 @@ pub enum SpellGroup {
     Special,
 }
 
+impl SpellGroup {
+    /// Parse a spell group name string into the corresponding `SpellGroup` variant.
+    /// Mirrors `luaSpellGroup` string→enum mapping from C++ luascript.cpp.
+    pub fn from_name(s: &str) -> Self {
+        match s.to_lowercase().as_str() {
+            "attack" => SpellGroup::Attack,
+            "healing" => SpellGroup::Healing,
+            "support" => SpellGroup::Support,
+            "special" => SpellGroup::Special,
+            _ => SpellGroup::None,
+        }
+    }
+}
+
 /// Result of a `can_cast` check.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SpellCastResult {
@@ -101,6 +115,8 @@ pub struct Spell {
     pub pz_lock: bool,
 
     pub range: i32,
+    pub need_direction: bool,
+    pub need_caster_target_or_direction: bool,
 }
 
 impl Spell {
@@ -137,6 +153,8 @@ impl Spell {
             aggressive: true,
             pz_lock: false,
             range: -1,
+            need_direction: false,
+            need_caster_target_or_direction: false,
         }
     }
 
