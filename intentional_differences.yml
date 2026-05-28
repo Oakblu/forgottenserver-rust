@@ -1162,6 +1162,56 @@ differences:
     reviewed_by: forgottenserver-rust-final-migration Phase 3
     status: ACCEPTED
 
+  - id: cylinder-class-to-trait
+    cpp_symbol: "Cylinder"
+    cpp_file: "src/cylinder.h"
+    rust_symbol: "common::cylinder::Cylinder"
+    rust_module: "crates/common/src/cylinder.rs"
+    divergence: |
+      The C++ `Cylinder` base class has been deleted upstream (afd91657) and
+      its methods merged into `Thing`. Rust never used a `Cylinder` base class;
+      the receiver contract is expressed as the `common::Cylinder` trait to
+      enable trait-object dispatch across crate boundaries without pulling in
+      concrete types from higher crates.
+    reason: |
+      Rust's ownership model and crate dependency graph make a concrete base
+      class impossible here. A trait in `common` lets `map::Tile`,
+      `items::Container`, and other types implement the contract without
+      circular dependencies.
+    observable_equivalence: |
+      All receiver methods (`cylinder_query_add`, `cylinder_post_add`, etc.)
+      are present on implementors. Behaviour at the protocol and Lua layers is
+      identical. Tests: `common::cylinder::tests`
+      (crates/common/src/cylinder.rs).
+    verification_state: TESTED
+    date: 2026-05-28
+    reviewed_by: upstream-sync-2026-05-28
+    status: ACCEPTED
+
+  - id: creature-speech-bubble-npc-only
+    cpp_symbol: "Creature::getSpeechBubble"
+    cpp_file: "src/creature.h"
+    rust_symbol: "entity::npc::Npc::get_speech_bubble"
+    rust_module: "crates/entity/src/npc.rs"
+    divergence: |
+      C++ had `virtual uint8_t getSpeechBubble() const` on the `Creature` base
+      returning `SPEECHBUBBLE_NONE`. Upstream removed it in 335e4da6
+      (2025-12-03), restricting speech bubbles to NPCs. Rust never had this on
+      a `Creature` trait — `get_speech_bubble()` is NPC-only from the start.
+    reason: |
+      Rust's static dispatch means a default-returning virtual method on
+      Creature adds no value and creates false expectations. NPC-only placement
+      matches actual usage.
+    observable_equivalence: |
+      Non-NPC creatures never had a non-None speech bubble; the Lua binding
+      `getSpeechBubble` on the NPC userdata returns the correct value. Tests:
+      `entity::npc::tests::test_npc_speech_bubble_none_by_default` and
+      `test_npc_set_speech_bubble`.
+    verification_state: TESTED
+    date: 2026-05-28
+    reviewed_by: upstream-sync-2026-05-28
+    status: ACCEPTED
+
 # ═════════════════════════════════════════════════════════════════════════
 # Items reclassified as debt (NOT divergences)
 # ═════════════════════════════════════════════════════════════════════════
