@@ -230,47 +230,62 @@ pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::R
     // methods. Registering the unit struct as a global gives audit-visible
     // `Game:method` entries without needing per-call game-state plumbing.
     lua.globals().set("Game", classes::game::LuaGame)?;
-    // Class constructor globals — each is a Lua function that creates a new instance.
-    // Scripts call e.g. `local spell = Spell("name")` or `local c = Combat.new()`.
-    lua.globals().set(
-        "Spell",
-        lua.create_function(|_, _args: mlua::MultiValue| Ok(classes::spell::LuaSpell::default()))?,
-    )?;
-    lua.globals().set(
-        "Combat",
-        lua.create_function(|_, _: ()| Ok(classes::combat::LuaCombat::default()))?,
-    )?;
-    lua.globals().set(
-        "TalkAction",
-        lua.create_function(|_, _: ()| Ok(classes::talk_action::LuaTalkAction))?,
-    )?;
-    lua.globals().set(
-        "Action",
-        lua.create_function(|_, _: ()| Ok(classes::action::LuaAction::default()))?,
-    )?;
-    lua.globals().set(
-        "Condition",
-        lua.create_function(|_, _: ()| Ok(classes::condition::LuaCondition::default()))?,
-    )?;
-    lua.globals().set(
-        "CreatureEvent",
-        lua.create_function(|_, _: ()| Ok(classes::creature_event::LuaCreatureEvent::default()))?,
-    )?;
-    lua.globals().set(
-        "GlobalEvent",
-        lua.create_function(|_, _: ()| Ok(classes::global_event::LuaGlobalEvent))?,
-    )?;
-    lua.globals().set(
-        "MoveEvent",
-        lua.create_function(|_, _: ()| Ok(classes::move_event::LuaMoveEvent::default()))?,
-    )?;
-    lua.globals().set(
-        "XMLDocument",
-        lua.create_function(|_, _: ()| Ok(classes::xml_document::LuaXmlDocument))?,
-    )?;
+
+    // Class constructor globals — each is registered as a Lua TABLE with:
+    //   __call     → creates a new UserData instance (so `Combat()` works)
+    //   __newindex → silently discards assignments (so compat.lua's
+    //                `Combat.setCondition = function(...)` doesn't error)
+    // This mirrors the C++ pattern where each class is a table/metatable pair.
+    macro_rules! class_table {
+        ($name:expr, $ctor:expr) => {{
+            let tbl = lua.create_table()?;
+            let mt = lua.create_table()?;
+            mt.set("__call", lua.create_function($ctor)?)?;
+            mt.set(
+                "__newindex",
+                lua.create_function(|_, _: (mlua::Value, mlua::Value, mlua::Value)| Ok(()))?,
+            )?;
+            tbl.set_metatable(Some(mt));
+            lua.globals().set($name, tbl)?;
+        }};
+    }
+
+    class_table!("Spell", |_, _: mlua::MultiValue| Ok(
+        classes::spell::LuaSpell::default()
+    ));
+    class_table!("Combat", |_, _: mlua::MultiValue| Ok(
+        classes::combat::LuaCombat::default()
+    ));
+    class_table!("TalkAction", |_, _: mlua::MultiValue| Ok(
+        classes::talk_action::LuaTalkAction
+    ));
+    class_table!("Action", |_, _: mlua::MultiValue| Ok(
+        classes::action::LuaAction::default()
+    ));
+    class_table!("Condition", |_, _: mlua::MultiValue| Ok(
+        classes::condition::LuaCondition::default()
+    ));
+    class_table!("CreatureEvent", |_, _: mlua::MultiValue| Ok(
+        classes::creature_event::LuaCreatureEvent::default()
+    ));
+    class_table!("GlobalEvent", |_, _: mlua::MultiValue| Ok(
+        classes::global_event::LuaGlobalEvent
+    ));
+    class_table!("MoveEvent", |_, _: mlua::MultiValue| Ok(
+        classes::move_event::LuaMoveEvent::default()
+    ));
+    class_table!("XMLDocument", |_, _: mlua::MultiValue| Ok(
+        classes::xml_document::LuaXmlDocument
+    ));
+
     // configManager — singleton instance (lowercase, matches C++ g_config Lua name)
     lua.globals()
         .set("configManager", classes::config_manager::LuaConfigManager)?;
+
+    // result — stub table for database result compat aliases used by compat.lua
+    // (e.g. `result.getDataInt = result.getNumber`). Real methods are nil stubs.
+    lua.globals().set("result", lua.create_table()?)?;
+
     Ok(())
 }
 
