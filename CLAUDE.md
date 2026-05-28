@@ -46,21 +46,21 @@ make ledger-cross      # phase-2 cross-validation
 
 The workspace mirrors the C++ include layer graph from `DEPENDENCY_GRAPH.md`:
 
-| Crate              | C++ equivalent                                         | Responsibility                                   |
-| ------------------ | ------------------------------------------------------ | ------------------------------------------------ |
-| `common`           | `tools.h`, `enums.h`, `const.h`                        | Shared types, constants, enums, utilities        |
-| `items`            | `items.cpp/h`, `item.cpp/h`                            | `Item`, `Container`, `ItemType` registry         |
-| `map`              | `map.cpp/h`, `tile.cpp/h`                              | `Map`, `Tile`, `Position`, `SpectatorVec`        |
-| `entity`           | `creature.cpp`, `player.cpp`, `monster.cpp`, `npc.cpp` | Player, Creature, Monster, Npc structs + traits  |
-| `world`            | `iologindata.cpp`, `iomapserialize.cpp`                | World load, login data, map serialization        |
-| `database`         | `database.cpp/h`, `databasetasks.cpp/h`                | Database, DBResult, DatabaseTasks                |
-| `game`             | `game.cpp/h`, `combat.cpp`, `condition.cpp`            | Game orchestrator, combat, conditions, vocations |
-| `scripting`        | `luascript.cpp/h`, `*events.cpp`, `*functions.cpp`     | Lua bindings via `mlua`                          |
-| `network`          | `protocol*.cpp/h`, `connection.cpp/h`                  | Protocol codecs, NetworkMessage, TCP connections |
-| `server`           | `main.cpp`, `server.cpp`, `scheduler.cpp`              | Entry point, boot sequence, scheduler            |
-| `tfs`              | —                                                      | Runnable binary wiring all crates                |
-| `e2e`              | —                                                      | End-to-end tests (requires Docker/DB)            |
-| `harness-tools`    | —                                                      | Equivalence harness utilities                    |
+| Crate           | C++ equivalent                                         | Responsibility                                   |
+| --------------- | ------------------------------------------------------ | ------------------------------------------------ |
+| `common`        | `tools.h`, `enums.h`, `const.h`                        | Shared types, constants, enums, utilities        |
+| `items`         | `items.cpp/h`, `item.cpp/h`                            | `Item`, `Container`, `ItemType` registry         |
+| `map`           | `map.cpp/h`, `tile.cpp/h`                              | `Map`, `Tile`, `Position`, `SpectatorVec`        |
+| `entity`        | `creature.cpp`, `player.cpp`, `monster.cpp`, `npc.cpp` | Player, Creature, Monster, Npc structs + traits  |
+| `world`         | `iologindata.cpp`, `iomapserialize.cpp`                | World load, login data, map serialization        |
+| `database`      | `database.cpp/h`, `databasetasks.cpp/h`                | Database, DBResult, DatabaseTasks                |
+| `game`          | `game.cpp/h`, `combat.cpp`, `condition.cpp`            | Game orchestrator, combat, conditions, vocations |
+| `scripting`     | `luascript.cpp/h`, `*events.cpp`, `*functions.cpp`     | Lua bindings via `mlua`                          |
+| `network`       | `protocol*.cpp/h`, `connection.cpp/h`                  | Protocol codecs, NetworkMessage, TCP connections |
+| `server`        | `main.cpp`, `server.cpp`, `scheduler.cpp`              | Entry point, boot sequence, scheduler            |
+| `tfs`           | —                                                      | Runnable binary wiring all crates                |
+| `e2e`           | —                                                      | End-to-end tests (requires Docker/DB)            |
+| `harness-tools` | —                                                      | Equivalence harness utilities                    |
 
 **Crate boundary rule:** no service crate imports another service crate's internals except via its public API. Shared types live in `common`.
 
@@ -103,12 +103,14 @@ Existing stubs (`todo!()`, `unimplemented!()`, empty function bodies that return
 ## Task Completion Rules (Mandatory)
 
 A task is **not done** until:
+
 1. The implementation is written.
 2. Tests for that implementation are written and **pass**. If tests fail, the task is still open — go back and fix it.
 3. `cargo test --lib --workspace` (or the relevant scoped test command) completes without failures.
 4. `cargo clippy --workspace --lib --tests -- -D warnings` completes with **zero errors and zero warnings**. Any clippy output is a blocker — go back and fix it.
+5. The Rust container runs clean: `docker compose up --build` and watch the logs. Any runtime errors are a blocker — evaluate, plan a fix, and re-run until the logs are clean.
 
-There are no exceptions. "It compiles" or "it looks right" is not done. Passing tests and a clean lint are done.
+There are no exceptions. "It compiles" or "it looks right" is not done. Passing tests, a clean lint, and clean container logs are done.
 
 ## Agent Failure / Timeout Recovery
 
@@ -138,6 +140,7 @@ These rules are enforced across the entire project and must not be violated:
    - `intentional_differences.yml` — recorded divergences; anything not here is treated as a bug
 
 3. **Use scripts to inspect symbols — never load a full `.cpp` file to discover what it contains.** C++ source files are large enough to saturate the context window. Use the manifests and ledger scripts to narrow scope first:
+
    ```bash
    # List symbols in a specific C++ file without opening it
    python3 -c "
@@ -162,7 +165,6 @@ These rules are enforced across the entire project and must not be violated:
    # Determine which dependency layer a file belongs to (informs crate placement)
    python3 scripts/ledger/extract_layer_scopes.py
    ```
-   Open a `.cpp` file only to verify a specific behavioral detail after narrowing scope via the manifests. Never open it to discover what it contains.
 
 4. **Never assume a function was migrated because the name matches.** Cross-check `MIGRATION_LEDGER.yml` and `rust_symbol_manifest.json`. Name similarity alone is never sufficient evidence of equivalence.
 
@@ -180,7 +182,6 @@ These rules are enforced across the entire project and must not be violated:
 
 ## Key Reference Files
 
-- `AI_MIGRATION_CONTEXT.md` — architecture decisions, full C++ → Rust mapping, all migration rules
 - `MIGRATION_LEDGER.yml` — per-symbol migration status (authoritative)
 - `DEPENDENCY_GRAPH.md` — C++ header layer graph → Rust crate boundary rules
 - `intentional_differences.yml` — recorded, justified divergences from C++
