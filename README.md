@@ -8,7 +8,7 @@
 ![docker](https://img.shields.io/badge/docker-compose-2496ED?style=flat-square&logo=docker&logoColor=white)
 ![mariadb](https://img.shields.io/badge/mariadb-11-003545?style=flat-square&logo=mariadb&logoColor=white)
 ![crates](https://img.shields.io/badge/crates-13-orange?style=flat-square&logo=rust&logoColor=white)
-![loc](https://img.shields.io/badge/rust%20LOC-430k-lightgrey?style=flat-square)
+![loc](https://img.shields.io/badge/rust%20LOC-431k-lightgrey?style=flat-square)
 
 A complete Rust port of [ForgottenServer](https://github.com/otland/forgottenserver), the open-source C++ Tibia MMORPG server emulator.
 
