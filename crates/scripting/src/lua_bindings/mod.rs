@@ -59,6 +59,30 @@ impl Default for GameStateHandle {
     }
 }
 
+/// Stores all spells registered via `spell:register()` from Lua scripts.
+#[derive(Clone, Default)]
+pub struct LuaSpellStore(pub Arc<Mutex<Vec<classes::spell::LuaSpell>>>);
+
+/// Stores all actions registered via `action:register()` from Lua scripts.
+#[derive(Clone, Default)]
+pub struct LuaActionStore(pub Arc<Mutex<Vec<classes::action::LuaAction>>>);
+
+/// Stores all talk actions registered via `t:register()` from Lua scripts.
+#[derive(Clone, Default)]
+pub struct LuaTalkActionStore(pub Arc<Mutex<Vec<classes::talk_action::LuaTalkAction>>>);
+
+/// Stores all global events registered via `e:register()` from Lua scripts.
+#[derive(Clone, Default)]
+pub struct LuaGlobalEventStore(pub Arc<Mutex<Vec<classes::global_event::LuaGlobalEvent>>>);
+
+/// Stores all move events registered via `m:register()` from Lua scripts.
+#[derive(Clone, Default)]
+pub struct LuaMoveEventStore(pub Arc<Mutex<Vec<classes::move_event::LuaMoveEvent>>>);
+
+/// Stores all creature events registered via `ce:register()` from Lua scripts.
+#[derive(Clone, Default)]
+pub struct LuaCreatureEventStore(pub Arc<Mutex<Vec<classes::creature_event::LuaCreatureEvent>>>);
+
 /// The single Lua environment for the server process.
 ///
 /// Mirrors C++'s `LuaEnvironment` / `g_luaEnvironment`: one VM owns all
@@ -74,6 +98,14 @@ impl LuaEnvironment {
         let lua = mlua::Lua::new();
         install_bindings(&lua, game_state)?;
         Ok(Self { lua })
+    }
+
+    /// Returns the number of spells registered via `spell:register()` from Lua scripts.
+    pub fn registered_spells_count(&self) -> usize {
+        self.lua
+            .app_data_ref::<LuaSpellStore>()
+            .map(|s| s.0.lock().map(|v| v.len()).unwrap_or(0))
+            .unwrap_or(0)
     }
 
     /// Evaluate a Lua snippet — for tests and REPL use.
@@ -217,6 +249,36 @@ fn parse_lua_error_location(err_str: &str) -> (Option<u32>, String) {
 /// `install` call here.
 pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::Result<()> {
     lua.set_app_data(game_state);
+    // Only initialise the spell store if the caller has not pre-installed one.
+    // This allows tests to inject their own store before calling install_bindings.
+    if lua.app_data_ref::<LuaSpellStore>().is_none() {
+        lua.set_app_data(LuaSpellStore::default());
+    }
+    // Only initialise the action store if the caller has not pre-installed one.
+    // This allows tests to inject their own store before calling install_bindings.
+    if lua.app_data_ref::<LuaActionStore>().is_none() {
+        lua.set_app_data(LuaActionStore::default());
+    }
+    // Only initialise the talk action store if the caller has not pre-installed one.
+    // This allows tests to inject their own store before calling install_bindings.
+    if lua.app_data_ref::<LuaTalkActionStore>().is_none() {
+        lua.set_app_data(LuaTalkActionStore::default());
+    }
+    // Only initialise the global event store if the caller has not pre-installed one.
+    // This allows tests to inject their own store before calling install_bindings.
+    if lua.app_data_ref::<LuaGlobalEventStore>().is_none() {
+        lua.set_app_data(LuaGlobalEventStore::default());
+    }
+    // Only initialise the move event store if the caller has not pre-installed one.
+    // This allows tests to inject their own store before calling install_bindings.
+    if lua.app_data_ref::<LuaMoveEventStore>().is_none() {
+        lua.set_app_data(LuaMoveEventStore::default());
+    }
+    // Only initialise the creature event store if the caller has not pre-installed one.
+    // This allows tests to inject their own store before calling install_bindings.
+    if lua.app_data_ref::<LuaCreatureEventStore>().is_none() {
+        lua.set_app_data(LuaCreatureEventStore::default());
+    }
     position::install(lua)?;
     enums::install_global_enums(lua)?;
     table_enums::install_table_enums(lua)?;
@@ -273,21 +335,65 @@ pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::R
     class_table!("Combat", |_, _: mlua::MultiValue| Ok(
         classes::combat::LuaCombat::default()
     ));
-    class_table!("TalkAction", |_, _: mlua::MultiValue| Ok(
-        classes::talk_action::LuaTalkAction
-    ));
+    class_table!("TalkAction", |_, args: mlua::MultiValue| {
+        // __call passes the table itself as the first arg; the word is the second.
+        let word = args
+            .into_iter()
+            .nth(1)
+            .and_then(|v| {
+                if let mlua::Value::String(s) = v {
+                    s.to_str().ok().map(str::to_owned)
+                } else {
+                    None
+                }
+            })
+            .unwrap_or_default();
+        Ok(classes::talk_action::LuaTalkAction {
+            word,
+            ..Default::default()
+        })
+    });
     class_table!("Action", |_, _: mlua::MultiValue| Ok(
         classes::action::LuaAction::default()
     ));
     class_table!("Condition", |_, _: mlua::MultiValue| Ok(
         classes::condition::LuaCondition::default()
     ));
-    class_table!("CreatureEvent", |_, _: mlua::MultiValue| Ok(
-        classes::creature_event::LuaCreatureEvent::default()
-    ));
-    class_table!("GlobalEvent", |_, _: mlua::MultiValue| Ok(
-        classes::global_event::LuaGlobalEvent
-    ));
+    class_table!("CreatureEvent", |_, args: mlua::MultiValue| {
+        let name = args
+            .into_iter()
+            .nth(1)
+            .and_then(|v| {
+                if let mlua::Value::String(s) = v {
+                    s.to_str().ok().map(str::to_owned)
+                } else {
+                    None
+                }
+            })
+            .unwrap_or_default();
+        Ok(classes::creature_event::LuaCreatureEvent {
+            name,
+            ..Default::default()
+        })
+    });
+    class_table!("GlobalEvent", |_, args: mlua::MultiValue| {
+        // __call passes the table itself as the first arg; the name is the second.
+        let name = args
+            .into_iter()
+            .nth(1)
+            .and_then(|v| {
+                if let mlua::Value::String(s) = v {
+                    s.to_str().ok().map(str::to_owned)
+                } else {
+                    None
+                }
+            })
+            .unwrap_or_default();
+        Ok(classes::global_event::LuaGlobalEvent {
+            name,
+            ..Default::default()
+        })
+    });
     class_table!("MoveEvent", |_, _: mlua::MultiValue| Ok(
         classes::move_event::LuaMoveEvent::default()
     ));

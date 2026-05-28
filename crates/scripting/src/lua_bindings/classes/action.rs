@@ -12,6 +12,7 @@ pub struct LuaAction {
     pub allow_far_use: bool,
     pub block_walls: bool,
     pub check_floor: bool,
+    pub item_ids: Vec<i64>,
 }
 
 impl LuaAction {
@@ -35,7 +36,10 @@ impl<'lua> mlua::FromLua<'lua> for LuaAction {
 
 impl UserData for LuaAction {
     fn add_methods<'lua, M: UserDataMethods<'lua, Self>>(methods: &mut M) {
-        methods.add_method_mut("id", |_, _this, _args: Value| Ok(()));
+        methods.add_method_mut("id", |_, this, id: i64| {
+            this.item_ids.push(id);
+            Ok(())
+        });
         methods.add_method_mut("aid", |_, this, v: i64| {
             this.action_id = v;
             Ok(())
@@ -57,13 +61,25 @@ impl UserData for LuaAction {
             Ok(())
         });
         methods.add_method_mut("onUse", |_, _this, _cb: Value| Ok(()));
-        methods.add_method_mut("register", |_, _this, ()| Ok(true));
+        methods.add_method_mut("register", |lua, this, ()| {
+            let store = lua
+                .app_data_ref::<crate::lua_bindings::LuaActionStore>()
+                .ok_or_else(|| mlua::Error::runtime("LuaActionStore not initialized"))?;
+            store
+                .0
+                .lock()
+                .map_err(|_| mlua::Error::runtime("LuaActionStore lock poisoned"))?
+                .push(this.clone());
+            Ok(true)
+        });
         methods.add_meta_method_mut("__newindex", |_, _this, (_k, _v): (Value, Value)| Ok(()));
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+
     fn fresh_lua() -> mlua::Lua {
         let lua = mlua::Lua::new();
         crate::lua_bindings::install_bindings(
@@ -96,5 +112,44 @@ mod tests {
             result.is_ok(),
             "function-declaration syntax on Action should not error: {result:?}"
         );
+    }
+
+    #[test]
+    fn action_id_setter_stores_item_id() {
+        let lua = fresh_lua();
+        lua.globals().set("a", LuaAction::default()).unwrap();
+        lua.load(r#"a:id(1234)"#).exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("a").unwrap();
+        let borrowed = ud.borrow::<LuaAction>().unwrap();
+        assert!(borrowed.item_ids.contains(&1234));
+    }
+
+    #[test]
+    fn action_id_setter_accepts_multiple_calls() {
+        let lua = fresh_lua();
+        lua.globals().set("a", LuaAction::default()).unwrap();
+        lua.load(r#"a:id(100); a:id(200)"#).exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("a").unwrap();
+        let borrowed = ud.borrow::<LuaAction>().unwrap();
+        assert_eq!(borrowed.item_ids.len(), 2);
+    }
+
+    #[test]
+    fn action_register_stores_in_lua_action_store() {
+        use crate::lua_bindings::LuaActionStore;
+        let lua = mlua::Lua::new();
+        let store = LuaActionStore::default();
+        lua.set_app_data(store.clone());
+        crate::lua_bindings::install_bindings(&lua, crate::lua_bindings::GameStateHandle::default()).unwrap();
+
+        lua.load(r#"
+            local a = Action()
+            a:id(1234)
+            a:register()
+        "#).exec().unwrap();
+
+        let count = store.0.lock().unwrap().len();
+        assert_eq!(count, 1, "register() must add the action to LuaActionStore");
+        assert!(store.0.lock().unwrap()[0].item_ids.contains(&1234));
     }
 }
