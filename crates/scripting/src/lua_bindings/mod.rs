@@ -51,7 +51,7 @@ pub mod table_enums;
 /// end-to-end. Future bindings that need richer state extend the
 /// inner type or store additional handles via `lua.set_named_registry`.
 #[derive(Clone)]
-pub struct GameStateHandle(pub Arc<Mutex<()>>);
+pub struct GameStateHandle(pub(crate) Arc<Mutex<()>>);
 
 impl Default for GameStateHandle {
     fn default() -> Self {
@@ -156,7 +156,7 @@ impl LuaEnvironment {
                 Err(e) => {
                     let rel_str = rel.to_string_lossy();
                     let err_str = e.to_string();
-                    let (line, reason) = parse_lua_error_location(&err_str, &rel_str);
+                    let (line, reason) = parse_lua_error_location(&err_str);
                     let msg = match line {
                         Some(l) => format!("> [error] {}:{}: {}", rel_str, l, reason),
                         None => format!("> [error] {}: {}", rel_str, reason),
@@ -166,7 +166,9 @@ impl LuaEnvironment {
                 }
             }
         }
-        if errors > 0 {
+        if errors == 0 {
+            eprintln!(">> Loaded {loaded} Lua scripts.");
+        } else {
             eprintln!(
                 ">> Loaded {loaded} Lua scripts ({errors} errors — run with RUST_LOG=debug for details)"
             );
@@ -180,10 +182,11 @@ impl LuaEnvironment {
 /// mlua errors look like:
 ///   `[string "path"]:line: reason`
 /// or prefixed with `runtime error: ` / `syntax error: `.
-fn parse_lua_error_location(err_str: &str, _rel_path: &str) -> (Option<u32>, String) {
+fn parse_lua_error_location(err_str: &str) -> (Option<u32>, String) {
     let stripped = err_str
-        .trim_start_matches("runtime error: ")
-        .trim_start_matches("syntax error: ");
+        .strip_prefix("runtime error: ")
+        .or_else(|| err_str.strip_prefix("syntax error: "))
+        .unwrap_or(err_str);
     if let Some(colon_pos) = stripped.find("]:") {
         let after_bracket = &stripped[colon_pos + 2..];
         if let Some(next_colon) = after_bracket.find(':') {
