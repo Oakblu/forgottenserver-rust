@@ -227,7 +227,7 @@ pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::R
     )?;
     lua.globals().set(
         "TalkAction",
-        lua.create_function(|_, _: ()| Ok(classes::talk_action::LuaTalkAction::default()))?,
+        lua.create_function(|_, _: ()| Ok(classes::talk_action::LuaTalkAction))?,
     )?;
     lua.globals().set(
         "Action",
