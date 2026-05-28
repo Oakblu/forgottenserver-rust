@@ -226,15 +226,11 @@ pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::R
     enums::install_global_enums(lua)?;
     table_enums::install_table_enums(lua)?;
     misc_globals::install(lua)?;
-    // Singleton namespace: `Game.*` Lua calls dispatch into LuaGame's UserData
-    // methods. Registering the unit struct as a global gives audit-visible
-    // `Game:method` entries without needing per-call game-state plumbing.
-    lua.globals().set("Game", classes::game::LuaGame)?;
-
-    // Class constructor globals — each is registered as a Lua TABLE with:
+    // Class globals are Lua TABLES with a metatable that provides:
     //   __call     → creates a new UserData instance (so `Combat()` works)
-    //   __newindex → silently discards assignments (so compat.lua's
-    //                `Combat.setCondition = function(...)` doesn't error)
+    //   __newindex → rawset into the table so assignments like
+    //                `Game.startRaid = fn` or `Combat.setCondition = fn`
+    //                (from compat.lua) are actually stored and callable later.
     // This mirrors the C++ pattern where each class is a table/metatable pair.
     macro_rules! class_table {
         ($name:expr, $ctor:expr) => {{
@@ -243,12 +239,18 @@ pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::R
             mt.set("__call", lua.create_function($ctor)?)?;
             mt.set(
                 "__newindex",
-                lua.create_function(|_, _: (mlua::Value, mlua::Value, mlua::Value)| Ok(()))?,
+                lua.create_function(|_, (t, k, v): (mlua::Table, mlua::Value, mlua::Value)| {
+                    t.raw_set(k, v)
+                })?,
             )?;
             tbl.set_metatable(Some(mt));
             lua.globals().set($name, tbl)?;
         }};
     }
+
+    // Game — singleton namespace; scripts call `Game:method()` via the table.
+    // `Game()` is not a valid constructor so __call returns nil.
+    class_table!("Game", |_, _: mlua::MultiValue| Ok(mlua::Value::Nil));
 
     class_table!("Spell", |_, _: mlua::MultiValue| Ok(
         classes::spell::LuaSpell::default()
