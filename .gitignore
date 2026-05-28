@@ -19,3 +19,4 @@ AUDIT_PASS_A.csv
 */.DS_Store
 
 /config.lua
+docker/config.lua

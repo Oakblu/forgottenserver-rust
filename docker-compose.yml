@@ -24,6 +24,8 @@ services:
       - "7171:7171"
       - "7172:7172"
       - "8080:8080"
+    volumes:
+      - ./docker/config.lua:/srv/config.lua:ro
     depends_on:
       db:
         condition: service_healthy
