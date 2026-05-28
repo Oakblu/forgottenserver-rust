@@ -251,6 +251,11 @@ pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::R
     // Game — singleton namespace; scripts call `Game:method()` via the table.
     // `Game()` is not a valid constructor so __call returns nil.
     class_table!("Game", |_, _: mlua::MultiValue| Ok(mlua::Value::Nil));
+    // compat.lua calls Game.getMounts() at module level to build a lookup table.
+    {
+        let game_tbl: mlua::Table = lua.globals().get("Game")?;
+        game_tbl.set("getMounts", lua.create_function(|lua, _: ()| lua.create_table())?)?;
+    }
 
     class_table!("Spell", |_, _: mlua::MultiValue| Ok(
         classes::spell::LuaSpell::default()
