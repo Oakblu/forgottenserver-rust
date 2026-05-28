@@ -286,6 +286,14 @@ pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::R
     // (e.g. `result.getDataInt = result.getNumber`). Real methods are nil stubs.
     lua.globals().set("result", lua.create_table()?)?;
 
+    // rawgetmetatable — C++ TFS custom global; returns the raw metatable of a
+    // named class so compat.lua can extend it (e.g. `rawgetmetatable("Player").__index = fn`).
+    // We return a throw-away table so assignments are silently discarded.
+    lua.globals().set(
+        "rawgetmetatable",
+        lua.create_function(|lua, _: mlua::Value| lua.create_table())?,
+    )?;
+
     Ok(())
 }
 
