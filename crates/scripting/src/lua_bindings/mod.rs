@@ -154,18 +154,47 @@ impl LuaEnvironment {
             match self.lua.load(&source).set_name(name.as_ref()).exec() {
                 Ok(()) => loaded += 1,
                 Err(e) => {
-                    eprintln!("> [error] {e}");
+                    let rel_str = rel.to_string_lossy();
+                    let err_str = e.to_string();
+                    let (line, reason) = parse_lua_error_location(&err_str, &rel_str);
+                    let msg = match line {
+                        Some(l) => format!("> [error] {}:{}: {}", rel_str, l, reason),
+                        None => format!("> [error] {}: {}", rel_str, reason),
+                    };
+                    eprintln!("{msg}");
                     errors += 1;
                 }
             }
         }
         if errors > 0 {
             eprintln!(
-                ">> {loaded} Lua scripts loaded ({errors} errors — run with RUST_LOG=debug for details)"
+                ">> Loaded {loaded} Lua scripts ({errors} errors — run with RUST_LOG=debug for details)"
             );
         }
         loaded
     }
+}
+
+/// Parse the line number and reason out of an mlua error string.
+///
+/// mlua errors look like:
+///   `[string "path"]:line: reason`
+/// or prefixed with `runtime error: ` / `syntax error: `.
+fn parse_lua_error_location(err_str: &str, _rel_path: &str) -> (Option<u32>, String) {
+    let stripped = err_str
+        .trim_start_matches("runtime error: ")
+        .trim_start_matches("syntax error: ");
+    if let Some(colon_pos) = stripped.find("]:") {
+        let after_bracket = &stripped[colon_pos + 2..];
+        if let Some(next_colon) = after_bracket.find(':') {
+            let line_str = &after_bracket[..next_colon];
+            if let Ok(line) = line_str.trim().parse::<u32>() {
+                let reason = after_bracket[next_colon + 1..].trim().to_string();
+                return (Some(line), reason);
+            }
+        }
+    }
+    (None, err_str.to_string())
 }
 
 /// Install every Rust-side Lua binding onto the supplied state.
@@ -242,16 +271,21 @@ mod tests {
 
     #[test]
     fn lua_environment_load_lib_scripts_loads_all_lua_files() {
-        let dir = tempfile::TempDir::new().unwrap();
-        std::fs::write(dir.path().join("a.lua"), "lib_a = true").unwrap();
-        std::fs::write(dir.path().join("b.lua"), "lib_b = true").unwrap();
+        let tmp = tempfile::tempdir().unwrap();
+        // Root-level lib file
+        std::fs::write(tmp.path().join("helpers.lua"), "lib_helpers = true").unwrap();
+        // Nested subdir — exercises skip_lib=false recursion
+        let sub = tmp.path().join("subdir");
+        std::fs::create_dir_all(&sub).unwrap();
+        std::fs::write(sub.join("utils.lua"), "lib_utils = true").unwrap();
 
         let mut env = LuaEnvironment::new(GameStateHandle::default()).unwrap();
-        let count = env.load_lib_scripts(dir.path()).unwrap();
-        assert_eq!(count, 2, "load_lib_scripts must load all .lua files");
-
-        let a: mlua::Value = env.lua.globals().get("lib_a").unwrap();
-        assert_eq!(a, mlua::Value::Boolean(true));
+        let count = env.load_lib_scripts(tmp.path()).unwrap();
+        assert_eq!(count, 2, "should load both root and nested lib files");
+        let h: bool = env.lua.globals().get("lib_helpers").unwrap();
+        assert!(h);
+        let u: bool = env.lua.globals().get("lib_utils").unwrap();
+        assert!(u);
     }
 
     #[test]
