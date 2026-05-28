@@ -88,6 +88,18 @@ No skill, plugin, or automated prompt may perform any of the following without *
 
 If a workflow step calls for any of these operations, **stop and ask the user first**. Do not proceed until the user explicitly approves the specific operation.
 
+## No Stub Functions (Mandatory)
+
+Never create stub functions — not as placeholders, not as scaffolding, not as "temporary" skeletons. This applies everywhere:
+
+- **Bug fixes:** implement the real fix, not a stub that silences the error.
+- **Migration:** write the full Rust equivalent, not `todo!()`, `unimplemented!()`, or an empty body.
+- **New features:** implement fully or don't add the function at all.
+
+If a complete implementation is blocked by a dependency or missing information, **stop and ask** rather than inserting a stub. A stub is never acceptable as a deliverable — it is a bug waiting to happen and breaks the TDD contract (a stub can make a test pass without correct behavior).
+
+Existing stubs (`todo!()`, `unimplemented!()`, empty function bodies that return a default) in the codebase are bugs and must be replaced with real implementations before any surrounding work is marked done.
+
 ## Task Completion Rules (Mandatory)
 
 A task is **not done** until:
