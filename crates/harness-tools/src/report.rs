@@ -106,7 +106,8 @@ mod tests {
 
     fn tempdir_with_file(content: &str) -> std::path::PathBuf {
         let dir = std::env::temp_dir().join(format!(
-            "harness-tools-test-{}",
+            "harness-tools-test-{:?}-{}",
+            std::thread::current().id(),
             std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .unwrap()

@@ -801,7 +801,8 @@ mod tests {
 
     fn tmpfile(name: &str, content: &str) -> PathBuf {
         let dir = std::env::temp_dir().join(format!(
-            "harness-tools-lua-audit-{}",
+            "harness-tools-lua-audit-{:?}-{}",
+            std::thread::current().id(),
             std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .unwrap()
@@ -816,7 +817,8 @@ mod tests {
 
     fn tmpdir_with(files: &[(&str, &str)]) -> PathBuf {
         let dir = std::env::temp_dir().join(format!(
-            "harness-tools-rust-audit-{}",
+            "harness-tools-rust-audit-{:?}-{}",
+            std::thread::current().id(),
             std::time::SystemTime::now()
                 .duration_since(std::time::UNIX_EPOCH)
                 .unwrap()
