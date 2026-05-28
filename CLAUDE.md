@@ -76,6 +76,29 @@ The workspace mirrors the C++ include layer graph from `DEPENDENCY_GRAPH.md`:
 
 Prefer IDs over `Arc`/`Rc`. Use `Arc` only when shared mutable lifetime across threads is a real requirement.
 
+## Task Completion Rules (Mandatory)
+
+A task is **not done** until:
+1. The implementation is written.
+2. Tests for that implementation are written and **pass**. If tests fail, the task is still open — go back and fix it.
+3. `cargo test --lib --workspace` (or the relevant scoped test command) completes without failures.
+
+There are no exceptions. "It compiles" or "it looks right" is not done. Passing tests is done.
+
+## Agent Failure / Timeout Recovery
+
+When an agent times out, errors, or is otherwise interrupted before finishing a task:
+
+1. **Before stopping**, the agent must write a handoff note to `docs/superpowers/agent-handoff/HANDOFF.md` (create the file if it doesn't exist) containing:
+   - What was completed (file paths, symbols, test results).
+   - What was in progress at the moment of interruption.
+   - What still needs to be done, with enough detail for a fresh agent to continue without re-reading the whole conversation.
+   - Any blockers or decisions that were pending.
+
+2. **The orchestrator** (or user) must spawn a new agent, passing it the handoff note as its starting context so it continues from where the previous agent left off.
+
+3. The handoff file should be deleted or archived once the task is fully complete and tests pass.
+
 ## Migration Rules (Mandatory)
 
 These rules are enforced across the entire project and must not be violated:
