@@ -257,6 +257,10 @@ pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::R
         game_tbl.set("getMounts", lua.create_function(|lua, _: ()| lua.create_table())?)?;
         game_tbl.set("setWorldLight", lua.create_function(|_, _: mlua::MultiValue| Ok(()))?)?;
         game_tbl.set("getWorldTime", lua.create_function(|_, _: ()| Ok(0i64))?)?;
+        // Returns an empty table until the item registry is accessible from scripting.
+        // Scripts iterate: `for index, currency in pairs(Game.getCurrencyItems()) do`
+        // so an empty table causes a no-op loop rather than a nil-call error.
+        game_tbl.set("getCurrencyItems", lua.create_function(|lua, _: ()| lua.create_table())?)?;
     }
 
     class_table!("Spell", |_, _: mlua::MultiValue| Ok(
@@ -517,6 +521,38 @@ mod tests {
         assert!(
             result.is_ok(),
             "configManager:getBoolean(key) colon-notation should not error: {result:?}"
+        );
+    }
+
+    #[test]
+    fn game_get_currency_items_returns_table() {
+        let lua = crate::lua_bindings::LuaEnvironment::new(
+            crate::lua_bindings::GameStateHandle::default(),
+        )
+        .unwrap()
+        .lua;
+        // Game.getCurrencyItems() must return a non-nil table that can be
+        // iterated with pairs() — mirrors the C++ API used in change_gold.lua
+        // and gold_converter.lua: `for index, currency in pairs(Game.getCurrencyItems()) do`.
+        let result = lua
+            .load(
+                r#"
+                local items = Game.getCurrencyItems()
+                assert(items ~= nil, "getCurrencyItems must not return nil")
+                local count = 0
+                for _ in pairs(items) do count = count + 1 end
+                return count
+            "#,
+            )
+            .eval::<i64>();
+        assert!(
+            result.is_ok(),
+            "Game.getCurrencyItems() should return an iterable table: {result:?}"
+        );
+        assert_eq!(
+            result.unwrap(),
+            0,
+            "empty item registry: getCurrencyItems should return an empty table"
         );
     }
 }

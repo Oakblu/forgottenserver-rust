@@ -23,7 +23,7 @@ impl<'lua> mlua::FromLua<'lua> for LuaTalkAction {
 
 impl UserData for LuaTalkAction {
     fn add_methods<'lua, M: UserDataMethods<'lua, Self>>(methods: &mut M) {
-        methods.add_method_mut("access", |_, _this, _v: i64| Ok(()));
+        methods.add_method_mut("access", |_, _this, _v: Value| Ok(()));
         methods.add_method_mut("accountType", |_, _this, _v: i64| Ok(()));
         methods.add_method_mut("separator", |_, _this, _v: String| Ok(()));
         methods.add_method_mut("onSay", |_, _this, _cb: Value| Ok(()));
@@ -67,6 +67,42 @@ mod tests {
         assert!(
             result.is_ok(),
             "function-declaration syntax on TalkAction should not error: {result:?}"
+        );
+    }
+
+    #[test]
+    fn access_accepts_boolean_true() {
+        let lua = fresh_lua();
+        let result = lua
+            .load(r#"local ban = TalkAction("/ban"); ban:access(true)"#)
+            .exec();
+        assert!(
+            result.is_ok(),
+            "TalkAction:access(true) should not error: {result:?}"
+        );
+    }
+
+    #[test]
+    fn access_accepts_boolean_false() {
+        let lua = fresh_lua();
+        let result = lua
+            .load(r#"local ban = TalkAction("/ban"); ban:access(false)"#)
+            .exec();
+        assert!(
+            result.is_ok(),
+            "TalkAction:access(false) should not error: {result:?}"
+        );
+    }
+
+    #[test]
+    fn access_accepts_integer_regression() {
+        let lua = fresh_lua();
+        let result = lua
+            .load(r#"local ban = TalkAction("/ban"); ban:access(1)"#)
+            .exec();
+        assert!(
+            result.is_ok(),
+            "TalkAction:access(1) should still work: {result:?}"
         );
     }
 }

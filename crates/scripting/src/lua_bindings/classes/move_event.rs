@@ -44,8 +44,25 @@ impl UserData for LuaMoveEvent {
             Ok(())
         });
         methods.add_meta_method_mut("__newindex", |_, _this, (_k, _v): (Value, Value)| Ok(()));
-        methods.add_method_mut("slot", |_, this, s: i64| {
-            this.slot = s;
+        methods.add_method_mut("slot", |_, this, s: Value| {
+            this.slot = match s {
+                Value::Integer(n) => n,
+                Value::String(s) => match s.to_str().unwrap_or("").to_lowercase().as_str() {
+                    "head" => 1,
+                    "necklace" => 2,
+                    "backpack" => 3,
+                    "armor" => 4,
+                    "right" => 5,
+                    "left" => 6,
+                    "legs" => 7,
+                    "feet" => 8,
+                    "ring" => 9,
+                    "ammo" => 10,
+                    _ => 0,
+                },
+                Value::Number(f) => f as i64,
+                _ => 0,
+            };
             Ok(())
         });
         methods.add_method_mut("register", |_, _this, ()| Ok(true));
@@ -134,6 +151,42 @@ mod tests {
         assert!(
             result.is_ok(),
             "MoveEvent:type with integer should still work: {result:?}"
+        );
+    }
+
+    #[test]
+    fn slot_accepts_string_ring() {
+        let lua = fresh_lua();
+        let result = lua
+            .load(r#"local m = MoveEvent(); m:slot("ring")"#)
+            .exec();
+        assert!(
+            result.is_ok(),
+            "MoveEvent:slot with string 'ring' should not error: {result:?}"
+        );
+    }
+
+    #[test]
+    fn slot_accepts_string_head() {
+        let lua = fresh_lua();
+        let result = lua
+            .load(r#"local m = MoveEvent(); m:slot("head")"#)
+            .exec();
+        assert!(
+            result.is_ok(),
+            "MoveEvent:slot with string 'head' should not error: {result:?}"
+        );
+    }
+
+    #[test]
+    fn slot_accepts_integer_regression() {
+        let lua = fresh_lua();
+        let result = lua
+            .load("local m = MoveEvent(); m:slot(9)")
+            .exec();
+        assert!(
+            result.is_ok(),
+            "MoveEvent:slot with integer should still work: {result:?}"
         );
     }
 }

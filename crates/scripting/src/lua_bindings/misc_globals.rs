@@ -71,12 +71,32 @@ pub fn install(lua: &mlua::Lua) -> mlua::Result<()> {
     let is_scripts_interface = lua.create_function(|_, _: ()| Ok(true))?;
     lua.globals().set("isScriptsInterface", is_scripts_interface)?;
 
-    // ── PacketHandler(opcode, handlerName) — stub registration ──────────────
-    // C++ wires incoming packet opcodes to named Lua handler functions; the
-    // stub silently accepts the registration so network scripts load without
-    // error even before the full network-binding layer is wired up.
-    let packet_handler = lua.create_function(|_, _: mlua::MultiValue| Ok(()))?;
+    // ── PacketHandler(opcode) — returns a plain table ───────────────────────
+    // C++ wires incoming packet opcodes to named Lua handler functions.
+    // Scripts in data/scripts/network/ do:
+    //   local handler = PacketHandler(0xE1)
+    //   function handler.onReceive(player) ... end
+    // A plain Lua table is returned so field assignment works naturally.
+    // `register` and `clear` are no-op stubs matching packet_handler.lua.
+    let packet_handler = lua.create_function(|lua, args: mlua::MultiValue| {
+        let packet_type = match args.into_iter().next() {
+            Some(mlua::Value::Integer(n)) => n,
+            _ => 0,
+        };
+        let tbl = lua.create_table()?;
+        tbl.set("packetType", packet_type)?;
+        tbl.set("register", lua.create_function(|_, _: mlua::MultiValue| Ok(()))?)?;
+        tbl.set("clear", lua.create_function(|_, _: mlua::MultiValue| Ok(()))?)?;
+        Ok(tbl)
+    })?;
     lua.globals().set("PacketHandler", packet_handler)?;
+
+    // ── openLevelDoors / openQuestDoors — empty tables ──────────────────────
+    // data/global.lua populates these tables at runtime; scripts in
+    // data/scripts/movements/ iterate them with ipairs.  Register them as
+    // empty tables so those scripts don't error when global.lua is absent.
+    lua.globals().set("openLevelDoors", lua.create_table()?)?;
+    lua.globals().set("openQuestDoors", lua.create_table()?)?;
 
     Ok(())
 }
@@ -120,5 +140,44 @@ mod tests {
             .load("PacketHandler(0x9F, function() end)")
             .exec();
         assert!(result.is_ok(), "PacketHandler should not error: {result:?}");
+    }
+
+    #[test]
+    fn packet_handler_returns_non_nil() {
+        let lua = fresh_lua();
+        let result = lua
+            .load("return PacketHandler(0xE1) ~= nil")
+            .eval::<bool>();
+        assert!(result.is_ok(), "PacketHandler(0xE1) should not error: {result:?}");
+        assert!(result.unwrap(), "PacketHandler should return a non-nil value");
+    }
+
+    #[test]
+    fn packet_handler_field_assignment_works() {
+        let lua = fresh_lua();
+        let result = lua
+            .load("local h = PacketHandler(0xE1); function h.onReceive() end")
+            .exec();
+        assert!(result.is_ok(), "field assignment on PacketHandler result should not error: {result:?}");
+    }
+
+    #[test]
+    fn open_level_doors_is_table() {
+        let lua = fresh_lua();
+        let result = lua
+            .load(r#"return type(openLevelDoors) == "table""#)
+            .eval::<bool>();
+        assert!(result.is_ok(), "openLevelDoors check should not error: {result:?}");
+        assert!(result.unwrap(), "openLevelDoors should be a table");
+    }
+
+    #[test]
+    fn open_quest_doors_is_table() {
+        let lua = fresh_lua();
+        let result = lua
+            .load(r#"return type(openQuestDoors) == "table""#)
+            .eval::<bool>();
+        assert!(result.is_ok(), "openQuestDoors check should not error: {result:?}");
+        assert!(result.unwrap(), "openQuestDoors should be a table");
     }
 }
