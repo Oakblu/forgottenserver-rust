@@ -97,6 +97,31 @@ impl ScriptEngine for NoopScriptEngine {
     }
 }
 
+/// Recursively collect `.lua` files under `dir`, skipping:
+/// - Subdirectories named `lib` (loaded separately with isLib=true)
+/// - Files whose name starts with `#` (disabled marker)
+#[cfg(feature = "lua-scripting")]
+fn collect_lua_files(dir: &std::path::Path, out: &mut Vec<PathBuf>) -> Result<(), crate::error::ScriptError> {
+    let read_dir = std::fs::read_dir(dir).map_err(|e| {
+        crate::error::ScriptError::LoadFailed(format!("cannot read directory: {e}"))
+    })?;
+    for entry in read_dir.flatten() {
+        let path = entry.path();
+        if path.is_dir() {
+            if path.file_name().and_then(|n| n.to_str()) == Some("lib") {
+                continue;
+            }
+            collect_lua_files(&path, out)?;
+        } else if path.extension().and_then(|e| e.to_str()) == Some("lua") {
+            let name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
+            if !name.starts_with('#') {
+                out.push(path);
+            }
+        }
+    }
+    Ok(())
+}
+
 /// A real mlua-backed Lua script engine.
 #[cfg(feature = "lua-scripting")]
 pub struct LuaScriptEngine {
@@ -146,8 +171,13 @@ impl LuaScriptEngine {
         }
     }
 
-    /// Load all `.lua` files from the given directory recursively (non-recursive:
-    /// only the top level). Returns count of successfully loaded scripts.
+    /// Load `.lua` files from `dir` recursively, matching C++ `Scripts::loadScripts(isLib=false)`:
+    /// - Skips subdirectories named `lib` (those are loaded separately first)
+    /// - Skips files whose name starts with `#` (disabled marker)
+    /// - Loads files in sorted order for determinism
+    /// - Logs per-file errors and continues (does not abort on a bad script)
+    ///
+    /// Returns the count of successfully loaded scripts.
     pub fn load_dir(&mut self, dir: &Path) -> Result<usize, ScriptError> {
         if !dir.exists() {
             return Err(ScriptError::LoadFailed(format!(
@@ -155,15 +185,18 @@ impl LuaScriptEngine {
                 dir.display()
             )));
         }
-        let read_dir = std::fs::read_dir(dir)
-            .map_err(|e| ScriptError::LoadFailed(format!("cannot read directory: {e}")))?;
+        let mut paths = Vec::new();
+        collect_lua_files(dir, &mut paths)?;
+        paths.sort();
 
         let mut loaded = 0usize;
-        for entry in read_dir.flatten() {
-            let path = entry.path();
-            if path.extension().and_then(|e| e.to_str()) == Some("lua") {
-                self.load_script(&path)?;
-                loaded += 1;
+        for path in &paths {
+            match self.load_script(path) {
+                Ok(()) => loaded += 1,
+                Err(e) => eprintln!(
+                    "> {} [error]: {e}",
+                    path.file_name().unwrap_or_default().to_string_lossy()
+                ),
             }
         }
         Ok(loaded)
@@ -828,6 +861,58 @@ mod tests {
             } else {
                 panic!("expected LoadFailed");
             }
+        }
+
+        #[test]
+        fn load_dir_recurses_into_subdirectories() {
+            let dir = tempfile::TempDir::new().unwrap();
+            let subdir = dir.path().join("spells");
+            std::fs::create_dir(&subdir).unwrap();
+            std::fs::write(dir.path().join("top.lua"), "top_loaded = true").unwrap();
+            std::fs::write(subdir.join("fireball.lua"), "fireball_loaded = true").unwrap();
+
+            let mut engine = LuaScriptEngine::new();
+            let count = engine.load_dir(dir.path()).unwrap();
+            assert_eq!(count, 2, "load_dir must recurse into subdirectories");
+
+            let top: mlua::Value = engine.lua.globals().get("top_loaded").unwrap();
+            assert_eq!(top, mlua::Value::Boolean(true));
+            let nested: mlua::Value = engine.lua.globals().get("fireball_loaded").unwrap();
+            assert_eq!(nested, mlua::Value::Boolean(true), "script in subdir must be loaded");
+        }
+
+        #[test]
+        fn load_dir_skips_hash_prefixed_files() {
+            let dir = tempfile::TempDir::new().unwrap();
+            std::fs::write(dir.path().join("active.lua"), "active_loaded = true").unwrap();
+            std::fs::write(dir.path().join("#disabled.lua"), "disabled_loaded = true").unwrap();
+
+            let mut engine = LuaScriptEngine::new();
+            let count = engine.load_dir(dir.path()).unwrap();
+            assert_eq!(count, 1, "load_dir must skip #-prefixed files");
+
+            let active: mlua::Value = engine.lua.globals().get("active_loaded").unwrap();
+            assert_eq!(active, mlua::Value::Boolean(true));
+            let disabled: mlua::Value = engine.lua.globals().get("disabled_loaded").unwrap();
+            assert_eq!(disabled, mlua::Value::Nil, "#disabled.lua must not be loaded");
+        }
+
+        #[test]
+        fn load_dir_skips_lib_subdirectory() {
+            let dir = tempfile::TempDir::new().unwrap();
+            let lib_dir = dir.path().join("lib");
+            std::fs::create_dir(&lib_dir).unwrap();
+            std::fs::write(dir.path().join("main.lua"), "main_loaded = true").unwrap();
+            std::fs::write(lib_dir.join("helpers.lua"), "helpers_loaded = true").unwrap();
+
+            let mut engine = LuaScriptEngine::new();
+            let count = engine.load_dir(dir.path()).unwrap();
+            assert_eq!(count, 1, "load_dir must skip lib/ subdirectory");
+
+            let main: mlua::Value = engine.lua.globals().get("main_loaded").unwrap();
+            assert_eq!(main, mlua::Value::Boolean(true));
+            let helpers: mlua::Value = engine.lua.globals().get("helpers_loaded").unwrap();
+            assert_eq!(helpers, mlua::Value::Nil, "lib/helpers.lua must not be loaded");
         }
     }
 }
