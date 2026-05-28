@@ -294,6 +294,20 @@ pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::R
         lua.create_function(|lua, _: mlua::Value| lua.create_table())?,
     )?;
 
+    // Stub class tables for entity/item globals used by compat.lua and scripts/lib.
+    // compat.lua extends these with methods via `function Player:foo(...)` — that syntax
+    // just sets table fields, which works fine on plain tables. Full UserData constructors
+    // follow when each class is fully wired; for now nil-indexing errors are prevented.
+    for name in &[
+        "Player", "Creature", "Monster", "Npc",
+        "Item", "Container", "Teleport", "Podium",
+        "Tile", "ItemType", "Vocation",
+        "Guild", "Group", "Party", "House",
+        "MonsterType", "Weapon",
+    ] {
+        lua.globals().set(*name, lua.create_table()?)?;
+    }
+
     Ok(())
 }
 
