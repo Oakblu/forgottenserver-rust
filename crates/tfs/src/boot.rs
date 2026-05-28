@@ -44,6 +44,9 @@ pub struct Modules {
     pub config: Arc<ConfigManager>,
     pub game_state: Arc<Mutex<GameState>>,
     pub game_data: srv_boot::GameData,
+    /// Number of Lua scripts loaded during boot (0 when lua-scripting feature
+    /// is disabled or no scripts directory is present).
+    pub scripts_loaded: usize,
     /// Embedded Lua state with the Rust-side C++→Lua bindings
     /// installed (Position so far; per-class follow-ups extend this).
     /// `None` if the `lua-scripting` feature was disabled at build time
@@ -74,7 +77,7 @@ pub fn initialise_modules(config_path: &Path, data_dir: &Path) -> Result<Modules
     let game_state = Arc::new(Mutex::new(GameState::new()));
 
     #[cfg(feature = "lua-scripting")]
-    let lua = {
+    let (lua, scripts_loaded) = {
         use forgottenserver_scripting::lua_bindings::{GameStateHandle, LuaEnvironment};
         // GameStateHandle is a placeholder for the eventual real
         // game-state handle (see lua_bindings module docs). Today it
@@ -82,21 +85,43 @@ pub fn initialise_modules(config_path: &Path, data_dir: &Path) -> Result<Modules
         // through the real `game_state` once the scripting crate can
         // depend on a game-state-providing trait.
         match LuaEnvironment::new(GameStateHandle::default()) {
-            Ok(env) => {
-                eprintln!(">> Lua bindings installed (Position + future classes)");
-                Some(env)
+            Ok(mut env) => {
+                let lib_dir = data_dir.join("scripts").join("lib");
+                if lib_dir.exists() {
+                    match env.load_lib_scripts(&lib_dir) {
+                        Ok(lib_count) => {
+                            eprintln!(">> Loaded {lib_count} Lua lib scripts");
+                        }
+                        Err(e) => {
+                            eprintln!("{e}");
+                            return Err(anyhow!("{e}"));
+                        }
+                    }
+                }
+                let scripts_dir = data_dir.join("scripts");
+                let count = if scripts_dir.exists() {
+                    env.load_scripts(&scripts_dir, data_dir)
+                } else {
+                    eprintln!("[WARN] Lua scripts dir not found: {}", scripts_dir.display());
+                    0
+                };
+                (Some(env), count)
             }
             Err(e) => {
                 eprintln!("[WARN] Failed to install Lua bindings: {e}");
-                None
+                (None, 0)
             }
         }
     };
+
+    #[cfg(not(feature = "lua-scripting"))]
+    let scripts_loaded = 0usize;
 
     Ok(Modules {
         config: Arc::new(config),
         game_state,
         game_data,
+        scripts_loaded,
         #[cfg(feature = "lua-scripting")]
         lua,
     })
