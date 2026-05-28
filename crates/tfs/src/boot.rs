@@ -49,7 +49,7 @@ pub struct Modules {
     /// `None` if the `lua-scripting` feature was disabled at build time
     /// or if the install failed (failures log a warning, not panic).
     #[cfg(feature = "lua-scripting")]
-    pub lua: Option<forgottenserver_scripting::lua_bindings::LuaBindingsState>,
+    pub lua: Option<forgottenserver_scripting::lua_bindings::LuaEnvironment>,
 }
 
 /// Run boot steps 1, 4, 10, 12 from the C++ `mainLoader()` sequence.
@@ -75,16 +75,16 @@ pub fn initialise_modules(config_path: &Path, data_dir: &Path) -> Result<Modules
 
     #[cfg(feature = "lua-scripting")]
     let lua = {
-        use forgottenserver_scripting::lua_bindings::{GameStateHandle, LuaBindingsState};
+        use forgottenserver_scripting::lua_bindings::{GameStateHandle, LuaEnvironment};
         // GameStateHandle is a placeholder for the eventual real
         // game-state handle (see lua_bindings module docs). Today it
         // holds a fresh Arc — future per-class changes will wire
         // through the real `game_state` once the scripting crate can
         // depend on a game-state-providing trait.
-        match LuaBindingsState::new(GameStateHandle::default()) {
-            Ok(state) => {
+        match LuaEnvironment::new(GameStateHandle::default()) {
+            Ok(env) => {
                 eprintln!(">> Lua bindings installed (Position + future classes)");
-                Some(state)
+                Some(env)
             }
             Err(e) => {
                 eprintln!("[WARN] Failed to install Lua bindings: {e}");

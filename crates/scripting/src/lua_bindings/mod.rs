@@ -9,7 +9,7 @@
 //! ```text
 //! tfs::boot::initialise_modules
 //!   └─ constructs GameState                       (Arc<Mutex<GameState>>)
-//!   └─ constructs LuaBindingsState                (owns mlua::Lua)
+//!   └─ constructs LuaEnvironment                  (owns mlua::Lua)
 //!        └─ install_bindings(&lua, game_state)
 //!             └─ lua.set_app_data(GameStateHandle(game_state.clone()))
 //!             └─ position::install(&lua)
@@ -59,14 +59,16 @@ impl Default for GameStateHandle {
     }
 }
 
-/// Holds the Lua state for the server. Stored on `Modules` in
-/// `tfs::boot` so the binary owns it for the process
-/// lifetime.
-pub struct LuaBindingsState {
+/// The single Lua environment for the server process.
+///
+/// Mirrors C++'s `LuaEnvironment` / `g_luaEnvironment`: one VM owns all
+/// bindings and all loaded scripts. Created once at boot; lives for the
+/// process lifetime.
+pub struct LuaEnvironment {
     pub lua: mlua::Lua,
 }
 
-impl LuaBindingsState {
+impl LuaEnvironment {
     /// Construct a fresh Lua state and install every Rust binding.
     pub fn new(game_state: GameStateHandle) -> mlua::Result<Self> {
         let lua = mlua::Lua::new();
@@ -74,13 +76,95 @@ impl LuaBindingsState {
         Ok(Self { lua })
     }
 
-    /// Convenience for tests / scripts: evaluate a snippet and return
-    /// the result.
-    pub fn eval<R>(&self, code: &str) -> mlua::Result<R>
-    where
-        R: for<'lua> mlua::FromLuaMulti<'lua>,
-    {
+    /// Evaluate a Lua snippet — for tests and REPL use.
+    pub fn eval<R: for<'lua> mlua::FromLua<'lua>>(&self, code: &str) -> mlua::Result<R> {
         self.lua.load(code).eval()
+    }
+
+    /// Load all `.lua` files from `lib_dir` recursively (including nested `lib/` dirs).
+    ///
+    /// Fatal: returns `Err(String)` with a `[FATAL]` prefix if the directory is
+    /// missing or any file fails to load. Matches C++ `loadScripts(isLib=true)`.
+    pub fn load_lib_scripts(&mut self, lib_dir: &std::path::Path) -> Result<usize, String> {
+        if !lib_dir.exists() {
+            return Err(format!(
+                "[FATAL] Failed to load Lua libs: directory not found: {}",
+                lib_dir.display()
+            ));
+        }
+        let mut paths = Vec::new();
+        crate::engine::collect_lua_files(lib_dir, &mut paths, false).map_err(|e| {
+            format!("[FATAL] Failed to scan lib dir {}: {e}", lib_dir.display())
+        })?;
+        paths.sort();
+        let mut loaded = 0usize;
+        for path in &paths {
+            let source = std::fs::read_to_string(path).map_err(|e| {
+                format!("[FATAL] Failed to read Lua lib {}: {e}", path.display())
+            })?;
+            let name = path.to_string_lossy();
+            self.lua
+                .load(&source)
+                .set_name(name.as_ref())
+                .exec()
+                .map_err(|e| {
+                    format!("[FATAL] Failed to load Lua lib {}: {e}", path.display())
+                })?;
+            loaded += 1;
+        }
+        Ok(loaded)
+    }
+
+    /// Load `.lua` files from `scripts_dir` recursively (skip `lib/`, skip `#`-prefixed, sorted).
+    ///
+    /// Non-fatal per file: logs `> [error] <reason>` and continues.
+    /// Returns count of successfully loaded scripts.
+    /// `data_dir` is used to compute relative paths for error messages.
+    pub fn load_scripts(
+        &mut self,
+        scripts_dir: &std::path::Path,
+        data_dir: &std::path::Path,
+    ) -> usize {
+        if !scripts_dir.exists() {
+            eprintln!(
+                "> [warn] Script directory not found: {}",
+                scripts_dir.display()
+            );
+            return 0;
+        }
+        let mut paths = Vec::new();
+        if let Err(e) = crate::engine::collect_lua_files(scripts_dir, &mut paths, true) {
+            eprintln!("> [warn] Failed to scan script dir: {e}");
+            return 0;
+        }
+        paths.sort();
+        let mut loaded = 0usize;
+        let mut errors = 0usize;
+        for path in &paths {
+            let rel = path.strip_prefix(data_dir).unwrap_or(path);
+            let source = match std::fs::read_to_string(path) {
+                Ok(s) => s,
+                Err(e) => {
+                    eprintln!("> [error] {}: {e}", rel.display());
+                    errors += 1;
+                    continue;
+                }
+            };
+            let name = rel.to_string_lossy();
+            match self.lua.load(&source).set_name(name.as_ref()).exec() {
+                Ok(()) => loaded += 1,
+                Err(e) => {
+                    eprintln!("> [error] {e}");
+                    errors += 1;
+                }
+            }
+        }
+        if errors > 0 {
+            eprintln!(
+                ">> {loaded} Lua scripts loaded ({errors} errors — run with RUST_LOG=debug for details)"
+            );
+        }
+        loaded
     }
 }
 
@@ -126,11 +210,11 @@ mod tests {
     }
 
     #[test]
-    fn lua_bindings_state_new_makes_position_available() {
-        let state = LuaBindingsState::new(GameStateHandle::default()).unwrap();
+    fn lua_environment_new_makes_position_available() {
+        let env = LuaEnvironment::new(GameStateHandle::default()).unwrap();
         // Position constructor should be callable from Lua and the
         // returned value usable on the Rust side via FromLua.
-        let pos: crate::lua_bindings::position::LuaPosition = state
+        let pos: crate::lua_bindings::position::LuaPosition = env
             .eval("return Position(100, 200, 7)")
             .expect("Position(100, 200, 7) eval");
         assert_eq!(pos.0.x, 100);
@@ -145,5 +229,61 @@ mod tests {
         install_bindings(&lua, handle.clone()).unwrap();
         // Second install: same global, no error.
         install_bindings(&lua, handle).unwrap();
+    }
+
+    #[test]
+    fn lua_environment_load_lib_scripts_missing_dir_is_fatal() {
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).unwrap();
+        let result = env.load_lib_scripts(std::path::Path::new("/nonexistent/lib_xyz_abc"));
+        assert!(result.is_err(), "missing lib dir must return Err");
+        let msg = result.unwrap_err();
+        assert!(msg.contains("[FATAL]"), "error must contain [FATAL]: {msg}");
+    }
+
+    #[test]
+    fn lua_environment_load_lib_scripts_loads_all_lua_files() {
+        let dir = tempfile::TempDir::new().unwrap();
+        std::fs::write(dir.path().join("a.lua"), "lib_a = true").unwrap();
+        std::fs::write(dir.path().join("b.lua"), "lib_b = true").unwrap();
+
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).unwrap();
+        let count = env.load_lib_scripts(dir.path()).unwrap();
+        assert_eq!(count, 2, "load_lib_scripts must load all .lua files");
+
+        let a: mlua::Value = env.lua.globals().get("lib_a").unwrap();
+        assert_eq!(a, mlua::Value::Boolean(true));
+    }
+
+    #[test]
+    fn lua_environment_load_scripts_skips_lib_and_hash() {
+        let dir = tempfile::TempDir::new().unwrap();
+        let lib = dir.path().join("lib");
+        std::fs::create_dir(&lib).unwrap();
+        std::fs::write(lib.join("helpers.lua"), "lib_helper = true").unwrap();
+        std::fs::write(dir.path().join("#disabled.lua"), "disabled = true").unwrap();
+        std::fs::write(dir.path().join("active.lua"), "active = true").unwrap();
+
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).unwrap();
+        let count = env.load_scripts(dir.path(), dir.path());
+        assert_eq!(count, 1, "load_scripts must skip lib/ and #-prefixed files");
+
+        let active: mlua::Value = env.lua.globals().get("active").unwrap();
+        assert_eq!(active, mlua::Value::Boolean(true));
+        let lib_helper: mlua::Value = env.lua.globals().get("lib_helper").unwrap();
+        assert_eq!(lib_helper, mlua::Value::Nil);
+    }
+
+    #[test]
+    fn lua_environment_load_scripts_error_continues_and_counts() {
+        let dir = tempfile::TempDir::new().unwrap();
+        std::fs::write(dir.path().join("good.lua"), "good_loaded = true").unwrap();
+        std::fs::write(dir.path().join("bad.lua"), "error('intentional failure')").unwrap();
+
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).unwrap();
+        let count = env.load_scripts(dir.path(), dir.path());
+        assert_eq!(count, 1, "one good script must be counted despite one bad script");
+
+        let good: mlua::Value = env.lua.globals().get("good_loaded").unwrap();
+        assert_eq!(good, mlua::Value::Boolean(true));
     }
 }
