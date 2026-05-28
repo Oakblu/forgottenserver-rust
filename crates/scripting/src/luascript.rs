@@ -393,6 +393,7 @@ mod tests {
                 None => continue,
             };
             let engine = LuaEngine::new().unwrap();
+            engine.register_stub_game_globals().unwrap();
             let result = engine.load_file(&path);
             assert!(result.is_ok(), "failed to load {:?}: {:?}", path, result);
         }
