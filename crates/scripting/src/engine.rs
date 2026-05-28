@@ -98,20 +98,24 @@ impl ScriptEngine for NoopScriptEngine {
 }
 
 /// Recursively collect `.lua` files under `dir`, skipping:
-/// - Subdirectories named `lib` (loaded separately with isLib=true)
+/// - Subdirectories named `lib` when `skip_lib=true` (loaded separately with isLib=true)
 /// - Files whose name starts with `#` (disabled marker)
 #[cfg(feature = "lua-scripting")]
-fn collect_lua_files(dir: &std::path::Path, out: &mut Vec<PathBuf>) -> Result<(), crate::error::ScriptError> {
+pub(crate) fn collect_lua_files(
+    dir: &std::path::Path,
+    out: &mut Vec<PathBuf>,
+    skip_lib: bool,
+) -> Result<(), crate::error::ScriptError> {
     let read_dir = std::fs::read_dir(dir).map_err(|e| {
         crate::error::ScriptError::LoadFailed(format!("cannot read directory: {e}"))
     })?;
     for entry in read_dir.flatten() {
         let path = entry.path();
         if path.is_dir() {
-            if path.file_name().and_then(|n| n.to_str()) == Some("lib") {
+            if skip_lib && path.file_name().and_then(|n| n.to_str()) == Some("lib") {
                 continue;
             }
-            collect_lua_files(&path, out)?;
+            collect_lua_files(&path, out, skip_lib)?;
         } else if path.extension().and_then(|e| e.to_str()) == Some("lua") {
             let name = path.file_name().and_then(|n| n.to_str()).unwrap_or("");
             if !name.starts_with('#') {
@@ -186,7 +190,7 @@ impl LuaScriptEngine {
             )));
         }
         let mut paths = Vec::new();
-        collect_lua_files(dir, &mut paths)?;
+        collect_lua_files(dir, &mut paths, true)?;
         paths.sort();
 
         let mut loaded = 0usize;
@@ -913,6 +917,19 @@ mod tests {
             assert_eq!(main, mlua::Value::Boolean(true));
             let helpers: mlua::Value = engine.lua.globals().get("helpers_loaded").unwrap();
             assert_eq!(helpers, mlua::Value::Nil, "lib/helpers.lua must not be loaded");
+        }
+
+        #[test]
+        fn collect_lua_files_with_skip_lib_false_includes_lib_dir() {
+            let dir = tempfile::TempDir::new().unwrap();
+            let lib_dir = dir.path().join("lib");
+            std::fs::create_dir(&lib_dir).unwrap();
+            std::fs::write(lib_dir.join("helpers.lua"), "helpers = true").unwrap();
+            std::fs::write(dir.path().join("main.lua"), "main = true").unwrap();
+
+            let mut paths = Vec::new();
+            crate::engine::collect_lua_files(dir.path(), &mut paths, false).unwrap();
+            assert_eq!(paths.len(), 2, "skip_lib=false must include lib/ files");
         }
     }
 }
