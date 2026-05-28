@@ -8,7 +8,9 @@ Subcommands:
   ensure-upstream              Clone or fetch forgottenserver-upstream/
   get-commits [--since DATE]   List commits + changed .cpp/.h files (default: 3 months ago)
   map-symbols --files F...     Map changed files to C++ symbols via cpp_symbol_manifest.json
+  check-file-ledger --files F. Query MIGRATION_LEDGER.yml file-level status for each C++ file
   check-ledger --symbols S...  Query MIGRATION_LEDGER.yml for each symbol (stream-parsed)
+                               NOTE: ledger uses Rust paths, not C++ names — prefer check-file-ledger
   check-intentional --syms S.. Check intentional_differences.yml for each symbol
 """
 
@@ -183,6 +185,79 @@ def cmd_map_symbols(args):
 
 
 # ---------------------------------------------------------------------------
+# check-file-ledger  (preferred — matches MIGRATION_LEDGER.yml structure)
+# ---------------------------------------------------------------------------
+
+def cmd_check_file_ledger(args):
+    """Query the file-level status block in MIGRATION_LEDGER.yml.
+
+    The ledger's `files:` section records per-file statuses with fields:
+      cpp, status, symbol_count, statuses, confidence
+
+    Symbol-level entries use Rust module paths, so the old check-ledger
+    command (which matched C++ symbol names against those paths) always
+    returned 0 matches.  This command matches against the `cpp:` field
+    instead, which stores the original C++ file path.
+    """
+    wanted = set(args.files)
+
+    ledger_path = Path(LEDGER_FILE)
+    if not ledger_path.exists():
+        print(f"ERROR: {LEDGER_FILE} not found.", file=sys.stderr)
+        sys.exit(1)
+
+    results = {}      # cpp_file -> status
+    counts  = {}      # cpp_file -> symbol_count
+
+    current_file   = None
+    current_status = None
+    current_count  = None
+
+    with open(ledger_path) as f:
+        for line in f:
+            # File entry opener:  "  - cpp: \"src/foo.cpp\""
+            m = re.match(r'  - cpp: "(.+)"', line)
+            if m:
+                # Flush previous entry
+                if current_file and current_status and current_file in wanted:
+                    results[current_file] = current_status
+                    counts[current_file]  = current_count
+                current_file   = m.group(1)
+                current_status = None
+                current_count  = None
+                continue
+
+            s = re.match(r'    status: (.+)', line)
+            if s and current_file:
+                current_status = s.group(1).strip()
+
+            sc = re.match(r'    symbol_count: (.+)', line)
+            if sc and current_file:
+                current_count = sc.group(1).strip()
+
+        # Final flush
+        if current_file and current_status and current_file in wanted:
+            results[current_file] = current_status
+            counts[current_file]  = current_count
+
+    missing = wanted - set(results.keys())
+
+    print(f"=== File-level ledger results for {len(wanted)} file(s) ===\n")
+    for f in sorted(results.keys()):
+        count_str = f"  symbols={counts[f]}" if counts.get(f) else ""
+        print(f"  {results[f]:<25} {f}{count_str}")
+
+    for f in sorted(missing):
+        print(f"  MISSING                   {f}")
+
+    print(f"\nFILE_LEDGER_SUMMARY: {len(results)} found, {len(missing)} missing")
+
+    # Machine-readable: emit JSON for shell pipeline consumption
+    payload = {f: results.get(f, "MISSING") for f in sorted(wanted)}
+    print(f"FILE_LEDGER_STATUS: {json.dumps(payload)}")
+
+
+# ---------------------------------------------------------------------------
 # check-ledger
 # ---------------------------------------------------------------------------
 
@@ -326,7 +401,16 @@ def main():
     p_symbols = sub.add_parser("map-symbols", help="Map changed files → C++ symbols")
     p_symbols.add_argument("--files", nargs="+", required=True, metavar="FILE")
 
-    p_ledger = sub.add_parser("check-ledger", help="Query MIGRATION_LEDGER.yml for symbols")
+    p_file_ledger = sub.add_parser(
+        "check-file-ledger",
+        help="Query MIGRATION_LEDGER.yml file-level status for C++ files (preferred over check-ledger)",
+    )
+    p_file_ledger.add_argument("--files", nargs="+", required=True, metavar="FILE")
+
+    p_ledger = sub.add_parser(
+        "check-ledger",
+        help="Query MIGRATION_LEDGER.yml by C++ symbol name (NOTE: ledger uses Rust paths; prefer check-file-ledger)",
+    )
     p_ledger.add_argument("--symbols", nargs="+", required=True, metavar="SYMBOL")
 
     p_intentional = sub.add_parser("check-intentional", help="Check intentional_differences.yml")
@@ -337,6 +421,7 @@ def main():
         "ensure-upstream": cmd_ensure_upstream,
         "get-commits": cmd_get_commits,
         "map-symbols": cmd_map_symbols,
+        "check-file-ledger": cmd_check_file_ledger,
         "check-ledger": cmd_check_ledger,
         "check-intentional": cmd_check_intentional,
     }

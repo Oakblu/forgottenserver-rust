@@ -59,10 +59,10 @@ if [ ${#symbols[@]} -eq 0 ]; then
     exit 0
 fi
 
-# ── Phase 4a: check ledger ─────────────────────────────────────────────────
+# ── Phase 4a: check ledger (file-level — correct; symbol-level has path mismatch) ──
 echo ""
-echo "=== Phase 4a: Checking MIGRATION_LEDGER.yml ==="
-$PY check-ledger --symbols "${symbols[@]}"
+echo "=== Phase 4a: Checking MIGRATION_LEDGER.yml (file-level status) ==="
+$PY check-file-ledger --files "${changed_files[@]}"
 
 # ── Phase 4b: check intentional differences ────────────────────────────────
 echo ""
