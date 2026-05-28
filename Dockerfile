@@ -52,9 +52,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY --from=build /usr/local/bin/tfs /bin/tfs
 
-# Game data (items.otb, weapons.xml, etc.) — comes from the C++ vendored
-# tree via the data symlink in the Rust workspace.
-COPY forgottenserver/data /srv/data/
+# Game data (items.otb, weapons.xml, etc.) from the data/ directory
+# at the workspace root.
+COPY data /srv/data/
 
 # Default config — overridable via a bind-mount on /srv/config.lua.
 COPY crates/tfs/tests/fixtures/config.lua /srv/config.lua
