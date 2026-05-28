@@ -34,8 +34,6 @@ impl UserData for LuaTalkAction {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     fn fresh_lua() -> mlua::Lua {
         let lua = mlua::Lua::new();
         crate::lua_bindings::install_bindings(

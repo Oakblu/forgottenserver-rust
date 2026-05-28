@@ -6,7 +6,7 @@
 #![allow(dead_code)]
 
 use super::xml_node::LuaXmlNode;
-use mlua::{UserData, UserDataMethods, Value};
+use mlua::{UserData, UserDataMethods};
 
 #[derive(Debug, Clone, Default)]
 pub struct LuaXmlDocument;
@@ -35,8 +35,6 @@ impl UserData for LuaXmlDocument {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     fn fresh_lua() -> mlua::Lua {
         let lua = mlua::Lua::new();
         crate::lua_bindings::install_bindings(
