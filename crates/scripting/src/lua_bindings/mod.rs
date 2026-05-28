@@ -284,6 +284,9 @@ pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::R
     class_table!("XMLDocument", |_, _: mlua::MultiValue| Ok(
         classes::xml_document::LuaXmlDocument
     ));
+    class_table!("Weapon", |_, _: mlua::MultiValue| Ok(
+        classes::weapon::LuaWeapon::default()
+    ));
 
     // configManager — singleton instance (lowercase, matches C++ g_config Lua name)
     lua.globals()
@@ -310,7 +313,7 @@ pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::R
         "Item", "Container", "Teleport", "Podium",
         "Tile", "ItemType", "Vocation",
         "Guild", "Group", "Party", "House",
-        "MonsterType", "Weapon",
+        "MonsterType",
         // compat.lua module-level: `numberToVariant = Variant`, `Variant.getNumber` etc.
         "Variant",
         // Used by scripts (Town, Loot, MonsterSpell) as constructor/namespace tables

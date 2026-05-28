@@ -15,6 +15,24 @@ impl LuaWeapon {
     }
 }
 
+impl Default for LuaWeapon {
+    fn default() -> Self {
+        use forgottenserver_game::weapons::{ElementType, WeaponKind};
+        Self(Weapon {
+            item_id: 0,
+            kind: WeaponKind::Melee,
+            min_level: 0,
+            min_mag_level: 0,
+            attack: 0,
+            defense: 0,
+            shoot_range: 1,
+            enabled: true,
+            element_type: ElementType::None,
+            element_damage: 0,
+        })
+    }
+}
+
 impl<'lua> mlua::FromLua<'lua> for LuaWeapon {
     fn from_lua(value: mlua::Value<'lua>, _lua: &'lua mlua::Lua) -> mlua::Result<Self> {
         match value {
