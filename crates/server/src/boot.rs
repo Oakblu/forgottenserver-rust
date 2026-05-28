@@ -12,7 +12,6 @@ use forgottenserver_game::{
 };
 use forgottenserver_items::registry::ItemsRegistry;
 use forgottenserver_map::items_loader::load_items_otb;
-use forgottenserver_scripting::engine::LuaScriptEngine;
 
 use crate::{admin_handler::AdminHandler, game_state::GameState, status_handler::StatusHandler};
 
@@ -21,8 +20,6 @@ pub struct GameData {
     pub spells: SpellRegistry,
     pub weapons: WeaponRegistry,
     pub npcs: NpcRegistry,
-    /// Number of Lua scripts loaded from `data/scripts/` (0 when feature disabled).
-    pub scripts_loaded: usize,
 }
 
 /// Load all four game data registries from `data_dir` before entering the game loop.
@@ -35,22 +32,12 @@ pub fn boot(data_dir: &Path) -> Result<GameData, String> {
     let weapons = load_weapons_xml(&data_dir.join("weapons/weapons.xml"))?;
     let npcs = load_npcs_xml(&data_dir.join("npc"))?;
 
-    let scripts_loaded = load_lua_scripts(data_dir);
-
     Ok(GameData {
         items,
         spells,
         weapons,
         npcs,
-        scripts_loaded,
     })
-}
-
-/// Load Lua scripts from `data_dir/scripts/`. Errors are treated as warnings.
-fn load_lua_scripts(data_dir: &Path) -> usize {
-    let scripts_dir = data_dir.join("scripts");
-    let mut engine = LuaScriptEngine::new();
-    engine.load_dir(&scripts_dir).unwrap_or_default()
 }
 
 /// Spawn the admin TCP listener and status HTTP listener as background threads.
@@ -225,10 +212,9 @@ mod tests {
 
     #[test]
     fn boot_loads_lua_scripts_from_data_scripts() {
-        let game_data = boot(&data_dir()).expect("boot should succeed");
-        // The data/scripts/ directory contains .lua files; scripts_loaded is 0 or more.
-        // We only assert boot completes without panic (scripts_loaded counts top-level .lua only).
-        let _ = game_data.scripts_loaded;
+        // Verify boot completes without panic; Lua script loading is now handled
+        // by LuaEnvironment::load_scripts in the scripting crate.
+        let _game_data = boot(&data_dir()).expect("boot should succeed");
     }
 
     // -----------------------------------------------------------------------

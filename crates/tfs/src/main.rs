@@ -120,7 +120,7 @@ fn main() -> ExitCode {
         modules.game_data.spells.len(),
         modules.game_data.weapons.len(),
         modules.game_data.npcs.len(),
-        modules.game_data.scripts_loaded
+        0usize // TODO Task 5: replace with modules.scripts_loaded from LuaEnvironment
     );
 
     boot::install_signal_handlers();
