@@ -114,10 +114,19 @@ fn main() -> ExitCode {
         }
     };
 
+    #[cfg(feature = "lua-scripting")]
+    let spell_count = modules
+        .lua
+        .as_ref()
+        .map(|l| l.registered_spells_count())
+        .unwrap_or(0);
+    #[cfg(not(feature = "lua-scripting"))]
+    let spell_count = modules.game_data.spells.len();
+
     println!(
         ">> Loaded {} items, {} spells, {} weapons, {} NPCs, {} Lua scripts.",
         modules.game_data.items.len(),
-        modules.game_data.spells.len(),
+        spell_count,
         modules.game_data.weapons.len(),
         modules.game_data.npcs.len(),
         modules.scripts_loaded
