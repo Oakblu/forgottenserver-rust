@@ -306,6 +306,10 @@ pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::R
         "Tile", "ItemType", "Vocation",
         "Guild", "Group", "Party", "House",
         "MonsterType", "Weapon",
+        // compat.lua module-level: `numberToVariant = Variant`, `Variant.getNumber` etc.
+        "Variant",
+        // Used by scripts (Town, Loot, MonsterSpell) as constructor/namespace tables
+        "Town", "Loot", "MonsterSpell",
     ] {
         lua.globals().set(*name, lua.create_table()?)?;
     }
