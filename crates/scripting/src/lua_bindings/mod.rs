@@ -255,6 +255,8 @@ pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::R
     {
         let game_tbl: mlua::Table = lua.globals().get("Game")?;
         game_tbl.set("getMounts", lua.create_function(|lua, _: ()| lua.create_table())?)?;
+        game_tbl.set("setWorldLight", lua.create_function(|_, _: mlua::MultiValue| Ok(()))?)?;
+        game_tbl.set("getWorldTime", lua.create_function(|_, _: ()| Ok(0i64))?)?;
     }
 
     class_table!("Spell", |_, _: mlua::MultiValue| Ok(
@@ -291,9 +293,19 @@ pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::R
         classes::xml_node::LuaXmlNode
     ));
 
-    // configManager — singleton instance (lowercase, matches C++ g_config Lua name)
-    lua.globals()
-        .set("configManager", classes::config_manager::LuaConfigManager)?;
+    // configManager — plain table of standalone functions (matches C++ TFS namespace table).
+    // Scripts call configManager.getBoolean(key) using dot notation (no self), so this
+    // must NOT be a UserData. Using mlua::MultiValue for args handles both call styles:
+    //   dot:   configManager.getBoolean(key)   → args = [key]
+    //   colon: configManager:getBoolean(key)   → args = [table, key]  — both ignored.
+    {
+        let config_tbl = lua.create_table()?;
+        config_tbl.set("getString", lua.create_function(|_, _: mlua::MultiValue| Ok("".to_string()))?)?;
+        config_tbl.set("getNumber", lua.create_function(|_, _: mlua::MultiValue| Ok(0i64))?)?;
+        config_tbl.set("getBoolean", lua.create_function(|_, _: mlua::MultiValue| Ok(false))?)?;
+        config_tbl.set("getFloat", lua.create_function(|_, _: mlua::MultiValue| Ok(0.0f64))?)?;
+        lua.globals().set("configManager", config_tbl)?;
+    }
 
     // result — stub table for database result compat aliases used by compat.lua
     // (e.g. `result.getDataInt = result.getNumber`). Real methods are nil stubs.
@@ -457,6 +469,54 @@ mod tests {
         assert!(
             !matches!(val, mlua::Value::Nil),
             "expected global 'configManager' to be non-nil"
+        );
+    }
+
+    #[test]
+    fn game_set_world_light_does_not_error() {
+        let lua = crate::lua_bindings::LuaEnvironment::new(
+            crate::lua_bindings::GameStateHandle::default(),
+        )
+        .unwrap()
+        .lua;
+        let result = lua.load("Game.setWorldLight(215, 250)").exec();
+        assert!(
+            result.is_ok(),
+            "Game.setWorldLight should not error: {result:?}"
+        );
+    }
+
+    #[test]
+    fn config_manager_get_boolean_dot_notation_does_not_error() {
+        let lua = crate::lua_bindings::LuaEnvironment::new(
+            crate::lua_bindings::GameStateHandle::default(),
+        )
+        .unwrap()
+        .lua;
+        // Dot notation: configManager.getBoolean(key) — no self
+        let result = lua
+            .load("return configManager.getBoolean(1)")
+            .eval::<bool>();
+        assert!(
+            result.is_ok(),
+            "configManager.getBoolean(key) dot-notation should not error: {result:?}"
+        );
+    }
+
+    #[test]
+    fn config_manager_get_boolean_colon_notation_does_not_error() {
+        let lua = crate::lua_bindings::LuaEnvironment::new(
+            crate::lua_bindings::GameStateHandle::default(),
+        )
+        .unwrap()
+        .lua;
+        // Colon notation: configManager:getBoolean(key) — passes self as first arg, should also work
+        let result = lua
+            .load("return configManager:getBoolean(1)")
+            .eval::<bool>();
+        assert!(
+            result.is_ok(),
+            "configManager:getBoolean(key) colon-notation should not error: {result:?}"
         );
     }
 }

@@ -31,5 +31,12 @@ impl UserData for LuaXmlNode {
         methods.add_method("firstChild", |_, _this, _args: Value| Ok(Value::Nil));
         methods.add_method("nextSibling", |_, _this, _args: Value| Ok(Value::Nil));
         methods.add_method_mut("delete", |_, _this, ()| Ok(()));
+        methods.add_method("children", |lua, _this, ()| {
+            // Return an empty iterator function: `for x in node:children() do` loops zero times
+            let f = lua.create_function(|_, _: ()| -> mlua::Result<mlua::Value> {
+                Ok(mlua::Value::Nil)
+            })?;
+            Ok(mlua::Value::Function(f))
+        });
     }
 }

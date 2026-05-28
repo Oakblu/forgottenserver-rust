@@ -57,5 +57,68 @@ pub fn install(lua: &mlua::Lua) -> mlua::Result<()> {
     let os_ns: mlua::Table = lua.globals().get("os")?;
     os_ns.set("mtime", os_mtime)?;
 
+    // ── createCombatArea(area) — accepts a 2-D pattern table, returns a stub ─
+    // C++ builds a CombatArea from the matrix; here we return an empty table
+    // so scripts that store the result and pass it to Combat:setArea still
+    // get a non-nil value without requiring the full combat subsystem.
+    let create_combat_area =
+        lua.create_function(|lua, _area: mlua::MultiValue| lua.create_table())?;
+    lua.globals().set("createCombatArea", create_combat_area)?;
+
+    // ── isScriptsInterface() — returns true ─────────────────────────────────
+    // TFS uses this to distinguish the scripts-interface path from the
+    // legacy XML-event path.  This server always uses the scripts interface.
+    let is_scripts_interface = lua.create_function(|_, _: ()| Ok(true))?;
+    lua.globals().set("isScriptsInterface", is_scripts_interface)?;
+
+    // ── PacketHandler(opcode, handlerName) — stub registration ──────────────
+    // C++ wires incoming packet opcodes to named Lua handler functions; the
+    // stub silently accepts the registration so network scripts load without
+    // error even before the full network-binding layer is wired up.
+    let packet_handler = lua.create_function(|_, _: mlua::MultiValue| Ok(()))?;
+    lua.globals().set("PacketHandler", packet_handler)?;
+
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    fn fresh_lua() -> mlua::Lua {
+        let lua = mlua::Lua::new();
+        crate::lua_bindings::install_bindings(
+            &lua,
+            crate::lua_bindings::GameStateHandle::default(),
+        )
+        .unwrap();
+        lua
+    }
+
+    #[test]
+    fn create_combat_area_is_callable() {
+        let lua = fresh_lua();
+        let result = lua
+            .load("local area = createCombatArea({{0,1,0},{1,1,1},{0,1,0}}); return area ~= nil")
+            .eval::<bool>();
+        assert!(result.is_ok(), "createCombatArea should not error: {result:?}");
+        assert!(result.unwrap(), "createCombatArea should return non-nil");
+    }
+
+    #[test]
+    fn is_scripts_interface_returns_true() {
+        let lua = fresh_lua();
+        let result = lua
+            .load("return isScriptsInterface()")
+            .eval::<bool>();
+        assert!(result.is_ok(), "isScriptsInterface should not error: {result:?}");
+        assert!(result.unwrap(), "isScriptsInterface should return true");
+    }
+
+    #[test]
+    fn packet_handler_is_callable() {
+        let lua = fresh_lua();
+        let result = lua
+            .load("PacketHandler(0x9F, function() end)")
+            .exec();
+        assert!(result.is_ok(), "PacketHandler should not error: {result:?}");
+    }
 }

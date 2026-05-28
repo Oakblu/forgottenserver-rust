@@ -58,5 +58,45 @@ impl UserData for LuaAction {
         });
         methods.add_method_mut("onUse", |_, _this, _cb: Value| Ok(()));
         methods.add_method_mut("register", |_, _this, ()| Ok(true));
+        methods.add_meta_method_mut("__newindex", |_, _this, (_k, _v): (Value, Value)| Ok(()));
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn fresh_lua() -> mlua::Lua {
+        let lua = mlua::Lua::new();
+        crate::lua_bindings::install_bindings(
+            &lua,
+            crate::lua_bindings::GameStateHandle::default(),
+        )
+        .unwrap();
+        lua
+    }
+
+    #[test]
+    fn action_field_assignment_does_not_error() {
+        let lua = fresh_lua();
+        let result = lua
+            .load("local a = Action(); a.onUse = function() end")
+            .exec();
+        assert!(
+            result.is_ok(),
+            "field assignment on Action should not error: {result:?}"
+        );
+    }
+
+    #[test]
+    fn action_function_syntax_does_not_error() {
+        let lua = fresh_lua();
+        let result = lua
+            .load("local a = Action(); function a.onUse(p, i) end")
+            .exec();
+        assert!(
+            result.is_ok(),
+            "function-declaration syntax on Action should not error: {result:?}"
+        );
     }
 }

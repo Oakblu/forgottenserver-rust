@@ -59,7 +59,7 @@ impl UserData for LuaCombat {
             this.0.origin = origin;
             Ok(())
         });
-        methods.add_method_mut("setParameter", |_, _this, _args: (i64, i64)| Ok(false));
+        methods.add_method_mut("setParameter", |_, _this, _args: (i64, Value)| Ok(false));
         methods.add_method("getParameter", |_, _this, _param: i64| Ok(0i64));
         methods.add_method("execute", |_, _this, _args: (Value, Value)| Ok(true));
     }
@@ -85,5 +85,41 @@ mod tests {
         lua.globals().set("c", LuaCombat::new()).unwrap();
         // setOrigin doesn't return a getter; we just ensure no error.
         lua.load("c:setOrigin(3)").exec().unwrap();
+    }
+
+    #[test]
+    fn set_parameter_accepts_boolean_true() {
+        let lua = fresh_lua();
+        let result = lua
+            .load("local c = Combat(); c:setParameter(1, true)")
+            .exec();
+        assert!(
+            result.is_ok(),
+            "setParameter with boolean true should not error: {result:?}"
+        );
+    }
+
+    #[test]
+    fn set_parameter_accepts_boolean_false() {
+        let lua = fresh_lua();
+        let result = lua
+            .load("local c = Combat(); c:setParameter(2, false)")
+            .exec();
+        assert!(
+            result.is_ok(),
+            "setParameter with boolean false should not error: {result:?}"
+        );
+    }
+
+    #[test]
+    fn set_parameter_still_accepts_integer() {
+        let lua = fresh_lua();
+        let result = lua
+            .load("local c = Combat(); c:setParameter(3, 42)")
+            .exec();
+        assert!(
+            result.is_ok(),
+            "setParameter with integer should still work: {result:?}"
+        );
     }
 }

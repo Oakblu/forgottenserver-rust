@@ -111,6 +111,8 @@ impl UserData for LuaSpell {
         }
         // ── Callback setters (recorded but not dispatched) ───────
         methods.add_method_mut("onCastSpell", |_, _this, _cb: Value| Ok(()));
+        // ── Allow arbitrary field assignment (e.g. spell.onCastSpell = ...) ─
+        methods.add_meta_method_mut("__newindex", |_, _this, (_k, _v): (Value, Value)| Ok(()));
     }
 }
 
@@ -135,5 +137,29 @@ mod tests {
         lua.globals().set("s", LuaSpell::new(s)).unwrap();
         let n: String = lua.load("return s:name()").eval().unwrap();
         assert_eq!(n, "Light Healing");
+    }
+
+    #[test]
+    fn spell_field_assignment_does_not_error() {
+        let lua = fresh_lua();
+        let result = lua
+            .load("local s = Spell(0); s.onCastSpell = function() end")
+            .exec();
+        assert!(
+            result.is_ok(),
+            "field assignment on Spell should not error: {result:?}"
+        );
+    }
+
+    #[test]
+    fn spell_function_syntax_does_not_error() {
+        let lua = fresh_lua();
+        let result = lua
+            .load("local s = Spell(0); function s.onCastSpell(creature, var) end")
+            .exec();
+        assert!(
+            result.is_ok(),
+            "function-declaration syntax on Spell should not error: {result:?}"
+        );
     }
 }

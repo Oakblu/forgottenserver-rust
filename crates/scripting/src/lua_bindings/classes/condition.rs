@@ -75,7 +75,7 @@ impl UserData for LuaCondition {
             this.0.ticks = ticks as i32;
             Ok(())
         });
-        methods.add_method_mut("setParameter", |_, _this, _args: (i64, i64)| {
+        methods.add_method_mut("setParameter", |_, _this, _args: (i64, Value)| {
             // Stub: ConditionBase doesn't store typed params; subclasses do.
             Ok(false)
         });
@@ -146,5 +146,41 @@ mod tests {
             .eval()
             .unwrap();
         assert_eq!(v, 10000);
+    }
+
+    #[test]
+    fn set_parameter_accepts_boolean_true() {
+        let lua = fresh_lua();
+        let result = lua
+            .load("local c = Condition(0); c:setParameter(1, true)")
+            .exec();
+        assert!(
+            result.is_ok(),
+            "Condition:setParameter with boolean true should not error: {result:?}"
+        );
+    }
+
+    #[test]
+    fn set_parameter_accepts_boolean_false() {
+        let lua = fresh_lua();
+        let result = lua
+            .load("local c = Condition(0); c:setParameter(2, false)")
+            .exec();
+        assert!(
+            result.is_ok(),
+            "Condition:setParameter with boolean false should not error: {result:?}"
+        );
+    }
+
+    #[test]
+    fn set_parameter_still_accepts_integer() {
+        let lua = fresh_lua();
+        let result = lua
+            .load("local c = Condition(0); c:setParameter(1, 5000)")
+            .exec();
+        assert!(
+            result.is_ok(),
+            "Condition:setParameter with integer should still work: {result:?}"
+        );
     }
 }
