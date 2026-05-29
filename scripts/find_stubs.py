@@ -175,6 +175,52 @@ def detect_trivial_bodies(lines: list, bodies: list) -> list:
     return hits
 
 
+_DROP_RE = re.compile(r"\bdrop\s*\(")
+_PANIC_RE = re.compile(r"\b(panic!|unreachable!)\s*\(")
+_COMMENT_RE = re.compile(r"^\s*//")
+
+
+def detect_dropped_work(lines: list, bodies: list) -> list:
+    """Flag drop() calls in functions other than fn drop(&mut self)."""
+    hits = []
+    for b in bodies:
+        if b["fn_name"] == "drop":
+            continue
+        for offset, line in enumerate(b["body"].split("\n")):
+            if _DROP_RE.search(line) and not _COMMENT_RE.match(line):
+                hits.append(
+                    {
+                        "pattern": "dropped_work",
+                        "fn_name": b["fn_name"],
+                        "line": b["start_line"] + offset,
+                        "snippet": line.strip()[:120],
+                    }
+                )
+    return hits
+
+
+def detect_panic_stubs(src: str) -> list:
+    """Flag panic!/unreachable! calls in non-comment lines.
+
+    fn_name is set to '<unknown>' here; scan_file fills it in via enclosing_fn().
+    """
+    hits = []
+    for i, line in enumerate(src.splitlines(), 1):
+        if _COMMENT_RE.match(line):
+            continue
+        m = _PANIC_RE.search(line)
+        if m:
+            hits.append(
+                {
+                    "pattern": "panic_stub",
+                    "fn_name": "<unknown>",
+                    "line": i,
+                    "snippet": line.strip()[:120],
+                }
+            )
+    return hits
+
+
 def main() -> None:
     manifest = load_manifest(MANIFEST_PATH)
     stubs = []

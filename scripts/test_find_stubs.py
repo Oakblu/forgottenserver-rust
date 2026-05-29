@@ -171,5 +171,56 @@ class TestDetectTrivialBodies(unittest.TestCase):
         self.assertEqual(hits, [])
 
 
+class TestDetectDroppedWork(unittest.TestCase):
+    def _run(self, src):
+        lines = src.splitlines()
+        bodies = find_stubs.find_fn_bodies(lines)
+        return find_stubs.detect_dropped_work(lines, bodies)
+
+    def test_drop_in_accept_loop_flagged(self):
+        src = (
+            "fn accept_loop() {\n"
+            "    let stream = listener.accept();\n"
+            "    drop(stream);\n"
+            "}\n"
+        )
+        hits = self._run(src)
+        self.assertEqual(len(hits), 1)
+        self.assertEqual(hits[0]["pattern"], "dropped_work")
+        self.assertEqual(hits[0]["fn_name"], "accept_loop")
+
+    def test_impl_drop_excluded(self):
+        # fn drop(&mut self) is the real Drop trait — never a stub
+        src = "fn drop(&mut self) {\n    drop(self.inner);\n}\n"
+        hits = self._run(src)
+        self.assertEqual(hits, [])
+
+    def test_drop_in_real_code_flagged(self):
+        src = "fn handle(conn: TcpStream) {\n    drop(conn);\n}\n"
+        hits = self._run(src)
+        self.assertEqual(len(hits), 1)
+
+
+class TestDetectPanicStubs(unittest.TestCase):
+    def _run(self, src):
+        return find_stubs.detect_panic_stubs(src)
+
+    def test_panic_flagged(self):
+        src = 'fn convert(x: u8) -> Foo {\n    panic!("not implemented")\n}\n'
+        hits = self._run(src)
+        self.assertEqual(len(hits), 1)
+        self.assertEqual(hits[0]["pattern"], "panic_stub")
+
+    def test_unreachable_flagged(self):
+        src = "fn from(x: u8) -> Self {\n    unreachable!()\n}\n"
+        hits = self._run(src)
+        self.assertEqual(len(hits), 1)
+
+    def test_panic_in_comment_not_flagged(self):
+        src = "// panic!() would crash here\nfn foo() { 1 }\n"
+        hits = self._run(src)
+        self.assertEqual(hits, [])
+
+
 if __name__ == "__main__":
     unittest.main()
