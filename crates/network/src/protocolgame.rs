@@ -4,6 +4,9 @@
 //!
 //! All functions are pure data transformations — no sockets, no I/O.
 
+use forgottenserver_common::definitions::{
+    CLIENT_VERSION_MAX, CLIENT_VERSION_MIN, CLIENT_VERSION_STR,
+};
 use forgottenserver_common::networkmessage::{
     ItemTypeMeta, NetworkMessage, PodiumMeta, INITIAL_BUFFER_POSITION,
 };
@@ -125,6 +128,16 @@ pub struct VipPacket {
 /// - `password`       (length-prefixed string)
 pub fn parse_login_packet(msg: &mut NetworkMessage) -> Result<LoginPacket, String> {
     let client_version = msg.get_u16();
+
+    if (client_version as i32) < CLIENT_VERSION_MIN
+        || (client_version as i32) > CLIENT_VERSION_MAX
+    {
+        return Err(format!(
+            "Only clients with protocol {} allowed!",
+            CLIENT_VERSION_STR
+        ));
+    }
+
     let k0 = msg.get_u32();
     let k1 = msg.get_u32();
     let k2 = msg.get_u32();
@@ -4058,9 +4071,9 @@ mod tests {
 
     #[test]
     fn test_parse_login_packet() {
-        // version=760, key=[1,2,3,4], account="acc", password="pass"
+        // version=1310 (minimum allowed), key=[1,2,3,4], account="acc", password="pass"
         let mut msg = NetworkMessage::new();
-        msg.add_u16(760);
+        msg.add_u16(1310);
         msg.add_u32(1);
         msg.add_u32(2);
         msg.add_u32(3);
@@ -4070,7 +4083,7 @@ mod tests {
         msg.set_buffer_position(0);
 
         let pkt = parse_login_packet(&mut msg).expect("parse should succeed");
-        assert_eq!(pkt.client_version, 760);
+        assert_eq!(pkt.client_version, 1310);
         assert_eq!(pkt.xtea_key, [1, 2, 3, 4]);
         assert_eq!(pkt.account_name, "acc");
         assert_eq!(pkt.password, "pass");
@@ -5490,9 +5503,14 @@ mod tests {
 
     #[test]
     fn test_parse_login_packet_overrun() {
+        // An empty buffer reads version=0 (overrun sentinel), which is below the
+        // minimum allowed version — the version check fires before the overrun check.
         let mut msg = NetworkMessage::new();
-        let err = parse_login_packet(&mut msg).expect_err("empty buffer should overrun");
-        assert_eq!(err, "login packet overrun");
+        let err = parse_login_packet(&mut msg).expect_err("empty buffer should be rejected");
+        assert!(
+            err.contains("13.10"),
+            "empty buffer produces version-check error: {err}"
+        );
     }
 
     #[test]
@@ -5744,6 +5762,87 @@ mod tests {
     // -----------------------------------------------------------------------
     // serialize_disconnect
     // -----------------------------------------------------------------------
+
+    // -----------------------------------------------------------------------
+    // parse_login_packet — version range check
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn parse_login_version_760_returns_err_with_version_message() {
+        use forgottenserver_common::networkmessage::NetworkMessage;
+        // version=760 (0xF8, 0x02 LE) + xtea key (16 bytes) + account "" + password ""
+        let payload: &[u8] = &[
+            0xF8, 0x02,              // version 760
+            0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, // xtea key (all zeros)
+            0x00, 0x00,              // account_name length = 0
+            0x00, 0x00,              // password length = 0
+        ];
+        let mut msg = NetworkMessage::new();
+        msg.add_bytes(payload);
+        msg.set_buffer_position(0);
+        let result = parse_login_packet(&mut msg);
+        assert!(result.is_err(), "version 760 must be rejected");
+        let err = result.unwrap_err();
+        assert!(
+            err.contains("13.10"),
+            "error must mention the allowed version: {err}"
+        );
+    }
+
+    #[test]
+    fn parse_login_version_9999_returns_err_with_version_message() {
+        use forgottenserver_common::networkmessage::NetworkMessage;
+        // version=9999 (0x0F, 0x27 LE)
+        let payload: &[u8] = &[
+            0x0F, 0x27,              // version 9999
+            0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
+            0x00, 0x00,
+            0x00, 0x00,
+        ];
+        let mut msg = NetworkMessage::new();
+        msg.add_bytes(payload);
+        msg.set_buffer_position(0);
+        let result = parse_login_packet(&mut msg);
+        assert!(result.is_err(), "version 9999 must be rejected");
+        assert!(result.unwrap_err().contains("13.10"));
+    }
+
+    #[test]
+    fn parse_login_version_1310_returns_ok() {
+        use forgottenserver_common::networkmessage::NetworkMessage;
+        // version=1310 (0x1E, 0x05 LE)
+        let payload: &[u8] = &[
+            0x1E, 0x05,              // version 1310
+            1,0,0,0, 2,0,0,0, 3,0,0,0, 4,0,0,0, // xtea key
+            0x03, 0x00, b'a', b'c', b'c', // account_name "acc"
+            0x04, 0x00, b'p', b'a', b's', b's', // password "pass"
+        ];
+        let mut msg = NetworkMessage::new();
+        msg.add_bytes(payload);
+        msg.set_buffer_position(0);
+        let result = parse_login_packet(&mut msg);
+        assert!(result.is_ok(), "version 1310 must be accepted: {:?}", result);
+        let packet = result.unwrap();
+        assert_eq!(packet.client_version, 1310);
+    }
+
+    #[test]
+    fn parse_login_version_1311_returns_ok() {
+        use forgottenserver_common::networkmessage::NetworkMessage;
+        // version=1311 (0x1F, 0x05 LE)
+        let payload: &[u8] = &[
+            0x1F, 0x05,              // version 1311
+            1,0,0,0, 2,0,0,0, 3,0,0,0, 4,0,0,0,
+            0x00, 0x00,
+            0x00, 0x00,
+        ];
+        let mut msg = NetworkMessage::new();
+        msg.add_bytes(payload);
+        msg.set_buffer_position(0);
+        let result = parse_login_packet(&mut msg);
+        assert!(result.is_ok(), "version 1311 must be accepted: {:?}", result);
+        assert_eq!(result.unwrap().client_version, 1311);
+    }
 
     #[test]
     fn serialize_disconnect_opcode_is_0x14() {

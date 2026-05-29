@@ -1,0 +1,5168 @@
+[
+  {
+    "pattern": "trivial_body",
+    "fn_name": "begin_transaction",
+    "line": 137,
+    "snippet": "Ok(())",
+    "file": "database/src/database.rs",
+    "crate": "database",
+    "ledger_symbol": null,
+    "manifest_match": null
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "commit",
+    "line": 142,
+    "snippet": "Ok(())",
+    "file": "database/src/database.rs",
+    "crate": "database",
+    "ledger_symbol": null,
+    "manifest_match": null
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "rollback",
+    "line": 147,
+    "snippet": "Ok(())",
+    "file": "database/src/database.rs",
+    "crate": "database",
+    "ledger_symbol": null,
+    "manifest_match": null
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "optimize_tables",
+    "line": 37,
+    "snippet": "Ok(())",
+    "file": "database/src/databasemanager.rs",
+    "crate": "database",
+    "ledger_symbol": "database::databasemanager::DatabaseManager::<impl>::optimize_tables",
+    "manifest_match": {
+      "file": "crates/database/src/databasemanager.rs",
+      "kind": "impl_method",
+      "qualified_name": "database::databasemanager::DatabaseManager::<impl>::optimize_tables",
+      "signature": "fn optimize_tables(& self, _db : & mut InMemoryDb) -> Result < () , String >",
+      "visibility": "pub",
+      "line_start": 36,
+      "line_end": 39,
+      "dependencies": [
+        "InMemoryDb",
+        "doc"
+      ],
+      "behavior_summary": "No-op for in-memory databases; would run `OPTIMIZE TABLE` against MySQL.",
+      "risk_level": "high",
+      "body_hash": "4e2249a4da584cc4d0a41d3c176486418f90f1125adbba6c272c58c27f93f98c",
+      "notes": [
+        "kind-renamed-from-method"
+      ]
+    }
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "load_script",
+    "line": 71,
+    "snippet": "Ok(())",
+    "file": "scripting/src/engine.rs",
+    "crate": "scripting",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/scripting/src/engine.rs",
+        "kind": "trait_method",
+        "qualified_name": "scripting::engine::ScriptEngine::load_script",
+        "signature": "fn load_script(& mut self, path : & Path) -> Result < () , ScriptError >",
+        "visibility": "pub",
+        "line_start": 43,
+        "line_end": 43,
+        "dependencies": [],
+        "behavior_summary": "Trait method `ScriptEngine::load_script`.",
+        "risk_level": "high",
+        "body_hash": "f064947bb31b5584002a79b6bc664cdf2387c6f387009b3d451f5a63d63b4462",
+        "notes": [
+          "trait method"
+        ]
+      },
+      {
+        "file": "crates/scripting/src/engine.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "scripting::engine::NoopScriptEngine::<impl ScriptEngine for NoopScriptEngine>::load_script",
+        "signature": "fn load_script(& mut self, _path : & Path) -> Result < () , ScriptError >",
+        "visibility": "private",
+        "line_start": 66,
+        "line_end": 68,
+        "dependencies": [
+          "Path",
+          "ScriptError"
+        ],
+        "behavior_summary": "Method `load_script` implementing `ScriptEngine` for `NoopScriptEngine`.",
+        "risk_level": "high",
+        "body_hash": "f721f6e46f05733a375ccd2f136a87383ff099c0bd51b4709ac1e041056d3bd0",
+        "notes": [
+          "implements ScriptEngine::load_script",
+          "lua binding (heuristic)"
+        ]
+      },
+      {
+        "file": "crates/scripting/src/engine.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "scripting::engine::LuaScriptEngine::<impl ScriptEngine for LuaScriptEngine>::load_script",
+        "signature": "fn load_script(& mut self, path : & Path) -> Result < () , ScriptError >",
+        "visibility": "private",
+        "line_start": 169,
+        "line_end": 176,
+        "dependencies": [
+          "Path",
+          "ScriptError",
+          "ScriptError::LoadFailed",
+          "e",
+          "path",
+          "source",
+          "std::fs::read_to_string"
+        ],
+        "behavior_summary": "Method `load_script` implementing `ScriptEngine` for `LuaScriptEngine`.",
+        "risk_level": "high",
+        "body_hash": "bbe6934d6ef654ee139addc9b6cf7f7eab3906de956ea8291feee25aab340f8e",
+        "notes": [
+          "implements ScriptEngine::load_script",
+          "lua binding (heuristic)"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "reset",
+    "line": 83,
+    "snippet": "Ok(())",
+    "file": "scripting/src/engine.rs",
+    "crate": "scripting",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/networkmessage.rs",
+        "kind": "impl_method",
+        "qualified_name": "common::networkmessage::NetworkMessage::<impl>::reset",
+        "signature": "fn reset(& mut self)",
+        "visibility": "pub",
+        "line_start": 174,
+        "line_end": 178,
+        "dependencies": [
+          "NetworkMessageInfo::default",
+          "doc"
+        ],
+        "behavior_summary": "Resets the message: clears the length and resets the cursor to the",
+        "risk_level": "high",
+        "body_hash": "1ecd4065fa39af6204902445325046368e7b241feacf68921c12cab54d4ddc16",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/common/src/outputmessage.rs",
+        "kind": "impl_method",
+        "qualified_name": "common::outputmessage::OutputMessage::<impl>::reset",
+        "signature": "fn reset(& mut self)",
+        "visibility": "pub",
+        "line_start": 184,
+        "line_end": 188,
+        "dependencies": [
+          "HEADER_LENGTH",
+          "doc"
+        ],
+        "behavior_summary": "Resets the write cursor to just after the header, effectively",
+        "risk_level": "medium",
+        "body_hash": "a03407e07c335fbda85118b82ecd4926ea8420f70836ae2db0ce023311dab684",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/scripting/src/engine.rs",
+        "kind": "trait_method",
+        "qualified_name": "scripting::engine::ScriptEngine::reset",
+        "signature": "fn reset(& mut self) -> Result < () , ScriptError >",
+        "visibility": "pub",
+        "line_start": 45,
+        "line_end": 45,
+        "dependencies": [],
+        "behavior_summary": "Trait method `ScriptEngine::reset`.",
+        "risk_level": "high",
+        "body_hash": "d61c650ed84069a676dd191e3df9dc3b30b0a47351f8d76d8680b44607427fe9",
+        "notes": [
+          "trait method"
+        ]
+      },
+      {
+        "file": "crates/scripting/src/engine.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "scripting::engine::NoopScriptEngine::<impl ScriptEngine for NoopScriptEngine>::reset",
+        "signature": "fn reset(& mut self) -> Result < () , ScriptError >",
+        "visibility": "private",
+        "line_start": 74,
+        "line_end": 76,
+        "dependencies": [
+          "ScriptError"
+        ],
+        "behavior_summary": "Method `reset` implementing `ScriptEngine` for `NoopScriptEngine`.",
+        "risk_level": "high",
+        "body_hash": "25bc0aece95291bfb842c151d59487cf590a3db3b3abea0d771179d56909f8a8",
+        "notes": [
+          "implements ScriptEngine::reset",
+          "lua binding (heuristic)"
+        ]
+      },
+      {
+        "file": "crates/scripting/src/engine.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "scripting::engine::LuaScriptEngine::<impl ScriptEngine for LuaScriptEngine>::reset",
+        "signature": "fn reset(& mut self) -> Result < () , ScriptError >",
+        "visibility": "private",
+        "line_start": 199,
+        "line_end": 203,
+        "dependencies": [
+          "ScriptError",
+          "mlua::Lua::new"
+        ],
+        "behavior_summary": "Method `reset` implementing `ScriptEngine` for `LuaScriptEngine`.",
+        "risk_level": "high",
+        "body_hash": "b4d1bc3ce3010465edd116541ea36b15d0b3b5c2531aea892c69ebb0e6992206",
+        "notes": [
+          "implements ScriptEngine::reset",
+          "lua binding (heuristic)"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "register_event",
+    "line": 87,
+    "snippet": "Ok(())",
+    "file": "scripting/src/engine.rs",
+    "crate": "scripting",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/scripting/src/engine.rs",
+        "kind": "trait_method",
+        "qualified_name": "scripting::engine::ScriptEngine::register_event",
+        "signature": "fn register_event(& mut self, event : & str, script_path : & Path) -> Result < () , ScriptError >",
+        "visibility": "pub",
+        "line_start": 46,
+        "line_end": 46,
+        "dependencies": [],
+        "behavior_summary": "Trait method `ScriptEngine::register_event`.",
+        "risk_level": "high",
+        "body_hash": "99c1f39b91d250878bec75c5899b550f4c2c501026f1453f500fc6cd793f2b20",
+        "notes": [
+          "trait method"
+        ]
+      },
+      {
+        "file": "crates/scripting/src/engine.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "scripting::engine::NoopScriptEngine::<impl ScriptEngine for NoopScriptEngine>::register_event",
+        "signature": "fn register_event(& mut self, _event : & str, _script_path : & Path) -> Result < () , ScriptError >",
+        "visibility": "private",
+        "line_start": 78,
+        "line_end": 80,
+        "dependencies": [
+          "Path",
+          "ScriptError"
+        ],
+        "behavior_summary": "Method `register_event` implementing `ScriptEngine` for `NoopScriptEngine`.",
+        "risk_level": "high",
+        "body_hash": "c2499fb1bee1e023e91bd7a018952799c88187a1d67ecf59bdcb40c55ebfe479",
+        "notes": [
+          "implements ScriptEngine::register_event",
+          "lua binding (heuristic)"
+        ]
+      },
+      {
+        "file": "crates/scripting/src/engine.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "scripting::engine::LuaScriptEngine::<impl ScriptEngine for LuaScriptEngine>::register_event",
+        "signature": "fn register_event(& mut self, event : & str, script_path : & Path) -> Result < () , ScriptError >",
+        "visibility": "private",
+        "line_start": 205,
+        "line_end": 208,
+        "dependencies": [
+          "Path",
+          "ScriptError",
+          "event",
+          "script_path"
+        ],
+        "behavior_summary": "Method `register_event` implementing `ScriptEngine` for `LuaScriptEngine`.",
+        "risk_level": "high",
+        "body_hash": "39e9f76e2d55192dfd5793a2eedd07dc5a251cd58f5cdce6cb311bd050c1c7d8",
+        "notes": [
+          "implements ScriptEngine::register_event",
+          "lua binding (heuristic)"
+        ]
+      },
+      {
+        "file": "crates/scripting/src/lua_api.rs",
+        "kind": "impl_method",
+        "qualified_name": "scripting::lua_api::LuaApi::<impl>::register_event",
+        "signature": "fn register_event(& mut self, event_name : impl Into < String >, function_name : impl Into < String >)",
+        "visibility": "pub",
+        "line_start": 634,
+        "line_end": 639,
+        "dependencies": [
+          "EventRegistration",
+          "Into",
+          "event_name",
+          "function_name"
+        ],
+        "behavior_summary": "Inherent method `register_event` on `LuaApi`.",
+        "risk_level": "high",
+        "body_hash": "0ab7f764b6e247a9f27ad52bdb1251e661e46a0365e527859d83e4dc3c93e70d",
+        "notes": [
+          "lua binding (heuristic)",
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_attackable",
+    "line": 816,
+    "snippet": "true",
+    "file": "entity/src/creature.rs",
+    "crate": "entity",
+    "ledger_symbol": null,
+    "manifest_match": null
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "can_see_invisibility",
+    "line": 821,
+    "snippet": "false",
+    "file": "entity/src/creature.rs",
+    "crate": "entity",
+    "ledger_symbol": null,
+    "manifest_match": null
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "can_see_ghost_mode",
+    "line": 826,
+    "snippet": "false",
+    "file": "entity/src/creature.rs",
+    "crate": "entity",
+    "ledger_symbol": null,
+    "manifest_match": null
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_creature",
+    "line": 983,
+    "snippet": "true",
+    "file": "entity/src/creature.rs",
+    "crate": "entity",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_creature",
+        "signature": "fn is_creature(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 160,
+        "line_end": 162,
+        "dependencies": [],
+        "behavior_summary": "Trait method `Thing::is_creature`.",
+        "risk_level": "medium",
+        "body_hash": "02716ee7aceae3ce75e84e8c27872f5e023e0cdcdd5aeb063a2c3cae88522ed9",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::CreatureThing::<impl Thing for CreatureThing>::is_creature",
+        "signature": "fn is_creature(& self) -> bool",
+        "visibility": "private",
+        "line_start": 313,
+        "line_end": 315,
+        "dependencies": [],
+        "behavior_summary": "Method `is_creature` implementing `Thing` for `CreatureThing`.",
+        "risk_level": "medium",
+        "body_hash": "7f333027ae02e83652991c581b6aaa3aa7044782150a15e764ca1b019e27a5f3",
+        "notes": [
+          "implements Thing::is_creature"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_creature",
+        "signature": "fn is_creature(& self) -> bool",
+        "visibility": "private",
+        "line_start": 691,
+        "line_end": 693,
+        "dependencies": [],
+        "behavior_summary": "Method `is_creature` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "7f333027ae02e83652991c581b6aaa3aa7044782150a15e764ca1b019e27a5f3",
+        "notes": [
+          "implements Thing::is_creature"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_removable",
+    "line": 989,
+    "snippet": "true",
+    "file": "entity/src/creature.rs",
+    "crate": "entity",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_removable",
+        "signature": "fn is_removable(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 98,
+        "line_end": 101,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Whether this object can be removed from its parent.",
+        "risk_level": "medium",
+        "body_hash": "e2f38b9f626b18b57bbffa50ba4cbd03439d9a80b388e481084c2c28217423cb",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::NonRemovableThing::<impl Thing for NonRemovableThing>::is_removable",
+        "signature": "fn is_removable(& self) -> bool",
+        "visibility": "private",
+        "line_start": 455,
+        "line_end": 457,
+        "dependencies": [],
+        "behavior_summary": "Method `is_removable` implementing `Thing` for `NonRemovableThing`.",
+        "risk_level": "medium",
+        "body_hash": "7126f174e2016007d0b66694fa71624ac03bc57a6bfc7add37a3c215f641b1fa",
+        "notes": [
+          "implements Thing::is_removable"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_removable",
+        "signature": "fn is_removable(& self) -> bool",
+        "visibility": "private",
+        "line_start": 688,
+        "line_end": 690,
+        "dependencies": [],
+        "behavior_summary": "Method `is_removable` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "7126f174e2016007d0b66694fa71624ac03bc57a6bfc7add37a3c215f641b1fa",
+        "notes": [
+          "implements Thing::is_removable"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "get_throw_range",
+    "line": 999,
+    "snippet": "1",
+    "file": "entity/src/creature.rs",
+    "crate": "entity",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::get_throw_range",
+        "signature": "fn get_throw_range(& self) -> i32",
+        "visibility": "pub",
+        "line_start": 88,
+        "line_end": 91,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "How far this object can be thrown (in tiles).",
+        "risk_level": "medium",
+        "body_hash": "5ac64a93ba27693f7efeddcbe462c183aae91f2f6d576b4186f2cace6c859409",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::ImmovablePushableItem::<impl Thing for ImmovablePushableItem>::get_throw_range",
+        "signature": "fn get_throw_range(& self) -> i32",
+        "visibility": "private",
+        "line_start": 390,
+        "line_end": 392,
+        "dependencies": [],
+        "behavior_summary": "Method `get_throw_range` implementing `Thing` for `ImmovablePushableItem`.",
+        "risk_level": "medium",
+        "body_hash": "68d46a6396845cea440f7e805827dbf40c9e3d3e7f07bab5f239ca26030ad214",
+        "notes": [
+          "implements Thing::get_throw_range"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::get_throw_range",
+        "signature": "fn get_throw_range(& self) -> i32",
+        "visibility": "private",
+        "line_start": 682,
+        "line_end": 684,
+        "dependencies": [],
+        "behavior_summary": "Method `get_throw_range` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "6c718a74b30113d182b852ba6761d2ab689fc32fe97e8437f665c9b175859562",
+        "notes": [
+          "implements Thing::get_throw_range"
+        ]
+      },
+      {
+        "file": "crates/items/src/item.rs",
+        "qualified_name": "items::item::Item::<impl>::get_throw_range",
+        "kind": "impl_method",
+        "body_hash": "",
+        "signature": "pub fn get_throw_range (& self) -> i32"
+      }
+    ]
+  },
+  {
+    "pattern": "empty_body",
+    "fn_name": "post_add_notification",
+    "line": 1253,
+    "snippet": "pub fn post_add_notification(&self, _slot: InventorySlot) {}",
+    "file": "entity/src/player.rs",
+    "crate": "entity",
+    "ledger_symbol": "entity::player::Player::<impl>::post_add_notification",
+    "manifest_match": {
+      "file": "crates/entity/src/player.rs",
+      "kind": "impl_method",
+      "qualified_name": "entity::player::Player::<impl>::post_add_notification",
+      "signature": "fn post_add_notification(& self, _slot : InventorySlot)",
+      "visibility": "pub",
+      "line_start": 1223,
+      "line_end": 1224,
+      "dependencies": [
+        "InventorySlot",
+        "doc"
+      ],
+      "behavior_summary": "Mirrors C++ `postAddNotification`. Data-layer only; no side effects.",
+      "risk_level": "medium",
+      "body_hash": "09e815a41be8e04b55bc0fe6ba04f5ece991842245728e4f6a611aba43d95454",
+      "notes": [
+        "kind-renamed-from-method"
+      ]
+    }
+  },
+  {
+    "pattern": "empty_body",
+    "fn_name": "post_remove_notification",
+    "line": 1256,
+    "snippet": "pub fn post_remove_notification(&self, _slot: InventorySlot) {}",
+    "file": "entity/src/player.rs",
+    "crate": "entity",
+    "ledger_symbol": "entity::player::Player::<impl>::post_remove_notification",
+    "manifest_match": {
+      "file": "crates/entity/src/player.rs",
+      "kind": "impl_method",
+      "qualified_name": "entity::player::Player::<impl>::post_remove_notification",
+      "signature": "fn post_remove_notification(& self, _slot : InventorySlot)",
+      "visibility": "pub",
+      "line_start": 1226,
+      "line_end": 1227,
+      "dependencies": [
+        "InventorySlot",
+        "doc"
+      ],
+      "behavior_summary": "Mirrors C++ `postRemoveNotification`. Data-layer only; no side effects.",
+      "risk_level": "medium",
+      "body_hash": "5699bbf4ef98c051283078b1931d1af9c3382e5aa28ce9052dcc2ec29d917fb6",
+      "notes": [
+        "kind-renamed-from-method"
+      ]
+    }
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "can_transform",
+    "line": 1043,
+    "snippet": "false",
+    "file": "world/src/house.rs",
+    "crate": "world",
+    "ledger_symbol": "items::item::Item::<impl>::can_transform",
+    "manifest_match": {
+      "file": "crates/items/src/item.rs",
+      "kind": "impl_method",
+      "qualified_name": "items::item::Item::<impl>::can_transform",
+      "signature": "pub fn can_transform (& self) -> bool",
+      "visibility": "pub",
+      "line_start": 0,
+      "line_end": 0,
+      "dependencies": [],
+      "behavior_summary": "Always returns true; base implementation.",
+      "risk_level": "low",
+      "body_hash": "",
+      "notes": []
+    }
+  },
+  {
+    "pattern": "dropped_work",
+    "fn_name": "accept_loop",
+    "line": 218,
+    "snippet": "drop(stream);",
+    "file": "server/src/http.rs",
+    "crate": "server",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/server/src/boot.rs",
+        "kind": "free_function",
+        "qualified_name": "server::boot::accept_loop",
+        "signature": "fn accept_loop< H : ConnectionHandler + Send + Sync + 'static >(listener : TcpListener, handler : Arc < H >)",
+        "visibility": "private",
+        "line_start": 85,
+        "line_end": 93,
+        "dependencies": [
+          "Arc",
+          "ConnectionHandler",
+          "H",
+          "Send",
+          "Sync",
+          "TcpListener",
+          "h",
+          "handler",
+          "listener",
+          "std::thread::spawn",
+          "stream"
+        ],
+        "behavior_summary": "Function `accept_loop` (2 args) returning `()`.",
+        "risk_level": "medium",
+        "body_hash": "344da3e33743056edf0d4779d9a0ee400a0de6dfc7b7cc98456be0196cdf5d8e",
+        "notes": [
+          "kind-renamed-from-function"
+        ]
+      },
+      {
+        "file": "crates/server/src/http.rs",
+        "kind": "free_function",
+        "qualified_name": "server::http::accept_loop",
+        "signature": "fn accept_loop(listener : Arc < TcpListener >, running : Arc < AtomicBool >)",
+        "visibility": "pub(crate)",
+        "line_start": 206,
+        "line_end": 228,
+        "dependencies": [
+          "Arc",
+          "AtomicBool",
+          "Ordering::SeqCst",
+          "TcpListener",
+          "doc",
+          "drop",
+          "listener",
+          "running",
+          "stream"
+        ],
+        "behavior_summary": "Per-thread accept loop. Each worker calls `accept()` in a tight loop until",
+        "risk_level": "medium",
+        "body_hash": "7ef6f5320e4eac370c6045323c839bbdc857d83e87936f7a5d1949192a9914f9",
+        "notes": [
+          "kind-renamed-from-function"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "get_element_damage",
+    "line": 285,
+    "snippet": "0",
+    "file": "game/src/weapons.rs",
+    "crate": "game",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/game/src/weapons.rs",
+        "kind": "associated_function",
+        "qualified_name": "game::weapons::WeaponDistance::<impl>::get_element_damage",
+        "signature": "fn get_element_damage(element_type : ElementType, base_element_damage : i32) -> i32",
+        "visibility": "pub",
+        "line_start": 96,
+        "line_end": 104,
+        "dependencies": [
+          "ElementType",
+          "ElementType::None",
+          "base_element_damage",
+          "doc",
+          "element_type"
+        ],
+        "behavior_summary": "Returns element damage for a distance weapon.",
+        "risk_level": "high",
+        "body_hash": "0ee9a68028065a3506fea5e40b5c1be081387c21fbbac2986ede84c6c3c6cf49",
+        "notes": []
+      },
+      {
+        "file": "crates/game/src/weapons.rs",
+        "kind": "impl_method",
+        "qualified_name": "game::weapons::Weapon::<impl>::get_element_damage",
+        "signature": "fn get_element_damage(& self) -> i32",
+        "visibility": "pub",
+        "line_start": 222,
+        "line_end": 230,
+        "dependencies": [
+          "ElementType::None",
+          "doc"
+        ],
+        "behavior_summary": "Element damage for melee weapons.",
+        "risk_level": "high",
+        "body_hash": "71c87fdad6e1cc73c21b98840b7102920d275b121662b1ab398c02071d83b17f",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/game/src/weapons.rs",
+        "kind": "impl_method",
+        "qualified_name": "game::weapons::Wand::<impl>::get_element_damage",
+        "signature": "fn get_element_damage(& self) -> i32",
+        "visibility": "pub",
+        "line_start": 281,
+        "line_end": 284,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Wand element damage is always 0 (mirrors `WeaponWand::getElementDamage`).",
+        "risk_level": "high",
+        "body_hash": "995e28130d5ca19ca455d003f654030a2058dcf13dd7bf1df8213ec2dde2e7aa",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "get_header_position",
+    "line": 180,
+    "snippet": "0",
+    "file": "common/src/outputmessage.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/networkmessage.rs",
+        "kind": "impl_method",
+        "qualified_name": "common::networkmessage::NetworkMessage::<impl>::get_header_position",
+        "signature": "fn get_header_position(& self) -> usize",
+        "visibility": "pub",
+        "line_start": 660,
+        "line_end": 663,
+        "dependencies": [
+          "INITIAL_BUFFER_POSITION",
+          "doc"
+        ],
+        "behavior_summary": "Returns the header position constant.",
+        "risk_level": "high",
+        "body_hash": "62ce64aa66451dd6409e75f2c42a6840e063369a90f472ad1129e4ded7d9c4c5",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/common/src/networkmessage.rs",
+        "kind": "protocol_opcode",
+        "qualified_name": "common::networkmessage::NetworkMessage::<impl>::get_header_position",
+        "signature": "fn get_header_position(& self) -> usize",
+        "visibility": "pub",
+        "line_start": 660,
+        "line_end": 663,
+        "dependencies": [
+          "INITIAL_BUFFER_POSITION",
+          "doc"
+        ],
+        "behavior_summary": "Returns the header position constant.",
+        "risk_level": "high",
+        "body_hash": "62ce64aa66451dd6409e75f2c42a6840e063369a90f472ad1129e4ded7d9c4c5",
+        "notes": [
+          "kind-renamed-from-method",
+          "overlay-of-impl_method",
+          "network-message-codec"
+        ]
+      },
+      {
+        "file": "crates/common/src/outputmessage.rs",
+        "kind": "impl_method",
+        "qualified_name": "common::outputmessage::OutputMessage::<impl>::get_header_position",
+        "signature": "fn get_header_position(& self) -> usize",
+        "visibility": "pub",
+        "line_start": 179,
+        "line_end": 182,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Returns the header position (always 0).",
+        "risk_level": "medium",
+        "body_hash": "328c126d7e2991f5eb6c55c161b1d43ea0aaf5f53cc074209d9e38061abf2796",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/common/src/outputmessage.rs",
+        "kind": "protocol_opcode",
+        "qualified_name": "common::outputmessage::OutputMessage::<impl>::get_header_position",
+        "signature": "fn get_header_position(& self) -> usize",
+        "visibility": "pub",
+        "line_start": 179,
+        "line_end": 182,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Returns the header position (always 0).",
+        "risk_level": "medium",
+        "body_hash": "328c126d7e2991f5eb6c55c161b1d43ea0aaf5f53cc074209d9e38061abf2796",
+        "notes": [
+          "kind-renamed-from-method",
+          "overlay-of-impl_method",
+          "network-message-codec"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "panic_stub",
+    "fn_name": "u8_to_state",
+    "line": 35,
+    "snippet": "_ => panic!(\"invalid ThreadState value: {v}\"),",
+    "file": "common/src/thread_holder_base.rs",
+    "crate": "common",
+    "ledger_symbol": "common::thread_holder_base::u8_to_state",
+    "manifest_match": {
+      "file": "crates/common/src/thread_holder_base.rs",
+      "kind": "free_function",
+      "qualified_name": "common::thread_holder_base::u8_to_state",
+      "signature": "fn u8_to_state(v : u8) -> ThreadState",
+      "visibility": "private",
+      "line_start": 28,
+      "line_end": 37,
+      "dependencies": [
+        "ThreadState",
+        "ThreadState::Closing",
+        "ThreadState::Running",
+        "ThreadState::Terminated",
+        "doc",
+        "panic",
+        "v"
+      ],
+      "behavior_summary": "Converts the `u8` stored in the `AtomicU8` back to a `ThreadState`.",
+      "risk_level": "medium",
+      "body_hash": "b1d92f97ad48a1d61d4e93fd15acfafae9d97647471fd18dd0155c8162f9b32a",
+      "notes": [
+        "kind-renamed-from-function"
+      ]
+    }
+  },
+  {
+    "pattern": "empty_body",
+    "fn_name": "cylinder_post_add",
+    "line": 117,
+    "snippet": "fn cylinder_post_add(",
+    "file": "common/src/cylinder.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": null
+  },
+  {
+    "pattern": "empty_body",
+    "fn_name": "cylinder_post_remove",
+    "line": 130,
+    "snippet": "fn cylinder_post_remove(",
+    "file": "common/src/cylinder.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": null
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "cylinder_first_index",
+    "line": 36,
+    "snippet": "0",
+    "file": "common/src/cylinder.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": null
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "cylinder_last_index",
+    "line": 44,
+    "snippet": "0",
+    "file": "common/src/cylinder.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": null
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "cylinder_item_type_count",
+    "line": 52,
+    "snippet": "0",
+    "file": "common/src/cylinder.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": null
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "cylinder_thing_index",
+    "line": 60,
+    "snippet": "None",
+    "file": "common/src/cylinder.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": null
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "get_description",
+    "line": 83,
+    "snippet": "String::new()",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::get_description",
+        "signature": "fn get_description(& self, _look_distance : i32) -> String",
+        "visibility": "pub",
+        "line_start": 82,
+        "line_end": 86,
+        "dependencies": [
+          "String::new",
+          "doc"
+        ],
+        "behavior_summary": "Returns a textual description of this object at a given look distance.",
+        "risk_level": "medium",
+        "body_hash": "ab4b517121a67ff8e252623dee1b6f05b7ab75066fc4fa9109d076324f3e5817",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::ImmovablePushableItem::<impl Thing for ImmovablePushableItem>::get_description",
+        "signature": "fn get_description(& self, _look_distance : i32) -> String",
+        "visibility": "private",
+        "line_start": 393,
+        "line_end": 395,
+        "dependencies": [],
+        "behavior_summary": "Method `get_description` implementing `Thing` for `ImmovablePushableItem`.",
+        "risk_level": "medium",
+        "body_hash": "1e668a4e6e88d78ff8ade3154b5e21a090b5f6eb57cb85c34338f936b29c68c9",
+        "notes": [
+          "implements Thing::get_description"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::get_description",
+        "signature": "fn get_description(& self, look_distance : i32) -> String",
+        "visibility": "private",
+        "line_start": 679,
+        "line_end": 681,
+        "dependencies": [
+          "format"
+        ],
+        "behavior_summary": "Method `get_description` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "03f03b2d34bef89f049da0284f9d2b213be102ab0682f8f0423492cb338a2192",
+        "notes": [
+          "implements Thing::get_description"
+        ]
+      },
+      {
+        "file": "crates/entity/src/npc.rs",
+        "kind": "impl_method",
+        "qualified_name": "entity::npc::Npc::<impl>::get_description",
+        "signature": "fn get_description(& self) -> String",
+        "visibility": "pub",
+        "line_start": 626,
+        "line_end": 635,
+        "dependencies": [
+          "String::with_capacity",
+          "descr",
+          "doc",
+          "name"
+        ],
+        "behavior_summary": "Returns the NPC description shown to inspecting players. Mirrors",
+        "risk_level": "medium",
+        "body_hash": "aaa3e2e1115fc06ab192bbdfd64bf242efa7bf2060c80c0defedad0b4715e0b9",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/item.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::item::Item::<impl>::get_description",
+        "signature": "fn get_description(& self, _look_distance : i32) -> String",
+        "visibility": "pub",
+        "line_start": 281,
+        "line_end": 307,
+        "dependencies": [
+          "article",
+          "doc",
+          "format",
+          "it",
+          "name"
+        ],
+        "behavior_summary": "Format a human-readable description for this item.",
+        "risk_level": "medium",
+        "body_hash": "77be3e1a4c308c1ab4578bcbea7424a7a262b8888bfff67c3a9490da31d7f294",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "get_throw_range",
+    "line": 88,
+    "snippet": "1",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::get_throw_range",
+        "signature": "fn get_throw_range(& self) -> i32",
+        "visibility": "pub",
+        "line_start": 88,
+        "line_end": 91,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "How far this object can be thrown (in tiles).",
+        "risk_level": "medium",
+        "body_hash": "5ac64a93ba27693f7efeddcbe462c183aae91f2f6d576b4186f2cace6c859409",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::ImmovablePushableItem::<impl Thing for ImmovablePushableItem>::get_throw_range",
+        "signature": "fn get_throw_range(& self) -> i32",
+        "visibility": "private",
+        "line_start": 390,
+        "line_end": 392,
+        "dependencies": [],
+        "behavior_summary": "Method `get_throw_range` implementing `Thing` for `ImmovablePushableItem`.",
+        "risk_level": "medium",
+        "body_hash": "68d46a6396845cea440f7e805827dbf40c9e3d3e7f07bab5f239ca26030ad214",
+        "notes": [
+          "implements Thing::get_throw_range"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::get_throw_range",
+        "signature": "fn get_throw_range(& self) -> i32",
+        "visibility": "private",
+        "line_start": 682,
+        "line_end": 684,
+        "dependencies": [],
+        "behavior_summary": "Method `get_throw_range` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "6c718a74b30113d182b852ba6761d2ab689fc32fe97e8437f665c9b175859562",
+        "notes": [
+          "implements Thing::get_throw_range"
+        ]
+      },
+      {
+        "file": "crates/items/src/item.rs",
+        "qualified_name": "items::item::Item::<impl>::get_throw_range",
+        "kind": "impl_method",
+        "body_hash": "",
+        "signature": "pub fn get_throw_range (& self) -> i32"
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_pushable",
+    "line": 93,
+    "snippet": "false",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_pushable",
+        "signature": "fn is_pushable(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 93,
+        "line_end": 96,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Whether a creature can push this object.",
+        "risk_level": "medium",
+        "body_hash": "95fa61287ef84391e67ee543371d3db55843d5741ccee8204c0e97899bf9d0dc",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::ImmovablePushableItem::<impl Thing for ImmovablePushableItem>::is_pushable",
+        "signature": "fn is_pushable(& self) -> bool",
+        "visibility": "private",
+        "line_start": 384,
+        "line_end": 386,
+        "dependencies": [],
+        "behavior_summary": "Method `is_pushable` implementing `Thing` for `ImmovablePushableItem`.",
+        "risk_level": "medium",
+        "body_hash": "5f9a198e60477e652a89f2a51fc331db11adfc9050c07b47cfbb11bbf1ea6efd",
+        "notes": [
+          "implements Thing::is_pushable"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_pushable",
+        "signature": "fn is_pushable(& self) -> bool",
+        "visibility": "private",
+        "line_start": 685,
+        "line_end": 687,
+        "dependencies": [],
+        "behavior_summary": "Method `is_pushable` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "5f9a198e60477e652a89f2a51fc331db11adfc9050c07b47cfbb11bbf1ea6efd",
+        "notes": [
+          "implements Thing::is_pushable"
+        ]
+      },
+      {
+        "file": "crates/entity/src/creature.rs",
+        "kind": "impl_method",
+        "qualified_name": "entity::creature::Creature::<impl>::is_pushable",
+        "signature": "fn is_pushable(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 348,
+        "line_end": 350,
+        "dependencies": [],
+        "behavior_summary": "Inherent method `is_pushable` on `Creature`.",
+        "risk_level": "medium",
+        "body_hash": "bcbd987d83ac0b33884c299ca49999f58fd1c467375ba9ca4e443651febf2c0d",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/entity/src/monster.rs",
+        "kind": "impl_method",
+        "qualified_name": "entity::monster::Monster::<impl>::is_pushable",
+        "signature": "fn is_pushable(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 176,
+        "line_end": 178,
+        "dependencies": [],
+        "behavior_summary": "Inherent method `is_pushable` on `Monster`.",
+        "risk_level": "medium",
+        "body_hash": "1f3bb1b0b13c0a1c6e2030a3ddead23ee579cfe9a6255af2503d9bdd2ef50e6d",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/item.rs",
+        "qualified_name": "items::item::Item::<impl>::is_pushable",
+        "kind": "impl_method",
+        "body_hash": "",
+        "signature": "pub fn is_pushable (& self) -> bool"
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_removable",
+    "line": 98,
+    "snippet": "true",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_removable",
+        "signature": "fn is_removable(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 98,
+        "line_end": 101,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Whether this object can be removed from its parent.",
+        "risk_level": "medium",
+        "body_hash": "e2f38b9f626b18b57bbffa50ba4cbd03439d9a80b388e481084c2c28217423cb",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::NonRemovableThing::<impl Thing for NonRemovableThing>::is_removable",
+        "signature": "fn is_removable(& self) -> bool",
+        "visibility": "private",
+        "line_start": 455,
+        "line_end": 457,
+        "dependencies": [],
+        "behavior_summary": "Method `is_removable` implementing `Thing` for `NonRemovableThing`.",
+        "risk_level": "medium",
+        "body_hash": "7126f174e2016007d0b66694fa71624ac03bc57a6bfc7add37a3c215f641b1fa",
+        "notes": [
+          "implements Thing::is_removable"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_removable",
+        "signature": "fn is_removable(& self) -> bool",
+        "visibility": "private",
+        "line_start": 688,
+        "line_end": 690,
+        "dependencies": [],
+        "behavior_summary": "Method `is_removable` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "7126f174e2016007d0b66694fa71624ac03bc57a6bfc7add37a3c215f641b1fa",
+        "notes": [
+          "implements Thing::is_removable"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_removed",
+    "line": 107,
+    "snippet": "true",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_removed",
+        "signature": "fn is_removed(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 103,
+        "line_end": 110,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Whether this object has already been removed from the world.",
+        "risk_level": "medium",
+        "body_hash": "6e2eed0b2815639aedafd011e3cf3fe78302a7cb25a08c595aa57a131b7162ba",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::LiveThing::<impl Thing for LiveThing>::is_removed",
+        "signature": "fn is_removed(& self) -> bool",
+        "visibility": "private",
+        "line_start": 879,
+        "line_end": 881,
+        "dependencies": [],
+        "behavior_summary": "Method `is_removed` implementing `Thing` for `LiveThing`.",
+        "risk_level": "medium",
+        "body_hash": "c1d42e53890f90581b7123ce7008f97640d7203048c2b592d90b420f0e6afa3f",
+        "notes": [
+          "implements Thing::is_removed"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "get_first_index",
+    "line": 116,
+    "snippet": "0",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": "common::thing::Thing::get_first_index",
+    "manifest_match": {
+      "file": "crates/common/src/thing.rs",
+      "kind": "trait_method",
+      "qualified_name": "common::thing::Thing::get_first_index",
+      "signature": "fn get_first_index(& self) -> usize",
+      "visibility": "pub",
+      "line_start": 114,
+      "line_end": 119,
+      "dependencies": [
+        "doc"
+      ],
+      "behavior_summary": "First valid child index. Default `0`; container-like things override.",
+      "risk_level": "medium",
+      "body_hash": "1504ecf4fbe198ba89217a040c9e1c0490f72b8218bae3890589a938c6f42152",
+      "notes": [
+        "trait method",
+        "default-provided"
+      ]
+    }
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "get_last_index",
+    "line": 123,
+    "snippet": "0",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": "common::thing::Thing::get_last_index",
+    "manifest_match": {
+      "file": "crates/common/src/thing.rs",
+      "kind": "trait_method",
+      "qualified_name": "common::thing::Thing::get_last_index",
+      "signature": "fn get_last_index(& self) -> usize",
+      "visibility": "pub",
+      "line_start": 121,
+      "line_end": 126,
+      "dependencies": [
+        "doc"
+      ],
+      "behavior_summary": "Last valid child index. Default `0`; container-like things override.",
+      "risk_level": "medium",
+      "body_hash": "827fa063e06525c33d9246265967578e0726b74bb7529fc629b47d2ae769db69",
+      "notes": [
+        "trait method",
+        "default-provided"
+      ]
+    }
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "get_thing_index",
+    "line": 132,
+    "snippet": "-1",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": "common::thing::Thing::get_thing_index",
+    "manifest_match": {
+      "file": "crates/common/src/thing.rs",
+      "kind": "trait_method",
+      "qualified_name": "common::thing::Thing::get_thing_index",
+      "signature": "fn get_thing_index(& self, _child : & dyn Thing) -> i32",
+      "visibility": "pub",
+      "line_start": 128,
+      "line_end": 135,
+      "dependencies": [
+        "Thing",
+        "doc"
+      ],
+      "behavior_summary": "Index of the given child within this thing, or `-1` if not found.",
+      "risk_level": "medium",
+      "body_hash": "fbd6d11840c010f80cee97af22d174c26ebcdaf49c2d0ed1a692d31979f28f5d",
+      "notes": [
+        "trait method",
+        "default-provided"
+      ]
+    }
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "get_item_type_count",
+    "line": 140,
+    "snippet": "0",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::get_item_type_count",
+        "signature": "fn get_item_type_count(& self, _item_id : u16, _sub_type : i32) -> u32",
+        "visibility": "pub",
+        "line_start": 137,
+        "line_end": 143,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Count of items of a given type held by this thing. Default `0`.",
+        "risk_level": "medium",
+        "body_hash": "d1e8dcc8dcd0632dfe3fb9406481fd479dbf0c616176ded97a195a99c742d375",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/items/src/container.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::container::Container::<impl>::get_item_type_count",
+        "signature": "fn get_item_type_count(& self, item_type_id : u16, sub_type : Option < u8 >) -> u32",
+        "visibility": "pub",
+        "line_start": 354,
+        "line_end": 368,
+        "dependencies": [
+          "doc",
+          "item",
+          "item_type_id",
+          "st",
+          "sub_type",
+          "total"
+        ],
+        "behavior_summary": "Count how many items of `item_type_id` are directly held. When `sub_type` is `Some(s)`, only items whose `count` equals `s` are counted (mirrors C++ `getItemTypeCount` with `subType != -1`). When `sub_type` is `None`, all items of that type are counted. Mirrors C++ `Container::getItemTypeCount`.",
+        "risk_level": "medium",
+        "body_hash": "05480eb654dfbad46110acd66b50079bf59f00dbaea92c55b3bcd58e9d0c25ab",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_creature",
+    "line": 159,
+    "snippet": "false",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_creature",
+        "signature": "fn is_creature(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 160,
+        "line_end": 162,
+        "dependencies": [],
+        "behavior_summary": "Trait method `Thing::is_creature`.",
+        "risk_level": "medium",
+        "body_hash": "02716ee7aceae3ce75e84e8c27872f5e023e0cdcdd5aeb063a2c3cae88522ed9",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::CreatureThing::<impl Thing for CreatureThing>::is_creature",
+        "signature": "fn is_creature(& self) -> bool",
+        "visibility": "private",
+        "line_start": 313,
+        "line_end": 315,
+        "dependencies": [],
+        "behavior_summary": "Method `is_creature` implementing `Thing` for `CreatureThing`.",
+        "risk_level": "medium",
+        "body_hash": "7f333027ae02e83652991c581b6aaa3aa7044782150a15e764ca1b019e27a5f3",
+        "notes": [
+          "implements Thing::is_creature"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_creature",
+        "signature": "fn is_creature(& self) -> bool",
+        "visibility": "private",
+        "line_start": 691,
+        "line_end": 693,
+        "dependencies": [],
+        "behavior_summary": "Method `is_creature` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "7f333027ae02e83652991c581b6aaa3aa7044782150a15e764ca1b019e27a5f3",
+        "notes": [
+          "implements Thing::is_creature"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_item",
+    "line": 163,
+    "snippet": "false",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_item",
+        "signature": "fn is_item(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 164,
+        "line_end": 166,
+        "dependencies": [],
+        "behavior_summary": "Trait method `Thing::is_item`.",
+        "risk_level": "medium",
+        "body_hash": "eeeea6c7677a59e4364909fa880495f13c7a02b305474af18254960afc1eb929",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::ImmovablePushableItem::<impl Thing for ImmovablePushableItem>::is_item",
+        "signature": "fn is_item(& self) -> bool",
+        "visibility": "private",
+        "line_start": 381,
+        "line_end": 383,
+        "dependencies": [],
+        "behavior_summary": "Method `is_item` implementing `Thing` for `ImmovablePushableItem`.",
+        "risk_level": "medium",
+        "body_hash": "c13ccbd84bdc00df3adbe39d2e1f9211e335e3f2e910df724d60b11de72f571e",
+        "notes": [
+          "implements Thing::is_item"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_item",
+        "signature": "fn is_item(& self) -> bool",
+        "visibility": "private",
+        "line_start": 694,
+        "line_end": 696,
+        "dependencies": [],
+        "behavior_summary": "Method `is_item` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "c13ccbd84bdc00df3adbe39d2e1f9211e335e3f2e910df724d60b11de72f571e",
+        "notes": [
+          "implements Thing::is_item"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_teleport",
+    "line": 167,
+    "snippet": "false",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_teleport",
+        "signature": "fn is_teleport(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 168,
+        "line_end": 170,
+        "dependencies": [],
+        "behavior_summary": "Trait method `Thing::is_teleport`.",
+        "risk_level": "medium",
+        "body_hash": "7414af43b115aebb4190f6229ac82fe62e078498c8b36963a3700c5b686d9294",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::TeleportThing::<impl Thing for TeleportThing>::is_teleport",
+        "signature": "fn is_teleport(& self) -> bool",
+        "visibility": "private",
+        "line_start": 482,
+        "line_end": 484,
+        "dependencies": [],
+        "behavior_summary": "Method `is_teleport` implementing `Thing` for `TeleportThing`.",
+        "risk_level": "medium",
+        "body_hash": "cabebed7528392d918df1d88b62235d351dcc81c7a6a8934f4dcf151d2e48efe",
+        "notes": [
+          "implements Thing::is_teleport"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_teleport",
+        "signature": "fn is_teleport(& self) -> bool",
+        "visibility": "private",
+        "line_start": 697,
+        "line_end": 699,
+        "dependencies": [],
+        "behavior_summary": "Method `is_teleport` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "cabebed7528392d918df1d88b62235d351dcc81c7a6a8934f4dcf151d2e48efe",
+        "notes": [
+          "implements Thing::is_teleport"
+        ]
+      },
+      {
+        "file": "crates/items/src/items_registry.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::items_registry::ItemTypeData::<impl>::is_teleport",
+        "signature": "fn is_teleport(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 926,
+        "line_end": 929,
+        "dependencies": [
+          "ItemTypeKind::Teleport",
+          "doc"
+        ],
+        "behavior_summary": "Is this a teleport?",
+        "risk_level": "medium",
+        "body_hash": "8779dad96464b64102b3f5bd13a5b42bb0758c423e050a470d1c5ef12e17ff5a",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_magic_field",
+    "line": 171,
+    "snippet": "false",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_magic_field",
+        "signature": "fn is_magic_field(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 172,
+        "line_end": 174,
+        "dependencies": [],
+        "behavior_summary": "Trait method `Thing::is_magic_field`.",
+        "risk_level": "medium",
+        "body_hash": "f738026979c506a78c026679ab4f85b43fa0c5df933c6cb8a19f4e26aeb5411f",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::MagicFieldThing::<impl Thing for MagicFieldThing>::is_magic_field",
+        "signature": "fn is_magic_field(& self) -> bool",
+        "visibility": "private",
+        "line_start": 510,
+        "line_end": 512,
+        "dependencies": [],
+        "behavior_summary": "Method `is_magic_field` implementing `Thing` for `MagicFieldThing`.",
+        "risk_level": "medium",
+        "body_hash": "4bfbcfe473bd3dee7fee7ad7ddf0b3fea0991b45194cacedd81343fe6d4e0c70",
+        "notes": [
+          "implements Thing::is_magic_field"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_magic_field",
+        "signature": "fn is_magic_field(& self) -> bool",
+        "visibility": "private",
+        "line_start": 700,
+        "line_end": 702,
+        "dependencies": [],
+        "behavior_summary": "Method `is_magic_field` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "4bfbcfe473bd3dee7fee7ad7ddf0b3fea0991b45194cacedd81343fe6d4e0c70",
+        "notes": [
+          "implements Thing::is_magic_field"
+        ]
+      },
+      {
+        "file": "crates/items/src/items_registry.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::items_registry::ItemTypeData::<impl>::is_magic_field",
+        "signature": "fn is_magic_field(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 921,
+        "line_end": 924,
+        "dependencies": [
+          "ItemTypeKind::MagicField",
+          "doc"
+        ],
+        "behavior_summary": "Is this a magic field?",
+        "risk_level": "medium",
+        "body_hash": "a67fc09329fc22cec8d2167800f6a0d655ebc501b1b04bf2acee912d5788c941",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/item.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::item::Item::<impl>::is_magic_field",
+        "signature": "pub fn is_magic_field (& self) -> bool",
+        "visibility": "pub",
+        "line_start": 0,
+        "line_end": 0,
+        "dependencies": [],
+        "behavior_summary": "Delegates to item_type.is_magic_field().",
+        "risk_level": "low",
+        "body_hash": "",
+        "notes": []
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_trash_holder",
+    "line": 175,
+    "snippet": "false",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_trash_holder",
+        "signature": "fn is_trash_holder(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 176,
+        "line_end": 178,
+        "dependencies": [],
+        "behavior_summary": "Trait method `Thing::is_trash_holder`.",
+        "risk_level": "medium",
+        "body_hash": "046bfbca67a595af18d775e7c2ba8e3d6eefff510e6d495c1f33a501f39429a1",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::TrashHolderThing::<impl Thing for TrashHolderThing>::is_trash_holder",
+        "signature": "fn is_trash_holder(& self) -> bool",
+        "visibility": "private",
+        "line_start": 538,
+        "line_end": 540,
+        "dependencies": [],
+        "behavior_summary": "Method `is_trash_holder` implementing `Thing` for `TrashHolderThing`.",
+        "risk_level": "medium",
+        "body_hash": "3616b6ccbb09b483c4c59cd1aba2373fe5a641d3858f5c5e5f37f4f0d3374ed3",
+        "notes": [
+          "implements Thing::is_trash_holder"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_trash_holder",
+        "signature": "fn is_trash_holder(& self) -> bool",
+        "visibility": "private",
+        "line_start": 703,
+        "line_end": 705,
+        "dependencies": [],
+        "behavior_summary": "Method `is_trash_holder` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "3616b6ccbb09b483c4c59cd1aba2373fe5a641d3858f5c5e5f37f4f0d3374ed3",
+        "notes": [
+          "implements Thing::is_trash_holder"
+        ]
+      },
+      {
+        "file": "crates/items/src/items_registry.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::items_registry::ItemTypeData::<impl>::is_trash_holder",
+        "signature": "fn is_trash_holder(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 946,
+        "line_end": 949,
+        "dependencies": [
+          "ItemTypeKind::TrashHolder",
+          "doc"
+        ],
+        "behavior_summary": "Is this a trash holder?",
+        "risk_level": "medium",
+        "body_hash": "dd266fb914d4c3d9bb3098360843022a3b378d7f308d1514189b5f75659c4e1a",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_container",
+    "line": 179,
+    "snippet": "false",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 180,
+        "line_end": 182,
+        "dependencies": [],
+        "behavior_summary": "Trait method `Thing::is_container`.",
+        "risk_level": "medium",
+        "body_hash": "d0494a7fee9d05fc1d4a653a72ccef471ec461a5274f3454c28d32dad474736d",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::ContainerThing::<impl Thing for ContainerThing>::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "private",
+        "line_start": 566,
+        "line_end": 568,
+        "dependencies": [],
+        "behavior_summary": "Method `is_container` implementing `Thing` for `ContainerThing`.",
+        "risk_level": "medium",
+        "body_hash": "77ff9a59180766ad5d1d60ae035d97ace40528c416917f49e5d94ab45d24bbee",
+        "notes": [
+          "implements Thing::is_container"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "private",
+        "line_start": 706,
+        "line_end": 708,
+        "dependencies": [],
+        "behavior_summary": "Method `is_container` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "77ff9a59180766ad5d1d60ae035d97ace40528c416917f49e5d94ab45d24bbee",
+        "notes": [
+          "implements Thing::is_container"
+        ]
+      },
+      {
+        "file": "crates/items/src/items_registry.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::items_registry::ItemTypeData::<impl>::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 901,
+        "line_end": 904,
+        "dependencies": [
+          "ItemGroup::Container",
+          "doc"
+        ],
+        "behavior_summary": "Is this item a container?",
+        "risk_level": "medium",
+        "body_hash": "f686b4d5d0e3a2ccfd14eea58158f4a93b3153325e1db02a70194c089e7f25c3",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_door",
+    "line": 183,
+    "snippet": "false",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_door",
+        "signature": "fn is_door(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 184,
+        "line_end": 186,
+        "dependencies": [],
+        "behavior_summary": "Trait method `Thing::is_door`.",
+        "risk_level": "medium",
+        "body_hash": "a2344c93a7e52745c7515ca4566a9098f76def630b1fa8db15c45a64470d936b",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::DoorThing::<impl Thing for DoorThing>::is_door",
+        "signature": "fn is_door(& self) -> bool",
+        "visibility": "private",
+        "line_start": 594,
+        "line_end": 596,
+        "dependencies": [],
+        "behavior_summary": "Method `is_door` implementing `Thing` for `DoorThing`.",
+        "risk_level": "medium",
+        "body_hash": "28669698837c218c643bab911335f9e10f2e9184b4951960cd6dbb395e0c6e4a",
+        "notes": [
+          "implements Thing::is_door"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_door",
+        "signature": "fn is_door(& self) -> bool",
+        "visibility": "private",
+        "line_start": 709,
+        "line_end": 711,
+        "dependencies": [],
+        "behavior_summary": "Method `is_door` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "28669698837c218c643bab911335f9e10f2e9184b4951960cd6dbb395e0c6e4a",
+        "notes": [
+          "implements Thing::is_door"
+        ]
+      },
+      {
+        "file": "crates/items/src/items_registry.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::items_registry::ItemTypeData::<impl>::is_door",
+        "signature": "fn is_door(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 916,
+        "line_end": 919,
+        "dependencies": [
+          "ItemTypeKind::Door",
+          "doc"
+        ],
+        "behavior_summary": "Is this a door?",
+        "risk_level": "medium",
+        "body_hash": "a78e5e4beeef9f3f8f76429c61910c771bae109cf29bc0fc1fb2a3048f979b1e",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_moveable",
+    "line": 187,
+    "snippet": "true",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_moveable",
+        "signature": "fn is_moveable(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 188,
+        "line_end": 190,
+        "dependencies": [],
+        "behavior_summary": "Trait method `Thing::is_moveable`.",
+        "risk_level": "medium",
+        "body_hash": "2b3c9af1e197a74ae0bf96a5051c55493d456cb60e7b7ba162254466c753646b",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::ImmovablePushableItem::<impl Thing for ImmovablePushableItem>::is_moveable",
+        "signature": "fn is_moveable(& self) -> bool",
+        "visibility": "private",
+        "line_start": 387,
+        "line_end": 389,
+        "dependencies": [],
+        "behavior_summary": "Method `is_moveable` implementing `Thing` for `ImmovablePushableItem`.",
+        "risk_level": "medium",
+        "body_hash": "5fe72ddd185afadfbdf7fbdba7e1f3240915a166cf9d3eb0d5ea2d9ad6445e32",
+        "notes": [
+          "implements Thing::is_moveable"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_moveable",
+        "signature": "fn is_moveable(& self) -> bool",
+        "visibility": "private",
+        "line_start": 712,
+        "line_end": 714,
+        "dependencies": [],
+        "behavior_summary": "Method `is_moveable` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "5fe72ddd185afadfbdf7fbdba7e1f3240915a166cf9d3eb0d5ea2d9ad6445e32",
+        "notes": [
+          "implements Thing::is_moveable"
+        ]
+      },
+      {
+        "file": "crates/items/src/item.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::item::Item::<impl>::is_moveable",
+        "signature": "fn is_moveable(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 159,
+        "line_end": 161,
+        "dependencies": [],
+        "behavior_summary": "Inherent method `is_moveable` on `Item`.",
+        "risk_level": "medium",
+        "body_hash": "710517c49b69cf73cd5a90e832371837f215499c0dd959d50721564280483f44",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_ground",
+    "line": 191,
+    "snippet": "false",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_ground",
+        "signature": "fn is_ground(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 192,
+        "line_end": 194,
+        "dependencies": [],
+        "behavior_summary": "Trait method `Thing::is_ground`.",
+        "risk_level": "medium",
+        "body_hash": "930cd675ebdf390cbca503b4db2500e5f10ed5554191d6a0a118204062a2b712",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::GroundThing::<impl Thing for GroundThing>::is_ground",
+        "signature": "fn is_ground(& self) -> bool",
+        "visibility": "private",
+        "line_start": 622,
+        "line_end": 624,
+        "dependencies": [],
+        "behavior_summary": "Method `is_ground` implementing `Thing` for `GroundThing`.",
+        "risk_level": "medium",
+        "body_hash": "68f9c93c4e0478ac2653f0e1504ccbc5c954e543929d6770bb57f679e04e5c85",
+        "notes": [
+          "implements Thing::is_ground"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_ground",
+        "signature": "fn is_ground(& self) -> bool",
+        "visibility": "private",
+        "line_start": 715,
+        "line_end": 717,
+        "dependencies": [],
+        "behavior_summary": "Method `is_ground` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "68f9c93c4e0478ac2653f0e1504ccbc5c954e543929d6770bb57f679e04e5c85",
+        "notes": [
+          "implements Thing::is_ground"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_invisible",
+    "line": 195,
+    "snippet": "false",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_invisible",
+        "signature": "fn is_invisible(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 196,
+        "line_end": 198,
+        "dependencies": [],
+        "behavior_summary": "Trait method `Thing::is_invisible`.",
+        "risk_level": "medium",
+        "body_hash": "4dc9344fccd40d891e74e39444de9e75e180908db2fd2b4a99ae2ecccc498c3d",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::InvisibleThing::<impl Thing for InvisibleThing>::is_invisible",
+        "signature": "fn is_invisible(& self) -> bool",
+        "visibility": "private",
+        "line_start": 650,
+        "line_end": 652,
+        "dependencies": [],
+        "behavior_summary": "Method `is_invisible` implementing `Thing` for `InvisibleThing`.",
+        "risk_level": "medium",
+        "body_hash": "1cf0bfd8eabd4dc980b54db3c0c9666d2d61e2cb459bbd0455ebd854387fc0ee",
+        "notes": [
+          "implements Thing::is_invisible"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_invisible",
+        "signature": "fn is_invisible(& self) -> bool",
+        "visibility": "private",
+        "line_start": 718,
+        "line_end": 720,
+        "dependencies": [],
+        "behavior_summary": "Method `is_invisible` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "1cf0bfd8eabd4dc980b54db3c0c9666d2d61e2cb459bbd0455ebd854387fc0ee",
+        "notes": [
+          "implements Thing::is_invisible"
+        ]
+      },
+      {
+        "file": "crates/entity/src/creature.rs",
+        "kind": "impl_method",
+        "qualified_name": "entity::creature::Creature::<impl>::is_invisible",
+        "signature": "fn is_invisible(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 512,
+        "line_end": 514,
+        "dependencies": [
+          "Self::CONDITION_INVISIBLE",
+          "c"
+        ],
+        "behavior_summary": "Inherent method `is_invisible` on `Creature`.",
+        "risk_level": "medium",
+        "body_hash": "c380f03ed293fcb805ed5c45eb571089c08f3aeb0092dbae227965bac75978c3",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "get_tile",
+    "line": 214,
+    "snippet": "None",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/world/src/lib.rs",
+        "kind": "impl_method",
+        "qualified_name": "world::World::<impl>::get_tile",
+        "signature": "fn get_tile(& self, pos : Position) -> Option < & WorldTile >",
+        "visibility": "pub",
+        "line_start": 44,
+        "line_end": 46,
+        "dependencies": [
+          "Position",
+          "WorldTile",
+          "pos"
+        ],
+        "behavior_summary": "Inherent method `get_tile` on `World`.",
+        "risk_level": "medium",
+        "body_hash": "d0b85b03838179c65f6afe0579f37bc2ba9ed44fe583b8ce2e08ac2aebb04029",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/world/src/map.rs",
+        "kind": "impl_method",
+        "qualified_name": "world::map::Map::<impl>::get_tile",
+        "signature": "fn get_tile(& self, x : u16, y : u16, z : u8) -> Option < & Tile >",
+        "visibility": "pub",
+        "line_start": 217,
+        "line_end": 220,
+        "dependencies": [
+          "Tile",
+          "doc",
+          "x",
+          "y",
+          "z"
+        ],
+        "behavior_summary": "Returns a reference to the tile at `(x, y, z)`, or `None` if absent.",
+        "risk_level": "medium",
+        "body_hash": "13e58fbc02af166440d736741f115b08570bce0ca28cf03dd76ed52dbc908292",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "get_item",
+    "line": 222,
+    "snippet": "None",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": "items::container::Container::<impl>::get_item",
+    "manifest_match": {
+      "file": "crates/items/src/container.rs",
+      "kind": "impl_method",
+      "qualified_name": "items::container::Container::<impl>::get_item",
+      "signature": "fn get_item(& self, index : usize) -> Option < & Item >",
+      "visibility": "pub",
+      "line_start": 203,
+      "line_end": 206,
+      "dependencies": [
+        "Item",
+        "doc",
+        "index"
+      ],
+      "behavior_summary": "Get an immutable reference to the item at `index` (0 = front).",
+      "risk_level": "medium",
+      "body_hash": "c0841725a22ae82558c27302bf04dfb31ed06668e25108aad54ecaf397d9fbe2",
+      "notes": [
+        "kind-renamed-from-method"
+      ]
+    }
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "get_creature",
+    "line": 230,
+    "snippet": "None",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/game/src/game.rs",
+        "kind": "impl_method",
+        "qualified_name": "game::game::Game::<impl>::get_creature",
+        "signature": "fn get_creature(& self, id : u32) -> Option < & GameCreature >",
+        "visibility": "pub",
+        "line_start": 252,
+        "line_end": 254,
+        "dependencies": [
+          "GameCreature",
+          "id"
+        ],
+        "behavior_summary": "Inherent method `get_creature` on `Game`.",
+        "risk_level": "high",
+        "body_hash": "83c33284d3a2d58d691e5f6dcfbd80c6eaa50223a7b0fdb214c0d0271735eca0",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/server/src/game_state.rs",
+        "kind": "impl_method",
+        "qualified_name": "server::game_state::GameState::<impl>::get_creature",
+        "signature": "fn get_creature(& self, id : u32) -> Option < & Creature >",
+        "visibility": "pub",
+        "line_start": 179,
+        "line_end": 181,
+        "dependencies": [
+          "Creature",
+          "id"
+        ],
+        "behavior_summary": "Inherent method `get_creature` on `GameState`.",
+        "risk_level": "high",
+        "body_hash": "0d28a215803af7bc26b80b302a5c51820a7c1862a6ac16154af52680d3dd119b",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "get_receiver",
+    "line": 238,
+    "snippet": "None",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": null
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "get_parent",
+    "line": 245,
+    "snippet": "None",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": null
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "get_position_tuple",
+    "line": 276,
+    "snippet": "None",
+    "file": "common/src/thing.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": null
+  },
+  {
+    "pattern": "panic_stub",
+    "fn_name": "get_number",
+    "line": 136,
+    "snippet": "_ => panic!(\"LuaVariant::get_number called on {:?}\", self.variant_type()),",
+    "file": "common/src/luavariant.rs",
+    "crate": "common",
+    "ledger_symbol": "common::luavariant::LuaVariant::<impl>::get_number",
+    "manifest_match": {
+      "file": "crates/common/src/luavariant.rs",
+      "kind": "impl_method",
+      "qualified_name": "common::luavariant::LuaVariant::<impl>::get_number",
+      "signature": "fn get_number(& self) -> u32",
+      "visibility": "pub",
+      "line_start": 132,
+      "line_end": 138,
+      "dependencies": [
+        "LuaVariant::Number",
+        "doc",
+        "n",
+        "panic"
+      ],
+      "behavior_summary": "Returns the inner number.  Panics if not `Number`.  Mirrors `getNumber`.",
+      "risk_level": "high",
+      "body_hash": "93514636fbd340b7a826931ff3b0a75137d0072f866113b38851b145dc0e949a",
+      "notes": [
+        "kind-renamed-from-method"
+      ]
+    }
+  },
+  {
+    "pattern": "panic_stub",
+    "fn_name": "get_position",
+    "line": 145,
+    "snippet": "_ => panic!(",
+    "file": "common/src/luavariant.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/luavariant.rs",
+        "kind": "impl_method",
+        "qualified_name": "common::luavariant::LuaVariant::<impl>::get_position",
+        "signature": "fn get_position(& self) -> & Position",
+        "visibility": "pub",
+        "line_start": 140,
+        "line_end": 147,
+        "dependencies": [
+          "LuaVariant::Position",
+          "Position",
+          "doc",
+          "p",
+          "panic"
+        ],
+        "behavior_summary": "Returns a reference to the inner position.  Panics if not `Position`.",
+        "risk_level": "high",
+        "body_hash": "35fec91d3a8ea119b3bf0e16dbf949b6ccb79c8c753d3c8f1439d164fbdf60c3",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/common/src/networkmessage.rs",
+        "kind": "impl_method",
+        "qualified_name": "common::networkmessage::NetworkMessage::<impl>::get_position",
+        "signature": "fn get_position(& mut self) -> Position",
+        "visibility": "pub",
+        "line_start": 420,
+        "line_end": 428,
+        "dependencies": [
+          "Position",
+          "doc",
+          "x",
+          "y",
+          "z"
+        ],
+        "behavior_summary": "Reads a 5-byte `Position`: `x` (u16 LE) + `y` (u16 LE) + `z` (u8).",
+        "risk_level": "high",
+        "body_hash": "abd8e60de30a32f0979b9f0d5f2a3bfb655208bdb29f21965d221d27a5fbdcba",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/common/src/networkmessage.rs",
+        "kind": "protocol_opcode",
+        "qualified_name": "common::networkmessage::NetworkMessage::<impl>::get_position",
+        "signature": "fn get_position(& mut self) -> Position",
+        "visibility": "pub",
+        "line_start": 420,
+        "line_end": 428,
+        "dependencies": [
+          "Position",
+          "doc",
+          "x",
+          "y",
+          "z"
+        ],
+        "behavior_summary": "Reads a 5-byte `Position`: `x` (u16 LE) + `y` (u16 LE) + `z` (u8).",
+        "risk_level": "high",
+        "body_hash": "abd8e60de30a32f0979b9f0d5f2a3bfb655208bdb29f21965d221d27a5fbdcba",
+        "notes": [
+          "kind-renamed-from-method",
+          "overlay-of-impl_method",
+          "network-message-codec"
+        ]
+      },
+      {
+        "file": "crates/entity/src/creature.rs",
+        "kind": "impl_method",
+        "qualified_name": "entity::creature::Creature::<impl>::get_position",
+        "signature": "fn get_position(& self) -> Position",
+        "visibility": "pub",
+        "line_start": 518,
+        "line_end": 520,
+        "dependencies": [
+          "Position"
+        ],
+        "behavior_summary": "Inherent method `get_position` on `Creature`.",
+        "risk_level": "medium",
+        "body_hash": "e7a0b861c0363479f4c4a1b2e8af2e0029cb07cfc2d7dd632a2482210b58c5d3",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/map/src/housetile.rs",
+        "kind": "impl_method",
+        "qualified_name": "map::housetile::HouseTile::<impl>::get_position",
+        "signature": "fn get_position(& self) -> Position",
+        "visibility": "pub",
+        "line_start": 63,
+        "line_end": 66,
+        "dependencies": [
+          "Position",
+          "doc"
+        ],
+        "behavior_summary": "Returns the position of the underlying tile.",
+        "risk_level": "medium",
+        "body_hash": "bb1b46d8f252da5311b6f18a16b71281995fccae985ce91c311a636c78d8cefc",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "panic_stub",
+    "fn_name": "get_target_position",
+    "line": 157,
+    "snippet": "_ => panic!(",
+    "file": "common/src/luavariant.rs",
+    "crate": "common",
+    "ledger_symbol": "common::luavariant::LuaVariant::<impl>::get_target_position",
+    "manifest_match": {
+      "file": "crates/common/src/luavariant.rs",
+      "kind": "impl_method",
+      "qualified_name": "common::luavariant::LuaVariant::<impl>::get_target_position",
+      "signature": "fn get_target_position(& self) -> & Position",
+      "visibility": "pub",
+      "line_start": 149,
+      "line_end": 159,
+      "dependencies": [
+        "LuaVariant::TargetPosition",
+        "Position",
+        "doc",
+        "p",
+        "panic"
+      ],
+      "behavior_summary": "Returns a reference to the inner target position.  Panics if not",
+      "risk_level": "high",
+      "body_hash": "12f8f0de35b00fbc435d61f425af34c55bf51d4003497b36dcbe6ef99c686096",
+      "notes": [
+        "kind-renamed-from-method"
+      ]
+    }
+  },
+  {
+    "pattern": "panic_stub",
+    "fn_name": "get_string",
+    "line": 169,
+    "snippet": "_ => panic!(\"LuaVariant::get_string called on {:?}\", self.variant_type()),",
+    "file": "common/src/luavariant.rs",
+    "crate": "common",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/configmanager.rs",
+        "kind": "impl_method",
+        "qualified_name": "common::configmanager::ConfigManager::<impl>::get_string",
+        "signature": "fn get_string(& self, key : StringKey) -> & str",
+        "visibility": "pub",
+        "line_start": 246,
+        "line_end": 249,
+        "dependencies": [
+          "StringKey",
+          "doc",
+          "key",
+          "s"
+        ],
+        "behavior_summary": "Return the string value for `key`, or `\"\"` if not set.",
+        "risk_level": "medium",
+        "body_hash": "8aec26ea52c488143869f5060073168e5d0fd92100ad7f25d785139b8df1deed",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/common/src/luavariant.rs",
+        "kind": "impl_method",
+        "qualified_name": "common::luavariant::LuaVariant::<impl>::get_string",
+        "signature": "fn get_string(& self) -> & str",
+        "visibility": "pub",
+        "line_start": 161,
+        "line_end": 168,
+        "dependencies": [
+          "LuaVariant::String",
+          "doc",
+          "panic",
+          "s"
+        ],
+        "behavior_summary": "Returns a reference to the inner string.  Panics if not `String`.",
+        "risk_level": "high",
+        "body_hash": "7564d7ecd054f0691d7aaeeed914f2c540d2bebc5ab9e0bc2f8414b47fb466b6",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/common/src/networkmessage.rs",
+        "kind": "impl_method",
+        "qualified_name": "common::networkmessage::NetworkMessage::<impl>::get_string",
+        "signature": "fn get_string(& mut self, string_len : u16) -> String",
+        "visibility": "pub",
+        "line_start": 272,
+        "line_end": 295,
+        "dependencies": [
+          "String::from_utf8_lossy",
+          "String::new",
+          "bytes",
+          "doc",
+          "len",
+          "pos",
+          "string_len"
+        ],
+        "behavior_summary": "Reads a length-prefixed UTF-8 string.",
+        "risk_level": "high",
+        "body_hash": "a90686840731e7d6ab927cd0e012ec8193abb03985597aee786eec0afe8af60d",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/common/src/networkmessage.rs",
+        "kind": "protocol_opcode",
+        "qualified_name": "common::networkmessage::NetworkMessage::<impl>::get_string",
+        "signature": "fn get_string(& mut self, string_len : u16) -> String",
+        "visibility": "pub",
+        "line_start": 272,
+        "line_end": 295,
+        "dependencies": [
+          "String::from_utf8_lossy",
+          "String::new",
+          "bytes",
+          "doc",
+          "len",
+          "pos",
+          "string_len"
+        ],
+        "behavior_summary": "Reads a length-prefixed UTF-8 string.",
+        "risk_level": "high",
+        "body_hash": "a90686840731e7d6ab927cd0e012ec8193abb03985597aee786eec0afe8af60d",
+        "notes": [
+          "kind-renamed-from-method",
+          "overlay-of-impl_method",
+          "network-message-codec"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "empty_body",
+    "fn_name": "post_add_item",
+    "line": 1349,
+    "snippet": "pub fn post_add_item(&mut self, _item_id: u16, _index: i32) {}",
+    "file": "map/src/tile.rs",
+    "crate": "map",
+    "ledger_symbol": null,
+    "manifest_match": null
+  },
+  {
+    "pattern": "empty_body",
+    "fn_name": "post_remove_item",
+    "line": 1352,
+    "snippet": "pub fn post_remove_item(&mut self, _item_id: u16, _index: i32) {}",
+    "file": "map/src/tile.rs",
+    "crate": "map",
+    "ledger_symbol": null,
+    "manifest_match": null
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "get_first_index",
+    "line": 813,
+    "snippet": "0",
+    "file": "map/src/tile.rs",
+    "crate": "map",
+    "ledger_symbol": "common::thing::Thing::get_first_index",
+    "manifest_match": {
+      "file": "crates/common/src/thing.rs",
+      "kind": "trait_method",
+      "qualified_name": "common::thing::Thing::get_first_index",
+      "signature": "fn get_first_index(& self) -> usize",
+      "visibility": "pub",
+      "line_start": 114,
+      "line_end": 119,
+      "dependencies": [
+        "doc"
+      ],
+      "behavior_summary": "First valid child index. Default `0`; container-like things override.",
+      "risk_level": "medium",
+      "body_hash": "1504ecf4fbe198ba89217a040c9e1c0490f72b8218bae3890589a938c6f42152",
+      "notes": [
+        "trait method",
+        "default-provided"
+      ]
+    }
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_removed",
+    "line": 1400,
+    "snippet": "false",
+    "file": "map/src/tile.rs",
+    "crate": "map",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_removed",
+        "signature": "fn is_removed(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 103,
+        "line_end": 110,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Whether this object has already been removed from the world.",
+        "risk_level": "medium",
+        "body_hash": "6e2eed0b2815639aedafd011e3cf3fe78302a7cb25a08c595aa57a131b7162ba",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::LiveThing::<impl Thing for LiveThing>::is_removed",
+        "signature": "fn is_removed(& self) -> bool",
+        "visibility": "private",
+        "line_start": 879,
+        "line_end": 881,
+        "dependencies": [],
+        "behavior_summary": "Method `is_removed` implementing `Thing` for `LiveThing`.",
+        "risk_level": "medium",
+        "body_hash": "c1d42e53890f90581b7123ce7008f97640d7203048c2b592d90b420f0e6afa3f",
+        "notes": [
+          "implements Thing::is_removed"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "get_first_index",
+    "line": 1406,
+    "snippet": "0",
+    "file": "map/src/tile.rs",
+    "crate": "map",
+    "ledger_symbol": "common::thing::Thing::get_first_index",
+    "manifest_match": {
+      "file": "crates/common/src/thing.rs",
+      "kind": "trait_method",
+      "qualified_name": "common::thing::Thing::get_first_index",
+      "signature": "fn get_first_index(& self) -> usize",
+      "visibility": "pub",
+      "line_start": 114,
+      "line_end": 119,
+      "dependencies": [
+        "doc"
+      ],
+      "behavior_summary": "First valid child index. Default `0`; container-like things override.",
+      "risk_level": "medium",
+      "body_hash": "1504ecf4fbe198ba89217a040c9e1c0490f72b8218bae3890589a938c6f42152",
+      "notes": [
+        "trait method",
+        "default-provided"
+      ]
+    }
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "cylinder_first_index",
+    "line": 1418,
+    "snippet": "0",
+    "file": "map/src/tile.rs",
+    "crate": "map",
+    "ledger_symbol": null,
+    "manifest_match": null
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "query_add",
+    "line": 55,
+    "snippet": "Ok(())",
+    "file": "map/src/trashholder.rs",
+    "crate": "map",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/entity/src/player.rs",
+        "kind": "impl_method",
+        "qualified_name": "entity::player::Player::<impl>::query_add",
+        "signature": "fn query_add(& self, slot : InventorySlot, item : & Item, count : u8, flags : u32) -> ReturnValue",
+        "visibility": "pub",
+        "line_start": 1104,
+        "line_end": 1205,
+        "dependencies": [
+          "CHILD_IS_OWNER",
+          "InventorySlot",
+          "InventorySlot::Ammo",
+          "InventorySlot::Armor",
+          "InventorySlot::Backpack",
+          "InventorySlot::Depot",
+          "InventorySlot::Feet",
+          "InventorySlot::Head",
+          "InventorySlot::Left",
+          "InventorySlot::Legs",
+          "InventorySlot::Necklace",
+          "InventorySlot::Right",
+          "InventorySlot::Ring",
+          "Item",
+          "NO_LIMIT",
+          "ReturnValue",
+          "ReturnValue::BothHandsNeedToBeFree",
+          "ReturnValue::CanOnlyUseOneShield",
+          "ReturnValue::CanOnlyUseOneWeapon",
+          "ReturnValue::CannotBeDressed",
+          "ReturnValue::CannotPickup",
+          "ReturnValue::DropTwoHandedItem",
+          "ReturnValue::ItemCannotBeMovedThere",
+          "ReturnValue::NoError",
+          "ReturnValue::NotEnoughCapacity",
+          "Self::is_melee_weapon",
+          "WeaponType::Distance",
+          "WeaponType::Quiver",
+          "WeaponType::Shield",
+          "count",
+          "doc",
+          "flags",
+          "item",
+          "item_weight",
+          "li",
+          "li_opt",
+          "lw",
+          "ri",
+          "ri_opt",
+          "rw"
+        ],
+        "behavior_summary": "Cylinder slot validation \u2014 mirrors C++ `Player::queryAdd`.",
+        "risk_level": "medium",
+        "body_hash": "74d654e9d44bc47fea438419a706c11a46e4af90bd0ec654d2fbfe2c05c6794b",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/container.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::container::Container::<impl>::query_add",
+        "signature": "fn query_add(& self, index : i32) -> ReturnValue",
+        "visibility": "pub",
+        "line_start": 251,
+        "line_end": 273,
+        "dependencies": [
+          "INDEX_WHEREEVER",
+          "ReturnValue",
+          "ReturnValue::ContainerLocked",
+          "ReturnValue::ContainerNotEnoughRoom",
+          "ReturnValue::NoError",
+          "doc",
+          "index"
+        ],
+        "behavior_summary": "Determine whether `item` may be added to this container at `index`.",
+        "risk_level": "medium",
+        "body_hash": "fc04fbe2bfda9fa70cc4aea0532a6fe6daf568de527d51a9d1ded8570899bb20",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/depotlocker.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::depotlocker::DepotLocker::<impl>::query_add",
+        "signature": "fn query_add(& self) -> Result < () , DepotLockerError >",
+        "visibility": "pub",
+        "line_start": 79,
+        "line_end": 83,
+        "dependencies": [
+          "DepotLockerError",
+          "DepotLockerError::NotEnoughRoom",
+          "doc"
+        ],
+        "behavior_summary": "Items cannot be added directly to a depot locker (mirrors C++",
+        "risk_level": "medium",
+        "body_hash": "973d2a6bd1555ee0a60d80842c93b423cb266510eba3070f5347866ec8faaca7",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/mailbox.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::mailbox::Mailbox::<impl>::query_add",
+        "signature": "fn query_add(& self, item : & Item) -> Result < () , MailboxError >",
+        "visibility": "pub",
+        "line_start": 87,
+        "line_end": 97,
+        "dependencies": [
+          "Item",
+          "MailboxError",
+          "MailboxError::CannotSend",
+          "doc",
+          "item"
+        ],
+        "behavior_summary": "Validate whether an item can be added to this mailbox.",
+        "risk_level": "medium",
+        "body_hash": "a41746499a256d72449564d8cbedaf53dc241555e2e4bba88e455903f0e63733",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/storeinbox.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::storeinbox::StoreInbox::<impl>::query_add",
+        "signature": "fn query_add(& self, item : & Item, flags : u32, is_self : bool, item_is_non_empty_container : bool) -> StoreInboxQueryResult",
+        "visibility": "pub",
+        "line_start": 160,
+        "line_end": 204,
+        "dependencies": [
+          "Item",
+          "Self::has_no_limit",
+          "StoreInboxQueryResult",
+          "StoreInboxQueryResult::CannotMoveItemIsNotStoreItem",
+          "StoreInboxQueryResult::CannotPickup",
+          "StoreInboxQueryResult::ItemCannotBeMovedThere",
+          "StoreInboxQueryResult::NoError",
+          "StoreInboxQueryResult::ThisIsImpossible",
+          "doc",
+          "flags",
+          "is_self",
+          "item",
+          "item_is_non_empty_container"
+        ],
+        "behavior_summary": "Check whether the given item can be added to the store inbox.",
+        "risk_level": "medium",
+        "body_hash": "87fc86d96050107adc698c00e049a317b9169e4433fc9d85c7ff5daf72760e7d",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/map/src/tile.rs",
+        "kind": "impl_method",
+        "qualified_name": "map::tile::Tile::<impl>::query_add",
+        "signature": "fn query_add(& self, query_flags_arg : u32) -> ReturnValue",
+        "visibility": "pub",
+        "line_start": 500,
+        "line_end": 559,
+        "dependencies": [
+          "IGNOREBLOCKITEM",
+          "IGNORECHECKS",
+          "NOLIMIT",
+          "PATHFINDING",
+          "ReturnValue",
+          "ReturnValue::NoError",
+          "ReturnValue::NotEnoughRoom",
+          "ReturnValue::NotPossible",
+          "doc",
+          "flags::BLOCKSOLID",
+          "flags::FLOORCHANGE",
+          "flags::TELEPORT",
+          "g",
+          "item",
+          "query_flags_arg"
+        ],
+        "behavior_summary": "Query whether a thing can be added to this tile.",
+        "risk_level": "medium",
+        "body_hash": "2f26f4960b387d449b5a973177623ac4670687abb9ea77a18d72f358d365e17d",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/map/src/trashholder.rs",
+        "kind": "impl_method",
+        "qualified_name": "map::trashholder::TrashHolder::<impl>::query_add",
+        "signature": "fn query_add(& self) -> Result < () , TrashHolderError >",
+        "visibility": "pub",
+        "line_start": 53,
+        "line_end": 57,
+        "dependencies": [
+          "TrashHolderError",
+          "doc"
+        ],
+        "behavior_summary": "Always accepts items \u2014 mirrors C++ `queryAdd` returning",
+        "risk_level": "medium",
+        "body_hash": "e2cf111631b38b0483e976dbe35bef90bc70850f9e30b7ef9683f39c063a077e",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "item_count",
+    "line": 103,
+    "snippet": "0",
+    "file": "map/src/trashholder.rs",
+    "crate": "map",
+    "ledger_symbol": "map::trashholder::TrashHolder::<impl>::item_count",
+    "manifest_match": {
+      "file": "crates/map/src/trashholder.rs",
+      "kind": "impl_method",
+      "qualified_name": "map::trashholder::TrashHolder::<impl>::item_count",
+      "signature": "fn item_count(& self) -> usize",
+      "visibility": "pub",
+      "line_start": 102,
+      "line_end": 105,
+      "dependencies": [
+        "doc"
+      ],
+      "behavior_summary": "Returns `0`; trash holders never retain items.",
+      "risk_level": "medium",
+      "body_hash": "bfd7a77d31f23ab6becfcb1eef37ee1d8ef30fd728d0c9fb22e99d749c95444c",
+      "notes": [
+        "kind-renamed-from-method"
+      ]
+    }
+  },
+  {
+    "pattern": "dropped_work",
+    "fn_name": "add_item",
+    "line": 71,
+    "snippet": "drop(item);",
+    "file": "map/src/trashholder.rs",
+    "crate": "map",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/items/src/container.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::container::Container::<impl>::add_item",
+        "signature": "fn add_item(& mut self, item : Item) -> Result < () , ContainerError >",
+        "visibility": "pub",
+        "line_start": 174,
+        "line_end": 187,
+        "dependencies": [
+          "ContainerError",
+          "ContainerError::Full",
+          "Item",
+          "doc",
+          "item"
+        ],
+        "behavior_summary": "Prepend an item to the front of the list (mirrors C++ `addThing` /",
+        "risk_level": "medium",
+        "body_hash": "c06defef14ad60a017713db84c07149a153082f4c18adc3fd2e1575da5d1157e",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/depotchest.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::depotchest::DepotChest::<impl>::add_item",
+        "signature": "fn add_item(& mut self, item : Item) -> Result < () , DepotChestError >",
+        "visibility": "pub",
+        "line_start": 108,
+        "line_end": 119,
+        "dependencies": [
+          "DepotChestError",
+          "DepotChestError::ContainerFull",
+          "DepotChestError::DepotFull",
+          "Item",
+          "doc",
+          "item"
+        ],
+        "behavior_summary": "Add an item, enforcing the depot-items cap when non-zero.",
+        "risk_level": "medium",
+        "body_hash": "187920993d97325cfd46772388c945d093dbd89d2fd49d7bd28eca720659fbcd",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/inbox.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::inbox::Inbox::<impl>::add_item",
+        "signature": "fn add_item(& mut self, item : Item) -> Result < () , InboxError >",
+        "visibility": "pub",
+        "line_start": 83,
+        "line_end": 92,
+        "dependencies": [
+          "InboxError",
+          "InboxError::ContainerFull",
+          "Item",
+          "doc",
+          "item"
+        ],
+        "behavior_summary": "Add an item to the inbox (server-side delivery).",
+        "risk_level": "medium",
+        "body_hash": "849626581b0627b1248e80181c12508fc6fe522cbd2c8313dc989cc759f955fe",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/storeinbox.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::storeinbox::StoreInbox::<impl>::add_item",
+        "signature": "fn add_item(& mut self, item : Item) -> Result < () , StoreInboxError >",
+        "visibility": "pub",
+        "line_start": 138,
+        "line_end": 154,
+        "dependencies": [
+          "Item",
+          "StoreInboxError",
+          "StoreInboxError::from_container_error",
+          "doc",
+          "item"
+        ],
+        "behavior_summary": "Add an item to the store inbox.",
+        "risk_level": "medium",
+        "body_hash": "b9d31d7ec22e45fdd428a63ca59879d78481c4a538445a53e25952d73deadd74",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/map/src/housetile.rs",
+        "kind": "impl_method",
+        "qualified_name": "map::housetile::HouseTile::<impl>::add_item",
+        "signature": "fn add_item(& mut self, item : forgottenserver_items :: item :: Item)",
+        "visibility": "pub",
+        "line_start": 112,
+        "line_end": 120,
+        "dependencies": [
+          "doc",
+          "forgottenserver_items::item::Item",
+          "item"
+        ],
+        "behavior_summary": "Adds an item to the underlying tile, mirroring `HouseTile::addThing`",
+        "risk_level": "medium",
+        "body_hash": "faef1f9312be9566dedd246265ca2c78bdc58a335956d952f34ee74c91fe00c0",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/map/src/tile.rs",
+        "kind": "impl_method",
+        "qualified_name": "map::tile::Tile::<impl>::add_item",
+        "signature": "fn add_item(& mut self, item : Item)",
+        "visibility": "pub",
+        "line_start": 303,
+        "line_end": 306,
+        "dependencies": [
+          "Item",
+          "doc",
+          "item"
+        ],
+        "behavior_summary": "Adds `item` to the tile's item list.",
+        "risk_level": "medium",
+        "body_hash": "c7f683cb0c791bb3b6ec83c0630fcba3c49d2b85228db354719a1bf445a5dc8f",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/map/src/trashholder.rs",
+        "kind": "impl_method",
+        "qualified_name": "map::trashholder::TrashHolder::<impl>::add_item",
+        "signature": "fn add_item(& mut self, item : Item)",
+        "visibility": "pub",
+        "line_start": 66,
+        "line_end": 72,
+        "dependencies": [
+          "Item",
+          "doc",
+          "drop",
+          "item"
+        ],
+        "behavior_summary": "Accepts and immediately destroys `item`.  The item is moved in and",
+        "risk_level": "medium",
+        "body_hash": "8ecd2bd341da3fa980d1ff578e315943cd967e18e8dae465ff2c533274eff902",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/scripting/src/lua_api.rs",
+        "kind": "impl_method",
+        "qualified_name": "scripting::lua_api::LuaApi::<impl>::add_item",
+        "signature": "fn add_item(& mut self, item : ItemData)",
+        "visibility": "pub",
+        "line_start": 569,
+        "line_end": 571,
+        "dependencies": [
+          "ItemData",
+          "item"
+        ],
+        "behavior_summary": "Inherent method `add_item` on `LuaApi`.",
+        "risk_level": "high",
+        "body_hash": "66292847c80d0fa3542c423d88eaac518b525ccac8e6326cc06a2cec282640af",
+        "notes": [
+          "lua binding (heuristic)",
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "query_add_for_non_member",
+    "line": 88,
+    "snippet": "Err(AddError::NotInvited)",
+    "file": "map/src/housetile.rs",
+    "crate": "map",
+    "ledger_symbol": "map::housetile::HouseTile::<impl>::query_add_for_non_member",
+    "manifest_match": {
+      "file": "crates/map/src/housetile.rs",
+      "kind": "impl_method",
+      "qualified_name": "map::housetile::HouseTile::<impl>::query_add_for_non_member",
+      "signature": "fn query_add_for_non_member(& self) -> Result < () , AddError >",
+      "visibility": "pub",
+      "line_start": 82,
+      "line_end": 90,
+      "dependencies": [
+        "AddError",
+        "AddError::NotInvited",
+        "doc"
+      ],
+      "behavior_summary": "Non-member creatures are denied entry.",
+      "risk_level": "medium",
+      "body_hash": "e47cdc802c5251e5c06889ad40d886bf13ea4be774fa7c0135449193ca2c5d15",
+      "notes": [
+        "kind-renamed-from-method"
+      ]
+    }
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "query_add_item_for_non_member",
+    "line": 93,
+    "snippet": "Err(AddError::NotInvited)",
+    "file": "map/src/housetile.rs",
+    "crate": "map",
+    "ledger_symbol": "map::housetile::HouseTile::<impl>::query_add_item_for_non_member",
+    "manifest_match": {
+      "file": "crates/map/src/housetile.rs",
+      "kind": "impl_method",
+      "qualified_name": "map::housetile::HouseTile::<impl>::query_add_item_for_non_member",
+      "signature": "fn query_add_item_for_non_member(& self) -> Result < () , AddError >",
+      "visibility": "pub",
+      "line_start": 92,
+      "line_end": 95,
+      "dependencies": [
+        "AddError",
+        "AddError::NotInvited",
+        "doc"
+      ],
+      "behavior_summary": "Non-creature (item) additions by non-members are also denied.",
+      "risk_level": "medium",
+      "body_hash": "6bf6d8d89fcf748ed27a7f59c6ceb633c67860927a51521825245e51f03d0777",
+      "notes": [
+        "kind-renamed-from-method"
+      ]
+    }
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "query_add_non_player_creature",
+    "line": 100,
+    "snippet": "Err(AddError::NotPossible)",
+    "file": "map/src/housetile.rs",
+    "crate": "map",
+    "ledger_symbol": "map::housetile::HouseTile::<impl>::query_add_non_player_creature",
+    "manifest_match": {
+      "file": "crates/map/src/housetile.rs",
+      "kind": "impl_method",
+      "qualified_name": "map::housetile::HouseTile::<impl>::query_add_non_player_creature",
+      "signature": "fn query_add_non_player_creature(& self) -> Result < () , AddError >",
+      "visibility": "pub",
+      "line_start": 97,
+      "line_end": 102,
+      "dependencies": [
+        "AddError",
+        "AddError::NotPossible",
+        "doc"
+      ],
+      "behavior_summary": "Non-player creatures (monsters, NPCs) are always denied.",
+      "risk_level": "medium",
+      "body_hash": "4fef2339751236db2842317917f3bd7ec58d5034c16ad98cdc62ba81610721b6",
+      "notes": [
+        "kind-renamed-from-method"
+      ]
+    }
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "query_remove_for_non_member",
+    "line": 108,
+    "snippet": "Err(AddError::NotInvited)",
+    "file": "map/src/housetile.rs",
+    "crate": "map",
+    "ledger_symbol": "map::housetile::HouseTile::<impl>::query_remove_for_non_member",
+    "manifest_match": {
+      "file": "crates/map/src/housetile.rs",
+      "kind": "impl_method",
+      "qualified_name": "map::housetile::HouseTile::<impl>::query_remove_for_non_member",
+      "signature": "fn query_remove_for_non_member(& self) -> Result < () , AddError >",
+      "visibility": "pub",
+      "line_start": 104,
+      "line_end": 110,
+      "dependencies": [
+        "AddError",
+        "AddError::NotInvited",
+        "doc"
+      ],
+      "behavior_summary": "Removal by a non-member actor is denied.",
+      "risk_level": "medium",
+      "body_hash": "79fbc49d96e75cd1be8cac31dab71365df016c3fdcfc58a0423260835e7168d1",
+      "notes": [
+        "kind-renamed-from-method"
+      ]
+    }
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "query_add",
+    "line": 81,
+    "snippet": "Err(DepotLockerError::NotEnoughRoom)",
+    "file": "items/src/depotlocker.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/entity/src/player.rs",
+        "kind": "impl_method",
+        "qualified_name": "entity::player::Player::<impl>::query_add",
+        "signature": "fn query_add(& self, slot : InventorySlot, item : & Item, count : u8, flags : u32) -> ReturnValue",
+        "visibility": "pub",
+        "line_start": 1104,
+        "line_end": 1205,
+        "dependencies": [
+          "CHILD_IS_OWNER",
+          "InventorySlot",
+          "InventorySlot::Ammo",
+          "InventorySlot::Armor",
+          "InventorySlot::Backpack",
+          "InventorySlot::Depot",
+          "InventorySlot::Feet",
+          "InventorySlot::Head",
+          "InventorySlot::Left",
+          "InventorySlot::Legs",
+          "InventorySlot::Necklace",
+          "InventorySlot::Right",
+          "InventorySlot::Ring",
+          "Item",
+          "NO_LIMIT",
+          "ReturnValue",
+          "ReturnValue::BothHandsNeedToBeFree",
+          "ReturnValue::CanOnlyUseOneShield",
+          "ReturnValue::CanOnlyUseOneWeapon",
+          "ReturnValue::CannotBeDressed",
+          "ReturnValue::CannotPickup",
+          "ReturnValue::DropTwoHandedItem",
+          "ReturnValue::ItemCannotBeMovedThere",
+          "ReturnValue::NoError",
+          "ReturnValue::NotEnoughCapacity",
+          "Self::is_melee_weapon",
+          "WeaponType::Distance",
+          "WeaponType::Quiver",
+          "WeaponType::Shield",
+          "count",
+          "doc",
+          "flags",
+          "item",
+          "item_weight",
+          "li",
+          "li_opt",
+          "lw",
+          "ri",
+          "ri_opt",
+          "rw"
+        ],
+        "behavior_summary": "Cylinder slot validation \u2014 mirrors C++ `Player::queryAdd`.",
+        "risk_level": "medium",
+        "body_hash": "74d654e9d44bc47fea438419a706c11a46e4af90bd0ec654d2fbfe2c05c6794b",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/container.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::container::Container::<impl>::query_add",
+        "signature": "fn query_add(& self, index : i32) -> ReturnValue",
+        "visibility": "pub",
+        "line_start": 251,
+        "line_end": 273,
+        "dependencies": [
+          "INDEX_WHEREEVER",
+          "ReturnValue",
+          "ReturnValue::ContainerLocked",
+          "ReturnValue::ContainerNotEnoughRoom",
+          "ReturnValue::NoError",
+          "doc",
+          "index"
+        ],
+        "behavior_summary": "Determine whether `item` may be added to this container at `index`.",
+        "risk_level": "medium",
+        "body_hash": "fc04fbe2bfda9fa70cc4aea0532a6fe6daf568de527d51a9d1ded8570899bb20",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/depotlocker.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::depotlocker::DepotLocker::<impl>::query_add",
+        "signature": "fn query_add(& self) -> Result < () , DepotLockerError >",
+        "visibility": "pub",
+        "line_start": 79,
+        "line_end": 83,
+        "dependencies": [
+          "DepotLockerError",
+          "DepotLockerError::NotEnoughRoom",
+          "doc"
+        ],
+        "behavior_summary": "Items cannot be added directly to a depot locker (mirrors C++",
+        "risk_level": "medium",
+        "body_hash": "973d2a6bd1555ee0a60d80842c93b423cb266510eba3070f5347866ec8faaca7",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/mailbox.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::mailbox::Mailbox::<impl>::query_add",
+        "signature": "fn query_add(& self, item : & Item) -> Result < () , MailboxError >",
+        "visibility": "pub",
+        "line_start": 87,
+        "line_end": 97,
+        "dependencies": [
+          "Item",
+          "MailboxError",
+          "MailboxError::CannotSend",
+          "doc",
+          "item"
+        ],
+        "behavior_summary": "Validate whether an item can be added to this mailbox.",
+        "risk_level": "medium",
+        "body_hash": "a41746499a256d72449564d8cbedaf53dc241555e2e4bba88e455903f0e63733",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/storeinbox.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::storeinbox::StoreInbox::<impl>::query_add",
+        "signature": "fn query_add(& self, item : & Item, flags : u32, is_self : bool, item_is_non_empty_container : bool) -> StoreInboxQueryResult",
+        "visibility": "pub",
+        "line_start": 160,
+        "line_end": 204,
+        "dependencies": [
+          "Item",
+          "Self::has_no_limit",
+          "StoreInboxQueryResult",
+          "StoreInboxQueryResult::CannotMoveItemIsNotStoreItem",
+          "StoreInboxQueryResult::CannotPickup",
+          "StoreInboxQueryResult::ItemCannotBeMovedThere",
+          "StoreInboxQueryResult::NoError",
+          "StoreInboxQueryResult::ThisIsImpossible",
+          "doc",
+          "flags",
+          "is_self",
+          "item",
+          "item_is_non_empty_container"
+        ],
+        "behavior_summary": "Check whether the given item can be added to the store inbox.",
+        "risk_level": "medium",
+        "body_hash": "87fc86d96050107adc698c00e049a317b9169e4433fc9d85c7ff5daf72760e7d",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/map/src/tile.rs",
+        "kind": "impl_method",
+        "qualified_name": "map::tile::Tile::<impl>::query_add",
+        "signature": "fn query_add(& self, query_flags_arg : u32) -> ReturnValue",
+        "visibility": "pub",
+        "line_start": 500,
+        "line_end": 559,
+        "dependencies": [
+          "IGNOREBLOCKITEM",
+          "IGNORECHECKS",
+          "NOLIMIT",
+          "PATHFINDING",
+          "ReturnValue",
+          "ReturnValue::NoError",
+          "ReturnValue::NotEnoughRoom",
+          "ReturnValue::NotPossible",
+          "doc",
+          "flags::BLOCKSOLID",
+          "flags::FLOORCHANGE",
+          "flags::TELEPORT",
+          "g",
+          "item",
+          "query_flags_arg"
+        ],
+        "behavior_summary": "Query whether a thing can be added to this tile.",
+        "risk_level": "medium",
+        "body_hash": "2f26f4960b387d449b5a973177623ac4670687abb9ea77a18d72f358d365e17d",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/map/src/trashholder.rs",
+        "kind": "impl_method",
+        "qualified_name": "map::trashholder::TrashHolder::<impl>::query_add",
+        "signature": "fn query_add(& self) -> Result < () , TrashHolderError >",
+        "visibility": "pub",
+        "line_start": 53,
+        "line_end": 57,
+        "dependencies": [
+          "TrashHolderError",
+          "doc"
+        ],
+        "behavior_summary": "Always accepts items \u2014 mirrors C++ `queryAdd` returning",
+        "risk_level": "medium",
+        "body_hash": "e2cf111631b38b0483e976dbe35bef90bc70850f9e30b7ef9683f39c063a077e",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "can_remove",
+    "line": 86,
+    "snippet": "false",
+    "file": "items/src/depotlocker.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/entity/src/bed.rs",
+        "kind": "impl_method",
+        "qualified_name": "entity::bed::BedItem::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 211,
+        "line_end": 216,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "A bed can be removed when it is not assigned to a house.",
+        "risk_level": "medium",
+        "body_hash": "945e0ef5c031f84922183fced8c1d257c0ae0b6e1dd991be7cfa3c516b8947f9",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/depotchest.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::depotchest::DepotChest::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 125,
+        "line_end": 128,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Depot chests cannot be removed by a player (mirrors C++ `canRemove`).",
+        "risk_level": "medium",
+        "body_hash": "c153404baae2d475df78550599f395a7b6ec606e05386f56d1a1d702c6172da3",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/depotlocker.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::depotlocker::DepotLocker::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 85,
+        "line_end": 88,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Depot lockers cannot be removed by a player.",
+        "risk_level": "medium",
+        "body_hash": "3c95a29e037a18e41b7b60bb36acc5459beacab4e61bf2638d85abff1e20a849",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/inbox.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::inbox::Inbox::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 61,
+        "line_end": 64,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Inboxes cannot be removed by a player.",
+        "risk_level": "medium",
+        "body_hash": "2fba9c639f5b9217f4c7da986118cc6dc8ad19a0f1e20afe3e74556cefc5c4ee",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/storeinbox.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::storeinbox::StoreInbox::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 129,
+        "line_end": 132,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Store inboxes cannot be removed by a player.",
+        "risk_level": "medium",
+        "body_hash": "f9326061d99c372d9482e65e551a8e28a1974784a3eb062ee853d9575dadf4a1",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/item.rs",
+        "qualified_name": "items::item::Item::<impl>::can_remove",
+        "kind": "impl_method",
+        "body_hash": "",
+        "signature": "pub fn can_remove (& self) -> bool"
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_container",
+    "line": 176,
+    "snippet": "true",
+    "file": "items/src/depotlocker.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 180,
+        "line_end": 182,
+        "dependencies": [],
+        "behavior_summary": "Trait method `Thing::is_container`.",
+        "risk_level": "medium",
+        "body_hash": "d0494a7fee9d05fc1d4a653a72ccef471ec461a5274f3454c28d32dad474736d",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::ContainerThing::<impl Thing for ContainerThing>::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "private",
+        "line_start": 566,
+        "line_end": 568,
+        "dependencies": [],
+        "behavior_summary": "Method `is_container` implementing `Thing` for `ContainerThing`.",
+        "risk_level": "medium",
+        "body_hash": "77ff9a59180766ad5d1d60ae035d97ace40528c416917f49e5d94ab45d24bbee",
+        "notes": [
+          "implements Thing::is_container"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "private",
+        "line_start": 706,
+        "line_end": 708,
+        "dependencies": [],
+        "behavior_summary": "Method `is_container` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "77ff9a59180766ad5d1d60ae035d97ace40528c416917f49e5d94ab45d24bbee",
+        "notes": [
+          "implements Thing::is_container"
+        ]
+      },
+      {
+        "file": "crates/items/src/items_registry.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::items_registry::ItemTypeData::<impl>::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 901,
+        "line_end": 904,
+        "dependencies": [
+          "ItemGroup::Container",
+          "doc"
+        ],
+        "behavior_summary": "Is this item a container?",
+        "risk_level": "medium",
+        "body_hash": "f686b4d5d0e3a2ccfd14eea58158f4a93b3153325e1db02a70194c089e7f25c3",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_item",
+    "line": 179,
+    "snippet": "true",
+    "file": "items/src/depotlocker.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_item",
+        "signature": "fn is_item(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 164,
+        "line_end": 166,
+        "dependencies": [],
+        "behavior_summary": "Trait method `Thing::is_item`.",
+        "risk_level": "medium",
+        "body_hash": "eeeea6c7677a59e4364909fa880495f13c7a02b305474af18254960afc1eb929",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::ImmovablePushableItem::<impl Thing for ImmovablePushableItem>::is_item",
+        "signature": "fn is_item(& self) -> bool",
+        "visibility": "private",
+        "line_start": 381,
+        "line_end": 383,
+        "dependencies": [],
+        "behavior_summary": "Method `is_item` implementing `Thing` for `ImmovablePushableItem`.",
+        "risk_level": "medium",
+        "body_hash": "c13ccbd84bdc00df3adbe39d2e1f9211e335e3f2e910df724d60b11de72f571e",
+        "notes": [
+          "implements Thing::is_item"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_item",
+        "signature": "fn is_item(& self) -> bool",
+        "visibility": "private",
+        "line_start": 694,
+        "line_end": 696,
+        "dependencies": [],
+        "behavior_summary": "Method `is_item` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "c13ccbd84bdc00df3adbe39d2e1f9211e335e3f2e910df724d60b11de72f571e",
+        "notes": [
+          "implements Thing::is_item"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_removed",
+    "line": 182,
+    "snippet": "false",
+    "file": "items/src/depotlocker.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_removed",
+        "signature": "fn is_removed(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 103,
+        "line_end": 110,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Whether this object has already been removed from the world.",
+        "risk_level": "medium",
+        "body_hash": "6e2eed0b2815639aedafd011e3cf3fe78302a7cb25a08c595aa57a131b7162ba",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::LiveThing::<impl Thing for LiveThing>::is_removed",
+        "signature": "fn is_removed(& self) -> bool",
+        "visibility": "private",
+        "line_start": 879,
+        "line_end": 881,
+        "dependencies": [],
+        "behavior_summary": "Method `is_removed` implementing `Thing` for `LiveThing`.",
+        "risk_level": "medium",
+        "body_hash": "c1d42e53890f90581b7123ce7008f97640d7203048c2b592d90b420f0e6afa3f",
+        "notes": [
+          "implements Thing::is_removed"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_store_inbox",
+    "line": 122,
+    "snippet": "true",
+    "file": "items/src/storeinbox.rs",
+    "crate": "items",
+    "ledger_symbol": "items::storeinbox::StoreInbox::<impl>::is_store_inbox",
+    "manifest_match": {
+      "file": "crates/items/src/storeinbox.rs",
+      "kind": "impl_method",
+      "qualified_name": "items::storeinbox::StoreInbox::<impl>::is_store_inbox",
+      "signature": "fn is_store_inbox(& self) -> bool",
+      "visibility": "pub",
+      "line_start": 119,
+      "line_end": 123,
+      "dependencies": [
+        "doc"
+      ],
+      "behavior_summary": "Returns `true` \u2014 identifies this as a store inbox (mirrors C++",
+      "risk_level": "medium",
+      "body_hash": "81ff1b336e825e2b2d36c658c84155b7c939a813c61873463afbd96487205aca",
+      "notes": [
+        "kind-renamed-from-method"
+      ]
+    }
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "can_remove",
+    "line": 131,
+    "snippet": "false",
+    "file": "items/src/storeinbox.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/entity/src/bed.rs",
+        "kind": "impl_method",
+        "qualified_name": "entity::bed::BedItem::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 211,
+        "line_end": 216,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "A bed can be removed when it is not assigned to a house.",
+        "risk_level": "medium",
+        "body_hash": "945e0ef5c031f84922183fced8c1d257c0ae0b6e1dd991be7cfa3c516b8947f9",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/depotchest.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::depotchest::DepotChest::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 125,
+        "line_end": 128,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Depot chests cannot be removed by a player (mirrors C++ `canRemove`).",
+        "risk_level": "medium",
+        "body_hash": "c153404baae2d475df78550599f395a7b6ec606e05386f56d1a1d702c6172da3",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/depotlocker.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::depotlocker::DepotLocker::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 85,
+        "line_end": 88,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Depot lockers cannot be removed by a player.",
+        "risk_level": "medium",
+        "body_hash": "3c95a29e037a18e41b7b60bb36acc5459beacab4e61bf2638d85abff1e20a849",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/inbox.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::inbox::Inbox::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 61,
+        "line_end": 64,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Inboxes cannot be removed by a player.",
+        "risk_level": "medium",
+        "body_hash": "2fba9c639f5b9217f4c7da986118cc6dc8ad19a0f1e20afe3e74556cefc5c4ee",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/storeinbox.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::storeinbox::StoreInbox::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 129,
+        "line_end": 132,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Store inboxes cannot be removed by a player.",
+        "risk_level": "medium",
+        "body_hash": "f9326061d99c372d9482e65e551a8e28a1974784a3eb062ee853d9575dadf4a1",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/item.rs",
+        "qualified_name": "items::item::Item::<impl>::can_remove",
+        "kind": "impl_method",
+        "body_hash": "",
+        "signature": "pub fn can_remove (& self) -> bool"
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_container",
+    "line": 251,
+    "snippet": "true",
+    "file": "items/src/storeinbox.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 180,
+        "line_end": 182,
+        "dependencies": [],
+        "behavior_summary": "Trait method `Thing::is_container`.",
+        "risk_level": "medium",
+        "body_hash": "d0494a7fee9d05fc1d4a653a72ccef471ec461a5274f3454c28d32dad474736d",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::ContainerThing::<impl Thing for ContainerThing>::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "private",
+        "line_start": 566,
+        "line_end": 568,
+        "dependencies": [],
+        "behavior_summary": "Method `is_container` implementing `Thing` for `ContainerThing`.",
+        "risk_level": "medium",
+        "body_hash": "77ff9a59180766ad5d1d60ae035d97ace40528c416917f49e5d94ab45d24bbee",
+        "notes": [
+          "implements Thing::is_container"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "private",
+        "line_start": 706,
+        "line_end": 708,
+        "dependencies": [],
+        "behavior_summary": "Method `is_container` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "77ff9a59180766ad5d1d60ae035d97ace40528c416917f49e5d94ab45d24bbee",
+        "notes": [
+          "implements Thing::is_container"
+        ]
+      },
+      {
+        "file": "crates/items/src/items_registry.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::items_registry::ItemTypeData::<impl>::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 901,
+        "line_end": 904,
+        "dependencies": [
+          "ItemGroup::Container",
+          "doc"
+        ],
+        "behavior_summary": "Is this item a container?",
+        "risk_level": "medium",
+        "body_hash": "f686b4d5d0e3a2ccfd14eea58158f4a93b3153325e1db02a70194c089e7f25c3",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_item",
+    "line": 254,
+    "snippet": "true",
+    "file": "items/src/storeinbox.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_item",
+        "signature": "fn is_item(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 164,
+        "line_end": 166,
+        "dependencies": [],
+        "behavior_summary": "Trait method `Thing::is_item`.",
+        "risk_level": "medium",
+        "body_hash": "eeeea6c7677a59e4364909fa880495f13c7a02b305474af18254960afc1eb929",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::ImmovablePushableItem::<impl Thing for ImmovablePushableItem>::is_item",
+        "signature": "fn is_item(& self) -> bool",
+        "visibility": "private",
+        "line_start": 381,
+        "line_end": 383,
+        "dependencies": [],
+        "behavior_summary": "Method `is_item` implementing `Thing` for `ImmovablePushableItem`.",
+        "risk_level": "medium",
+        "body_hash": "c13ccbd84bdc00df3adbe39d2e1f9211e335e3f2e910df724d60b11de72f571e",
+        "notes": [
+          "implements Thing::is_item"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_item",
+        "signature": "fn is_item(& self) -> bool",
+        "visibility": "private",
+        "line_start": 694,
+        "line_end": 696,
+        "dependencies": [],
+        "behavior_summary": "Method `is_item` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "c13ccbd84bdc00df3adbe39d2e1f9211e335e3f2e910df724d60b11de72f571e",
+        "notes": [
+          "implements Thing::is_item"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_removed",
+    "line": 257,
+    "snippet": "false",
+    "file": "items/src/storeinbox.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_removed",
+        "signature": "fn is_removed(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 103,
+        "line_end": 110,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Whether this object has already been removed from the world.",
+        "risk_level": "medium",
+        "body_hash": "6e2eed0b2815639aedafd011e3cf3fe78302a7cb25a08c595aa57a131b7162ba",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::LiveThing::<impl Thing for LiveThing>::is_removed",
+        "signature": "fn is_removed(& self) -> bool",
+        "visibility": "private",
+        "line_start": 879,
+        "line_end": 881,
+        "dependencies": [],
+        "behavior_summary": "Method `is_removed` implementing `Thing` for `LiveThing`.",
+        "risk_level": "medium",
+        "body_hash": "c1d42e53890f90581b7123ce7008f97640d7203048c2b592d90b420f0e6afa3f",
+        "notes": [
+          "implements Thing::is_removed"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "can_remove",
+    "line": 484,
+    "snippet": "true",
+    "file": "items/src/item.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/entity/src/bed.rs",
+        "kind": "impl_method",
+        "qualified_name": "entity::bed::BedItem::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 211,
+        "line_end": 216,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "A bed can be removed when it is not assigned to a house.",
+        "risk_level": "medium",
+        "body_hash": "945e0ef5c031f84922183fced8c1d257c0ae0b6e1dd991be7cfa3c516b8947f9",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/depotchest.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::depotchest::DepotChest::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 125,
+        "line_end": 128,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Depot chests cannot be removed by a player (mirrors C++ `canRemove`).",
+        "risk_level": "medium",
+        "body_hash": "c153404baae2d475df78550599f395a7b6ec606e05386f56d1a1d702c6172da3",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/depotlocker.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::depotlocker::DepotLocker::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 85,
+        "line_end": 88,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Depot lockers cannot be removed by a player.",
+        "risk_level": "medium",
+        "body_hash": "3c95a29e037a18e41b7b60bb36acc5459beacab4e61bf2638d85abff1e20a849",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/inbox.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::inbox::Inbox::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 61,
+        "line_end": 64,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Inboxes cannot be removed by a player.",
+        "risk_level": "medium",
+        "body_hash": "2fba9c639f5b9217f4c7da986118cc6dc8ad19a0f1e20afe3e74556cefc5c4ee",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/storeinbox.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::storeinbox::StoreInbox::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 129,
+        "line_end": 132,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Store inboxes cannot be removed by a player.",
+        "risk_level": "medium",
+        "body_hash": "f9326061d99c372d9482e65e551a8e28a1974784a3eb062ee853d9575dadf4a1",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/item.rs",
+        "qualified_name": "items::item::Item::<impl>::can_remove",
+        "kind": "impl_method",
+        "body_hash": "",
+        "signature": "pub fn can_remove (& self) -> bool"
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "can_transform",
+    "line": 1669,
+    "snippet": "true",
+    "file": "items/src/item.rs",
+    "crate": "items",
+    "ledger_symbol": "items::item::Item::<impl>::can_transform",
+    "manifest_match": {
+      "file": "crates/items/src/item.rs",
+      "kind": "impl_method",
+      "qualified_name": "items::item::Item::<impl>::can_transform",
+      "signature": "pub fn can_transform (& self) -> bool",
+      "visibility": "pub",
+      "line_start": 0,
+      "line_end": 0,
+      "dependencies": [],
+      "behavior_summary": "Always returns true; base implementation.",
+      "risk_level": "low",
+      "body_hash": "",
+      "notes": []
+    }
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "store_item",
+    "line": 101,
+    "snippet": "Err(MailboxError::CannotStore)",
+    "file": "items/src/mailbox.rs",
+    "crate": "items",
+    "ledger_symbol": "items::mailbox::Mailbox::<impl>::store_item",
+    "manifest_match": {
+      "file": "crates/items/src/mailbox.rs",
+      "kind": "impl_method",
+      "qualified_name": "items::mailbox::Mailbox::<impl>::store_item",
+      "signature": "fn store_item(& self, _item : & Item) -> Result < () , MailboxError >",
+      "visibility": "pub",
+      "line_start": 99,
+      "line_end": 103,
+      "dependencies": [
+        "Item",
+        "MailboxError",
+        "MailboxError::CannotStore",
+        "doc"
+      ],
+      "behavior_summary": "Mailboxes do not store items.  Always returns",
+      "risk_level": "medium",
+      "body_hash": "5aba42925c575a66b7c8044ef73dbe82dd560c33a740959af1156fcd9a99c150",
+      "notes": [
+        "kind-renamed-from-method"
+      ]
+    }
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_mailbox",
+    "line": 107,
+    "snippet": "true",
+    "file": "items/src/mailbox.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/items/src/items_registry.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::items_registry::ItemTypeData::<impl>::is_mailbox",
+        "signature": "fn is_mailbox(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 941,
+        "line_end": 944,
+        "dependencies": [
+          "ItemTypeKind::Mailbox",
+          "doc"
+        ],
+        "behavior_summary": "Is this a mailbox?",
+        "risk_level": "medium",
+        "body_hash": "785d429ec8633bb3350876802bbac9b0e2dbd3066d955227bc9958a0c169fc20",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/mailbox.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::mailbox::Mailbox::<impl>::is_mailbox",
+        "signature": "fn is_mailbox(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 105,
+        "line_end": 109,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Returns `true` \u2014 identifies this as a mailbox (mirrors C++",
+        "risk_level": "medium",
+        "body_hash": "b29e426a25187c7fa214945562fcc6ef0c7c036abe7415e6419dde6462000dfc",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "can_remove",
+    "line": 62,
+    "snippet": "false",
+    "file": "items/src/inbox.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/entity/src/bed.rs",
+        "kind": "impl_method",
+        "qualified_name": "entity::bed::BedItem::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 211,
+        "line_end": 216,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "A bed can be removed when it is not assigned to a house.",
+        "risk_level": "medium",
+        "body_hash": "945e0ef5c031f84922183fced8c1d257c0ae0b6e1dd991be7cfa3c516b8947f9",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/depotchest.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::depotchest::DepotChest::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 125,
+        "line_end": 128,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Depot chests cannot be removed by a player (mirrors C++ `canRemove`).",
+        "risk_level": "medium",
+        "body_hash": "c153404baae2d475df78550599f395a7b6ec606e05386f56d1a1d702c6172da3",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/depotlocker.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::depotlocker::DepotLocker::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 85,
+        "line_end": 88,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Depot lockers cannot be removed by a player.",
+        "risk_level": "medium",
+        "body_hash": "3c95a29e037a18e41b7b60bb36acc5459beacab4e61bf2638d85abff1e20a849",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/inbox.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::inbox::Inbox::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 61,
+        "line_end": 64,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Inboxes cannot be removed by a player.",
+        "risk_level": "medium",
+        "body_hash": "2fba9c639f5b9217f4c7da986118cc6dc8ad19a0f1e20afe3e74556cefc5c4ee",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/storeinbox.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::storeinbox::StoreInbox::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 129,
+        "line_end": 132,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Store inboxes cannot be removed by a player.",
+        "risk_level": "medium",
+        "body_hash": "f9326061d99c372d9482e65e551a8e28a1974784a3eb062ee853d9575dadf4a1",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/item.rs",
+        "qualified_name": "items::item::Item::<impl>::can_remove",
+        "kind": "impl_method",
+        "body_hash": "",
+        "signature": "pub fn can_remove (& self) -> bool"
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_container",
+    "line": 114,
+    "snippet": "true",
+    "file": "items/src/inbox.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 180,
+        "line_end": 182,
+        "dependencies": [],
+        "behavior_summary": "Trait method `Thing::is_container`.",
+        "risk_level": "medium",
+        "body_hash": "d0494a7fee9d05fc1d4a653a72ccef471ec461a5274f3454c28d32dad474736d",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::ContainerThing::<impl Thing for ContainerThing>::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "private",
+        "line_start": 566,
+        "line_end": 568,
+        "dependencies": [],
+        "behavior_summary": "Method `is_container` implementing `Thing` for `ContainerThing`.",
+        "risk_level": "medium",
+        "body_hash": "77ff9a59180766ad5d1d60ae035d97ace40528c416917f49e5d94ab45d24bbee",
+        "notes": [
+          "implements Thing::is_container"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "private",
+        "line_start": 706,
+        "line_end": 708,
+        "dependencies": [],
+        "behavior_summary": "Method `is_container` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "77ff9a59180766ad5d1d60ae035d97ace40528c416917f49e5d94ab45d24bbee",
+        "notes": [
+          "implements Thing::is_container"
+        ]
+      },
+      {
+        "file": "crates/items/src/items_registry.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::items_registry::ItemTypeData::<impl>::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 901,
+        "line_end": 904,
+        "dependencies": [
+          "ItemGroup::Container",
+          "doc"
+        ],
+        "behavior_summary": "Is this item a container?",
+        "risk_level": "medium",
+        "body_hash": "f686b4d5d0e3a2ccfd14eea58158f4a93b3153325e1db02a70194c089e7f25c3",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_item",
+    "line": 117,
+    "snippet": "true",
+    "file": "items/src/inbox.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_item",
+        "signature": "fn is_item(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 164,
+        "line_end": 166,
+        "dependencies": [],
+        "behavior_summary": "Trait method `Thing::is_item`.",
+        "risk_level": "medium",
+        "body_hash": "eeeea6c7677a59e4364909fa880495f13c7a02b305474af18254960afc1eb929",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::ImmovablePushableItem::<impl Thing for ImmovablePushableItem>::is_item",
+        "signature": "fn is_item(& self) -> bool",
+        "visibility": "private",
+        "line_start": 381,
+        "line_end": 383,
+        "dependencies": [],
+        "behavior_summary": "Method `is_item` implementing `Thing` for `ImmovablePushableItem`.",
+        "risk_level": "medium",
+        "body_hash": "c13ccbd84bdc00df3adbe39d2e1f9211e335e3f2e910df724d60b11de72f571e",
+        "notes": [
+          "implements Thing::is_item"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_item",
+        "signature": "fn is_item(& self) -> bool",
+        "visibility": "private",
+        "line_start": 694,
+        "line_end": 696,
+        "dependencies": [],
+        "behavior_summary": "Method `is_item` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "c13ccbd84bdc00df3adbe39d2e1f9211e335e3f2e910df724d60b11de72f571e",
+        "notes": [
+          "implements Thing::is_item"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_removed",
+    "line": 120,
+    "snippet": "false",
+    "file": "items/src/inbox.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_removed",
+        "signature": "fn is_removed(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 103,
+        "line_end": 110,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Whether this object has already been removed from the world.",
+        "risk_level": "medium",
+        "body_hash": "6e2eed0b2815639aedafd011e3cf3fe78302a7cb25a08c595aa57a131b7162ba",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::LiveThing::<impl Thing for LiveThing>::is_removed",
+        "signature": "fn is_removed(& self) -> bool",
+        "visibility": "private",
+        "line_start": 879,
+        "line_end": 881,
+        "dependencies": [],
+        "behavior_summary": "Method `is_removed` implementing `Thing` for `LiveThing`.",
+        "risk_level": "medium",
+        "body_hash": "c1d42e53890f90581b7123ce7008f97640d7203048c2b592d90b420f0e6afa3f",
+        "notes": [
+          "implements Thing::is_removed"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "can_remove",
+    "line": 126,
+    "snippet": "false",
+    "file": "items/src/depotchest.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/entity/src/bed.rs",
+        "kind": "impl_method",
+        "qualified_name": "entity::bed::BedItem::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 211,
+        "line_end": 216,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "A bed can be removed when it is not assigned to a house.",
+        "risk_level": "medium",
+        "body_hash": "945e0ef5c031f84922183fced8c1d257c0ae0b6e1dd991be7cfa3c516b8947f9",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/depotchest.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::depotchest::DepotChest::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 125,
+        "line_end": 128,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Depot chests cannot be removed by a player (mirrors C++ `canRemove`).",
+        "risk_level": "medium",
+        "body_hash": "c153404baae2d475df78550599f395a7b6ec606e05386f56d1a1d702c6172da3",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/depotlocker.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::depotlocker::DepotLocker::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 85,
+        "line_end": 88,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Depot lockers cannot be removed by a player.",
+        "risk_level": "medium",
+        "body_hash": "3c95a29e037a18e41b7b60bb36acc5459beacab4e61bf2638d85abff1e20a849",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/inbox.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::inbox::Inbox::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 61,
+        "line_end": 64,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Inboxes cannot be removed by a player.",
+        "risk_level": "medium",
+        "body_hash": "2fba9c639f5b9217f4c7da986118cc6dc8ad19a0f1e20afe3e74556cefc5c4ee",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/storeinbox.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::storeinbox::StoreInbox::<impl>::can_remove",
+        "signature": "fn can_remove(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 129,
+        "line_end": 132,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Store inboxes cannot be removed by a player.",
+        "risk_level": "medium",
+        "body_hash": "f9326061d99c372d9482e65e551a8e28a1974784a3eb062ee853d9575dadf4a1",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      },
+      {
+        "file": "crates/items/src/item.rs",
+        "qualified_name": "items::item::Item::<impl>::can_remove",
+        "kind": "impl_method",
+        "body_hash": "",
+        "signature": "pub fn can_remove (& self) -> bool"
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_container",
+    "line": 136,
+    "snippet": "true",
+    "file": "items/src/depotchest.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 180,
+        "line_end": 182,
+        "dependencies": [],
+        "behavior_summary": "Trait method `Thing::is_container`.",
+        "risk_level": "medium",
+        "body_hash": "d0494a7fee9d05fc1d4a653a72ccef471ec461a5274f3454c28d32dad474736d",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::ContainerThing::<impl Thing for ContainerThing>::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "private",
+        "line_start": 566,
+        "line_end": 568,
+        "dependencies": [],
+        "behavior_summary": "Method `is_container` implementing `Thing` for `ContainerThing`.",
+        "risk_level": "medium",
+        "body_hash": "77ff9a59180766ad5d1d60ae035d97ace40528c416917f49e5d94ab45d24bbee",
+        "notes": [
+          "implements Thing::is_container"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "private",
+        "line_start": 706,
+        "line_end": 708,
+        "dependencies": [],
+        "behavior_summary": "Method `is_container` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "77ff9a59180766ad5d1d60ae035d97ace40528c416917f49e5d94ab45d24bbee",
+        "notes": [
+          "implements Thing::is_container"
+        ]
+      },
+      {
+        "file": "crates/items/src/items_registry.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::items_registry::ItemTypeData::<impl>::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 901,
+        "line_end": 904,
+        "dependencies": [
+          "ItemGroup::Container",
+          "doc"
+        ],
+        "behavior_summary": "Is this item a container?",
+        "risk_level": "medium",
+        "body_hash": "f686b4d5d0e3a2ccfd14eea58158f4a93b3153325e1db02a70194c089e7f25c3",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_item",
+    "line": 139,
+    "snippet": "true",
+    "file": "items/src/depotchest.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_item",
+        "signature": "fn is_item(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 164,
+        "line_end": 166,
+        "dependencies": [],
+        "behavior_summary": "Trait method `Thing::is_item`.",
+        "risk_level": "medium",
+        "body_hash": "eeeea6c7677a59e4364909fa880495f13c7a02b305474af18254960afc1eb929",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::ImmovablePushableItem::<impl Thing for ImmovablePushableItem>::is_item",
+        "signature": "fn is_item(& self) -> bool",
+        "visibility": "private",
+        "line_start": 381,
+        "line_end": 383,
+        "dependencies": [],
+        "behavior_summary": "Method `is_item` implementing `Thing` for `ImmovablePushableItem`.",
+        "risk_level": "medium",
+        "body_hash": "c13ccbd84bdc00df3adbe39d2e1f9211e335e3f2e910df724d60b11de72f571e",
+        "notes": [
+          "implements Thing::is_item"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_item",
+        "signature": "fn is_item(& self) -> bool",
+        "visibility": "private",
+        "line_start": 694,
+        "line_end": 696,
+        "dependencies": [],
+        "behavior_summary": "Method `is_item` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "c13ccbd84bdc00df3adbe39d2e1f9211e335e3f2e910df724d60b11de72f571e",
+        "notes": [
+          "implements Thing::is_item"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_removed",
+    "line": 142,
+    "snippet": "false",
+    "file": "items/src/depotchest.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_removed",
+        "signature": "fn is_removed(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 103,
+        "line_end": 110,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Whether this object has already been removed from the world.",
+        "risk_level": "medium",
+        "body_hash": "6e2eed0b2815639aedafd011e3cf3fe78302a7cb25a08c595aa57a131b7162ba",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::LiveThing::<impl Thing for LiveThing>::is_removed",
+        "signature": "fn is_removed(& self) -> bool",
+        "visibility": "private",
+        "line_start": 879,
+        "line_end": 881,
+        "dependencies": [],
+        "behavior_summary": "Method `is_removed` implementing `Thing` for `LiveThing`.",
+        "risk_level": "medium",
+        "body_hash": "c1d42e53890f90581b7123ce7008f97640d7203048c2b592d90b420f0e6afa3f",
+        "notes": [
+          "implements Thing::is_removed"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_container",
+    "line": 434,
+    "snippet": "true",
+    "file": "items/src/container.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 180,
+        "line_end": 182,
+        "dependencies": [],
+        "behavior_summary": "Trait method `Thing::is_container`.",
+        "risk_level": "medium",
+        "body_hash": "d0494a7fee9d05fc1d4a653a72ccef471ec461a5274f3454c28d32dad474736d",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::ContainerThing::<impl Thing for ContainerThing>::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "private",
+        "line_start": 566,
+        "line_end": 568,
+        "dependencies": [],
+        "behavior_summary": "Method `is_container` implementing `Thing` for `ContainerThing`.",
+        "risk_level": "medium",
+        "body_hash": "77ff9a59180766ad5d1d60ae035d97ace40528c416917f49e5d94ab45d24bbee",
+        "notes": [
+          "implements Thing::is_container"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "private",
+        "line_start": 706,
+        "line_end": 708,
+        "dependencies": [],
+        "behavior_summary": "Method `is_container` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "77ff9a59180766ad5d1d60ae035d97ace40528c416917f49e5d94ab45d24bbee",
+        "notes": [
+          "implements Thing::is_container"
+        ]
+      },
+      {
+        "file": "crates/items/src/items_registry.rs",
+        "kind": "impl_method",
+        "qualified_name": "items::items_registry::ItemTypeData::<impl>::is_container",
+        "signature": "fn is_container(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 901,
+        "line_end": 904,
+        "dependencies": [
+          "ItemGroup::Container",
+          "doc"
+        ],
+        "behavior_summary": "Is this item a container?",
+        "risk_level": "medium",
+        "body_hash": "f686b4d5d0e3a2ccfd14eea58158f4a93b3153325e1db02a70194c089e7f25c3",
+        "notes": [
+          "kind-renamed-from-method"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_item",
+    "line": 437,
+    "snippet": "true",
+    "file": "items/src/container.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_item",
+        "signature": "fn is_item(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 164,
+        "line_end": 166,
+        "dependencies": [],
+        "behavior_summary": "Trait method `Thing::is_item`.",
+        "risk_level": "medium",
+        "body_hash": "eeeea6c7677a59e4364909fa880495f13c7a02b305474af18254960afc1eb929",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::ImmovablePushableItem::<impl Thing for ImmovablePushableItem>::is_item",
+        "signature": "fn is_item(& self) -> bool",
+        "visibility": "private",
+        "line_start": 381,
+        "line_end": 383,
+        "dependencies": [],
+        "behavior_summary": "Method `is_item` implementing `Thing` for `ImmovablePushableItem`.",
+        "risk_level": "medium",
+        "body_hash": "c13ccbd84bdc00df3adbe39d2e1f9211e335e3f2e910df724d60b11de72f571e",
+        "notes": [
+          "implements Thing::is_item"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::FullyOverriddenThing::<impl Thing for FullyOverriddenThing>::is_item",
+        "signature": "fn is_item(& self) -> bool",
+        "visibility": "private",
+        "line_start": 694,
+        "line_end": 696,
+        "dependencies": [],
+        "behavior_summary": "Method `is_item` implementing `Thing` for `FullyOverriddenThing`.",
+        "risk_level": "medium",
+        "body_hash": "c13ccbd84bdc00df3adbe39d2e1f9211e335e3f2e910df724d60b11de72f571e",
+        "notes": [
+          "implements Thing::is_item"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "is_removed",
+    "line": 440,
+    "snippet": "false",
+    "file": "items/src/container.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": [
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_method",
+        "qualified_name": "common::thing::Thing::is_removed",
+        "signature": "fn is_removed(& self) -> bool",
+        "visibility": "pub",
+        "line_start": 103,
+        "line_end": 110,
+        "dependencies": [
+          "doc"
+        ],
+        "behavior_summary": "Whether this object has already been removed from the world.",
+        "risk_level": "medium",
+        "body_hash": "6e2eed0b2815639aedafd011e3cf3fe78302a7cb25a08c595aa57a131b7162ba",
+        "notes": [
+          "trait method",
+          "default-provided"
+        ]
+      },
+      {
+        "file": "crates/common/src/thing.rs",
+        "kind": "trait_impl_method",
+        "qualified_name": "common::thing::tests::LiveThing::<impl Thing for LiveThing>::is_removed",
+        "signature": "fn is_removed(& self) -> bool",
+        "visibility": "private",
+        "line_start": 879,
+        "line_end": 881,
+        "dependencies": [],
+        "behavior_summary": "Method `is_removed` implementing `Thing` for `LiveThing`.",
+        "risk_level": "medium",
+        "body_hash": "c1d42e53890f90581b7123ce7008f97640d7203048c2b592d90b420f0e6afa3f",
+        "notes": [
+          "implements Thing::is_removed"
+        ]
+      }
+    ]
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "get_first_index",
+    "line": 443,
+    "snippet": "0",
+    "file": "items/src/container.rs",
+    "crate": "items",
+    "ledger_symbol": "common::thing::Thing::get_first_index",
+    "manifest_match": {
+      "file": "crates/common/src/thing.rs",
+      "kind": "trait_method",
+      "qualified_name": "common::thing::Thing::get_first_index",
+      "signature": "fn get_first_index(& self) -> usize",
+      "visibility": "pub",
+      "line_start": 114,
+      "line_end": 119,
+      "dependencies": [
+        "doc"
+      ],
+      "behavior_summary": "First valid child index. Default `0`; container-like things override.",
+      "risk_level": "medium",
+      "body_hash": "1504ecf4fbe198ba89217a040c9e1c0490f72b8218bae3890589a938c6f42152",
+      "notes": [
+        "trait method",
+        "default-provided"
+      ]
+    }
+  },
+  {
+    "pattern": "trivial_body",
+    "fn_name": "cylinder_first_index",
+    "line": 469,
+    "snippet": "0",
+    "file": "items/src/container.rs",
+    "crate": "items",
+    "ledger_symbol": null,
+    "manifest_match": null
+  }
+]

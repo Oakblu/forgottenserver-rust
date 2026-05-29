@@ -19,6 +19,7 @@ services:
     volumes:
       - ./schema.sql:/opt/tfs-schema.sql:ro
       - ./docker/mariadb-init:/docker-entrypoint-initdb.d:ro
+      - ./fixtures/bench-seed.sql:/opt/bench-seed.sql:ro
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 5s

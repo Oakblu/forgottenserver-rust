@@ -11,12 +11,50 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
     - name: Build
       run: cargo build --verbose
     - name: Run tests
       run: cargo test --verbose
+
+  bench:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Restore benchmark baselines
+      uses: actions/cache@v4
+      with:
+        path: benches/baselines
+        key: bench-baselines-${{ github.base_ref || github.ref_name }}
+        restore-keys: |
+          bench-baselines-main
+
+    - name: Run benchmarks
+      run: |
+        cargo bench --workspace -- --output-format bencher | tee bench-output.txt
+
+    - name: Regression check (PRs only)
+      if: github.event_name == 'pull_request'
+      run: |
+        # Fail if any benchmark regressed more than 10% vs the saved main baseline.
+        # Criterion writes machine-readable output; grep for "regressed" in its output.
+        if grep -q "Performance has regressed" bench-output.txt; then
+          echo "::error::Benchmark regression detected — see bench-output.txt"
+          exit 1
+        fi
+
+    - name: Save baselines (main branch only)
+      if: github.ref == 'refs/heads/main'
+      run: cargo bench --workspace -- --save-baseline main
+
+    - name: Upload benchmark results
+      uses: actions/upload-artifact@v4
+      with:
+        name: bench-results
+        path: |
+          bench-output.txt
+          target/criterion/
+        retention-days: 30
