@@ -109,5 +109,67 @@ class TestFindFnBodies(unittest.TestCase):
         self.assertEqual(bodies[0]["fn_name"], "tricky")
 
 
+class TestDetectEmptyBodies(unittest.TestCase):
+    def _run(self, src):
+        lines = src.splitlines()
+        bodies = find_stubs.find_fn_bodies(lines)
+        return find_stubs.detect_empty_bodies(lines, bodies)
+
+    def test_empty_body_detected(self):
+        hits = self._run("pub fn noop() {}\n")
+        self.assertEqual(len(hits), 1)
+        self.assertEqual(hits[0]["pattern"], "empty_body")
+        self.assertEqual(hits[0]["fn_name"], "noop")
+
+    def test_non_empty_body_not_flagged(self):
+        hits = self._run("fn real() { let x = 1; x }\n")
+        self.assertEqual(hits, [])
+
+    def test_whitespace_only_body_flagged(self):
+        hits = self._run("fn noop() {\n    \n}\n")
+        self.assertEqual(len(hits), 1)
+
+
+class TestDetectTrivialBodies(unittest.TestCase):
+    def _run(self, src):
+        lines = src.splitlines()
+        bodies = find_stubs.find_fn_bodies(lines)
+        return find_stubs.detect_trivial_bodies(lines, bodies)
+
+    def test_ok_unit_flagged(self):
+        hits = self._run("fn begin() -> Result<(), E> { Ok(()) }\n")
+        self.assertEqual(len(hits), 1)
+        self.assertEqual(hits[0]["pattern"], "trivial_body")
+
+    def test_default_default_flagged(self):
+        hits = self._run("fn make() -> Foo { Default::default() }\n")
+        self.assertEqual(len(hits), 1)
+
+    def test_false_flagged(self):
+        hits = self._run("fn is_ready(&self) -> bool { false }\n")
+        self.assertEqual(len(hits), 1)
+
+    def test_true_flagged(self):
+        hits = self._run("fn is_creature(&self) -> bool { true }\n")
+        self.assertEqual(len(hits), 1)
+
+    def test_none_flagged(self):
+        hits = self._run("fn get(&self) -> Option<u32> { None }\n")
+        self.assertEqual(len(hits), 1)
+
+    def test_real_body_not_flagged(self):
+        hits = self._run("fn compute(x: u32) -> u32 { x * 2 }\n")
+        self.assertEqual(hits, [])
+
+    def test_match_body_not_flagged(self):
+        # A function with a match is not trivial even if one arm returns false
+        hits = self._run(
+            "fn check(x: u32) -> bool {\n"
+            "    match x { 0 => false, _ => true }\n"
+            "}\n"
+        )
+        self.assertEqual(hits, [])
+
+
 if __name__ == "__main__":
     unittest.main()

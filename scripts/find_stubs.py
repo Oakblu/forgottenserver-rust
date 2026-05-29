@@ -123,6 +123,58 @@ def find_fn_bodies(lines: list) -> list:
     return results
 
 
+_TRIVIAL_BODY_RE = re.compile(
+    r"^\s*"
+    r"(?:"
+    r"Ok\s*\(\s*\(\s*\)\s*\)"   # Ok(())
+    r"|Err\s*\([^)]{0,80}\)"     # Err(something short)
+    r"|Default::default\s*\(\)"  # Default::default()
+    r"|false"
+    r"|true"
+    r"|None"
+    r"|String::new\s*\(\)"
+    r"|vec!\s*\[\s*\]"
+    r"|-?\d+"                    # numeric literal
+    r")"
+    r"\s*;?\s*$",
+    re.DOTALL,
+)
+
+
+def detect_empty_bodies(lines: list, bodies: list) -> list:
+    """Flag functions whose body is empty (only whitespace)."""
+    hits = []
+    for b in bodies:
+        if not b["body"].strip():
+            hits.append(
+                {
+                    "pattern": "empty_body",
+                    "fn_name": b["fn_name"],
+                    "line": b["start_line"],
+                    "snippet": lines[b["start_line"] - 1].strip()[:120],
+                }
+            )
+    return hits
+
+
+def detect_trivial_bodies(lines: list, bodies: list) -> list:
+    """Flag functions whose body is a single trivially-wrong default expression."""
+    hits = []
+    for b in bodies:
+        body = b["body"].strip()
+        # Must be non-empty and match exactly one trivial expression
+        if body and _TRIVIAL_BODY_RE.match(body):
+            hits.append(
+                {
+                    "pattern": "trivial_body",
+                    "fn_name": b["fn_name"],
+                    "line": b["start_line"],
+                    "snippet": body[:120],
+                }
+            )
+    return hits
+
+
 def main() -> None:
     manifest = load_manifest(MANIFEST_PATH)
     stubs = []
