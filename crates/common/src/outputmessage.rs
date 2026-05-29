@@ -186,6 +186,24 @@ impl OutputMessage {
     pub fn reset(&mut self) {
         self.write_pos = HEADER_LENGTH;
     }
+
+    /// Frames the current payload with the Adler32 crypto header used by OTClient.
+    ///
+    /// Transforms the buffer from `[outer_len:2][payload:N]` to
+    /// `[outer_len:2 = 4+N][adler32:4][payload:N]` by shifting the payload
+    /// 4 bytes right and inserting the checksum.
+    pub fn add_crypto_header(&mut self) {
+        let payload_len = self.write_pos - HEADER_LENGTH;
+        // Shift payload 4 bytes right to make room for adler32.
+        self.buffer
+            .copy_within(HEADER_LENGTH..self.write_pos, HEADER_LENGTH + 4);
+        self.write_pos += 4;
+        // Adler32 covers the payload (now at [HEADER_LENGTH+4..write_pos)).
+        let adler = crate::tools::adler_checksum(&self.buffer[HEADER_LENGTH + 4..self.write_pos]);
+        self.buffer[HEADER_LENGTH..HEADER_LENGTH + 4].copy_from_slice(&adler.to_le_bytes());
+        let outer_len = (4 + payload_len) as u16;
+        self.buffer[0..2].copy_from_slice(&outer_len.to_le_bytes());
+    }
 }
 
 impl std::fmt::Debug for OutputMessage {
@@ -753,5 +771,57 @@ mod tests {
         assert!(s.contains("OutputMessage"));
         assert!(s.contains(&format!("write_pos: {HEADER_LENGTH}")));
         assert!(s.contains("message_length: 0"));
+    }
+
+    // -----------------------------------------------------------------------
+    // add_crypto_header tests (task 9.4)
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn add_crypto_header_sets_correct_outer_len() {
+        let mut m = msg();
+        m.add_u8(0xAA);
+        m.add_u8(0xBB);
+        m.add_crypto_header();
+        let buf = m.get_output_buffer();
+        // outer_len = 4 (adler32) + 2 (payload) = 6
+        assert_eq!(u16::from_le_bytes([buf[0], buf[1]]), 6);
+    }
+
+    #[test]
+    fn add_crypto_header_adler32_covers_payload() {
+        use crate::tools::adler_checksum;
+        let mut m = msg();
+        m.add_u8(0xAA);
+        m.add_u8(0xBB);
+        m.add_crypto_header();
+        let buf = m.get_output_buffer();
+        // payload lives at buf[6..8]
+        let expected = adler_checksum(&buf[6..8]);
+        let stored = u32::from_le_bytes([buf[2], buf[3], buf[4], buf[5]]);
+        assert_eq!(stored, expected);
+    }
+
+    #[test]
+    fn add_crypto_header_preserves_payload_bytes() {
+        let mut m = msg();
+        m.add_u8(0xAA);
+        m.add_u8(0xBB);
+        m.add_crypto_header();
+        let buf = m.get_output_buffer();
+        assert_eq!(buf[6], 0xAA);
+        assert_eq!(buf[7], 0xBB);
+    }
+
+    #[test]
+    fn add_crypto_header_empty_payload() {
+        use crate::tools::adler_checksum;
+        let mut m = msg();
+        // No payload — outer_len = 4, adler32 of empty slice.
+        m.add_crypto_header();
+        let buf = m.get_output_buffer();
+        assert_eq!(u16::from_le_bytes([buf[0], buf[1]]), 4);
+        let stored = u32::from_le_bytes([buf[2], buf[3], buf[4], buf[5]]);
+        assert_eq!(stored, adler_checksum(&[]));
     }
 }

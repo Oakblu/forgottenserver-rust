@@ -91,6 +91,11 @@ fn main() -> ExitCode {
     print_banner();
     let cli = parse_cli();
 
+    // Load the server RSA private key before any listeners are bound.
+    // Game-login handshakes require this key to decrypt the client's RSA block.
+    forgottenserver_common::rsa::load_pem(forgottenserver_common::rsa::DEFAULT_KEY_PEM)
+        .expect("RSA key must load");
+
     if let Err(e) = boot::validate_config_path(&cli.config_path) {
         eprintln!("[FATAL] {e:#}");
         return ExitCode::from(1);

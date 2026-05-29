@@ -1,5 +1,5 @@
 use forgottenserver_common::position::Position;
-use forgottenserver_database::iologindata::{IoLoginData, LoginDb};
+use forgottenserver_database::iologindata::{IoLoginData, LoginDb, PlayerLoginData};
 use forgottenserver_game::{
     action_registry::ActionRegistry,
     chat::{ChannelId, ChatManager, EntityId, SpeakType},
@@ -34,6 +34,27 @@ pub fn on_walk(world: &World, new_pos: Position) -> Vec<u8> {
         player_pos: new_pos,
         tiles,
     })
+}
+
+/// Assemble the enter-world burst sent to a player immediately on login.
+///
+/// The burst contains three concatenated packets in wire order:
+/// 1. `0x0A` — enter-world acknowledgement byte
+/// 2. `0x64` — full map description centred on the player's position
+/// 3. `0xA0` — player stats (HP, mana, level, stamina)
+pub fn build_enter_world_burst(player: &PlayerLoginData, world: &World) -> Vec<u8> {
+    let mut burst = vec![0x0A];
+    let player_pos = Position::new(player.posx, player.posy, player.posz);
+    burst.extend_from_slice(&on_enter_game(world, player_pos));
+    burst.extend_from_slice(&encode(&ServerPacket::PlayerStats {
+        health: player.health as i32,
+        max_health: player.healthmax as i32,
+        mana: player.mana as i32,
+        max_mana: player.manamax as i32,
+        level: player.level,
+        stamina: player.stamina as u16,
+    }));
+    burst
 }
 
 // ---------------------------------------------------------------------------
@@ -1229,6 +1250,38 @@ mod tests {
         let record = io.load_player(&db, "Alice").unwrap();
         assert_eq!(record.health, 80);
         assert_eq!(record.mana, 40);
+    }
+
+    // -----------------------------------------------------------------------
+    // Task 6.3 — enter-world burst
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn enter_world_burst_starts_with_0x0a_then_map_then_stats() {
+        use forgottenserver_database::iologindata::PlayerLoginData;
+
+        let world = World::new();
+        let player = PlayerLoginData {
+            name: "Hero".to_string(),
+            level: 10,
+            health: 200,
+            healthmax: 200,
+            mana: 100,
+            manamax: 100,
+            stamina: 2520,
+            posx: 100,
+            posy: 100,
+            posz: 7,
+        };
+        let burst = build_enter_world_burst(&player, &world);
+
+        assert_eq!(burst[0], 0x0A, "first byte must be enter-world ack");
+        assert_eq!(burst[1], 0x64, "second byte must be map opcode");
+        // Find 0xA0 somewhere after the map packet
+        assert!(
+            burst[2..].contains(&0xA0),
+            "burst must contain PlayerStats opcode 0xA0"
+        );
     }
 
     #[test]

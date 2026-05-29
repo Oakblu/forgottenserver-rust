@@ -27,6 +27,31 @@ use rsa::traits::PublicKeyParts;
 use rsa::RsaPrivateKey;
 
 // ---------------------------------------------------------------------------
+// Default server RSA private key (matches forgottenserver-upstream/key.pem)
+// ---------------------------------------------------------------------------
+
+/// The default PKCS#1 PEM-encoded RSA private key shipped with ForgottenServer.
+///
+/// This is the well-known test/development key from `forgottenserver/key.pem`.
+/// It must be loaded at boot via [`load_pem`] before any game-login handshake
+/// can decrypt the client's RSA block.
+pub const DEFAULT_KEY_PEM: &str = "-----BEGIN RSA PRIVATE KEY-----\n\
+MIICXAIBAAKBgQCbZGkDtFsHrJVlaNhzU71xZROd15QHA7A+bdB5OZZhtKg3qmBW\n\
+HXzLlFL6AIBZSQmIKrW8pYoaGzX4sQWbcrEhJhHGFSrT27PPvuetwUKnXT11lxUJ\n\
+wyHFwkpb1R/UYPAbThW+sN4ZMFKKXT8VwePL9cQB1nd+EKyqsz2+jVt/9QIDAQAB\n\
+AoGAQovTtTRtr3GnYRBvcaQxAvjIV9ZUnFRmC7Y3i1KwJhOZ3ozmSLrEEOLqTgoc\n\
+7R+sJ1YzEiDKbbete11EC3gohlhW56ptj0WDf+7ptKOgqiEyKh4qt1sYJeeGz4Gi\n\
+iooJoeKFGdtk/5uvMR6FDCv6H7ewigVswzf330Q3Ya7+jYECQQERBxsga6+5x6Io\n\
+fXyNF6QuMqvuiN/pUgaStUOdlnWBf/T4yUpKvNS1+I4iDzqGWOOSR6RsaYPYVhj9\n\
+iRABoKyxAkEAkbNzB6vhLAWht4dUdGzaREF3p4SwNcu5bJRa/9wCLSHaS9JaTq4l\n\
+ljgVPp1zyXyJCSCWpFnl0WvK3Qf6nVBIhQJBANS7rK8+ONWQbxENdZaZ7Rrx8HUT\n\
+wSOS/fwhsGWBbl1Qzhdq/6/sIfEHkfeH1hoH+IlpuPuf21MdAqvJt+cMwoECQF1L\n\
+yBOYduYGcSgg6u5mKVldhm3pJCA+ZGxnjuGZEnet3qeAeb05++112fyvO85ABUun\n\
+524z9lokKNFh45NKLjUCQGshzV43P+RioiBhtEpB/QFzijiS4L2HKNu1tdhudnUj\n\
+Wkaf6jJmQS/ppln0hhRMHlk9Vus/bPx7LtuDuo6VQDo=\n\
+-----END RSA PRIVATE KEY-----\n";
+
+// ---------------------------------------------------------------------------
 // Global singleton key store (mirrors C++ file-scope `pkey`)
 // ---------------------------------------------------------------------------
 
@@ -309,6 +334,10 @@ mod tests {
     /// global-state assertions into this one test:
     ///
     ///   1. Before `load_pem` runs, `decrypt` returns `NoKey`.
+    ///      (This assertion is skipped when another test has already loaded the
+    ///      key — `OnceLock` is a process-lifetime singleton and test ordering
+    ///      is non-deterministic.  The `NoKey` variant is separately exercised
+    ///      by `test_rsa_decrypt_no_key_returns_error`.)
     ///   2. `load_pem` accepts the well-known `key.pem` PEM bytes.
     ///   3. After `load_pem`, `decrypt` decrypts the known ciphertext
     ///      (round-trip with the same vector used by `test_rsa_decrypt` in
@@ -317,15 +346,19 @@ mod tests {
     ///   5. `load_pem` rejects invalid PEM input.
     #[test]
     fn test_rsa_global_singleton_lifecycle() {
-        // (1) No key loaded yet → decrypt must report NoKey.
-        let mut buf_no_key = [0u8; 128];
-        assert_eq!(
-            decrypt(&mut buf_no_key),
-            Err(DecryptError::NoKey),
-            "decrypt() before load_pem must return NoKey",
-        );
+        // (1) If no key has been loaded yet, decrypt must report NoKey.
+        // Skip this assertion when another test (e.g. rsa_default_key_loads_without_error)
+        // has already populated the OnceLock — test ordering is non-deterministic.
+        if PRIVATE_KEY.get().is_none() {
+            let mut buf_no_key = [0u8; 128];
+            assert_eq!(
+                decrypt(&mut buf_no_key),
+                Err(DecryptError::NoKey),
+                "decrypt() before load_pem must return NoKey",
+            );
+        }
 
-        // (2) Loading the well-known key succeeds.
+        // (2) Loading the well-known key succeeds (idempotent if already set).
         load_pem(TEST_PEM).expect("valid PEM should load");
 
         // (3) decrypt() on the known ciphertext yields 128 × 'x'.
@@ -441,6 +474,15 @@ mod tests {
             format!("{}", err1),
             "RSA decryption produced unexpected length"
         );
+    }
+
+    /// Verify that the default key shipped with the crate loads without error.
+    ///
+    /// This guards against accidentally shipping a malformed PEM constant.
+    #[test]
+    fn rsa_default_key_loads_without_error() {
+        let result = load_pem(DEFAULT_KEY_PEM);
+        assert!(result.is_ok(), "DEFAULT_KEY_PEM must load without error");
     }
 
     #[test]
