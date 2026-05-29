@@ -12,7 +12,7 @@
 - [x] 2.5 Write `test_perf_stack_rust_login_flood` test: start stack → wait for port 7472 (Rust game port) → run perf-bot login_flood 5 bots 15s → assert successes > 0 and error_rate < 0.01 → stop stack
 - [x] 2.6 Write `test_perf_stack_cpp_login_flood` test: start stack → wait for port 7372 (C++ game port) → run perf-bot login_flood 5 bots 15s → assert successes > 0 and error_rate < 0.01 → stop stack
 - [x] 2.7 Ensure `stop_perf_stack()` is called in teardown even when assertions fail (use a drop guard or `std::panic::catch_unwind`)
-- [ ] 2.8 Run `cargo test -p forgottenserver-e2e --features perf_e2e -- --ignored` with Docker available and confirm both tests pass
+- [x] 2.8 Run `cargo test -p forgottenserver-e2e --features perf_e2e -- --ignored` with Docker available and confirm both tests pass
 
 ## 3. Performance Results Reference Data
 
@@ -37,7 +37,7 @@
 
 ## 7. Verification
 
-- [ ] 7.1 `cargo test --lib --workspace` passes with zero failures (no perf e2e tests run)
-- [ ] 7.2 `cargo clippy --workspace --lib --tests -- -D warnings` is clean
-- [ ] 7.3 `docs/performance/README.md` renders correctly (table visible, numbers present)
-- [ ] 7.4 `jq . docs/performance/perf-results.json` exits 0
+- [x] 7.1 `cargo test --lib --workspace` passes with zero failures (no perf e2e tests run)
+- [x] 7.2 `cargo clippy --workspace --lib --tests -- -D warnings` is clean
+- [x] 7.3 `docs/performance/README.md` renders correctly (table visible, numbers present)
+- [x] 7.4 `jq . docs/performance/perf-results.json` exits 0

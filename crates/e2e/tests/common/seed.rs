@@ -17,7 +17,7 @@ pub async fn seed_db(mariadb: &ContainerAsync<GenericImage>) {
         "VALUES (1, 'Testchar', 1, 0, 1, 150, 150, 1, 160, 54, 7, 400, 0);"
     );
 
-    mariadb
+    let exec_result = mariadb
         .exec(ExecCommand::new([
             "mariadb",
             "-uforgottenserver",
@@ -27,5 +27,15 @@ pub async fn seed_db(mariadb: &ContainerAsync<GenericImage>) {
             sql,
         ]))
         .await
-        .expect("seed_db exec failed");
+        .expect("seed_db: failed to exec in container");
+
+    let exit_code = exec_result
+        .exit_code()
+        .await
+        .expect("seed_db: failed to read exit code");
+    assert_eq!(
+        exit_code,
+        Some(0),
+        "seed_db: MariaDB SQL failed with exit code {exit_code:?}"
+    );
 }
