@@ -1,0 +1,106 @@
+[
+  {
+    "fn_name": "query_add_for_non_member",
+    "file": "crates/map/src/housetile.rs",
+    "line": 88,
+    "body_hash": "34c02472b9ea7855d2ede119cfeda54ce0294a93ca39e8e375f87bf0772ef9a7",
+    "classification": "intentional-deferred",
+    "test_confirmed": "query_add_non_member_returns_not_invited (line 299, pre-existing)"
+  },
+  {
+    "fn_name": "query_add_item_for_non_member",
+    "file": "crates/map/src/housetile.rs",
+    "line": 93,
+    "body_hash": "34c02472b9ea7855d2ede119cfeda54ce0294a93ca39e8e375f87bf0772ef9a7",
+    "classification": "intentional-deferred",
+    "test_confirmed": "query_add_item_non_member_returns_not_invited (line 305, pre-existing)"
+  },
+  {
+    "fn_name": "query_add_non_player_creature",
+    "file": "crates/map/src/housetile.rs",
+    "line": 100,
+    "body_hash": "734c4575eed0691b672366c1511ec568a3f5adb7b694c3521c272d55fa3b04d6",
+    "classification": "intentional-deferred",
+    "test_confirmed": "query_add_non_player_creature_returns_not_possible (line 335, pre-existing)"
+  },
+  {
+    "fn_name": "query_remove_for_non_member",
+    "file": "crates/map/src/housetile.rs",
+    "line": 108,
+    "body_hash": "34c02472b9ea7855d2ede119cfeda54ce0294a93ca39e8e375f87bf0772ef9a7",
+    "classification": "intentional-deferred",
+    "test_confirmed": "query_remove_non_member_returns_not_invited (line 353, pre-existing)"
+  },
+  {
+    "fn_name": "post_add_item",
+    "file": "crates/map/src/tile.rs",
+    "line": 1349,
+    "body_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "classification": "intentional-deferred",
+    "test_confirmed": "test_post_add_item_is_noop_by_default (line 3135, pre-existing)"
+  },
+  {
+    "fn_name": "post_remove_item",
+    "file": "crates/map/src/tile.rs",
+    "line": 1352,
+    "body_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "classification": "intentional-deferred",
+    "test_confirmed": "test_post_remove_item_is_noop_by_default (line 3141, pre-existing)"
+  },
+  {
+    "fn_name": "get_first_index",
+    "file": "crates/map/src/tile.rs",
+    "line": 813,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "classification": "correct-default",
+    "test_confirmed": "test_tile_thing_get_first_index_returns_zero (newly added)"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "crates/map/src/tile.rs",
+    "line": 1400,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default",
+    "test_confirmed": "test_tile_implements_thing_is_not_removed (line 3195, pre-existing)"
+  },
+  {
+    "fn_name": "get_first_index",
+    "file": "crates/map/src/tile.rs",
+    "line": 1406,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "classification": "correct-default",
+    "test_confirmed": "test_tile_cylinder_get_first_index_returns_zero (newly added)"
+  },
+  {
+    "fn_name": "cylinder_first_index",
+    "file": "crates/map/src/tile.rs",
+    "line": 1418,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "classification": "correct-default",
+    "test_confirmed": "test_tile_cylinder_first_index_zero (line 3149, pre-existing)"
+  },
+  {
+    "fn_name": "query_add",
+    "file": "crates/map/src/trashholder.rs",
+    "line": 55,
+    "body_hash": "b32551e9b7f4fc6fef157682da621d7ebab1b62d84746041b68f67f0392cc2fe",
+    "classification": "correct-default",
+    "test_confirmed": "query_add_returns_ok (line 147, pre-existing)"
+  },
+  {
+    "fn_name": "item_count",
+    "file": "crates/map/src/trashholder.rs",
+    "line": 103,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "classification": "correct-default",
+    "test_confirmed": "item_count_zero_initially (line 165, pre-existing)"
+  },
+  {
+    "fn_name": "add_item",
+    "file": "crates/map/src/trashholder.rs",
+    "line": 71,
+    "body_hash": "e0180a9dee02de06cf561a0c7722a466e426095f567a3b09b42c06f8e9350b99",
+    "classification": "intentional-deferred",
+    "test_confirmed": "add_item_does_not_store_item (line 171, pre-existing)"
+  }
+]

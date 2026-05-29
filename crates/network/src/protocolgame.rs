@@ -5770,10 +5770,10 @@ mod tests {
         use forgottenserver_common::networkmessage::NetworkMessage;
         // version=760 (0xF8, 0x02 LE) + xtea key (16 bytes) + account "" + password ""
         let payload: &[u8] = &[
-            0xF8, 0x02,              // version 760
-            0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0, // xtea key (all zeros)
-            0x00, 0x00,              // account_name length = 0
-            0x00, 0x00,              // password length = 0
+            0xF8, 0x02, // version 760
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // xtea key (all zeros)
+            0x00, 0x00, // account_name length = 0
+            0x00, 0x00, // password length = 0
         ];
         let mut msg = NetworkMessage::new();
         msg.add_bytes(payload);
@@ -5792,10 +5792,8 @@ mod tests {
         use forgottenserver_common::networkmessage::NetworkMessage;
         // version=9999 (0x0F, 0x27 LE)
         let payload: &[u8] = &[
-            0x0F, 0x27,              // version 9999
-            0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,
-            0x00, 0x00,
-            0x00, 0x00,
+            0x0F, 0x27, // version 9999
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x00, 0x00, 0x00, 0x00,
         ];
         let mut msg = NetworkMessage::new();
         msg.add_bytes(payload);
@@ -5810,8 +5808,8 @@ mod tests {
         use forgottenserver_common::networkmessage::NetworkMessage;
         // version=1310 (0x1E, 0x05 LE)
         let payload: &[u8] = &[
-            0x1E, 0x05,              // version 1310
-            1,0,0,0, 2,0,0,0, 3,0,0,0, 4,0,0,0, // xtea key
+            0x1E, 0x05, // version 1310
+            1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0, // xtea key
             0x03, 0x00, b'a', b'c', b'c', // account_name "acc"
             0x04, 0x00, b'p', b'a', b's', b's', // password "pass"
         ];
@@ -5819,7 +5817,11 @@ mod tests {
         msg.add_bytes(payload);
         msg.set_buffer_position(0);
         let result = parse_login_packet(&mut msg);
-        assert!(result.is_ok(), "version 1310 must be accepted: {:?}", result);
+        assert!(
+            result.is_ok(),
+            "version 1310 must be accepted: {:?}",
+            result
+        );
         let packet = result.unwrap();
         assert_eq!(packet.client_version, 1310);
     }
@@ -5829,16 +5831,18 @@ mod tests {
         use forgottenserver_common::networkmessage::NetworkMessage;
         // version=1311 (0x1F, 0x05 LE)
         let payload: &[u8] = &[
-            0x1F, 0x05,              // version 1311
-            1,0,0,0, 2,0,0,0, 3,0,0,0, 4,0,0,0,
-            0x00, 0x00,
-            0x00, 0x00,
+            0x1F, 0x05, // version 1311
+            1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0, 0x00, 0x00, 0x00, 0x00,
         ];
         let mut msg = NetworkMessage::new();
         msg.add_bytes(payload);
         msg.set_buffer_position(0);
         let result = parse_login_packet(&mut msg);
-        assert!(result.is_ok(), "version 1311 must be accepted: {:?}", result);
+        assert!(
+            result.is_ok(),
+            "version 1311 must be accepted: {:?}",
+            result
+        );
         assert_eq!(result.unwrap().client_version, 1311);
     }
 

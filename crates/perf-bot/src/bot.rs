@@ -129,12 +129,7 @@ impl ActionWeights {
 
     /// Total weight (sum of all action weights).
     fn total(&self) -> u32 {
-        self.walk
-            + self.chat
-            + self.attack
-            + self.cast_spell
-            + self.use_item
-            + self.look
+        self.walk + self.chat + self.attack + self.cast_spell + self.use_item + self.look
     }
 }
 

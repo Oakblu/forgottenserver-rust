@@ -1,0 +1,30 @@
+{
+  "_note": "Example data. Run 'bash scripts/update-perf-readme.sh' with the perf stack running to replace with real results.",
+  "scenario": "login_flood",
+  "bot_count": 20,
+  "duration_secs": 60.0,
+  "cpp": {
+    "target": "cpp",
+    "p50_ms": 14,
+    "p95_ms": 38,
+    "p99_ms": 62,
+    "actions_per_sec": 47.3,
+    "error_rate_pct": 0.21,
+    "errors": 0,
+    "rss_start_mb": 338.4,
+    "rss_end_mb": 352.1,
+    "peak_rss_mb": 355.6
+  },
+  "rust": {
+    "target": "rust",
+    "p50_ms": 8,
+    "p95_ms": 19,
+    "p99_ms": 31,
+    "actions_per_sec": 63.7,
+    "error_rate_pct": 0.0,
+    "errors": 0,
+    "rss_start_mb": 204.2,
+    "rss_end_mb": 207.8,
+    "peak_rss_mb": 209.1
+  }
+}

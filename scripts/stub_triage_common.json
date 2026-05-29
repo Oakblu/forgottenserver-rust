@@ -1,0 +1,337 @@
+[
+  {
+    "fn_name": "cylinder_post_add",
+    "file": "crates/common/src/cylinder.rs",
+    "line": 117,
+    "body_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pattern": "empty_body",
+    "classification": "intentional-deferred",
+    "intentional_diff_id": "cylinder-class-to-trait",
+    "notes": "Trait default no-op matching C++ virtual postAddNotification base; concrete types override. Intentional Rust divergence from C++ virtual dispatch."
+  },
+  {
+    "fn_name": "cylinder_post_remove",
+    "file": "crates/common/src/cylinder.rs",
+    "line": 130,
+    "body_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pattern": "empty_body",
+    "classification": "intentional-deferred",
+    "intentional_diff_id": "cylinder-class-to-trait",
+    "notes": "Trait default no-op matching C++ virtual postRemoveNotification base; concrete types override. Intentional Rust divergence from C++ virtual dispatch."
+  },
+  {
+    "fn_name": "cylinder_first_index",
+    "file": "crates/common/src/cylinder.rs",
+    "line": 36,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "pattern": "trivial_0",
+    "classification": "correct-default",
+    "notes": "C++ Cylinder base getFirstIndex() returns 0. Confirmed by test_default_cylinder_first_index_returns_zero."
+  },
+  {
+    "fn_name": "cylinder_last_index",
+    "file": "crates/common/src/cylinder.rs",
+    "line": 44,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "pattern": "trivial_0",
+    "classification": "correct-default",
+    "notes": "C++ Cylinder base getLastIndex() returns 0. Confirmed by test_default_cylinder_last_index_returns_zero."
+  },
+  {
+    "fn_name": "cylinder_item_type_count",
+    "file": "crates/common/src/cylinder.rs",
+    "line": 52,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "pattern": "trivial_0",
+    "classification": "correct-default",
+    "notes": "C++ Cylinder base getItemTypeCount() returns 0. Confirmed by test_default_cylinder_item_type_count_returns_zero."
+  },
+  {
+    "fn_name": "cylinder_thing_index",
+    "file": "crates/common/src/cylinder.rs",
+    "line": 60,
+    "body_hash": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "pattern": "trivial_none",
+    "classification": "correct-default",
+    "notes": "C++ Cylinder base getThingIndex() returns -1 (mapped to None in Rust). Confirmed by test_default_cylinder_thing_index_returns_none."
+  },
+  {
+    "fn_name": "get_number",
+    "file": "crates/common/src/luavariant.rs",
+    "line": 136,
+    "body_hash": "aab4f5e3adf5207b5e22912b554a5ac5ce56fbd56e2a84fd8b09038c03238b07",
+    "pattern": "panic_stub",
+    "classification": "panic-correct",
+    "notes": "C++ getNumber() via std::get<VARIANT_NUMBER> is UB on wrong variant; Rust panics instead. Confirmed by test_lua_variant_get_number_returns_value_for_number_variant and test_lua_variant_get_number_panics_for_non_number_variant."
+  },
+  {
+    "fn_name": "get_position",
+    "file": "crates/common/src/luavariant.rs",
+    "line": 145,
+    "body_hash": "4e37b08da1e7709594e7c1e88e863092935695acbcbc0a1e9da7d610326e4030",
+    "pattern": "panic_stub",
+    "classification": "panic-correct",
+    "notes": "C++ getPosition() via std::get<VARIANT_POSITION> is UB on wrong variant; Rust panics instead. Confirmed by test_lua_variant_get_position_returns_value_for_position_variant and test_lua_variant_get_position_panics_for_non_position_variant."
+  },
+  {
+    "fn_name": "get_target_position",
+    "file": "crates/common/src/luavariant.rs",
+    "line": 157,
+    "body_hash": "662833240ecc10d8b1392b1b1b6e50a12515254c72eac8c80e5fa6d049ca1249",
+    "pattern": "panic_stub",
+    "classification": "panic-correct",
+    "notes": "C++ getTargetPosition() via std::get<VARIANT_TARGETPOSITION> is UB on wrong variant; Rust panics instead. Confirmed by test_lua_variant_get_target_position_returns_value_for_target_position_variant and test_lua_variant_get_target_position_panics_for_non_target_position_variant."
+  },
+  {
+    "fn_name": "get_string",
+    "file": "crates/common/src/luavariant.rs",
+    "line": 169,
+    "body_hash": "325a8f8288f6146e3efff40af6178748225ed0c625128329b43aedfaa074458b",
+    "pattern": "panic_stub",
+    "classification": "panic-correct",
+    "notes": "C++ getString() via std::get<VARIANT_STRING> is UB on wrong variant; Rust panics instead. Confirmed by test_lua_variant_get_string_returns_value_for_string_variant and test_lua_variant_get_string_panics_for_non_string_variant."
+  },
+  {
+    "fn_name": "get_header_position",
+    "file": "crates/common/src/outputmessage.rs",
+    "line": 180,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "pattern": "trivial_0",
+    "classification": "correct-default",
+    "notes": "C++ outputmessage.h OutputMessage::getHeaderPosition() returns HEADER_AREA = 0. Confirmed by test_output_message_get_header_position_returns_zero."
+  },
+  {
+    "fn_name": "get_description",
+    "file": "crates/common/src/thing.rs",
+    "line": 83,
+    "body_hash": "77f0daf880439021873be08337d10fd7546cb6df401df83f435503d928218910",
+    "pattern": "trivial_empty_string",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getDescription returns \"\". Confirmed by test_default_thing_get_description_returns_empty_string."
+  },
+  {
+    "fn_name": "get_throw_range",
+    "file": "crates/common/src/thing.rs",
+    "line": 88,
+    "body_hash": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+    "pattern": "trivial_1",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getThrowRange returns 1. Confirmed by test_default_thing_get_throw_range_returns_one."
+  },
+  {
+    "fn_name": "is_pushable",
+    "file": "crates/common/src/thing.rs",
+    "line": 93,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "pattern": "trivial_false",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isPushable returns false. Confirmed by test_default_thing_is_pushable_returns_false."
+  },
+  {
+    "fn_name": "is_removable",
+    "file": "crates/common/src/thing.rs",
+    "line": 98,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "pattern": "trivial_true",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isRemovable returns true. Confirmed by test_default_thing_is_removable_returns_true."
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "crates/common/src/thing.rs",
+    "line": 107,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "pattern": "trivial_true",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isRemoved default returns true (no parent = removed). Confirmed by test_default_thing_is_removed_returns_true."
+  },
+  {
+    "fn_name": "get_first_index",
+    "file": "crates/common/src/thing.rs",
+    "line": 116,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "pattern": "trivial_0",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getFirstIndex returns 0. Confirmed by test_default_thing_get_first_index_is_zero."
+  },
+  {
+    "fn_name": "get_last_index",
+    "file": "crates/common/src/thing.rs",
+    "line": 123,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "pattern": "trivial_0",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getLastIndex returns 0. Confirmed by test_default_thing_get_last_index_is_zero."
+  },
+  {
+    "fn_name": "get_thing_index",
+    "file": "crates/common/src/thing.rs",
+    "line": 132,
+    "body_hash": "1bad6b8cf97131fceab8543e81f7757195fbb1d36b376ee994ad1cf17699c464",
+    "pattern": "trivial_minus_one",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getThingIndex returns -1. Confirmed by test_default_thing_get_thing_index_returns_minus_one."
+  },
+  {
+    "fn_name": "get_item_type_count",
+    "file": "crates/common/src/thing.rs",
+    "line": 140,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "pattern": "trivial_0",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getItemTypeCount returns 0. Confirmed by test_default_thing_get_item_type_count_returns_zero."
+  },
+  {
+    "fn_name": "is_creature",
+    "file": "crates/common/src/thing.rs",
+    "line": 159,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "pattern": "trivial_false",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isCreature returns false. Confirmed by test_default_thing_is_creature_returns_false."
+  },
+  {
+    "fn_name": "is_item",
+    "file": "crates/common/src/thing.rs",
+    "line": 163,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "pattern": "trivial_false",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isItem returns false. Confirmed by test_default_thing_is_item_returns_false."
+  },
+  {
+    "fn_name": "is_teleport",
+    "file": "crates/common/src/thing.rs",
+    "line": 167,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "pattern": "trivial_false",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isTeleport returns false. Confirmed by test_default_thing_is_teleport_returns_false."
+  },
+  {
+    "fn_name": "is_magic_field",
+    "file": "crates/common/src/thing.rs",
+    "line": 171,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "pattern": "trivial_false",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isMagicField returns false. Confirmed by test_default_thing_is_magic_field_returns_false."
+  },
+  {
+    "fn_name": "is_trash_holder",
+    "file": "crates/common/src/thing.rs",
+    "line": 175,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "pattern": "trivial_false",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isTrashHolder returns false. Confirmed by test_default_thing_is_trash_holder_returns_false."
+  },
+  {
+    "fn_name": "is_container",
+    "file": "crates/common/src/thing.rs",
+    "line": 179,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "pattern": "trivial_false",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isContainer returns false. Confirmed by test_default_thing_is_container_returns_false."
+  },
+  {
+    "fn_name": "is_door",
+    "file": "crates/common/src/thing.rs",
+    "line": 183,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "pattern": "trivial_false",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isDoor returns false. Confirmed by test_default_thing_is_door_returns_false."
+  },
+  {
+    "fn_name": "is_moveable",
+    "file": "crates/common/src/thing.rs",
+    "line": 187,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "pattern": "trivial_true",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isMoveable returns true. Confirmed by test_default_thing_is_moveable_returns_true."
+  },
+  {
+    "fn_name": "is_ground",
+    "file": "crates/common/src/thing.rs",
+    "line": 191,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "pattern": "trivial_false",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isGround returns false. Confirmed by test_default_thing_is_ground_returns_false."
+  },
+  {
+    "fn_name": "is_invisible",
+    "file": "crates/common/src/thing.rs",
+    "line": 195,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "pattern": "trivial_false",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isInvisible returns false. Confirmed by test_default_thing_is_invisible_returns_false."
+  },
+  {
+    "fn_name": "get_tile",
+    "file": "crates/common/src/thing.rs",
+    "line": 214,
+    "body_hash": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "pattern": "trivial_none",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getTile returns null. Confirmed by test_default_thing_get_tile_returns_none."
+  },
+  {
+    "fn_name": "get_item",
+    "file": "crates/common/src/thing.rs",
+    "line": 222,
+    "body_hash": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "pattern": "trivial_none",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getItem returns null. Confirmed by test_default_thing_get_item_returns_none."
+  },
+  {
+    "fn_name": "get_creature",
+    "file": "crates/common/src/thing.rs",
+    "line": 230,
+    "body_hash": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "pattern": "trivial_none",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getCreature returns null. Confirmed by test_default_thing_get_creature_returns_none."
+  },
+  {
+    "fn_name": "get_receiver",
+    "file": "crates/common/src/thing.rs",
+    "line": 238,
+    "body_hash": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "pattern": "trivial_none",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getReceiver returns null. Confirmed by test_default_thing_get_receiver_returns_none."
+  },
+  {
+    "fn_name": "get_parent",
+    "file": "crates/common/src/thing.rs",
+    "line": 245,
+    "body_hash": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "pattern": "trivial_none",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getParent returns null. Confirmed by test_default_thing_get_parent_returns_none."
+  },
+  {
+    "fn_name": "get_position_tuple",
+    "file": "crates/common/src/thing.rs",
+    "line": 276,
+    "body_hash": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "pattern": "trivial_none",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getPosition returns null/default position. Confirmed by test_default_thing_get_position_tuple_returns_none."
+  },
+  {
+    "fn_name": "u8_to_state",
+    "file": "crates/common/src/thread_holder_base.rs",
+    "line": 35,
+    "body_hash": "21175641a4dad91984361613cf7854d57969e6ce64939f32a2157ed5eb0a150e",
+    "pattern": "panic_stub",
+    "classification": "panic-correct",
+    "notes": "C++ thread_holder_base.h stores ThreadState as AtomicUInt8; back-conversion has no bounds check (UB). Rust panics on invalid values. Confirmed by test_u8_to_state_running_returns_running, test_u8_to_state_closing_returns_closing, test_u8_to_state_terminated_returns_terminated, test_u8_to_state_invalid_panics."
+  }
+]

@@ -650,4 +650,33 @@ mod tests {
         assert_eq!(db.begin_transaction(), Ok(()));
         assert_eq!(db.rollback(), Ok(()));
     }
+
+    // -----------------------------------------------------------------------
+    // Confirming stubs: Database trait default transaction methods
+    // Classification: intentional-deferred
+    // intentional_diff_id: database-adapter-helpers-deferred-to-mariadb-adapter-prod
+    // These are DEFAULT TRAIT METHODS — correct no-ops for InMemoryDb.
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_in_memory_db_begin_transaction_is_noop() {
+        // Default trait method: begin_transaction returns Ok(()) for InMemoryDb.
+        // MariaDB adapter will override with real BEGIN statement.
+        let mut db = InMemoryDb::new();
+        assert_eq!(db.begin_transaction(), Ok(()));
+    }
+
+    #[test]
+    fn test_in_memory_db_commit_is_noop() {
+        // Default trait method: commit returns Ok(()) for InMemoryDb.
+        let mut db = InMemoryDb::new();
+        assert_eq!(db.commit(), Ok(()));
+    }
+
+    #[test]
+    fn test_in_memory_db_rollback_is_noop() {
+        // Default trait method: rollback returns Ok(()) for InMemoryDb.
+        let mut db = InMemoryDb::new();
+        assert_eq!(db.rollback(), Ok(()));
+    }
 }

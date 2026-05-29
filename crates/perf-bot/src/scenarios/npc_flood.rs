@@ -30,15 +30,14 @@ pub async fn run(config: &ScenarioConfig) -> anyhow::Result<RunMetrics> {
             let mut m = RunMetrics::new();
             let task_deadline = Instant::now() + Duration::from_secs(dur);
 
-            let mut client =
-                match TibiaClient::connect(&host, port, &account, &password).await {
-                    Ok(c) => c,
-                    Err(_) => {
-                        m.record_error();
-                        m.duration_secs = dur as f64;
-                        return m;
-                    }
-                };
+            let mut client = match TibiaClient::connect(&host, port, &account, &password).await {
+                Ok(c) => c,
+                Err(_) => {
+                    m.record_error();
+                    m.duration_secs = dur as f64;
+                    return m;
+                }
+            };
 
             let mut phrase_idx = 0usize;
             while Instant::now() < task_deadline {

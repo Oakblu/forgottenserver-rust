@@ -521,6 +521,40 @@ mod tests {
         assert_eq!(result, ScriptValue::Nil);
     }
 
+    // -----------------------------------------------------------------------
+    // Confirming stubs: NoopScriptEngine trait methods
+    // Classification: correct-default — NoopScriptEngine is a null-object
+    // implementation; Ok(()) is the correct return for all write operations.
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_noop_script_engine_load_script_returns_ok() {
+        // NoopScriptEngine::load_script is a correct no-op: loading any path
+        // succeeds immediately without touching the filesystem.
+        let mut engine = NoopScriptEngine::new();
+        assert!(engine
+            .load_script(Path::new("data/scripts/some_script.lua"))
+            .is_ok());
+    }
+
+    #[test]
+    fn test_noop_script_engine_reset_returns_ok() {
+        // NoopScriptEngine::reset is a correct no-op: resetting a null engine
+        // has no state to clear and always succeeds.
+        let mut engine = NoopScriptEngine::new();
+        assert!(engine.reset().is_ok());
+    }
+
+    #[test]
+    fn test_noop_script_engine_register_event_returns_ok() {
+        // NoopScriptEngine::register_event is a correct no-op: registering any
+        // event on a null engine succeeds without storing any state.
+        let mut engine = NoopScriptEngine::new();
+        assert!(engine
+            .register_event("onDeath", Path::new("scripts/death.lua"))
+            .is_ok());
+    }
+
     #[test]
     fn noop_engine_trait_object_register_and_call_event() {
         let mut engine: Box<dyn ScriptEngine> = Box::new(NoopScriptEngine::new());

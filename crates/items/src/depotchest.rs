@@ -568,6 +568,15 @@ mod tests {
     }
 
     #[test]
+    fn test_depotchest_is_removed_returns_false_matching_cpp() {
+        // C++: DepotChest extends Container which extends Item. The base
+        // Item::isRemoved() returns false by default (items are not removed
+        // when constructed). DepotChest does not override this.
+        let dc = DepotChest::new(100);
+        assert!(!CommonThing::is_removed(&dc));
+    }
+
+    #[test]
     fn test_depotchest_via_dyn_cylinder_trait_object() {
         let dc = DepotChest::new(100);
         let cyl: &dyn CommonCylinder = &dc;

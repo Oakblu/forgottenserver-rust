@@ -1668,4 +1668,19 @@ mod tests {
         );
         assert_eq!(r, 100);
     }
+
+    // -----------------------------------------------------------------------
+    // Confirming stub: Wand::get_element_damage
+    // -----------------------------------------------------------------------
+
+    // C++: weapons.h:219
+    //   int32_t getElementDamage(const Player*, const Creature*, const Item*)
+    //       const override { return 0; }
+    // Classification: correct-default — wands have no element damage component.
+    #[test]
+    fn test_wand_get_element_damage_returns_zero_matching_cpp_weaponwand() {
+        // C++: weapons.h:219 int32_t getElementDamage(const Player*, const Creature*, const Item*) const override { return 0; }
+        let wand = Wand::new(200, 13, 10, 30, ElementType::Fire);
+        assert_eq!(wand.get_element_damage(), 0);
+    }
 }

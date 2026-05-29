@@ -592,6 +592,15 @@ mod tests {
     }
 
     #[test]
+    fn test_depotlocker_is_removed_returns_false_matching_cpp() {
+        // C++: DepotLocker extends Container which extends Item. The base
+        // Item::isRemoved() returns false by default. DepotLocker does not
+        // override this — a freshly created locker is not removed.
+        let dl = DepotLocker::new(LOCKER_TYPE_ID);
+        assert!(!CommonThing::is_removed(&dl));
+    }
+
+    #[test]
     fn test_depotlocker_via_dyn_cylinder_trait_object() {
         let dl = DepotLocker::new(LOCKER_TYPE_ID);
         let cyl: &dyn CommonCylinder = &dl;

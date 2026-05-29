@@ -863,6 +863,15 @@ mod tests {
     }
 
     #[test]
+    fn test_storeinbox_is_removed_returns_false_matching_cpp() {
+        // C++: StoreInbox extends Container which extends Item. The base
+        // Item::isRemoved() returns false by default. StoreInbox does not
+        // override this — a freshly created store inbox is not removed.
+        let si = StoreInbox::new(200);
+        assert!(!CommonThing::is_removed(&si));
+    }
+
+    #[test]
     fn test_storeinbox_via_dyn_cylinder_trait_object() {
         let si = StoreInbox::new(200);
         let cyl: &dyn CommonCylinder = &si;

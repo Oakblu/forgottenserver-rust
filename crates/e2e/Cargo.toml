@@ -5,8 +5,10 @@ edition = "2021"
 
 [features]
 e2e = []
+perf_e2e = []
 
 [dev-dependencies]
 testcontainers = { workspace = true }
 tokio          = { workspace = true }
 tempfile       = "3"
+serde_json     = { workspace = true }

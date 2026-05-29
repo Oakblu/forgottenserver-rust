@@ -1,6 +1,6 @@
 # forgottenserver-rust
 
-![tests](https://img.shields.io/badge/tests-6387%20passing-brightgreen?style=flat-square)
+![tests](https://img.shields.io/badge/tests-6423%20passing-brightgreen?style=flat-square)
 ![coverage](https://img.shields.io/badge/coverage-94.35%25-brightgreen?style=flat-square)
 ![build](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)
 ![rust](https://img.shields.io/badge/rust-1.94-orange?style=flat-square&logo=rust&logoColor=white)
@@ -8,7 +8,7 @@
 ![docker](https://img.shields.io/badge/docker-compose-2496ED?style=flat-square&logo=docker&logoColor=white)
 ![mariadb](https://img.shields.io/badge/mariadb-11-003545?style=flat-square&logo=mariadb&logoColor=white)
 ![crates](https://img.shields.io/badge/crates-14-orange?style=flat-square&logo=rust&logoColor=white)
-![loc](https://img.shields.io/badge/rust%20LOC-435k-lightgrey?style=flat-square)
+![loc](https://img.shields.io/badge/rust%20LOC-436k-lightgrey?style=flat-square)
 
 A complete Rust port of [ForgottenServer](https://github.com/otland/forgottenserver), the open-source C++ Tibia MMORPG server emulator.
 
@@ -165,5 +165,18 @@ cargo fmt --all
 cargo run --release -p tfs -- \
   --config crates/tfs/tests/fixtures/config.lua \
   --data data
+```
+
+---
+
+## Performance
+
+Benchmark results comparing the Rust port against the C++ upstream are in [`docs/performance/README.md`](docs/performance/README.md).
+
+To regenerate results against a live perf stack:
+
+```bash
+docker compose -f docker-compose.perf.yml up --build -d
+bash scripts/update-perf-readme.sh
 ```
 

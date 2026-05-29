@@ -28,11 +28,18 @@ impl<'lua> mlua::FromLua<'lua> for LuaGlobalEvent {
 
 impl UserData for LuaGlobalEvent {
     fn add_methods<'lua, M: UserDataMethods<'lua, Self>>(methods: &mut M) {
-        methods.add_meta_method_mut("__newindex", |_, _this, (_k, _v): (mlua::Value, mlua::Value)| Ok(()));
+        methods.add_meta_method_mut(
+            "__newindex",
+            |_, _this, (_k, _v): (mlua::Value, mlua::Value)| Ok(()),
+        );
         methods.add_method_mut("type", |_, this, v: mlua::Value| {
             this.event_type = match v {
                 mlua::Value::Integer(n) => n,
-                mlua::Value::String(s) => s.to_str().ok().and_then(|s| s.parse::<i64>().ok()).unwrap_or(0),
+                mlua::Value::String(s) => s
+                    .to_str()
+                    .ok()
+                    .and_then(|s| s.parse::<i64>().ok())
+                    .unwrap_or(0),
                 _ => 0,
             };
             Ok(())
@@ -49,7 +56,11 @@ impl UserData for LuaGlobalEvent {
             let store = lua
                 .app_data_ref::<crate::lua_bindings::LuaGlobalEventStore>()
                 .ok_or_else(|| mlua::Error::runtime("LuaGlobalEventStore not initialized"))?;
-            store.0.lock().map_err(|_| mlua::Error::runtime("lock poisoned"))?.push(this.clone());
+            store
+                .0
+                .lock()
+                .map_err(|_| mlua::Error::runtime("lock poisoned"))?
+                .push(this.clone());
             Ok(true)
         });
         for name in &[
@@ -139,12 +150,20 @@ mod tests {
         let lua = mlua::Lua::new();
         let store = LuaGlobalEventStore::default();
         lua.set_app_data(store.clone());
-        crate::lua_bindings::install_bindings(&lua, crate::lua_bindings::GameStateHandle::default()).unwrap();
-        lua.load(r#"
+        crate::lua_bindings::install_bindings(
+            &lua,
+            crate::lua_bindings::GameStateHandle::default(),
+        )
+        .unwrap();
+        lua.load(
+            r#"
             local e = GlobalEvent("Save")
             e:type(1)
             e:register()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         assert_eq!(store.0.lock().unwrap().len(), 1);
         assert_eq!(store.0.lock().unwrap()[0].name, "Save");
     }

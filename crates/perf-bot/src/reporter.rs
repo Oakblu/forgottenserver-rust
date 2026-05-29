@@ -130,9 +130,8 @@ impl ComparisonReport {
 
     /// Serialize to JSON string.
     pub fn to_json(&self) -> String {
-        serde_json::to_string_pretty(self).unwrap_or_else(|e| {
-            format!("{{\"error\": \"serialization failed: {e}\"}}")
-        })
+        serde_json::to_string_pretty(self)
+            .unwrap_or_else(|e| format!("{{\"error\": \"serialization failed: {e}\"}}"))
     }
 
     /// Write JSON to a file path.
@@ -154,8 +153,8 @@ mod tests {
         m.errors = errors;
         m.duration_secs = duration;
         m.rss_start_bytes = 100 * 1_048_576; // 100 MB
-        m.rss_end_bytes = 110 * 1_048_576;   // 110 MB
-        m.peak_rss_bytes = 115 * 1_048_576;  // 115 MB
+        m.rss_end_bytes = 110 * 1_048_576; // 110 MB
+        m.peak_rss_bytes = 115 * 1_048_576; // 115 MB
         for &lat in latencies {
             let _ = m.latency_ms.record(lat);
         }

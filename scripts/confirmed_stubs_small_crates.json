@@ -1,0 +1,72 @@
+[
+  {
+    "fn_name": "get_element_damage",
+    "file": "game/src/weapons.rs",
+    "line": 285,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "accept_loop",
+    "file": "server/src/http.rs",
+    "line": 218,
+    "body_hash": "9f507a3868f5627124f6e5171525a5b01795254eaa640f27c2010bba5d92eaa3",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "can_transform",
+    "file": "world/src/house.rs",
+    "line": 1043,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "begin_transaction",
+    "file": "database/src/database.rs",
+    "line": 137,
+    "body_hash": "b32551e9b7f4fc6fef157682da621d7ebab1b62d84746041b68f67f0392cc2fe",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "commit",
+    "file": "database/src/database.rs",
+    "line": 142,
+    "body_hash": "b32551e9b7f4fc6fef157682da621d7ebab1b62d84746041b68f67f0392cc2fe",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "rollback",
+    "file": "database/src/database.rs",
+    "line": 147,
+    "body_hash": "b32551e9b7f4fc6fef157682da621d7ebab1b62d84746041b68f67f0392cc2fe",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "optimize_tables",
+    "file": "database/src/databasemanager.rs",
+    "line": 37,
+    "body_hash": "b32551e9b7f4fc6fef157682da621d7ebab1b62d84746041b68f67f0392cc2fe",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "NoopScriptEngine::load_script",
+    "file": "scripting/src/engine.rs",
+    "line": 71,
+    "body_hash": "b32551e9b7f4fc6fef157682da621d7ebab1b62d84746041b68f67f0392cc2fe",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "NoopScriptEngine::reset",
+    "file": "scripting/src/engine.rs",
+    "line": 83,
+    "body_hash": "b32551e9b7f4fc6fef157682da621d7ebab1b62d84746041b68f67f0392cc2fe",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "NoopScriptEngine::register_event",
+    "file": "scripting/src/engine.rs",
+    "line": 87,
+    "body_hash": "b32551e9b7f4fc6fef157682da621d7ebab1b62d84746041b68f67f0392cc2fe",
+    "classification": "correct-default"
+  }
+]

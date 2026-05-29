@@ -1,4 +1,4 @@
-use criterion::{criterion_group, criterion_main, Criterion, black_box};
+use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use forgottenserver_common::position::Position;
 use forgottenserver_map::pathfinder::Pathfinder;
 use forgottenserver_map::spectators::Spectators;
@@ -70,11 +70,9 @@ fn spectators_filter_range(c: &mut Criterion) {
 
     c.bench_function("spectators_filter_range", |b| {
         b.iter(|| {
-            let result = spectators.filter_by_range(
-                black_box(&center),
-                black_box(5),
-                |id| positions.get(id as usize).copied(),
-            );
+            let result = spectators.filter_by_range(black_box(&center), black_box(5), |id| {
+                positions.get(id as usize).copied()
+            });
             black_box(result)
         });
     });
@@ -86,9 +84,7 @@ fn pathfinder_short_path(c: &mut Criterion) {
     let to = Position::new(105, 103, 7);
 
     c.bench_function("pathfinder_short_path", |b| {
-        b.iter(|| {
-            black_box(pf.find_path(black_box(from), black_box(to)))
-        });
+        b.iter(|| black_box(pf.find_path(black_box(from), black_box(to))));
     });
 }
 
@@ -97,9 +93,7 @@ fn pathfinder_already_there(c: &mut Criterion) {
     let pos = Position::new(100, 100, 7);
 
     c.bench_function("pathfinder_already_there", |b| {
-        b.iter(|| {
-            black_box(pf.find_path(black_box(pos), black_box(pos)))
-        });
+        b.iter(|| black_box(pf.find_path(black_box(pos), black_box(pos))));
     });
 }
 

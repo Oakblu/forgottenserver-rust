@@ -4492,6 +4492,20 @@ mod tests {
     }
 
     // -----------------------------------------------------------------------
+    // can_remove — C++ item.h:893 `virtual bool canRemove() const { return true; }`
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_can_remove_returns_true_matching_cpp_base_default() {
+        // C++: item.h line 893 — `virtual bool canRemove() const { return true; }`
+        // The base Item class always returns true; subclasses (DepotChest,
+        // DepotLocker, Inbox, StoreInbox) override with false.
+        let t = make_item_type(1, 0, false, false, false, "item", "an");
+        let item = Item::new(t, 1);
+        assert!(item.can_remove());
+    }
+
+    // -----------------------------------------------------------------------
     // can_transform
     // -----------------------------------------------------------------------
 

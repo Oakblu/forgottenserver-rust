@@ -1,11 +1,11 @@
 use std::sync::Arc;
 
-use criterion::{criterion_group, criterion_main, black_box, Criterion};
+use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use forgottenserver_common::itemloader::ItemGroup;
 use forgottenserver_items::container::Container;
 use forgottenserver_items::item::Item;
 use forgottenserver_items::items_registry::{ItemTypeData, ItemTypeKind};
-use forgottenserver_items::registry::{ItemsRegistry, ItemType};
+use forgottenserver_items::registry::{ItemType, ItemsRegistry};
 
 fn make_registry_item(server_id: u16) -> ItemType {
     ItemType {
@@ -61,9 +61,7 @@ fn registry_lookup_hit(c: &mut Criterion) {
     }
 
     c.bench_function("registry_lookup_hit", |b| {
-        b.iter(|| {
-            black_box(r.get(black_box(500u16)))
-        });
+        b.iter(|| black_box(r.get(black_box(500u16))));
     });
 }
 
@@ -74,9 +72,7 @@ fn registry_lookup_miss(c: &mut Criterion) {
     }
 
     c.bench_function("registry_lookup_miss", |b| {
-        b.iter(|| {
-            black_box(r.get(black_box(9999u16)))
-        });
+        b.iter(|| black_box(r.get(black_box(9999u16))));
     });
 }
 

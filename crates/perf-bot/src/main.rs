@@ -90,10 +90,7 @@ struct Cli {
 // ---------------------------------------------------------------------------
 
 /// Run the named scenario against the given server config.
-async fn run_scenario(
-    scenario_name: &str,
-    config: &ScenarioConfig,
-) -> anyhow::Result<RunMetrics> {
+async fn run_scenario(scenario_name: &str, config: &ScenarioConfig) -> anyhow::Result<RunMetrics> {
     use perf_bot::scenarios;
 
     match scenario_name {
@@ -128,7 +125,10 @@ fn print_single_target(target_name: &str, scenario: &str, metrics: &RunMetrics) 
     println!("{}", heavy.repeat(bar_len));
     println!(
         " Scenario: {} — {} ({} bots, {:.0}s)",
-        scenario, target_name, metrics.successes + metrics.errors, metrics.duration_secs
+        scenario,
+        target_name,
+        metrics.successes + metrics.errors,
+        metrics.duration_secs
     );
     println!("{}", light.repeat(bar_len));
     println!(" p50 latency:    {}ms", metrics.percentile(50.0));
@@ -220,7 +220,8 @@ async fn main() -> anyhow::Result<()> {
             print_single_target("cpp", scenario_name, &metrics);
 
             if let Some(path) = &cli.output {
-                let json = serde_json::to_string_pretty(&TargetReport::from_metrics("cpp", &metrics))?;
+                let json =
+                    serde_json::to_string_pretty(&TargetReport::from_metrics("cpp", &metrics))?;
                 std::fs::write(path, json)?;
                 println!("Report written to {path}");
             }
@@ -241,7 +242,8 @@ async fn main() -> anyhow::Result<()> {
             print_single_target("rust", scenario_name, &metrics);
 
             if let Some(path) = &cli.output {
-                let json = serde_json::to_string_pretty(&TargetReport::from_metrics("rust", &metrics))?;
+                let json =
+                    serde_json::to_string_pretty(&TargetReport::from_metrics("rust", &metrics))?;
                 std::fs::write(path, json)?;
                 println!("Report written to {path}");
             }

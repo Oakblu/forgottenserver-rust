@@ -1,11 +1,9 @@
-use criterion::{criterion_group, criterion_main, black_box, Criterion};
-use forgottenserver_entity::creature::{Creature, ConditionEntry, Direction};
+use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use forgottenserver_entity::creature::{ConditionEntry, Creature, Direction};
 
 fn bench_condition_entry_new(c: &mut Criterion) {
     c.bench_function("condition_entry_new", |b| {
-        b.iter(|| {
-            ConditionEntry::new(black_box(1 << 3), black_box(5000))
-        });
+        b.iter(|| ConditionEntry::new(black_box(1 << 3), black_box(5000)));
     });
 }
 

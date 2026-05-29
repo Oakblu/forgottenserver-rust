@@ -1,0 +1,58 @@
+[
+  {
+    "fn_name": "is_attackable",
+    "file": "entity/src/creature.rs",
+    "line": 816,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "can_see_invisibility",
+    "file": "entity/src/creature.rs",
+    "line": 821,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "can_see_ghost_mode",
+    "file": "entity/src/creature.rs",
+    "line": 826,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_creature",
+    "file": "entity/src/creature.rs",
+    "line": 983,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_removable",
+    "file": "entity/src/creature.rs",
+    "line": 989,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "get_throw_range",
+    "file": "entity/src/creature.rs",
+    "line": 999,
+    "body_hash": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "post_add_notification",
+    "file": "entity/src/player.rs",
+    "line": 1253,
+    "body_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "post_remove_notification",
+    "file": "entity/src/player.rs",
+    "line": 1256,
+    "body_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "classification": "intentional-deferred"
+  }
+]

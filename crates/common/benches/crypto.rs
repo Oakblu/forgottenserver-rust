@@ -1,7 +1,7 @@
-use criterion::{criterion_group, criterion_main, black_box, Criterion};
-use forgottenserver_common::xtea::{Key, expand_key, encrypt, decrypt};
+use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use forgottenserver_common::base64;
-use forgottenserver_common::tools::{transform_to_sha1, hmac_sha1};
+use forgottenserver_common::tools::{hmac_sha1, transform_to_sha1};
+use forgottenserver_common::xtea::{decrypt, encrypt, expand_key, Key};
 
 fn xtea_expand_key(c: &mut Criterion) {
     let key = Key([0x01234567u32, 0x89ABCDEFu32, 0xFEDCBA98u32, 0x76543210u32]);
@@ -75,8 +75,8 @@ fn sha1_hash_256b(c: &mut Criterion) {
 
 fn hmac_sha1_256b(c: &mut Criterion) {
     let key: [u8; 16] = [
-        0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b,
-        0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b,
+        0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b, 0x0b,
+        0x0b,
     ];
     let message: Vec<u8> = (0u8..=255u8).collect();
     c.bench_function("hmac_sha1_256b", |b| {

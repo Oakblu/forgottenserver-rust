@@ -3216,4 +3216,31 @@ mod tests {
         t.add_item(item_with_count(2160, 5, |d| d.stackable = true));
         assert_eq!(CommonCylinder::cylinder_item_type_count(&t, 2160, -1), 5);
     }
+
+    // --- Thing::get_first_index (line 813) and Thing impl get_first_index (line 1406) --
+
+    /// C++ evidence: `size_t Thing::getFirstIndex() const { return 0; }` in thing.h.
+    /// Tiles (like all Things) return 0 as their first valid index.
+    /// Tests the inherent method via the Thing trait interface.
+    #[test]
+    fn test_tile_thing_get_first_index_returns_zero() {
+        use forgottenserver_common::thing::Thing as CommonThing;
+        let t = Tile::new(0, 0, 0);
+        // C++ Tile::getFirstIndex() returns 0 — not a container, index always starts at 0.
+        assert_eq!(CommonThing::get_first_index(&t), 0);
+    }
+
+    /// C++ evidence: `size_t Thing::getFirstIndex() const { return 0; }` in thing.h,
+    /// as called from within the Thing impl on Tile (line 1406).
+    /// Verifies the Cylinder-context Thing impl returns 0 independently of item count.
+    #[test]
+    fn test_tile_cylinder_get_first_index_returns_zero() {
+        use forgottenserver_common::thing::Thing as CommonThing;
+        let mut t = Tile::new(0, 0, 0);
+        t.set_ground(make_item(1));
+        t.add_item(make_item(2));
+        t.add_creature(99);
+        // First index is always 0 regardless of how many things are on the tile.
+        assert_eq!(CommonThing::get_first_index(&t), 0);
+    }
 }

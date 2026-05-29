@@ -436,4 +436,75 @@ mod tests {
     fn test_get_string_on_position_panics() {
         LuaVariant::position(Position::new(1, 2, 3)).get_string();
     }
+
+    // -----------------------------------------------------------------------
+    // Confirming tests for panic-correct stubs (panic-correct classification)
+    //
+    // C++ evidence: luavariant.h — getNumber/getPosition/getTargetPosition/
+    // getString accessors accessed the backing std::variant via std::get<N>,
+    // which is undefined behaviour on the wrong active member. Rust panics
+    // instead — safer and equivalent observable contract.
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_lua_variant_get_number_returns_value_for_number_variant() {
+        // C++: LuaVariant::getNumber() — std::get<VARIANT_NUMBER>(data)
+        let v = LuaVariant::number(12345);
+        assert_eq!(v.get_number(), 12345);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_lua_variant_get_number_panics_for_non_number_variant() {
+        // C++: calling getNumber() on a non-Number variant is undefined behaviour;
+        // Rust panics to enforce the contract safely.
+        LuaVariant::string("not a number").get_number();
+    }
+
+    #[test]
+    fn test_lua_variant_get_position_returns_value_for_position_variant() {
+        // C++: LuaVariant::getPosition() — std::get<VARIANT_POSITION>(data)
+        let pos = Position::new(300, 400, 5);
+        let v = LuaVariant::position(pos);
+        assert_eq!(v.get_position(), &pos);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_lua_variant_get_position_panics_for_non_position_variant() {
+        // C++: calling getPosition() on a non-Position variant is undefined behaviour;
+        // Rust panics instead.
+        LuaVariant::None.get_position();
+    }
+
+    #[test]
+    fn test_lua_variant_get_target_position_returns_value_for_target_position_variant() {
+        // C++: LuaVariant::getTargetPosition() — std::get<VARIANT_TARGETPOSITION>(data)
+        let pos = Position::new(10, 20, 3);
+        let v = LuaVariant::target_position(pos);
+        assert_eq!(v.get_target_position(), &pos);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_lua_variant_get_target_position_panics_for_non_target_position_variant() {
+        // C++: calling getTargetPosition() on a non-TargetPosition variant is
+        // undefined behaviour; Rust panics instead.
+        LuaVariant::number(99).get_target_position();
+    }
+
+    #[test]
+    fn test_lua_variant_get_string_returns_value_for_string_variant() {
+        // C++: LuaVariant::getString() — std::get<VARIANT_STRING>(data)
+        let v = LuaVariant::string("hello world");
+        assert_eq!(v.get_string(), "hello world");
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_lua_variant_get_string_panics_for_non_string_variant() {
+        // C++: calling getString() on a non-String variant is undefined behaviour;
+        // Rust panics instead.
+        LuaVariant::number(0).get_string();
+    }
 }

@@ -1,0 +1,119 @@
+[
+  {
+    "fn_name": "query_add_for_non_member",
+    "file": "crates/map/src/housetile.rs",
+    "line": 88,
+    "classification": "intentional-deferred",
+    "intentional_diff_id": "cross-crate-behavior-dispatch-deferred-to-game-glue",
+    "cpp_evidence": "forgottenserver-upstream/src/housetile.h + housetile.cpp — queryAdd checks house->isInvited(player). House entities not yet modelled; always returns RETURNVALUE_PLAYERISNOTINVITED for non-members.",
+    "cpp_snippet": "ReturnValue queryAdd(int32_t index, const Thing& thing, uint32_t count, uint32_t flags, Creature* actor) override; // housetile.cpp: if (!house->isInvited(player)) return RETURNVALUE_PLAYERISNOTINVITED;"
+  },
+  {
+    "fn_name": "query_add_item_for_non_member",
+    "file": "crates/map/src/housetile.rs",
+    "line": 93,
+    "classification": "intentional-deferred",
+    "intentional_diff_id": "cross-crate-behavior-dispatch-deferred-to-game-glue",
+    "cpp_evidence": "forgottenserver-upstream/src/housetile.cpp — item-add queryAdd branch: if actor not invited returns RETURNVALUE_PLAYERISNOTINVITED.",
+    "cpp_snippet": "// housetile.cpp queryAdd item branch: if (!house->isInvited(actor)) return RETURNVALUE_PLAYERISNOTINVITED;"
+  },
+  {
+    "fn_name": "query_add_non_player_creature",
+    "file": "crates/map/src/housetile.rs",
+    "line": 100,
+    "classification": "intentional-deferred",
+    "intentional_diff_id": "cross-crate-behavior-dispatch-deferred-to-game-glue",
+    "cpp_evidence": "forgottenserver-upstream/src/housetile.cpp — queryAdd: if (!player) return RETURNVALUE_NOTPOSSIBLE; — non-player creatures always denied.",
+    "cpp_snippet": "// housetile.cpp: Player* player = actor ? actor->getPlayer() : nullptr; if (!player) return RETURNVALUE_NOTPOSSIBLE;"
+  },
+  {
+    "fn_name": "query_remove_for_non_member",
+    "file": "crates/map/src/housetile.rs",
+    "line": 108,
+    "classification": "intentional-deferred",
+    "intentional_diff_id": "cross-crate-behavior-dispatch-deferred-to-game-glue",
+    "cpp_evidence": "forgottenserver-upstream/src/housetile.cpp — queryRemove: ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS logic; returns RETURNVALUE_PLAYERISNOTINVITED when actor not invited.",
+    "cpp_snippet": "// housetile.cpp queryRemove: if (!house->isInvited(actor)) return RETURNVALUE_PLAYERISNOTINVITED;"
+  },
+  {
+    "fn_name": "post_add_item",
+    "file": "crates/map/src/tile.rs",
+    "line": 1349,
+    "classification": "intentional-deferred",
+    "intentional_diff_id": "cross-crate-behavior-dispatch-deferred-to-game-glue",
+    "cpp_evidence": "forgottenserver-upstream/src/tile.h — postAddNotification/postRemoveThing wires spectator updates via g_game. The spectator system lives in the game crate; Tile stub is a no-op hook.",
+    "cpp_snippet": "// cylinder.h: virtual void postAddNotification(Thing*, const Thing*, int32_t, ReceiverLink_t) = 0;"
+  },
+  {
+    "fn_name": "post_remove_item",
+    "file": "crates/map/src/tile.rs",
+    "line": 1352,
+    "classification": "intentional-deferred",
+    "intentional_diff_id": "cross-crate-behavior-dispatch-deferred-to-game-glue",
+    "cpp_evidence": "forgottenserver-upstream/src/tile.h — postRemoveNotification wires spectator updates via g_game. The spectator system lives in the game crate; Tile stub is a no-op hook.",
+    "cpp_snippet": "// cylinder.h: virtual void postRemoveNotification(Thing*, const Thing*, int32_t, ReceiverLink_t) = 0;"
+  },
+  {
+    "fn_name": "get_first_index",
+    "file": "crates/map/src/tile.rs",
+    "line": 813,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/thing.h — virtual size_t getFirstIndex() const { return 0; } — base Thing implementation; Tile inherits this and returns 0.",
+    "cpp_snippet": "virtual size_t getFirstIndex() const { return 0; }",
+    "test_name": "test_tile_thing_get_first_index_returns_zero"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "crates/map/src/tile.rs",
+    "line": 1400,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/tile.h — bool isRemoved() const override final { return false; } — tiles are map-permanent and never removed.",
+    "cpp_snippet": "bool isRemoved() const override final { return false; }",
+    "test_name": "test_tile_is_removed_returns_false"
+  },
+  {
+    "fn_name": "get_first_index",
+    "file": "crates/map/src/tile.rs",
+    "line": 1406,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/thing.h — virtual size_t getFirstIndex() const { return 0; } — Thing impl on Tile returns 0.",
+    "cpp_snippet": "virtual size_t getFirstIndex() const { return 0; }",
+    "test_name": "test_tile_cylinder_get_first_index_returns_zero"
+  },
+  {
+    "fn_name": "cylinder_first_index",
+    "file": "crates/map/src/tile.rs",
+    "line": 1418,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/thing.h — virtual size_t getFirstIndex() const { return 0; } — Cylinder impl delegates to Thing::getFirstIndex which returns 0.",
+    "cpp_snippet": "virtual size_t getFirstIndex() const { return 0; }",
+    "test_name": "test_tile_cylinder_first_index_returns_zero"
+  },
+  {
+    "fn_name": "query_add",
+    "file": "crates/map/src/trashholder.rs",
+    "line": 55,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/trashholder.h — ReturnValue queryAdd(int32_t, const Thing&, uint32_t, uint32_t, Creature* = nullptr) const override { return RETURNVALUE_NOERROR; }",
+    "cpp_snippet": "ReturnValue queryAdd(int32_t, const Thing&, uint32_t, uint32_t, Creature* = nullptr) const override { return RETURNVALUE_NOERROR; }",
+    "test_name": "test_trash_holder_query_add_returns_ok_matching_cpp"
+  },
+  {
+    "fn_name": "item_count",
+    "file": "crates/map/src/trashholder.rs",
+    "line": 103,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/trashholder.cpp — TrashHolder never stores items; addThing immediately calls g_game.internalRemoveItem(item). Retained count is always 0.",
+    "cpp_snippet": "// trashholder.cpp: addThing -> g_game.internalRemoveItem(item) — item is immediately destroyed, never stored.",
+    "test_name": "test_trash_holder_item_count_always_zero"
+  },
+  {
+    "fn_name": "add_item",
+    "file": "crates/map/src/trashholder.rs",
+    "line": 71,
+    "classification": "intentional-deferred",
+    "intentional_diff_id": "cross-crate-behavior-dispatch-deferred-to-game-glue",
+    "cpp_evidence": "forgottenserver-upstream/src/trashholder.cpp — addThing calls g_game.internalRemoveItem(item) and g_game.addMagicEffect(...). Cross-crate g_game dispatch deferred to game-glue layer; Rust model drops the item immediately.",
+    "cpp_snippet": "// trashholder.cpp: void TrashHolder::addThing(int32_t, Thing* thing) { Item* item = thing->getItem(); g_game.internalRemoveItem(item); g_game.addMagicEffect(getPosition(), effect); }"
+  }
+]

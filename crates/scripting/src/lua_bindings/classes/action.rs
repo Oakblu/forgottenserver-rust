@@ -140,13 +140,21 @@ mod tests {
         let lua = mlua::Lua::new();
         let store = LuaActionStore::default();
         lua.set_app_data(store.clone());
-        crate::lua_bindings::install_bindings(&lua, crate::lua_bindings::GameStateHandle::default()).unwrap();
+        crate::lua_bindings::install_bindings(
+            &lua,
+            crate::lua_bindings::GameStateHandle::default(),
+        )
+        .unwrap();
 
-        lua.load(r#"
+        lua.load(
+            r#"
             local a = Action()
             a:id(1234)
             a:register()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
 
         let count = store.0.lock().unwrap().len();
         assert_eq!(count, 1, "register() must add the action to LuaActionStore");

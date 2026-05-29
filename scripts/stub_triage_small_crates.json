@@ -1,0 +1,92 @@
+[
+  {
+    "fn_name": "get_element_damage",
+    "file": "game/src/weapons.rs",
+    "line": 285,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/weapons.h:219",
+    "cpp_snippet": "int32_t getElementDamage(const Player*, const Creature*, const Item*) const override { return 0; }",
+    "test_name": "test_wand_get_element_damage_returns_zero_matching_cpp_weaponwand"
+  },
+  {
+    "fn_name": "accept_loop",
+    "file": "server/src/http.rs",
+    "line": 218,
+    "classification": "intentional-deferred",
+    "cpp_evidence": "intentional_differences.yml",
+    "intentional_diff_id": "http-server-boost-asio-to-tokio",
+    "note": "drops stream — existing test coverage present; no new test added"
+  },
+  {
+    "fn_name": "can_transform",
+    "file": "world/src/house.rs",
+    "line": 1043,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/house.h — HouseTransferItem::canTransform() const override { return false; }",
+    "cpp_snippet": "bool canTransform() const override { return false; }",
+    "test_name": "test_house_item_can_transform_returns_false_matching_cpp"
+  },
+  {
+    "fn_name": "begin_transaction",
+    "file": "database/src/database.rs",
+    "line": 137,
+    "classification": "intentional-deferred",
+    "cpp_evidence": "intentional_differences.yml",
+    "intentional_diff_id": "database-adapter-helpers-deferred-to-mariadb-adapter-prod",
+    "test_name": "test_in_memory_db_begin_transaction_is_noop"
+  },
+  {
+    "fn_name": "commit",
+    "file": "database/src/database.rs",
+    "line": 142,
+    "classification": "intentional-deferred",
+    "cpp_evidence": "intentional_differences.yml",
+    "intentional_diff_id": "database-adapter-helpers-deferred-to-mariadb-adapter-prod",
+    "test_name": "test_in_memory_db_commit_is_noop"
+  },
+  {
+    "fn_name": "rollback",
+    "file": "database/src/database.rs",
+    "line": 147,
+    "classification": "intentional-deferred",
+    "cpp_evidence": "intentional_differences.yml",
+    "intentional_diff_id": "database-adapter-helpers-deferred-to-mariadb-adapter-prod",
+    "test_name": "test_in_memory_db_rollback_is_noop"
+  },
+  {
+    "fn_name": "optimize_tables",
+    "file": "database/src/databasemanager.rs",
+    "line": 37,
+    "classification": "intentional-deferred",
+    "cpp_evidence": "intentional_differences.yml",
+    "intentional_diff_id": "database-adapter-helpers-deferred-to-mariadb-adapter-prod",
+    "test_name": "test_optimize_tables_is_noop_for_in_memory_db"
+  },
+  {
+    "fn_name": "NoopScriptEngine::load_script",
+    "file": "scripting/src/engine.rs",
+    "line": 71,
+    "classification": "correct-default",
+    "cpp_evidence": "NoopScriptEngine is a null-object implementation; Ok(()) is the correct return for all write operations",
+    "cpp_snippet": "N/A — null object pattern, no C++ equivalent",
+    "test_name": "test_noop_script_engine_load_script_returns_ok"
+  },
+  {
+    "fn_name": "NoopScriptEngine::reset",
+    "file": "scripting/src/engine.rs",
+    "line": 83,
+    "classification": "correct-default",
+    "cpp_evidence": "NoopScriptEngine is a null-object implementation; Ok(()) is the correct return for all write operations",
+    "cpp_snippet": "N/A — null object pattern, no C++ equivalent",
+    "test_name": "test_noop_script_engine_reset_returns_ok"
+  },
+  {
+    "fn_name": "NoopScriptEngine::register_event",
+    "file": "scripting/src/engine.rs",
+    "line": 87,
+    "classification": "correct-default",
+    "cpp_evidence": "NoopScriptEngine is a null-object implementation; Ok(()) is the correct return for all write operations",
+    "cpp_snippet": "N/A — null object pattern, no C++ equivalent",
+    "test_name": "test_noop_script_engine_register_event_returns_ok"
+  }
+]

@@ -1,10 +1,13 @@
 use std::{
+    io::{Read, Write},
     net::TcpListener,
     path::Path,
     sync::{Arc, Mutex},
 };
 
 use forgottenserver_common::configmanager::{ConfigManager, IntegerKey, StringKey};
+use forgottenserver_common::networkmessage::NetworkMessage;
+use forgottenserver_common::outputmessage::OutputMessage;
 use forgottenserver_game::{
     npc_registry::{load_npcs_xml, NpcRegistry},
     spell_registry::{load_spells_xml, SpellRegistry},
@@ -12,6 +15,7 @@ use forgottenserver_game::{
 };
 use forgottenserver_items::registry::ItemsRegistry;
 use forgottenserver_map::items_loader::load_items_otb;
+use forgottenserver_network::protocolgame::{parse_login_packet, serialize_disconnect};
 
 use crate::{admin_handler::AdminHandler, game_state::GameState, status_handler::StatusHandler};
 
@@ -96,6 +100,100 @@ impl ConnectionHandler for StatusHandler {
     fn handle(&self, stream: std::net::TcpStream) {
         self.handle_connection(stream);
     }
+}
+
+// ---------------------------------------------------------------------------
+// Game login handler (port 7172)
+// ---------------------------------------------------------------------------
+
+/// Handles a single game-protocol TCP connection.
+///
+/// On connect, sends a challenge packet (`0x1F` + 4-byte timestamp + 1-byte
+/// random) to the client, then reads the client's first packet, validates the
+/// client version, and disconnects with a descriptive message if the version
+/// is unsupported.  The full character-list / session-token flow is deferred.
+pub struct GameLoginHandler;
+
+impl GameLoginHandler {
+    /// Handle a single accepted TCP stream: send challenge, read first packet,
+    /// validate version, disconnect on mismatch.
+    pub fn handle_connection(&self, mut stream: std::net::TcpStream) {
+        // --- Build and send the challenge packet ---
+        // Wire: [len_lo, len_hi, 0x1F, ts0, ts1, ts2, ts3, rand]
+        // Payload (6 bytes): opcode 0x1F + u32 timestamp + u8 rand
+        let timestamp: u32 = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|d| d.as_secs() as u32)
+            .unwrap_or(0);
+        let rand_byte: u8 = (std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|d| d.subsec_nanos())
+            .unwrap_or(0)
+            & 0xFF) as u8;
+        let mut challenge = OutputMessage::new();
+        challenge.add_u8(0x1F);
+        challenge.add_u32(timestamp);
+        challenge.add_u8(rand_byte);
+        challenge.write_message_length();
+        if stream.write_all(challenge.get_output_buffer()).is_err() {
+            return;
+        }
+
+        // --- Read first client packet: [len_lo, len_hi, opcode, payload...] ---
+        let mut header = [0u8; 2];
+        if stream.read_exact(&mut header).is_err() {
+            return;
+        }
+        let body_len = u16::from_le_bytes(header) as usize;
+        if body_len == 0 {
+            return;
+        }
+        let mut body = vec![0u8; body_len];
+        if stream.read_exact(&mut body).is_err() {
+            return;
+        }
+
+        // body[0] is the opcode; payload starts at body[1]
+        if body.len() < 3 {
+            return; // too short to contain version bytes
+        }
+        let payload = &body[1..];
+        let mut msg = NetworkMessage::new();
+        msg.add_bytes(payload);
+        msg.set_buffer_position(0);
+
+        if let Err(disconnect_msg) = parse_login_packet(&mut msg) {
+            let disconnect_payload = serialize_disconnect(&disconnect_msg);
+            let len = (disconnect_payload.len() as u16).to_le_bytes();
+            let _ = stream.write_all(&len);
+            let _ = stream.write_all(&disconnect_payload);
+        }
+        // On success: charlist flow is deferred (requires TFS 13.10 session token protocol)
+    }
+}
+
+impl ConnectionHandler for GameLoginHandler {
+    fn handle(&self, stream: std::net::TcpStream) {
+        self.handle_connection(stream);
+    }
+}
+
+/// Bind the game-protocol listener on the configured game port and spawn a
+/// background accept loop.
+///
+/// Mirrors C++ `otserv.cpp` `mainLoader` step 15 (open game listener on 7172).
+pub fn start_game_listener(
+    config: Arc<ConfigManager>,
+    _game_state: Arc<Mutex<GameState>>,
+) -> Result<(), String> {
+    let game_port = config.get_integer(IntegerKey::GamePort) as u16;
+    let listener = TcpListener::bind(format!("0.0.0.0:{game_port}"))
+        .map_err(|e| format!("Cannot bind game port {game_port}: {e}"))?;
+    let handler = Arc::new(GameLoginHandler);
+    std::thread::spawn(move || {
+        accept_loop(listener, handler);
+    });
+    Ok(())
 }
 
 // ---------------------------------------------------------------------------
@@ -230,8 +328,6 @@ mod tests {
     //     AdminHandler and StatusHandler) dispatch one accepted stream to the
     //     handler's own `handle_connection` method.
     // -----------------------------------------------------------------------
-
-    use std::io::{Read as _, Write as _};
 
     /// Pick a free local port by binding/dropping a listener.
     /// (Port 0 lets the OS pick; we capture the chosen port before dropping.)
@@ -434,5 +530,70 @@ mod tests {
             resp.contains("HTTP/1.0 200 OK"),
             "StatusHandler trait dispatch did not produce HTTP response: {resp}"
         );
+    }
+
+    // -----------------------------------------------------------------------
+    // Phase 15 — start_game_listener (port 7172)
+    //
+    // C++ cross-validation:
+    //   * otserv.cpp `mainLoader` step 15: ServiceManager registers
+    //     ProtocolGame on the game port (default 7172) and sends a challenge
+    //     packet (opcode 0x1F + 4-byte timestamp + 1-byte random) immediately
+    //     on connection before the client sends anything.
+    //   * The Rust equivalent `start_game_listener` binds the port, spawns an
+    //     accept loop, and for each connection calls
+    //     `GameLoginHandler::handle_connection`, which sends the challenge,
+    //     reads the client's first packet, validates the version, and
+    //     disconnects with a human-readable message on version mismatch.
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn start_game_listener_binds_port_and_accepts_connection() {
+        use std::io::Read as _;
+
+        let game_port = free_port();
+        let mut config_manager = ConfigManager::new();
+        config_manager.set_integer(IntegerKey::GamePort, game_port as i64);
+        let config = Arc::new(config_manager);
+        let game_state = Arc::new(Mutex::new(GameState::new()));
+
+        let res = start_game_listener(config, game_state);
+        assert!(
+            res.is_ok(),
+            "start_game_listener must bind successfully: {:?}",
+            res
+        );
+
+        // Verify connection is accepted and server sends challenge bytes
+        let mut stream = std::net::TcpStream::connect(format!("127.0.0.1:{game_port}")).unwrap();
+        stream
+            .set_read_timeout(Some(std::time::Duration::from_secs(2)))
+            .unwrap();
+        let mut buf = [0u8; 16];
+        let n = stream.read(&mut buf).unwrap_or(0);
+        assert!(
+            n > 0,
+            "game listener must send a challenge packet on connect"
+        );
+        assert_eq!(
+            buf[2], 0x1F,
+            "first payload byte must be challenge opcode 0x1F (after 2-byte length prefix)"
+        );
+    }
+
+    #[test]
+    fn start_game_listener_errors_when_port_already_bound() {
+        let game_port = free_port();
+        let _hog = std::net::TcpListener::bind(format!("0.0.0.0:{game_port}")).unwrap();
+
+        let mut config_manager = ConfigManager::new();
+        config_manager.set_integer(IntegerKey::GamePort, game_port as i64);
+        let config = Arc::new(config_manager);
+        let game_state = Arc::new(Mutex::new(GameState::new()));
+
+        let res = start_game_listener(config, game_state);
+        assert!(res.is_err(), "must error when port is already bound");
+        let err = res.unwrap_err();
+        assert!(err.contains("Cannot bind game port"), "error: {err}");
     }
 }

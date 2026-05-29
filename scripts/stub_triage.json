@@ -1,0 +1,861 @@
+[
+  {
+    "fn_name": "cylinder_post_add",
+    "file": "crates/common/src/cylinder.rs",
+    "line": 117,
+    "body_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pattern": "empty_body",
+    "classification": "intentional-deferred",
+    "intentional_diff_id": "cylinder-class-to-trait",
+    "notes": "Trait default no-op matching C++ virtual postAddNotification base; concrete types override. Intentional Rust divergence from C++ virtual dispatch."
+  },
+  {
+    "fn_name": "cylinder_post_remove",
+    "file": "crates/common/src/cylinder.rs",
+    "line": 130,
+    "body_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pattern": "empty_body",
+    "classification": "intentional-deferred",
+    "intentional_diff_id": "cylinder-class-to-trait",
+    "notes": "Trait default no-op matching C++ virtual postRemoveNotification base; concrete types override. Intentional Rust divergence from C++ virtual dispatch."
+  },
+  {
+    "fn_name": "cylinder_first_index",
+    "file": "crates/common/src/cylinder.rs",
+    "line": 36,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "pattern": "trivial_0",
+    "classification": "correct-default",
+    "notes": "C++ Cylinder base getFirstIndex() returns 0. Confirmed by test_default_cylinder_first_index_returns_zero."
+  },
+  {
+    "fn_name": "cylinder_last_index",
+    "file": "crates/common/src/cylinder.rs",
+    "line": 44,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "pattern": "trivial_0",
+    "classification": "correct-default",
+    "notes": "C++ Cylinder base getLastIndex() returns 0. Confirmed by test_default_cylinder_last_index_returns_zero."
+  },
+  {
+    "fn_name": "cylinder_item_type_count",
+    "file": "crates/common/src/cylinder.rs",
+    "line": 52,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "pattern": "trivial_0",
+    "classification": "correct-default",
+    "notes": "C++ Cylinder base getItemTypeCount() returns 0. Confirmed by test_default_cylinder_item_type_count_returns_zero."
+  },
+  {
+    "fn_name": "cylinder_thing_index",
+    "file": "crates/common/src/cylinder.rs",
+    "line": 60,
+    "body_hash": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "pattern": "trivial_none",
+    "classification": "correct-default",
+    "notes": "C++ Cylinder base getThingIndex() returns -1 (mapped to None in Rust). Confirmed by test_default_cylinder_thing_index_returns_none."
+  },
+  {
+    "fn_name": "get_number",
+    "file": "crates/common/src/luavariant.rs",
+    "line": 136,
+    "body_hash": "aab4f5e3adf5207b5e22912b554a5ac5ce56fbd56e2a84fd8b09038c03238b07",
+    "pattern": "panic_stub",
+    "classification": "panic-correct",
+    "notes": "C++ getNumber() via std::get<VARIANT_NUMBER> is UB on wrong variant; Rust panics instead. Confirmed by test_lua_variant_get_number_returns_value_for_number_variant and test_lua_variant_get_number_panics_for_non_number_variant."
+  },
+  {
+    "fn_name": "get_position",
+    "file": "crates/common/src/luavariant.rs",
+    "line": 145,
+    "body_hash": "4e37b08da1e7709594e7c1e88e863092935695acbcbc0a1e9da7d610326e4030",
+    "pattern": "panic_stub",
+    "classification": "panic-correct",
+    "notes": "C++ getPosition() via std::get<VARIANT_POSITION> is UB on wrong variant; Rust panics instead. Confirmed by test_lua_variant_get_position_returns_value_for_position_variant and test_lua_variant_get_position_panics_for_non_position_variant."
+  },
+  {
+    "fn_name": "get_target_position",
+    "file": "crates/common/src/luavariant.rs",
+    "line": 157,
+    "body_hash": "662833240ecc10d8b1392b1b1b6e50a12515254c72eac8c80e5fa6d049ca1249",
+    "pattern": "panic_stub",
+    "classification": "panic-correct",
+    "notes": "C++ getTargetPosition() via std::get<VARIANT_TARGETPOSITION> is UB on wrong variant; Rust panics instead. Confirmed by test_lua_variant_get_target_position_returns_value_for_target_position_variant and test_lua_variant_get_target_position_panics_for_non_target_position_variant."
+  },
+  {
+    "fn_name": "get_string",
+    "file": "crates/common/src/luavariant.rs",
+    "line": 169,
+    "body_hash": "325a8f8288f6146e3efff40af6178748225ed0c625128329b43aedfaa074458b",
+    "pattern": "panic_stub",
+    "classification": "panic-correct",
+    "notes": "C++ getString() via std::get<VARIANT_STRING> is UB on wrong variant; Rust panics instead. Confirmed by test_lua_variant_get_string_returns_value_for_string_variant and test_lua_variant_get_string_panics_for_non_string_variant."
+  },
+  {
+    "fn_name": "get_header_position",
+    "file": "crates/common/src/outputmessage.rs",
+    "line": 180,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "pattern": "trivial_0",
+    "classification": "correct-default",
+    "notes": "C++ outputmessage.h OutputMessage::getHeaderPosition() returns HEADER_AREA = 0. Confirmed by test_output_message_get_header_position_returns_zero."
+  },
+  {
+    "fn_name": "get_description",
+    "file": "crates/common/src/thing.rs",
+    "line": 83,
+    "body_hash": "77f0daf880439021873be08337d10fd7546cb6df401df83f435503d928218910",
+    "pattern": "trivial_empty_string",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getDescription returns \"\". Confirmed by test_default_thing_get_description_returns_empty_string."
+  },
+  {
+    "fn_name": "get_throw_range",
+    "file": "crates/common/src/thing.rs",
+    "line": 88,
+    "body_hash": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+    "pattern": "trivial_1",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getThrowRange returns 1. Confirmed by test_default_thing_get_throw_range_returns_one."
+  },
+  {
+    "fn_name": "is_pushable",
+    "file": "crates/common/src/thing.rs",
+    "line": 93,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "pattern": "trivial_false",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isPushable returns false. Confirmed by test_default_thing_is_pushable_returns_false."
+  },
+  {
+    "fn_name": "is_removable",
+    "file": "crates/common/src/thing.rs",
+    "line": 98,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "pattern": "trivial_true",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isRemovable returns true. Confirmed by test_default_thing_is_removable_returns_true."
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "crates/common/src/thing.rs",
+    "line": 107,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "pattern": "trivial_true",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isRemoved default returns true (no parent = removed). Confirmed by test_default_thing_is_removed_returns_true."
+  },
+  {
+    "fn_name": "get_first_index",
+    "file": "crates/common/src/thing.rs",
+    "line": 116,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "pattern": "trivial_0",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getFirstIndex returns 0. Confirmed by test_default_thing_get_first_index_is_zero."
+  },
+  {
+    "fn_name": "get_last_index",
+    "file": "crates/common/src/thing.rs",
+    "line": 123,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "pattern": "trivial_0",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getLastIndex returns 0. Confirmed by test_default_thing_get_last_index_is_zero."
+  },
+  {
+    "fn_name": "get_thing_index",
+    "file": "crates/common/src/thing.rs",
+    "line": 132,
+    "body_hash": "1bad6b8cf97131fceab8543e81f7757195fbb1d36b376ee994ad1cf17699c464",
+    "pattern": "trivial_minus_one",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getThingIndex returns -1. Confirmed by test_default_thing_get_thing_index_returns_minus_one."
+  },
+  {
+    "fn_name": "get_item_type_count",
+    "file": "crates/common/src/thing.rs",
+    "line": 140,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "pattern": "trivial_0",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getItemTypeCount returns 0. Confirmed by test_default_thing_get_item_type_count_returns_zero."
+  },
+  {
+    "fn_name": "is_creature",
+    "file": "crates/common/src/thing.rs",
+    "line": 159,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "pattern": "trivial_false",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isCreature returns false. Confirmed by test_default_thing_is_creature_returns_false."
+  },
+  {
+    "fn_name": "is_item",
+    "file": "crates/common/src/thing.rs",
+    "line": 163,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "pattern": "trivial_false",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isItem returns false. Confirmed by test_default_thing_is_item_returns_false."
+  },
+  {
+    "fn_name": "is_teleport",
+    "file": "crates/common/src/thing.rs",
+    "line": 167,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "pattern": "trivial_false",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isTeleport returns false. Confirmed by test_default_thing_is_teleport_returns_false."
+  },
+  {
+    "fn_name": "is_magic_field",
+    "file": "crates/common/src/thing.rs",
+    "line": 171,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "pattern": "trivial_false",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isMagicField returns false. Confirmed by test_default_thing_is_magic_field_returns_false."
+  },
+  {
+    "fn_name": "is_trash_holder",
+    "file": "crates/common/src/thing.rs",
+    "line": 175,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "pattern": "trivial_false",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isTrashHolder returns false. Confirmed by test_default_thing_is_trash_holder_returns_false."
+  },
+  {
+    "fn_name": "is_container",
+    "file": "crates/common/src/thing.rs",
+    "line": 179,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "pattern": "trivial_false",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isContainer returns false. Confirmed by test_default_thing_is_container_returns_false."
+  },
+  {
+    "fn_name": "is_door",
+    "file": "crates/common/src/thing.rs",
+    "line": 183,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "pattern": "trivial_false",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isDoor returns false. Confirmed by test_default_thing_is_door_returns_false."
+  },
+  {
+    "fn_name": "is_moveable",
+    "file": "crates/common/src/thing.rs",
+    "line": 187,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "pattern": "trivial_true",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isMoveable returns true. Confirmed by test_default_thing_is_moveable_returns_true."
+  },
+  {
+    "fn_name": "is_ground",
+    "file": "crates/common/src/thing.rs",
+    "line": 191,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "pattern": "trivial_false",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isGround returns false. Confirmed by test_default_thing_is_ground_returns_false."
+  },
+  {
+    "fn_name": "is_invisible",
+    "file": "crates/common/src/thing.rs",
+    "line": 195,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "pattern": "trivial_false",
+    "classification": "correct-default",
+    "notes": "C++ Thing::isInvisible returns false. Confirmed by test_default_thing_is_invisible_returns_false."
+  },
+  {
+    "fn_name": "get_tile",
+    "file": "crates/common/src/thing.rs",
+    "line": 214,
+    "body_hash": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "pattern": "trivial_none",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getTile returns null. Confirmed by test_default_thing_get_tile_returns_none."
+  },
+  {
+    "fn_name": "get_item",
+    "file": "crates/common/src/thing.rs",
+    "line": 222,
+    "body_hash": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "pattern": "trivial_none",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getItem returns null. Confirmed by test_default_thing_get_item_returns_none."
+  },
+  {
+    "fn_name": "get_creature",
+    "file": "crates/common/src/thing.rs",
+    "line": 230,
+    "body_hash": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "pattern": "trivial_none",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getCreature returns null. Confirmed by test_default_thing_get_creature_returns_none."
+  },
+  {
+    "fn_name": "get_receiver",
+    "file": "crates/common/src/thing.rs",
+    "line": 238,
+    "body_hash": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "pattern": "trivial_none",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getReceiver returns null. Confirmed by test_default_thing_get_receiver_returns_none."
+  },
+  {
+    "fn_name": "get_parent",
+    "file": "crates/common/src/thing.rs",
+    "line": 245,
+    "body_hash": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "pattern": "trivial_none",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getParent returns null. Confirmed by test_default_thing_get_parent_returns_none."
+  },
+  {
+    "fn_name": "get_position_tuple",
+    "file": "crates/common/src/thing.rs",
+    "line": 276,
+    "body_hash": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "pattern": "trivial_none",
+    "classification": "correct-default",
+    "notes": "C++ Thing::getPosition returns null/default position. Confirmed by test_default_thing_get_position_tuple_returns_none."
+  },
+  {
+    "fn_name": "u8_to_state",
+    "file": "crates/common/src/thread_holder_base.rs",
+    "line": 35,
+    "body_hash": "21175641a4dad91984361613cf7854d57969e6ce64939f32a2157ed5eb0a150e",
+    "pattern": "panic_stub",
+    "classification": "panic-correct",
+    "notes": "C++ thread_holder_base.h stores ThreadState as AtomicUInt8; back-conversion has no bounds check (UB). Rust panics on invalid values. Confirmed by test_u8_to_state_running_returns_running, test_u8_to_state_closing_returns_closing, test_u8_to_state_terminated_returns_terminated, test_u8_to_state_invalid_panics."
+  },
+  {
+    "fn_name": "is_attackable",
+    "file": "entity/src/creature.rs",
+    "line": 816,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/creature.h:269",
+    "cpp_snippet": "virtual bool isAttackable() const { return true; }",
+    "test_name": "test_creature_is_attackable_returns_true_matching_cpp_virtual_default"
+  },
+  {
+    "fn_name": "can_see_invisibility",
+    "file": "entity/src/creature.rs",
+    "line": 821,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/creature.h:133",
+    "cpp_snippet": "virtual bool canSeeInvisibility() const { return false; }",
+    "test_name": "test_creature_can_see_invisibility_returns_false_matching_cpp_virtual_default"
+  },
+  {
+    "fn_name": "can_see_ghost_mode",
+    "file": "entity/src/creature.rs",
+    "line": 826,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/creature.h:135",
+    "cpp_snippet": "virtual bool canSeeGhostMode(const Creature*) const { return false; }",
+    "test_name": "test_creature_can_see_ghost_mode_returns_false_matching_cpp_virtual_default"
+  },
+  {
+    "fn_name": "is_creature",
+    "file": "entity/src/creature.rs",
+    "line": 983,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/creature.h (Thing::getCreature non-null override)",
+    "cpp_snippet": "Creature* getCreature() override { return this; }",
+    "test_name": "test_creature_is_creature_returns_true_matching_cpp_override"
+  },
+  {
+    "fn_name": "is_removable",
+    "file": "entity/src/creature.rs",
+    "line": 989,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/item.h:893",
+    "cpp_snippet": "virtual bool canRemove() const { return true; }",
+    "test_name": "test_creature_is_removable_returns_true_matching_cpp_default"
+  },
+  {
+    "fn_name": "get_throw_range",
+    "file": "entity/src/creature.rs",
+    "line": 999,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/thing.h",
+    "cpp_snippet": "virtual int getThrowRange() const = 0; // Creature returns 1",
+    "test_name": "test_creature_get_throw_range_returns_one_matching_cpp_default"
+  },
+  {
+    "fn_name": "post_add_notification",
+    "file": "entity/src/player.rs",
+    "line": 1253,
+    "classification": "intentional-deferred",
+    "cpp_evidence": "Player::postAddNotification calls g_game spectator broadcast \u2014 cross-crate dispatch deferred",
+    "cpp_snippet": "void Player::postAddNotification(Thing* thing, ...) { /* broadcasts to spectators via g_game */ }",
+    "intentional_diff_id": "cross-crate-behavior-dispatch-deferred-to-game-glue",
+    "test_name": null
+  },
+  {
+    "fn_name": "post_remove_notification",
+    "file": "entity/src/player.rs",
+    "line": 1256,
+    "classification": "intentional-deferred",
+    "cpp_evidence": "Player::postRemoveNotification calls g_game spectator broadcast \u2014 cross-crate dispatch deferred",
+    "cpp_snippet": "void Player::postRemoveNotification(Thing* thing, ...) { /* broadcasts to spectators via g_game */ }",
+    "intentional_diff_id": "cross-crate-behavior-dispatch-deferred-to-game-glue",
+    "test_name": null
+  },
+  {
+    "fn_name": "is_container",
+    "file": "items/src/container.rs",
+    "line": 434,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/container.h",
+    "cpp_snippet": "Container::getContainer() override returns this (non-null) \u2014 is_container() = true",
+    "test_name": "test_container_implements_thing_is_container"
+  },
+  {
+    "fn_name": "is_item",
+    "file": "items/src/container.rs",
+    "line": 437,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/container.h",
+    "cpp_snippet": "Container extends Item \u2014 is_item() = true",
+    "test_name": "test_container_implements_thing_is_container"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "items/src/container.rs",
+    "line": 440,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/container.h",
+    "cpp_snippet": "Container not removed by default \u2014 is_removed() = false",
+    "test_name": "test_container_implements_thing_is_container"
+  },
+  {
+    "fn_name": "get_first_index",
+    "file": "items/src/container.rs",
+    "line": 443,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/container.h",
+    "cpp_snippet": "Container::getFirstIndex() returns 0",
+    "test_name": "test_cylinder_first_index_returns_zero"
+  },
+  {
+    "fn_name": "cylinder_first_index",
+    "file": "items/src/container.rs",
+    "line": 469,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/container.h",
+    "cpp_snippet": "Container::getFirstIndex() returns 0",
+    "test_name": "test_cylinder_first_index_returns_zero"
+  },
+  {
+    "fn_name": "can_remove",
+    "file": "items/src/depotchest.rs",
+    "line": 126,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/depotchest.h",
+    "cpp_snippet": "depotchest.h:27 \u2014 bool canRemove() const override { return false; }",
+    "test_name": "test_can_remove_always_false"
+  },
+  {
+    "fn_name": "is_container",
+    "file": "items/src/depotchest.rs",
+    "line": 136,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/depotchest.h",
+    "cpp_snippet": "DepotChest extends Container \u2014 is_container() = true",
+    "test_name": "test_depotchest_implements_thing_is_container"
+  },
+  {
+    "fn_name": "is_item",
+    "file": "items/src/depotchest.rs",
+    "line": 139,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/depotchest.h",
+    "cpp_snippet": "DepotChest extends Item \u2014 is_item() = true",
+    "test_name": "test_depotchest_implements_thing_is_container"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "items/src/depotchest.rs",
+    "line": 142,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/depotchest.h",
+    "cpp_snippet": "Item::isRemoved() returns false by default; DepotChest does not override",
+    "test_name": "test_depotchest_is_removed_returns_false_matching_cpp"
+  },
+  {
+    "fn_name": "query_add",
+    "file": "items/src/depotlocker.rs",
+    "line": 81,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/depotlocker.h",
+    "cpp_snippet": "depotlocker.h:27 \u2014 return RETURNVALUE_NOTENOUGHROOM",
+    "test_name": "test_query_add_always_returns_not_enough_room"
+  },
+  {
+    "fn_name": "can_remove",
+    "file": "items/src/depotlocker.rs",
+    "line": 86,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/depotlocker.h",
+    "cpp_snippet": "depotlocker.h:37 \u2014 bool canRemove() const override { return false; }",
+    "test_name": "test_can_remove_always_false"
+  },
+  {
+    "fn_name": "is_container",
+    "file": "items/src/depotlocker.rs",
+    "line": 176,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/depotlocker.h",
+    "cpp_snippet": "DepotLocker extends Container \u2014 is_container() = true",
+    "test_name": "test_depotlocker_implements_thing_is_container"
+  },
+  {
+    "fn_name": "is_item",
+    "file": "items/src/depotlocker.rs",
+    "line": 179,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/depotlocker.h",
+    "cpp_snippet": "DepotLocker extends Item \u2014 is_item() = true",
+    "test_name": "test_depotlocker_implements_thing_is_container"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "items/src/depotlocker.rs",
+    "line": 182,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/depotlocker.h",
+    "cpp_snippet": "Item::isRemoved() returns false by default; DepotLocker does not override",
+    "test_name": "test_depotlocker_is_removed_returns_false_matching_cpp"
+  },
+  {
+    "fn_name": "can_remove",
+    "file": "items/src/inbox.rs",
+    "line": 62,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/inbox.h",
+    "cpp_snippet": "inbox.h:25 \u2014 bool canRemove() const override { return false; }",
+    "test_name": "test_can_remove_always_false"
+  },
+  {
+    "fn_name": "is_container",
+    "file": "items/src/inbox.rs",
+    "line": 114,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/inbox.h",
+    "cpp_snippet": "Inbox extends Container \u2014 is_container() = true",
+    "test_name": "test_inbox_implements_thing_is_container"
+  },
+  {
+    "fn_name": "is_item",
+    "file": "items/src/inbox.rs",
+    "line": 117,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/inbox.h",
+    "cpp_snippet": "Inbox extends Item \u2014 is_item() = true",
+    "test_name": "test_inbox_implements_thing_is_container"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "items/src/inbox.rs",
+    "line": 120,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/inbox.h",
+    "cpp_snippet": "Item::isRemoved() returns false by default; Inbox does not override",
+    "test_name": "test_inbox_implements_thing_is_container"
+  },
+  {
+    "fn_name": "can_remove",
+    "file": "items/src/item.rs",
+    "line": 484,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/item.h",
+    "cpp_snippet": "item.h:893 \u2014 virtual bool canRemove() const { return true; }",
+    "test_name": "test_can_remove_returns_true_matching_cpp_base_default"
+  },
+  {
+    "fn_name": "can_transform",
+    "file": "items/src/item.rs",
+    "line": 1669,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/item.h",
+    "cpp_snippet": "item.h \u2014 virtual bool canTransform() const { return true; }",
+    "test_name": "test_can_transform_always_true"
+  },
+  {
+    "fn_name": "store_item",
+    "file": "items/src/mailbox.rs",
+    "line": 101,
+    "classification": "intentional-deferred",
+    "cpp_evidence": "forgottenserver-upstream/src/mailbox.cpp",
+    "cpp_snippet": "Mailbox::addThing calls g_game.internalMoveItem \u2014 cross-crate game dispatch",
+    "intentional_diff_id": "cross-crate-behavior-dispatch-deferred-to-game-glue"
+  },
+  {
+    "fn_name": "is_mailbox",
+    "file": "items/src/mailbox.rs",
+    "line": 107,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/mailbox.h",
+    "cpp_snippet": "mailbox.h \u2014 Mailbox* getMailbox() override { return this; } (non-null = true)",
+    "test_name": "test_is_mailbox_returns_true"
+  },
+  {
+    "fn_name": "is_store_inbox",
+    "file": "items/src/storeinbox.rs",
+    "line": 122,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/storeinbox.h",
+    "cpp_snippet": "storeinbox.h \u2014 StoreInbox* getStoreInbox() override { return this; }",
+    "test_name": "test_is_store_inbox_returns_true"
+  },
+  {
+    "fn_name": "can_remove",
+    "file": "items/src/storeinbox.rs",
+    "line": 131,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/storeinbox.h",
+    "cpp_snippet": "storeinbox.h:25 \u2014 bool canRemove() const override { return false; }",
+    "test_name": "test_can_remove_always_false"
+  },
+  {
+    "fn_name": "is_container",
+    "file": "items/src/storeinbox.rs",
+    "line": 251,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/storeinbox.h",
+    "cpp_snippet": "StoreInbox extends Container \u2014 is_container() = true",
+    "test_name": "test_storeinbox_implements_thing_is_container"
+  },
+  {
+    "fn_name": "is_item",
+    "file": "items/src/storeinbox.rs",
+    "line": 254,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/storeinbox.h",
+    "cpp_snippet": "StoreInbox extends Item \u2014 is_item() = true",
+    "test_name": "test_storeinbox_implements_thing_is_container"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "items/src/storeinbox.rs",
+    "line": 257,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/storeinbox.h",
+    "cpp_snippet": "Item::isRemoved() returns false by default; StoreInbox does not override",
+    "test_name": "test_storeinbox_is_removed_returns_false_matching_cpp"
+  },
+  {
+    "fn_name": "query_add_for_non_member",
+    "file": "crates/map/src/housetile.rs",
+    "line": 88,
+    "classification": "intentional-deferred",
+    "intentional_diff_id": "cross-crate-behavior-dispatch-deferred-to-game-glue",
+    "cpp_evidence": "forgottenserver-upstream/src/housetile.h + housetile.cpp \u2014 queryAdd checks house->isInvited(player). House entities not yet modelled; always returns RETURNVALUE_PLAYERISNOTINVITED for non-members.",
+    "cpp_snippet": "ReturnValue queryAdd(int32_t index, const Thing& thing, uint32_t count, uint32_t flags, Creature* actor) override; // housetile.cpp: if (!house->isInvited(player)) return RETURNVALUE_PLAYERISNOTINVITED;"
+  },
+  {
+    "fn_name": "query_add_item_for_non_member",
+    "file": "crates/map/src/housetile.rs",
+    "line": 93,
+    "classification": "intentional-deferred",
+    "intentional_diff_id": "cross-crate-behavior-dispatch-deferred-to-game-glue",
+    "cpp_evidence": "forgottenserver-upstream/src/housetile.cpp \u2014 item-add queryAdd branch: if actor not invited returns RETURNVALUE_PLAYERISNOTINVITED.",
+    "cpp_snippet": "// housetile.cpp queryAdd item branch: if (!house->isInvited(actor)) return RETURNVALUE_PLAYERISNOTINVITED;"
+  },
+  {
+    "fn_name": "query_add_non_player_creature",
+    "file": "crates/map/src/housetile.rs",
+    "line": 100,
+    "classification": "intentional-deferred",
+    "intentional_diff_id": "cross-crate-behavior-dispatch-deferred-to-game-glue",
+    "cpp_evidence": "forgottenserver-upstream/src/housetile.cpp \u2014 queryAdd: if (!player) return RETURNVALUE_NOTPOSSIBLE; \u2014 non-player creatures always denied.",
+    "cpp_snippet": "// housetile.cpp: Player* player = actor ? actor->getPlayer() : nullptr; if (!player) return RETURNVALUE_NOTPOSSIBLE;"
+  },
+  {
+    "fn_name": "query_remove_for_non_member",
+    "file": "crates/map/src/housetile.rs",
+    "line": 108,
+    "classification": "intentional-deferred",
+    "intentional_diff_id": "cross-crate-behavior-dispatch-deferred-to-game-glue",
+    "cpp_evidence": "forgottenserver-upstream/src/housetile.cpp \u2014 queryRemove: ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS logic; returns RETURNVALUE_PLAYERISNOTINVITED when actor not invited.",
+    "cpp_snippet": "// housetile.cpp queryRemove: if (!house->isInvited(actor)) return RETURNVALUE_PLAYERISNOTINVITED;"
+  },
+  {
+    "fn_name": "post_add_item",
+    "file": "crates/map/src/tile.rs",
+    "line": 1349,
+    "classification": "intentional-deferred",
+    "intentional_diff_id": "cross-crate-behavior-dispatch-deferred-to-game-glue",
+    "cpp_evidence": "forgottenserver-upstream/src/tile.h \u2014 postAddNotification/postRemoveThing wires spectator updates via g_game. The spectator system lives in the game crate; Tile stub is a no-op hook.",
+    "cpp_snippet": "// cylinder.h: virtual void postAddNotification(Thing*, const Thing*, int32_t, ReceiverLink_t) = 0;"
+  },
+  {
+    "fn_name": "post_remove_item",
+    "file": "crates/map/src/tile.rs",
+    "line": 1352,
+    "classification": "intentional-deferred",
+    "intentional_diff_id": "cross-crate-behavior-dispatch-deferred-to-game-glue",
+    "cpp_evidence": "forgottenserver-upstream/src/tile.h \u2014 postRemoveNotification wires spectator updates via g_game. The spectator system lives in the game crate; Tile stub is a no-op hook.",
+    "cpp_snippet": "// cylinder.h: virtual void postRemoveNotification(Thing*, const Thing*, int32_t, ReceiverLink_t) = 0;"
+  },
+  {
+    "fn_name": "get_first_index",
+    "file": "crates/map/src/tile.rs",
+    "line": 813,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/thing.h \u2014 virtual size_t getFirstIndex() const { return 0; } \u2014 base Thing implementation; Tile inherits this and returns 0.",
+    "cpp_snippet": "virtual size_t getFirstIndex() const { return 0; }",
+    "test_name": "test_tile_thing_get_first_index_returns_zero"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "crates/map/src/tile.rs",
+    "line": 1400,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/tile.h \u2014 bool isRemoved() const override final { return false; } \u2014 tiles are map-permanent and never removed.",
+    "cpp_snippet": "bool isRemoved() const override final { return false; }",
+    "test_name": "test_tile_is_removed_returns_false"
+  },
+  {
+    "fn_name": "get_first_index",
+    "file": "crates/map/src/tile.rs",
+    "line": 1406,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/thing.h \u2014 virtual size_t getFirstIndex() const { return 0; } \u2014 Thing impl on Tile returns 0.",
+    "cpp_snippet": "virtual size_t getFirstIndex() const { return 0; }",
+    "test_name": "test_tile_cylinder_get_first_index_returns_zero"
+  },
+  {
+    "fn_name": "cylinder_first_index",
+    "file": "crates/map/src/tile.rs",
+    "line": 1418,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/thing.h \u2014 virtual size_t getFirstIndex() const { return 0; } \u2014 Cylinder impl delegates to Thing::getFirstIndex which returns 0.",
+    "cpp_snippet": "virtual size_t getFirstIndex() const { return 0; }",
+    "test_name": "test_tile_cylinder_first_index_returns_zero"
+  },
+  {
+    "fn_name": "query_add",
+    "file": "crates/map/src/trashholder.rs",
+    "line": 55,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/trashholder.h \u2014 ReturnValue queryAdd(int32_t, const Thing&, uint32_t, uint32_t, Creature* = nullptr) const override { return RETURNVALUE_NOERROR; }",
+    "cpp_snippet": "ReturnValue queryAdd(int32_t, const Thing&, uint32_t, uint32_t, Creature* = nullptr) const override { return RETURNVALUE_NOERROR; }",
+    "test_name": "test_trash_holder_query_add_returns_ok_matching_cpp"
+  },
+  {
+    "fn_name": "item_count",
+    "file": "crates/map/src/trashholder.rs",
+    "line": 103,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/trashholder.cpp \u2014 TrashHolder never stores items; addThing immediately calls g_game.internalRemoveItem(item). Retained count is always 0.",
+    "cpp_snippet": "// trashholder.cpp: addThing -> g_game.internalRemoveItem(item) \u2014 item is immediately destroyed, never stored.",
+    "test_name": "test_trash_holder_item_count_always_zero"
+  },
+  {
+    "fn_name": "add_item",
+    "file": "crates/map/src/trashholder.rs",
+    "line": 71,
+    "classification": "intentional-deferred",
+    "intentional_diff_id": "cross-crate-behavior-dispatch-deferred-to-game-glue",
+    "cpp_evidence": "forgottenserver-upstream/src/trashholder.cpp \u2014 addThing calls g_game.internalRemoveItem(item) and g_game.addMagicEffect(...). Cross-crate g_game dispatch deferred to game-glue layer; Rust model drops the item immediately.",
+    "cpp_snippet": "// trashholder.cpp: void TrashHolder::addThing(int32_t, Thing* thing) { Item* item = thing->getItem(); g_game.internalRemoveItem(item); g_game.addMagicEffect(getPosition(), effect); }"
+  },
+  {
+    "fn_name": "get_element_damage",
+    "file": "game/src/weapons.rs",
+    "line": 285,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/weapons.h:219",
+    "cpp_snippet": "int32_t getElementDamage(const Player*, const Creature*, const Item*) const override { return 0; }",
+    "test_name": "test_wand_get_element_damage_returns_zero_matching_cpp_weaponwand"
+  },
+  {
+    "fn_name": "accept_loop",
+    "file": "server/src/http.rs",
+    "line": 218,
+    "classification": "intentional-deferred",
+    "cpp_evidence": "intentional_differences.yml",
+    "intentional_diff_id": "http-server-boost-asio-to-tokio",
+    "note": "drops stream \u2014 existing test coverage present; no new test added"
+  },
+  {
+    "fn_name": "can_transform",
+    "file": "world/src/house.rs",
+    "line": 1043,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/house.h \u2014 HouseTransferItem::canTransform() const override { return false; }",
+    "cpp_snippet": "bool canTransform() const override { return false; }",
+    "test_name": "test_house_item_can_transform_returns_false_matching_cpp"
+  },
+  {
+    "fn_name": "begin_transaction",
+    "file": "database/src/database.rs",
+    "line": 137,
+    "classification": "intentional-deferred",
+    "cpp_evidence": "intentional_differences.yml",
+    "intentional_diff_id": "database-adapter-helpers-deferred-to-mariadb-adapter-prod",
+    "test_name": "test_in_memory_db_begin_transaction_is_noop"
+  },
+  {
+    "fn_name": "commit",
+    "file": "database/src/database.rs",
+    "line": 142,
+    "classification": "intentional-deferred",
+    "cpp_evidence": "intentional_differences.yml",
+    "intentional_diff_id": "database-adapter-helpers-deferred-to-mariadb-adapter-prod",
+    "test_name": "test_in_memory_db_commit_is_noop"
+  },
+  {
+    "fn_name": "rollback",
+    "file": "database/src/database.rs",
+    "line": 147,
+    "classification": "intentional-deferred",
+    "cpp_evidence": "intentional_differences.yml",
+    "intentional_diff_id": "database-adapter-helpers-deferred-to-mariadb-adapter-prod",
+    "test_name": "test_in_memory_db_rollback_is_noop"
+  },
+  {
+    "fn_name": "optimize_tables",
+    "file": "database/src/databasemanager.rs",
+    "line": 37,
+    "classification": "intentional-deferred",
+    "cpp_evidence": "intentional_differences.yml",
+    "intentional_diff_id": "database-adapter-helpers-deferred-to-mariadb-adapter-prod",
+    "test_name": "test_optimize_tables_is_noop_for_in_memory_db"
+  },
+  {
+    "fn_name": "NoopScriptEngine::load_script",
+    "file": "scripting/src/engine.rs",
+    "line": 71,
+    "classification": "correct-default",
+    "cpp_evidence": "NoopScriptEngine is a null-object implementation; Ok(()) is the correct return for all write operations",
+    "cpp_snippet": "N/A \u2014 null object pattern, no C++ equivalent",
+    "test_name": "test_noop_script_engine_load_script_returns_ok"
+  },
+  {
+    "fn_name": "NoopScriptEngine::reset",
+    "file": "scripting/src/engine.rs",
+    "line": 83,
+    "classification": "correct-default",
+    "cpp_evidence": "NoopScriptEngine is a null-object implementation; Ok(()) is the correct return for all write operations",
+    "cpp_snippet": "N/A \u2014 null object pattern, no C++ equivalent",
+    "test_name": "test_noop_script_engine_reset_returns_ok"
+  },
+  {
+    "fn_name": "NoopScriptEngine::register_event",
+    "file": "scripting/src/engine.rs",
+    "line": 87,
+    "classification": "correct-default",
+    "cpp_evidence": "NoopScriptEngine is a null-object implementation; Ok(()) is the correct return for all write operations",
+    "cpp_snippet": "N/A \u2014 null object pattern, no C++ equivalent",
+    "test_name": "test_noop_script_engine_register_event_returns_ok"
+  }
+]

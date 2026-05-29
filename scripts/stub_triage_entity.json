@@ -1,0 +1,76 @@
+[
+  {
+    "fn_name": "is_attackable",
+    "file": "entity/src/creature.rs",
+    "line": 816,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/creature.h:269",
+    "cpp_snippet": "virtual bool isAttackable() const { return true; }",
+    "test_name": "test_creature_is_attackable_returns_true_matching_cpp_virtual_default"
+  },
+  {
+    "fn_name": "can_see_invisibility",
+    "file": "entity/src/creature.rs",
+    "line": 821,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/creature.h:133",
+    "cpp_snippet": "virtual bool canSeeInvisibility() const { return false; }",
+    "test_name": "test_creature_can_see_invisibility_returns_false_matching_cpp_virtual_default"
+  },
+  {
+    "fn_name": "can_see_ghost_mode",
+    "file": "entity/src/creature.rs",
+    "line": 826,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/creature.h:135",
+    "cpp_snippet": "virtual bool canSeeGhostMode(const Creature*) const { return false; }",
+    "test_name": "test_creature_can_see_ghost_mode_returns_false_matching_cpp_virtual_default"
+  },
+  {
+    "fn_name": "is_creature",
+    "file": "entity/src/creature.rs",
+    "line": 983,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/creature.h (Thing::getCreature non-null override)",
+    "cpp_snippet": "Creature* getCreature() override { return this; }",
+    "test_name": "test_creature_is_creature_returns_true_matching_cpp_override"
+  },
+  {
+    "fn_name": "is_removable",
+    "file": "entity/src/creature.rs",
+    "line": 989,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/item.h:893",
+    "cpp_snippet": "virtual bool canRemove() const { return true; }",
+    "test_name": "test_creature_is_removable_returns_true_matching_cpp_default"
+  },
+  {
+    "fn_name": "get_throw_range",
+    "file": "entity/src/creature.rs",
+    "line": 999,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/thing.h",
+    "cpp_snippet": "virtual int getThrowRange() const = 0; // Creature returns 1",
+    "test_name": "test_creature_get_throw_range_returns_one_matching_cpp_default"
+  },
+  {
+    "fn_name": "post_add_notification",
+    "file": "entity/src/player.rs",
+    "line": 1253,
+    "classification": "intentional-deferred",
+    "cpp_evidence": "Player::postAddNotification calls g_game spectator broadcast — cross-crate dispatch deferred",
+    "cpp_snippet": "void Player::postAddNotification(Thing* thing, ...) { /* broadcasts to spectators via g_game */ }",
+    "intentional_diff_id": "cross-crate-behavior-dispatch-deferred-to-game-glue",
+    "test_name": null
+  },
+  {
+    "fn_name": "post_remove_notification",
+    "file": "entity/src/player.rs",
+    "line": 1256,
+    "classification": "intentional-deferred",
+    "cpp_evidence": "Player::postRemoveNotification calls g_game spectator broadcast — cross-crate dispatch deferred",
+    "cpp_snippet": "void Player::postRemoveNotification(Thing* thing, ...) { /* broadcasts to spectators via g_game */ }",
+    "intentional_diff_id": "cross-crate-behavior-dispatch-deferred-to-game-glue",
+    "test_name": null
+  }
+]

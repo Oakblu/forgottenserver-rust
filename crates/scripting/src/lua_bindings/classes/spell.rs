@@ -107,15 +107,21 @@ impl UserData for LuaSpell {
         });
         // ── Real getters backed by Spell struct fields ───────────
         methods.add_method_mut("name", |_, this, arg: Option<String>| {
-            if let Some(v) = arg { this.inner.name = v; }
+            if let Some(v) = arg {
+                this.inner.name = v;
+            }
             Ok(this.inner.name.clone())
         });
         methods.add_method_mut("words", |_, this, arg: Option<String>| {
-            if let Some(v) = arg { this.inner.words = v; }
+            if let Some(v) = arg {
+                this.inner.words = v;
+            }
             Ok(this.inner.words.clone())
         });
         methods.add_method_mut("id", |_, this, arg: Option<i64>| {
-            if let Some(v) = arg { this.inner.spell_id = v as u8; }
+            if let Some(v) = arg {
+                this.inner.spell_id = v as u8;
+            }
             Ok(this.inner.spell_id as i64)
         });
         methods.add_method_mut("group", |_, this, arg: Option<mlua::Value>| {
@@ -135,86 +141,129 @@ impl UserData for LuaSpell {
             Ok(this.inner.group as i64)
         });
         methods.add_method_mut("isPremium", |_, this, arg: Option<bool>| {
-            if let Some(v) = arg { this.inner.premium = v; }
+            if let Some(v) = arg {
+                this.inner.premium = v;
+            }
             Ok(this.inner.premium)
         });
         methods.add_method_mut("isEnabled", |_, this, arg: Option<bool>| {
-            if let Some(v) = arg { this.inner.enabled = v; }
+            if let Some(v) = arg {
+                this.inner.enabled = v;
+            }
             Ok(this.inner.enabled)
         });
         methods.add_method_mut("isSelfTarget", |_, this, arg: Option<bool>| {
-            if let Some(v) = arg { this.inner.self_target = v; }
+            if let Some(v) = arg {
+                this.inner.self_target = v;
+            }
             Ok(this.inner.self_target)
         });
         methods.add_method_mut("cooldown", |_, this, arg: Option<i64>| {
-            if let Some(v) = arg { this.inner.cooldown = v as u32; }
+            if let Some(v) = arg {
+                this.inner.cooldown = v as u32;
+            }
             Ok(this.inner.cooldown as i64)
         });
         methods.add_method_mut("groupCooldown", |_, this, arg: Option<i64>| {
-            if let Some(v) = arg { this.inner.group_cooldown = v as u32; }
+            if let Some(v) = arg {
+                this.inner.group_cooldown = v as u32;
+            }
             Ok(this.inner.group_cooldown as i64)
         });
         methods.add_method_mut("manaPercent", |_, this, arg: Option<i64>| {
-            if let Some(v) = arg { this.inner.mana_percent = v as u32; }
+            if let Some(v) = arg {
+                this.inner.mana_percent = v as u32;
+            }
             Ok(this.inner.mana_percent as i64)
         });
         methods.add_method_mut("level", |_, this, arg: Option<i64>| {
-            if let Some(v) = arg { this.inner.min_level = v as u32; }
+            if let Some(v) = arg {
+                this.inner.min_level = v as u32;
+            }
             Ok(this.inner.min_level as i64)
         });
         methods.add_method_mut("mana", |_, this, arg: Option<i64>| {
-            if let Some(v) = arg { this.inner.mana_cost = v as u32; }
+            if let Some(v) = arg {
+                this.inner.mana_cost = v as u32;
+            }
             Ok(this.inner.mana_cost as i64)
         });
         methods.add_method_mut("magicLevel", |_, this, arg: Option<i64>| {
-            if let Some(v) = arg { this.inner.magic_level = v as u32; }
+            if let Some(v) = arg {
+                this.inner.magic_level = v as u32;
+            }
             Ok(this.inner.magic_level as i64)
         });
         methods.add_method_mut("soul", |_, this, arg: Option<i64>| {
-            if let Some(v) = arg { this.inner.soul_cost = v as u32; }
+            if let Some(v) = arg {
+                this.inner.soul_cost = v as u32;
+            }
             Ok(this.inner.soul_cost as i64)
         });
         methods.add_method_mut("range", |_, this, arg: Option<i64>| {
-            if let Some(v) = arg { this.inner.range = v as i32; }
+            if let Some(v) = arg {
+                this.inner.range = v as i32;
+            }
             Ok(this.inner.range as i64)
         });
         // ── Boolean getter/setters ───────────────────────────────────
         methods.add_method_mut("needTarget", |_, this, arg: Option<bool>| {
-            if let Some(v) = arg { this.inner.need_target = v; }
+            if let Some(v) = arg {
+                this.inner.need_target = v;
+            }
             Ok(this.inner.need_target)
         });
         methods.add_method_mut("needWeapon", |_, this, arg: Option<bool>| {
-            if let Some(v) = arg { this.inner.need_weapon = v; }
+            if let Some(v) = arg {
+                this.inner.need_weapon = v;
+            }
             Ok(this.inner.need_weapon)
         });
         methods.add_method_mut("needLearn", |_, this, arg: Option<bool>| {
-            if let Some(v) = arg { this.inner.learnable = v; }
+            if let Some(v) = arg {
+                this.inner.learnable = v;
+            }
             Ok(this.inner.learnable)
         });
         methods.add_method_mut("isAggressive", |_, this, arg: Option<bool>| {
-            if let Some(v) = arg { this.inner.aggressive = v; }
+            if let Some(v) = arg {
+                this.inner.aggressive = v;
+            }
             Ok(this.inner.aggressive)
         });
         methods.add_method_mut("isPzLock", |_, this, arg: Option<bool>| {
-            if let Some(v) = arg { this.inner.pz_lock = v; }
+            if let Some(v) = arg {
+                this.inner.pz_lock = v;
+            }
             Ok(this.inner.pz_lock)
         });
         methods.add_method_mut("isBlocking", |_, this, arg: Option<bool>| {
-            if let Some(v) = arg { this.inner.blocking_solid = v; }
+            if let Some(v) = arg {
+                this.inner.blocking_solid = v;
+            }
             Ok(this.inner.blocking_solid)
         });
         methods.add_method_mut("isBlockingWalls", |_, this, arg: Option<bool>| {
-            if let Some(v) = arg { this.inner.blocking_creature = v; }
+            if let Some(v) = arg {
+                this.inner.blocking_creature = v;
+            }
             Ok(this.inner.blocking_creature)
         });
         methods.add_method_mut("needDirection", |_, this, arg: Option<bool>| {
-            if let Some(v) = arg { this.inner.need_direction = v; }
+            if let Some(v) = arg {
+                this.inner.need_direction = v;
+            }
             Ok(this.inner.need_direction)
         });
-        methods.add_method_mut("needCasterTargetOrDirection", |_, this, arg: Option<bool>| {
-            if let Some(v) = arg { this.inner.need_caster_target_or_direction = v; }
-            Ok(this.inner.need_caster_target_or_direction)
-        });
+        methods.add_method_mut(
+            "needCasterTargetOrDirection",
+            |_, this, arg: Option<bool>| {
+                if let Some(v) = arg {
+                    this.inner.need_caster_target_or_direction = v;
+                }
+                Ok(this.inner.need_caster_target_or_direction)
+            },
+        );
         // ── Real vocation setter ─────────────────────────────────────
         methods.add_method_mut("vocation", |_, this, args: mlua::Variadic<String>| {
             for v in args {
@@ -328,11 +377,15 @@ mod tests {
     #[test]
     fn spell_name_setter_and_getter() {
         let lua = fresh_lua();
-        lua.load(r#"
+        lua.load(
+            r#"
             local s = Spell(SPELL_INSTANT)
             s:name("Berserk")
             _G.result = s:name()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         let result: String = lua.globals().get("result").unwrap();
         assert_eq!(result, "Berserk");
     }
@@ -340,11 +393,15 @@ mod tests {
     #[test]
     fn spell_words_setter_and_getter() {
         let lua = fresh_lua();
-        lua.load(r#"
+        lua.load(
+            r#"
             local s = Spell(SPELL_INSTANT)
             s:words("exori")
             _G.result = s:words()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         let result: String = lua.globals().get("result").unwrap();
         assert_eq!(result, "exori");
     }
@@ -352,11 +409,15 @@ mod tests {
     #[test]
     fn spell_id_setter_and_getter() {
         let lua = fresh_lua();
-        lua.load(r#"
+        lua.load(
+            r#"
             local s = Spell(SPELL_INSTANT)
             s:id(80)
             _G.result = s:id()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         let result: i64 = lua.globals().get("result").unwrap();
         assert_eq!(result, 80);
     }
@@ -364,11 +425,15 @@ mod tests {
     #[test]
     fn spell_level_setter_and_getter() {
         let lua = fresh_lua();
-        lua.load(r#"
+        lua.load(
+            r#"
             local s = Spell(SPELL_INSTANT)
             s:level(35)
             _G.result = s:level()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         let result: i64 = lua.globals().get("result").unwrap();
         assert_eq!(result, 35);
     }
@@ -376,11 +441,15 @@ mod tests {
     #[test]
     fn spell_mana_setter_and_getter() {
         let lua = fresh_lua();
-        lua.load(r#"
+        lua.load(
+            r#"
             local s = Spell(SPELL_INSTANT)
             s:mana(115)
             _G.result = s:mana()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         let result: i64 = lua.globals().get("result").unwrap();
         assert_eq!(result, 115);
     }
@@ -388,11 +457,15 @@ mod tests {
     #[test]
     fn spell_magic_level_setter_and_getter() {
         let lua = fresh_lua();
-        lua.load(r#"
+        lua.load(
+            r#"
             local s = Spell(SPELL_INSTANT)
             s:magicLevel(4)
             _G.result = s:magicLevel()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         let result: i64 = lua.globals().get("result").unwrap();
         assert_eq!(result, 4);
     }
@@ -400,11 +473,15 @@ mod tests {
     #[test]
     fn spell_soul_setter_and_getter() {
         let lua = fresh_lua();
-        lua.load(r#"
+        lua.load(
+            r#"
             local s = Spell(SPELL_INSTANT)
             s:soul(2)
             _G.result = s:soul()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         let result: i64 = lua.globals().get("result").unwrap();
         assert_eq!(result, 2);
     }
@@ -412,11 +489,15 @@ mod tests {
     #[test]
     fn spell_mana_percent_setter_and_getter() {
         let lua = fresh_lua();
-        lua.load(r#"
+        lua.load(
+            r#"
             local s = Spell(SPELL_INSTANT)
             s:manaPercent(10)
             _G.result = s:manaPercent()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         let result: i64 = lua.globals().get("result").unwrap();
         assert_eq!(result, 10);
     }
@@ -424,11 +505,15 @@ mod tests {
     #[test]
     fn spell_range_setter_and_getter() {
         let lua = fresh_lua();
-        lua.load(r#"
+        lua.load(
+            r#"
             local s = Spell(SPELL_INSTANT)
             s:range(7)
             _G.result = s:range()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         let result: i64 = lua.globals().get("result").unwrap();
         assert_eq!(result, 7);
     }
@@ -436,11 +521,15 @@ mod tests {
     #[test]
     fn spell_cooldown_setter_and_getter() {
         let lua = fresh_lua();
-        lua.load(r#"
+        lua.load(
+            r#"
             local s = Spell(SPELL_INSTANT)
             s:cooldown(4000)
             _G.result = s:cooldown()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         let result: i64 = lua.globals().get("result").unwrap();
         assert_eq!(result, 4000);
     }
@@ -448,11 +537,15 @@ mod tests {
     #[test]
     fn spell_group_cooldown_setter_and_getter() {
         let lua = fresh_lua();
-        lua.load(r#"
+        lua.load(
+            r#"
             local s = Spell(SPELL_INSTANT)
             s:groupCooldown(2000)
             _G.result = s:groupCooldown()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         let result: i64 = lua.globals().get("result").unwrap();
         assert_eq!(result, 2000);
     }
@@ -460,11 +553,15 @@ mod tests {
     #[test]
     fn spell_is_premium_setter_and_getter() {
         let lua = fresh_lua();
-        lua.load(r#"
+        lua.load(
+            r#"
             local s = Spell(SPELL_INSTANT)
             s:isPremium(true)
             _G.result = s:isPremium()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         let result: bool = lua.globals().get("result").unwrap();
         assert!(result);
     }
@@ -472,11 +569,15 @@ mod tests {
     #[test]
     fn spell_need_weapon_setter_and_getter() {
         let lua = fresh_lua();
-        lua.load(r#"
+        lua.load(
+            r#"
             local s = Spell(SPELL_INSTANT)
             s:needWeapon(true)
             _G.result = s:needWeapon()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         let result: bool = lua.globals().get("result").unwrap();
         assert!(result);
     }
@@ -484,11 +585,15 @@ mod tests {
     #[test]
     fn spell_is_aggressive_setter_to_false() {
         let lua = fresh_lua();
-        lua.load(r#"
+        lua.load(
+            r#"
             local s = Spell(SPELL_INSTANT)
             s:isAggressive(false)
             _G.result = s:isAggressive()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         let result: bool = lua.globals().get("result").unwrap();
         assert!(!result);
     }
@@ -496,11 +601,15 @@ mod tests {
     #[test]
     fn spell_need_direction_setter_and_getter() {
         let lua = fresh_lua();
-        lua.load(r#"
+        lua.load(
+            r#"
             local s = Spell(SPELL_INSTANT)
             s:needDirection(true)
             _G.result = s:needDirection()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         let result: bool = lua.globals().get("result").unwrap();
         assert!(result);
     }
@@ -508,11 +617,15 @@ mod tests {
     #[test]
     fn spell_need_caster_target_or_direction_setter() {
         let lua = fresh_lua();
-        lua.load(r#"
+        lua.load(
+            r#"
             local s = Spell(SPELL_INSTANT)
             s:needCasterTargetOrDirection(true)
             _G.result = s:needCasterTargetOrDirection()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         let result: bool = lua.globals().get("result").unwrap();
         assert!(result);
     }
@@ -520,11 +633,15 @@ mod tests {
     #[test]
     fn spell_group_setter_string_attack() {
         let lua = fresh_lua();
-        lua.load(r#"
+        lua.load(
+            r#"
             local s = Spell(SPELL_INSTANT)
             s:group("attack")
             _G.result = s:group()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         let result: i64 = lua.globals().get("result").unwrap();
         assert_eq!(result, 1);
     }
@@ -532,11 +649,15 @@ mod tests {
     #[test]
     fn spell_group_setter_string_healing() {
         let lua = fresh_lua();
-        lua.load(r#"
+        lua.load(
+            r#"
             local s = Spell(SPELL_INSTANT)
             s:group("healing")
             _G.result = s:group()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         let result: i64 = lua.globals().get("result").unwrap();
         assert_eq!(result, 2);
     }
@@ -544,11 +665,15 @@ mod tests {
     #[test]
     fn spell_group_setter_unknown_defaults_to_none() {
         let lua = fresh_lua();
-        lua.load(r#"
+        lua.load(
+            r#"
             local s = Spell(SPELL_INSTANT)
             s:group("bogus")
             _G.result = s:group()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         let result: i64 = lua.globals().get("result").unwrap();
         assert_eq!(result, 0);
     }
@@ -567,12 +692,16 @@ mod tests {
     fn spell_vocation_stores_multiple_strings() {
         let lua = fresh_lua();
         lua.globals().set("s", LuaSpell::default()).unwrap();
-        lua.load(r#"s:vocation("knight;true", "elite knight;true")"#).exec().unwrap();
+        lua.load(r#"s:vocation("knight;true", "elite knight;true")"#)
+            .exec()
+            .unwrap();
         let ud: mlua::AnyUserData = lua.globals().get("s").unwrap();
         let borrowed = ud.borrow::<LuaSpell>().unwrap();
         assert_eq!(borrowed.vocation_names.len(), 2);
         assert!(borrowed.vocation_names.contains(&"knight;true".to_string()));
-        assert!(borrowed.vocation_names.contains(&"elite knight;true".to_string()));
+        assert!(borrowed
+            .vocation_names
+            .contains(&"elite knight;true".to_string()));
     }
 
     #[test]
@@ -631,15 +760,23 @@ mod tests {
         let lua = mlua::Lua::new();
         let store = LuaSpellStore::default();
         lua.set_app_data(store.clone());
-        crate::lua_bindings::install_bindings(&lua, crate::lua_bindings::GameStateHandle::default()).unwrap();
+        crate::lua_bindings::install_bindings(
+            &lua,
+            crate::lua_bindings::GameStateHandle::default(),
+        )
+        .unwrap();
 
-        lua.load(r#"
+        lua.load(
+            r#"
             local s = Spell(SPELL_INSTANT)
             s:name("Berserk")
             s:words("exori")
             s:id(80)
             s:register()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
 
         let count = store.0.lock().unwrap().len();
         assert_eq!(count, 1, "register() must add the spell to LuaSpellStore");

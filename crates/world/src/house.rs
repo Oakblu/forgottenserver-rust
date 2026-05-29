@@ -2296,4 +2296,23 @@ mod tests {
         let hti = HouseTransferItem::new(7);
         assert!(!hti.can_transform());
     }
+
+    // -----------------------------------------------------------------------
+    // Confirming stub: HouseTransferItem::can_transform
+    // -----------------------------------------------------------------------
+
+    // C++: house.h — HouseTransferItem overrides Item::canTransform to return
+    //   false, preventing transfer items from being morphed into a different
+    //   item type.  The virtual default in Item returns true; this override
+    //   hard-codes false.
+    // Classification: correct-default
+    #[test]
+    fn test_house_item_can_transform_returns_false_matching_cpp() {
+        // C++: HouseTransferItem::canTransform() const override { return false; }
+        let hti = HouseTransferItem::new(42);
+        assert!(
+            !hti.can_transform(),
+            "HouseTransferItem::can_transform must always return false (mirrors C++ canTransform override)"
+        );
+    }
 }

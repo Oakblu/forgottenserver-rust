@@ -2105,4 +2105,53 @@ mod tests {
         assert!(t.is_creature());
         assert_eq!(t.get_throw_range(), 1);
     }
+
+    // -----------------------------------------------------------------------
+    // Confirming stub tests — C++ virtual-default parity
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_creature_is_attackable_returns_true_matching_cpp_virtual_default() {
+        // C++: creature.h:269 virtual bool isAttackable() const { return true; }
+        let c = Creature::new(1, "Rat");
+        assert!(c.is_attackable());
+    }
+
+    #[test]
+    fn test_creature_can_see_invisibility_returns_false_matching_cpp_virtual_default() {
+        // C++: creature.h:133 virtual bool canSeeInvisibility() const { return false; }
+        let c = Creature::new(1, "Rat");
+        let ext = CreatureExt::default();
+        assert!(!c.can_see_invisibility(&ext));
+    }
+
+    #[test]
+    fn test_creature_can_see_ghost_mode_returns_false_matching_cpp_virtual_default() {
+        // C++: creature.h:135 virtual bool canSeeGhostMode(const Creature*) const { return false; }
+        let c = Creature::new(1, "Rat");
+        let ext = CreatureExt::default();
+        let other_ext = CreatureExt::default();
+        assert!(!c.can_see_ghost_mode(&ext, &other_ext));
+    }
+
+    #[test]
+    fn test_creature_is_creature_returns_true_matching_cpp_override() {
+        // C++: Thing::getCreature() returns non-null for creatures; Creature overrides to return self.
+        let c = Creature::new(1, "Rat");
+        assert!(CommonThing::is_creature(&c));
+    }
+
+    #[test]
+    fn test_creature_is_removable_returns_true_matching_cpp_default() {
+        // C++: item.h:893 virtual bool canRemove() const { return true; } (base default)
+        let c = Creature::new(1, "Rat");
+        assert!(CommonThing::is_removable(&c));
+    }
+
+    #[test]
+    fn test_creature_get_throw_range_returns_one_matching_cpp_default() {
+        // C++: thing.h Thing::getThrowRange virtual default returns 1
+        let c = Creature::new(1, "Rat");
+        assert_eq!(CommonThing::get_throw_range(&c), 1);
+    }
 }

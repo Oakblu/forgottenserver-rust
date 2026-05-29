@@ -23,7 +23,10 @@ fn bench_get_block_type(c: &mut Criterion) {
     c.bench_function("combat_get_block_type", |b| {
         b.iter(|| {
             for &ct in &types {
-                black_box(Combat::get_block_type(black_box(ct), black_box(immunity_flags)));
+                black_box(Combat::get_block_type(
+                    black_box(ct),
+                    black_box(immunity_flags),
+                ));
             }
         })
     });
@@ -32,10 +35,19 @@ fn bench_get_block_type(c: &mut Criterion) {
 fn bench_clamp_damage(c: &mut Criterion) {
     c.bench_function("combat_clamp_damage", |b| {
         b.iter(|| {
-            black_box(Combat::clamp_damage_to_health(black_box(500), black_box(300)));
-            black_box(Combat::clamp_damage_to_health(black_box(100), black_box(300)));
+            black_box(Combat::clamp_damage_to_health(
+                black_box(500),
+                black_box(300),
+            ));
+            black_box(Combat::clamp_damage_to_health(
+                black_box(100),
+                black_box(300),
+            ));
             black_box(Combat::clamp_damage_to_health(black_box(0), black_box(300)));
-            black_box(Combat::clamp_damage_to_health(black_box(-10), black_box(300)));
+            black_box(Combat::clamp_damage_to_health(
+                black_box(-10),
+                black_box(300),
+            ));
         })
     });
 }
@@ -53,8 +65,14 @@ fn bench_apply_critical_hit(c: &mut Criterion) {
 fn bench_compute_leech(c: &mut Criterion) {
     c.bench_function("combat_compute_leech", |b| {
         b.iter(|| {
-            black_box(Combat::compute_leech_amount(black_box(400), black_box(2500)));
-            black_box(Combat::compute_leech_amount(black_box(1000), black_box(500)));
+            black_box(Combat::compute_leech_amount(
+                black_box(400),
+                black_box(2500),
+            ));
+            black_box(Combat::compute_leech_amount(
+                black_box(1000),
+                black_box(500),
+            ));
             black_box(Combat::compute_leech_amount(black_box(0), black_box(9999)));
         })
     });
@@ -65,7 +83,11 @@ fn bench_get_tiles_in_range_small(c: &mut Criterion) {
 
     c.bench_function("combat_get_tiles_in_range_small", |b| {
         b.iter(|| {
-            black_box(CombatArea::get_tiles_in_range(black_box(center), black_box(3), black_box(3)));
+            black_box(CombatArea::get_tiles_in_range(
+                black_box(center),
+                black_box(3),
+                black_box(3),
+            ));
         })
     });
 }
@@ -75,7 +97,11 @@ fn bench_get_tiles_in_range_large(c: &mut Criterion) {
 
     c.bench_function("combat_get_tiles_in_range_large", |b| {
         b.iter(|| {
-            black_box(CombatArea::get_tiles_in_range(black_box(center), black_box(7), black_box(7)));
+            black_box(CombatArea::get_tiles_in_range(
+                black_box(center),
+                black_box(7),
+                black_box(7),
+            ));
         })
     });
 }

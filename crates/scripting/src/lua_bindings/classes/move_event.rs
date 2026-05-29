@@ -76,7 +76,11 @@ impl UserData for LuaMoveEvent {
             let store = lua
                 .app_data_ref::<crate::lua_bindings::LuaMoveEventStore>()
                 .ok_or_else(|| mlua::Error::runtime("LuaMoveEventStore not initialized"))?;
-            store.0.lock().map_err(|_| mlua::Error::runtime("lock poisoned"))?.push(this.clone());
+            store
+                .0
+                .lock()
+                .map_err(|_| mlua::Error::runtime("lock poisoned"))?
+                .push(this.clone());
             Ok(true)
         });
         methods.add_method_mut("id", |_, this, v: i64| {
@@ -248,13 +252,21 @@ mod tests {
         let lua = mlua::Lua::new();
         let store = LuaMoveEventStore::default();
         lua.set_app_data(store.clone());
-        crate::lua_bindings::install_bindings(&lua, crate::lua_bindings::GameStateHandle::default()).unwrap();
-        lua.load(r#"
+        crate::lua_bindings::install_bindings(
+            &lua,
+            crate::lua_bindings::GameStateHandle::default(),
+        )
+        .unwrap();
+        lua.load(
+            r#"
             local m = MoveEvent()
             m:type("stepin")
             m:id(1234)
             m:register()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         let guard = store.0.lock().unwrap();
         assert_eq!(guard.len(), 1);
         assert_eq!(guard[0].item_id, 1234);

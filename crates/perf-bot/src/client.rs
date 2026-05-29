@@ -187,15 +187,13 @@ fn build_login_payload(
     let acc_len = acc_bytes.len().min(50) as u16;
     rsa_plain[cursor..cursor + 2].copy_from_slice(&acc_len.to_le_bytes());
     cursor += 2;
-    rsa_plain[cursor..cursor + acc_len as usize]
-        .copy_from_slice(&acc_bytes[..acc_len as usize]);
+    rsa_plain[cursor..cursor + acc_len as usize].copy_from_slice(&acc_bytes[..acc_len as usize]);
     cursor += acc_len as usize;
 
     let pwd_len = pwd_bytes.len().min(50) as u16;
     rsa_plain[cursor..cursor + 2].copy_from_slice(&pwd_len.to_le_bytes());
     cursor += 2;
-    rsa_plain[cursor..cursor + pwd_len as usize]
-        .copy_from_slice(&pwd_bytes[..pwd_len as usize]);
+    rsa_plain[cursor..cursor + pwd_len as usize].copy_from_slice(&pwd_bytes[..pwd_len as usize]);
     // remaining bytes are already 0x00 padding
 
     // RSA-encrypt the 128-byte block
@@ -369,10 +367,7 @@ impl TibiaClient {
 
 /// Decode a received framed packet: read 6-byte header + payload, verify
 /// Adler-32, XTEA-decrypt, return inner payload bytes.
-pub async fn recv_frame(
-    stream: &mut TcpStream,
-    round_keys: &RoundKeys,
-) -> anyhow::Result<Vec<u8>> {
+pub async fn recv_frame(stream: &mut TcpStream, round_keys: &RoundKeys) -> anyhow::Result<Vec<u8>> {
     // Read 6-byte header: outer_len(2) + checksum(4)
     let mut hdr = [0u8; 6];
     stream

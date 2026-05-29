@@ -313,6 +313,42 @@ mod tests {
     }
 
     // ----------------------------------------------------------------
+    // Confirming tests for u8_to_state (panic-correct classification).
+    //
+    // C++ evidence: thread_holder_base.h uses an AtomicUInt8 to store a
+    // ThreadState_t enum value. In C++ there is no bounds-checking when
+    // converting the raw int back to the enum; an out-of-range value is
+    // undefined behaviour. The Rust u8_to_state() panics on invalid values —
+    // a safer equivalent contract.
+    // ----------------------------------------------------------------
+
+    #[test]
+    fn test_u8_to_state_running_returns_running() {
+        // C++: ThreadState_t == 0 corresponds to THREAD_STATE_RUNNING
+        assert_eq!(u8_to_state(0), ThreadState::Running);
+    }
+
+    #[test]
+    fn test_u8_to_state_closing_returns_closing() {
+        // C++: ThreadState_t == 1 corresponds to THREAD_STATE_CLOSING
+        assert_eq!(u8_to_state(1), ThreadState::Closing);
+    }
+
+    #[test]
+    fn test_u8_to_state_terminated_returns_terminated() {
+        // C++: ThreadState_t == 2 corresponds to THREAD_STATE_TERMINATED
+        assert_eq!(u8_to_state(2), ThreadState::Terminated);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_u8_to_state_invalid_panics() {
+        // C++: converting an out-of-range u8 back to ThreadState_t is undefined
+        // behaviour; Rust panics to enforce the contract safely.
+        let _ = u8_to_state(42);
+    }
+
+    // ----------------------------------------------------------------
     // Inside the spawn closure, the worker observes the Running state at
     // least once before stop() flips it to Closing. This exercises the
     // body of a `while state == Running { sleep }` loop deterministically

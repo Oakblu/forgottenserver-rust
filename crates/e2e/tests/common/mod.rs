@@ -1,5 +1,7 @@
 #![cfg(feature = "e2e")]
 
+pub mod seed;
+
 use std::net::SocketAddr;
 use std::time::Duration;
 
@@ -14,7 +16,7 @@ fn repo_root() -> std::path::PathBuf {
 }
 
 use testcontainers::{
-    core::{wait::LogWaitStrategy, Mount, WaitFor},
+    core::{wait::LogWaitStrategy, IntoContainerPort, Mount, WaitFor},
     runners::AsyncRunner,
     ContainerAsync, GenericImage, ImageExt,
 };
@@ -26,6 +28,7 @@ pub struct ServerFixture {
     _config_dir: tempfile::TempDir,
     status_port: u16,
     game_port: u16,
+    http_port: u16,
     // Runtime declared last — drops last, after container handles
     _rt: tokio::runtime::Runtime,
 }
@@ -34,7 +37,7 @@ impl ServerFixture {
     pub fn start() -> Self {
         let rt = tokio::runtime::Runtime::new().expect("tokio runtime");
 
-        let (mariadb, server, config_dir, status_port, game_port) = rt.block_on(async {
+        let (mariadb, server, config_dir, status_port, game_port, http_port) = rt.block_on(async {
             // ── 1. MariaDB ────────────────────────────────────────────────
             // We mount the shared init script and schema so the database is
             // pre-bootstrapped the same way the production stack does it
@@ -123,6 +126,7 @@ mapAuthor = "Komic"
                     config_path.to_str().expect("config path not UTF-8"),
                     "/srv/config.lua",
                 ))
+                .with_mapped_port(0, 8080u16.tcp())
                 .start()
                 .await
                 .expect(
@@ -139,8 +143,14 @@ mapAuthor = "Komic"
                 .get_host_port_ipv4(7172)
                 .await
                 .expect("game port mapping missing");
+            let http_port = server
+                .get_host_port_ipv4(8080)
+                .await
+                .expect("http port mapping missing");
 
-            (mariadb, server, config_dir, status_port, game_port)
+            seed::seed_db(&mariadb).await;
+
+            (mariadb, server, config_dir, status_port, game_port, http_port)
         });
 
         ServerFixture {
@@ -149,6 +159,7 @@ mapAuthor = "Komic"
             _config_dir: config_dir,
             status_port,
             game_port,
+            http_port,
             _rt: rt,
         }
     }
@@ -167,6 +178,14 @@ mapAuthor = "Komic"
 
     pub fn game_addr(&self) -> SocketAddr {
         SocketAddr::from(([127, 0, 0, 1], self.game_port))
+    }
+
+    pub fn http_port(&self) -> u16 {
+        self.http_port
+    }
+
+    pub fn http_addr(&self) -> SocketAddr {
+        SocketAddr::from(([127, 0, 0, 1], self.http_port))
     }
 }
 

@@ -80,15 +80,14 @@ async fn run_round(config: &ScenarioConfig, n: usize, secs: u64) -> RunMetrics {
             let mut m = RunMetrics::new();
             let deadline = Instant::now() + Duration::from_secs(secs);
 
-            let client =
-                match TibiaClient::connect(&host, port, &account, &password).await {
-                    Ok(c) => c,
-                    Err(_) => {
-                        m.record_error();
-                        m.duration_secs = secs as f64;
-                        return m;
-                    }
-                };
+            let client = match TibiaClient::connect(&host, port, &account, &password).await {
+                Ok(c) => c,
+                Err(_) => {
+                    m.record_error();
+                    m.duration_secs = secs as f64;
+                    return m;
+                }
+            };
 
             let mut bot = Bot::new(client, w);
             let bot_start = Instant::now();

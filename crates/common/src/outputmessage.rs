@@ -232,6 +232,15 @@ mod tests {
         assert_eq!(m.get_header_position(), 0);
     }
 
+    #[test]
+    fn test_output_message_get_header_position_returns_zero() {
+        // C++: outputmessage.h — OutputMessage::getHeaderPosition() returns
+        // HEADER_AREA which is always 0. The header occupies bytes [0..2) of
+        // the buffer; position 0 is the canonical start of the header region.
+        let m = msg();
+        assert_eq!(m.get_header_position(), 0);
+    }
+
     // --- write_message_length ---
 
     #[test]

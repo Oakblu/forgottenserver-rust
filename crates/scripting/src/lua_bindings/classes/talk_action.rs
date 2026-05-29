@@ -146,9 +146,7 @@ mod tests {
     #[test]
     fn talk_action_access_setter_bool_true() {
         let lua = fresh_lua();
-        lua.globals()
-            .set("t", LuaTalkAction::default())
-            .unwrap();
+        lua.globals().set("t", LuaTalkAction::default()).unwrap();
         lua.load(r#"t:access(true)"#).exec().unwrap();
         let ud: mlua::AnyUserData = lua.globals().get("t").unwrap();
         let borrowed = ud.borrow::<LuaTalkAction>().unwrap();
@@ -158,9 +156,7 @@ mod tests {
     #[test]
     fn talk_action_separator_setter() {
         let lua = fresh_lua();
-        lua.globals()
-            .set("t", LuaTalkAction::default())
-            .unwrap();
+        lua.globals().set("t", LuaTalkAction::default()).unwrap();
         lua.load(r#"t:separator(";")"#).exec().unwrap();
         let ud: mlua::AnyUserData = lua.globals().get("t").unwrap();
         let borrowed = ud.borrow::<LuaTalkAction>().unwrap();

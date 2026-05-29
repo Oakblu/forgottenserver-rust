@@ -3,9 +3,15 @@
 
 Usage:
     python3 scripts/find_stubs.py
-    # writes scripts/stub_report.json
+    # writes scripts/stub_report.json (legacy flat array)
+    # writes scripts/stub_report_structured.json (unresolved/confirmed split)
+
+    python3 scripts/find_stubs.py --allowlist /path/to/custom.json
+    # uses a custom allowlist instead of scripts/confirmed_stubs.json
 """
 
+import argparse
+import hashlib
 import json
 import os
 import re
@@ -16,6 +22,8 @@ ROOT = Path(__file__).parent.parent
 CRATES_DIR = ROOT / "crates"
 MANIFEST_PATH = ROOT / "rust_symbol_manifest.json"
 OUTPUT_PATH = Path(__file__).parent / "stub_report.json"
+STRUCTURED_OUTPUT_PATH = Path(__file__).parent / "stub_report_structured.json"
+DEFAULT_ALLOWLIST_PATH = Path(__file__).parent / "confirmed_stubs.json"
 
 
 def strip_test_blocks(src: str) -> str:
@@ -152,6 +160,7 @@ def detect_empty_bodies(lines: list, bodies: list) -> list:
                     "fn_name": b["fn_name"],
                     "line": b["start_line"],
                     "snippet": lines[b["start_line"] - 1].strip()[:120],
+                    "body": b["body"],
                 }
             )
     return hits
@@ -170,6 +179,7 @@ def detect_trivial_bodies(lines: list, bodies: list) -> list:
                     "fn_name": b["fn_name"],
                     "line": b["start_line"],
                     "snippet": body[:120],
+                    "body": b["body"],
                 }
             )
     return hits
@@ -194,6 +204,7 @@ def detect_dropped_work(lines: list, bodies: list) -> list:
                         "fn_name": b["fn_name"],
                         "line": b["start_line"] + offset,
                         "snippet": line.strip()[:120],
+                        "body": b["body"],
                     }
                 )
     return hits
@@ -239,6 +250,7 @@ def detect_panic_stubs(src: str) -> list:
                     "fn_name": "<unknown>",
                     "line": i,
                     "snippet": line.strip()[:120],
+                    "body": line,
                 }
             )
     return hits
@@ -250,6 +262,12 @@ def enclosing_fn(line: int, bodies: list) -> str:
         if b["start_line"] <= line <= b["end_line"]:
             return b["fn_name"]
     return "<unknown>"
+
+
+def compute_body_hash(body: str) -> str:
+    """Compute a stable SHA-256 hash of a function body (stripped of leading/trailing whitespace)."""
+    normalized = body.strip()
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
 
 
 def load_manifest(path: Path) -> dict:
@@ -268,6 +286,27 @@ def load_manifest(path: Path) -> dict:
         key = qname.split("::")[-1] if qname else ""
         if key:
             lookup.setdefault(key, []).append(entry)
+    return lookup
+
+
+def load_allowlist(path: Path) -> dict:
+    """Load confirmed_stubs.json into a lookup dict keyed by (file, fn_name, line).
+
+    Returns {} if the file is missing or malformed.
+    Each entry maps (file, fn_name, line) -> body_hash.
+    """
+    try:
+        data = json.loads(path.read_text())
+    except Exception:
+        return {}
+    lookup: dict = {}
+    for entry in data:
+        key = (
+            entry.get("file", ""),
+            entry.get("fn_name", ""),
+            entry.get("line", -1),
+        )
+        lookup[key] = entry.get("body_hash", "")
     return lookup
 
 
@@ -298,18 +337,26 @@ def scan_file(path: Path, crates_dir: Path, manifest: dict) -> list:
 
     for hit in detect_panic_stubs(src):
         hit["fn_name"] = enclosing_fn(hit["line"], bodies)
+        # Attach the body from the enclosing function for hash computation
+        for b in bodies:
+            if b["fn_name"] == hit["fn_name"]:
+                hit["body"] = b["body"]
+                break
         hits.append(hit)
 
-    # Enrich with file metadata and manifest cross-reference
+    # Enrich with file metadata, body hash, and manifest cross-reference
     try:
         rel = str(path.relative_to(crates_dir))
     except ValueError:
         rel = str(path)
     crate = rel.split(os.sep)[0]
 
+    result = []
     for hit in hits:
+        body = hit.pop("body", "")
         hit["file"] = rel
         hit["crate"] = crate
+        hit["body_hash"] = compute_body_hash(body)
         matches = manifest.get(hit["fn_name"], [])
         hit["ledger_symbol"] = (
             matches[0].get("qualified_name") if len(matches) == 1 else None
@@ -317,17 +364,85 @@ def scan_file(path: Path, crates_dir: Path, manifest: dict) -> list:
         hit["manifest_match"] = (
             matches[0] if len(matches) == 1 else (matches if matches else None)
         )
+        result.append(hit)
 
-    return hits
+    return result
 
 
-def main() -> None:
+def partition_stubs(stubs: list, allowlist: dict) -> tuple:
+    """Partition stubs into (unresolved, confirmed) lists using the allowlist.
+
+    Emits WARN to stderr when a confirmed stub's body hash has changed.
+    Returns (unresolved_list, confirmed_list).
+    """
+    unresolved = []
+    confirmed = []
+    for stub in stubs:
+        key = (stub.get("file", ""), stub.get("fn_name", ""), stub.get("line", -1))
+        if key not in allowlist:
+            unresolved.append(stub)
+        else:
+            expected_hash = allowlist[key]
+            actual_hash = stub.get("body_hash", "")
+            if expected_hash and actual_hash and expected_hash != actual_hash:
+                print(
+                    f"WARN: confirmed stub body changed: "
+                    f"{stub['file']}:{stub['fn_name']} (line {stub['line']})",
+                    file=sys.stderr,
+                )
+                unresolved.append(stub)
+            else:
+                confirmed.append(stub)
+    return unresolved, confirmed
+
+
+def main(args=None) -> None:
+    parser = argparse.ArgumentParser(
+        description="Find stub functions in the Rust port codebase."
+    )
+    parser.add_argument(
+        "--allowlist",
+        metavar="PATH",
+        default=None,
+        help=(
+            "Path to confirmed_stubs.json allowlist. "
+            f"Defaults to {DEFAULT_ALLOWLIST_PATH} if it exists."
+        ),
+    )
+    parsed = parser.parse_args(args)
+
+    # Resolve allowlist path
+    if parsed.allowlist is not None:
+        allowlist_path = Path(parsed.allowlist)
+    else:
+        allowlist_path = DEFAULT_ALLOWLIST_PATH
+
+    allowlist = load_allowlist(allowlist_path)
+
     manifest = load_manifest(MANIFEST_PATH)
     stubs = []
     for rs_path in walk_rs_files(CRATES_DIR):
         stubs.extend(scan_file(rs_path, CRATES_DIR, manifest))
-    OUTPUT_PATH.write_text(json.dumps(stubs, indent=2))
-    print(f"Wrote {len(stubs)} stubs to {OUTPUT_PATH}", file=sys.stderr)
+
+    unresolved, confirmed = partition_stubs(stubs, allowlist)
+
+    # Legacy backward-compat: write flat array of ALL stubs to stub_report.json
+    # (strip body_hash from legacy output to preserve existing format)
+    legacy_stubs = [{k: v for k, v in s.items() if k != "body_hash"} for s in stubs]
+    OUTPUT_PATH.write_text(json.dumps(legacy_stubs, indent=2))
+
+    # New structured format: write to stub_report_structured.json
+    structured = {
+        "unresolved": unresolved,
+        "confirmed": confirmed,
+    }
+    STRUCTURED_OUTPUT_PATH.write_text(json.dumps(structured, indent=2))
+
+    print(
+        f"Wrote {len(stubs)} stubs to {OUTPUT_PATH} "
+        f"({len(unresolved)} unresolved, {len(confirmed)} confirmed)",
+        file=sys.stderr,
+    )
 
 
 if __name__ == "__main__":

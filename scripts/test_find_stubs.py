@@ -314,6 +314,178 @@ class TestScanFileIntegration(unittest.TestCase):
         for hit in hits:
             self.assertEqual(required, required & hit.keys())
 
+    def test_output_has_body_hash(self):
+        src = "pub fn noop() {}\n"
+        hits = self._scan(src)
+        self.assertTrue(len(hits) > 0)
+        for hit in hits:
+            self.assertIn("body_hash", hit)
+            self.assertIsInstance(hit["body_hash"], str)
+            self.assertEqual(len(hit["body_hash"]), 64)  # SHA-256 hex digest
+
+
+class TestComputeBodyHash(unittest.TestCase):
+    def test_deterministic(self):
+        body = "    Ok(())"
+        h1 = find_stubs.compute_body_hash(body)
+        h2 = find_stubs.compute_body_hash(body)
+        self.assertEqual(h1, h2)
+
+    def test_different_bodies_differ(self):
+        h1 = find_stubs.compute_body_hash("    true")
+        h2 = find_stubs.compute_body_hash("    false")
+        self.assertNotEqual(h1, h2)
+
+    def test_whitespace_stripped_before_hash(self):
+        # Leading/trailing whitespace should not affect the hash
+        h1 = find_stubs.compute_body_hash("  Ok(())  ")
+        h2 = find_stubs.compute_body_hash("Ok(())")
+        self.assertEqual(h1, h2)
+
+    def test_hex_digest_is_64_chars(self):
+        h = find_stubs.compute_body_hash("true")
+        self.assertEqual(len(h), 64)
+
+
+class TestLoadAllowlist(unittest.TestCase):
+    def test_missing_file_returns_empty_dict(self):
+        result = find_stubs.load_allowlist(Path("/nonexistent/confirmed_stubs.json"))
+        self.assertEqual(result, {})
+
+    def test_malformed_json_returns_empty_dict(self):
+        import tempfile
+        with tempfile.NamedTemporaryFile(suffix=".json", mode="w", delete=False) as f:
+            f.write("not json")
+            name = f.name
+        result = find_stubs.load_allowlist(Path(name))
+        self.assertEqual(result, {})
+
+    def test_valid_entry_keyed_by_tuple(self):
+        import tempfile, json
+        entry = {
+            "fn_name": "is_attackable",
+            "file": "entity/src/creature.rs",
+            "line": 816,
+            "body_hash": "abc123",
+        }
+        with tempfile.NamedTemporaryFile(suffix=".json", mode="w", delete=False) as f:
+            json.dump([entry], f)
+            name = f.name
+        result = find_stubs.load_allowlist(Path(name))
+        key = ("entity/src/creature.rs", "is_attackable", 816)
+        self.assertIn(key, result)
+        self.assertEqual(result[key], "abc123")
+
+    def test_empty_array_returns_empty_dict(self):
+        import tempfile, json
+        with tempfile.NamedTemporaryFile(suffix=".json", mode="w", delete=False) as f:
+            json.dump([], f)
+            name = f.name
+        result = find_stubs.load_allowlist(Path(name))
+        self.assertEqual(result, {})
+
+
+class TestPartitionStubs(unittest.TestCase):
+    def _make_stub(self, fn_name, file, line, body_hash="abc123"):
+        return {
+            "fn_name": fn_name,
+            "file": file,
+            "line": line,
+            "body_hash": body_hash,
+            "pattern": "trivial_body",
+        }
+
+    def test_no_allowlist_all_unresolved(self):
+        stubs = [self._make_stub("foo", "a.rs", 1)]
+        unresolved, confirmed = find_stubs.partition_stubs(stubs, {})
+        self.assertEqual(len(unresolved), 1)
+        self.assertEqual(len(confirmed), 0)
+
+    def test_matching_entry_goes_to_confirmed(self):
+        stub = self._make_stub("foo", "a.rs", 1, body_hash="hash1")
+        allowlist = {("a.rs", "foo", 1): "hash1"}
+        unresolved, confirmed = find_stubs.partition_stubs([stub], allowlist)
+        self.assertEqual(len(unresolved), 0)
+        self.assertEqual(len(confirmed), 1)
+
+    def test_hash_mismatch_goes_to_unresolved_with_warning(self):
+        stub = self._make_stub("foo", "a.rs", 1, body_hash="new_hash")
+        allowlist = {("a.rs", "foo", 1): "old_hash"}
+        import io, contextlib
+        stderr_capture = io.StringIO()
+        with contextlib.redirect_stderr(stderr_capture):
+            unresolved, confirmed = find_stubs.partition_stubs([stub], allowlist)
+        self.assertEqual(len(unresolved), 1)
+        self.assertEqual(len(confirmed), 0)
+        self.assertIn("WARN:", stderr_capture.getvalue())
+        self.assertIn("foo", stderr_capture.getvalue())
+
+    def test_hash_mismatch_warn_message_format(self):
+        stub = self._make_stub("my_fn", "crate/src/lib.rs", 42, body_hash="new")
+        allowlist = {("crate/src/lib.rs", "my_fn", 42): "old"}
+        import io, contextlib
+        stderr_capture = io.StringIO()
+        with contextlib.redirect_stderr(stderr_capture):
+            find_stubs.partition_stubs([stub], allowlist)
+        warn = stderr_capture.getvalue()
+        self.assertIn("WARN: confirmed stub body changed:", warn)
+        self.assertIn("my_fn", warn)
+        self.assertIn("line 42", warn)
+
+    def test_mixed_stubs_partitioned_correctly(self):
+        stubs = [
+            self._make_stub("confirmed_fn", "a.rs", 1, body_hash="h1"),
+            self._make_stub("unconfirmed_fn", "b.rs", 2, body_hash="h2"),
+            self._make_stub("changed_fn", "c.rs", 3, body_hash="new_h3"),
+        ]
+        allowlist = {
+            ("a.rs", "confirmed_fn", 1): "h1",
+            ("c.rs", "changed_fn", 3): "old_h3",
+        }
+        import io, contextlib
+        stderr_capture = io.StringIO()
+        with contextlib.redirect_stderr(stderr_capture):
+            unresolved, confirmed = find_stubs.partition_stubs(stubs, allowlist)
+        self.assertEqual(len(confirmed), 1)
+        self.assertEqual(confirmed[0]["fn_name"], "confirmed_fn")
+        self.assertEqual(len(unresolved), 2)
+        unresolved_names = {s["fn_name"] for s in unresolved}
+        self.assertIn("unconfirmed_fn", unresolved_names)
+        self.assertIn("changed_fn", unresolved_names)
+
+    def test_empty_allowlist_hash_does_not_warn(self):
+        # An allowlist entry with empty body_hash should not trigger a warn
+        # (treats empty hash as "skip hash check")
+        stub = self._make_stub("foo", "a.rs", 1, body_hash="some_hash")
+        allowlist = {("a.rs", "foo", 1): ""}
+        import io, contextlib
+        stderr_capture = io.StringIO()
+        with contextlib.redirect_stderr(stderr_capture):
+            unresolved, confirmed = find_stubs.partition_stubs([stub], allowlist)
+        self.assertEqual(len(confirmed), 1)
+        self.assertNotIn("WARN", stderr_capture.getvalue())
+
+
+class TestMainAllowlist(unittest.TestCase):
+    """Integration tests for main() with allowlist support."""
+
+    def _make_allowlist_file(self, entries):
+        import tempfile
+        f = tempfile.NamedTemporaryFile(suffix=".json", mode="w", delete=False)
+        json.dump(entries, f)
+        f.close()
+        return Path(f.name)
+
+    def test_main_runs_without_allowlist_file(self):
+        # When confirmed_stubs.json doesn't exist, all stubs are unresolved
+        import tempfile
+        nonexistent = Path(tempfile.mkdtemp()) / "no_such_file.json"
+        # Should not raise
+        try:
+            find_stubs.main(["--allowlist", str(nonexistent)])
+        except SystemExit:
+            pass  # argparse may exit on error; that's fine for this test
+
 
 if __name__ == "__main__":
     unittest.main()

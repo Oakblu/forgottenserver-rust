@@ -1,0 +1,191 @@
+[
+  {
+    "fn_name": "is_container",
+    "file": "items/src/container.rs",
+    "line": 434,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_item",
+    "file": "items/src/container.rs",
+    "line": 437,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "items/src/container.rs",
+    "line": 440,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "get_first_index",
+    "file": "items/src/container.rs",
+    "line": 443,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "cylinder_first_index",
+    "file": "items/src/container.rs",
+    "line": 469,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "can_remove",
+    "file": "items/src/depotchest.rs",
+    "line": 126,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_container",
+    "file": "items/src/depotchest.rs",
+    "line": 136,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_item",
+    "file": "items/src/depotchest.rs",
+    "line": 139,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "items/src/depotchest.rs",
+    "line": 142,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "query_add",
+    "file": "items/src/depotlocker.rs",
+    "line": 81,
+    "body_hash": "15329d27d85dcfbf5bf0e34a9dbe9f51252f02919f7597ec867a6fe04930996b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "can_remove",
+    "file": "items/src/depotlocker.rs",
+    "line": 86,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_container",
+    "file": "items/src/depotlocker.rs",
+    "line": 176,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_item",
+    "file": "items/src/depotlocker.rs",
+    "line": 179,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "items/src/depotlocker.rs",
+    "line": 182,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "can_remove",
+    "file": "items/src/inbox.rs",
+    "line": 62,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_container",
+    "file": "items/src/inbox.rs",
+    "line": 114,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_item",
+    "file": "items/src/inbox.rs",
+    "line": 117,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "items/src/inbox.rs",
+    "line": 120,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "can_remove",
+    "file": "items/src/item.rs",
+    "line": 484,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "can_transform",
+    "file": "items/src/item.rs",
+    "line": 1669,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "store_item",
+    "file": "items/src/mailbox.rs",
+    "line": 101,
+    "body_hash": "8f9da6ebb74583a113183d5795f82d68692f4ecdef680722f276ffaa9ad2cc55",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "is_mailbox",
+    "file": "items/src/mailbox.rs",
+    "line": 107,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_store_inbox",
+    "file": "items/src/storeinbox.rs",
+    "line": 122,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "can_remove",
+    "file": "items/src/storeinbox.rs",
+    "line": 131,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_container",
+    "file": "items/src/storeinbox.rs",
+    "line": 251,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_item",
+    "file": "items/src/storeinbox.rs",
+    "line": 254,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "items/src/storeinbox.rs",
+    "line": 257,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  }
+]

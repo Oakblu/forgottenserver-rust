@@ -106,11 +106,15 @@ mod tests {
     #[test]
     fn creature_event_callback_setter_records_name() {
         let lua = fresh_lua();
-        lua.globals().set("ce", LuaCreatureEvent::default()).unwrap();
+        lua.globals()
+            .set("ce", LuaCreatureEvent::default())
+            .unwrap();
         lua.load(r#"ce:onLogin(function() end)"#).exec().unwrap();
         let ud: mlua::AnyUserData = lua.globals().get("ce").unwrap();
         let borrowed = ud.borrow::<LuaCreatureEvent>().unwrap();
-        assert!(borrowed.registered_callbacks.contains(&"onLogin".to_string()));
+        assert!(borrowed
+            .registered_callbacks
+            .contains(&"onLogin".to_string()));
     }
 
     #[test]
@@ -119,12 +123,20 @@ mod tests {
         let lua = mlua::Lua::new();
         let store = LuaCreatureEventStore::default();
         lua.set_app_data(store.clone());
-        crate::lua_bindings::install_bindings(&lua, crate::lua_bindings::GameStateHandle::default()).unwrap();
-        lua.load(r#"
+        crate::lua_bindings::install_bindings(
+            &lua,
+            crate::lua_bindings::GameStateHandle::default(),
+        )
+        .unwrap();
+        lua.load(
+            r#"
             local ce = CreatureEvent("Login")
             function ce.onLogin(player) end
             ce:register()
-        "#).exec().unwrap();
+        "#,
+        )
+        .exec()
+        .unwrap();
         let guard = store.0.lock().unwrap();
         assert_eq!(guard.len(), 1);
         assert_eq!(guard[0].name, "Login");

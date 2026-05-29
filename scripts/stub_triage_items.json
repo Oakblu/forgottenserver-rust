@@ -1,0 +1,245 @@
+[
+  {
+    "fn_name": "is_container",
+    "file": "items/src/container.rs",
+    "line": 434,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/container.h",
+    "cpp_snippet": "Container::getContainer() override returns this (non-null) — is_container() = true",
+    "test_name": "test_container_implements_thing_is_container"
+  },
+  {
+    "fn_name": "is_item",
+    "file": "items/src/container.rs",
+    "line": 437,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/container.h",
+    "cpp_snippet": "Container extends Item — is_item() = true",
+    "test_name": "test_container_implements_thing_is_container"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "items/src/container.rs",
+    "line": 440,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/container.h",
+    "cpp_snippet": "Container not removed by default — is_removed() = false",
+    "test_name": "test_container_implements_thing_is_container"
+  },
+  {
+    "fn_name": "get_first_index",
+    "file": "items/src/container.rs",
+    "line": 443,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/container.h",
+    "cpp_snippet": "Container::getFirstIndex() returns 0",
+    "test_name": "test_cylinder_first_index_returns_zero"
+  },
+  {
+    "fn_name": "cylinder_first_index",
+    "file": "items/src/container.rs",
+    "line": 469,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/container.h",
+    "cpp_snippet": "Container::getFirstIndex() returns 0",
+    "test_name": "test_cylinder_first_index_returns_zero"
+  },
+  {
+    "fn_name": "can_remove",
+    "file": "items/src/depotchest.rs",
+    "line": 126,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/depotchest.h",
+    "cpp_snippet": "depotchest.h:27 — bool canRemove() const override { return false; }",
+    "test_name": "test_can_remove_always_false"
+  },
+  {
+    "fn_name": "is_container",
+    "file": "items/src/depotchest.rs",
+    "line": 136,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/depotchest.h",
+    "cpp_snippet": "DepotChest extends Container — is_container() = true",
+    "test_name": "test_depotchest_implements_thing_is_container"
+  },
+  {
+    "fn_name": "is_item",
+    "file": "items/src/depotchest.rs",
+    "line": 139,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/depotchest.h",
+    "cpp_snippet": "DepotChest extends Item — is_item() = true",
+    "test_name": "test_depotchest_implements_thing_is_container"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "items/src/depotchest.rs",
+    "line": 142,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/depotchest.h",
+    "cpp_snippet": "Item::isRemoved() returns false by default; DepotChest does not override",
+    "test_name": "test_depotchest_is_removed_returns_false_matching_cpp"
+  },
+  {
+    "fn_name": "query_add",
+    "file": "items/src/depotlocker.rs",
+    "line": 81,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/depotlocker.h",
+    "cpp_snippet": "depotlocker.h:27 — return RETURNVALUE_NOTENOUGHROOM",
+    "test_name": "test_query_add_always_returns_not_enough_room"
+  },
+  {
+    "fn_name": "can_remove",
+    "file": "items/src/depotlocker.rs",
+    "line": 86,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/depotlocker.h",
+    "cpp_snippet": "depotlocker.h:37 — bool canRemove() const override { return false; }",
+    "test_name": "test_can_remove_always_false"
+  },
+  {
+    "fn_name": "is_container",
+    "file": "items/src/depotlocker.rs",
+    "line": 176,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/depotlocker.h",
+    "cpp_snippet": "DepotLocker extends Container — is_container() = true",
+    "test_name": "test_depotlocker_implements_thing_is_container"
+  },
+  {
+    "fn_name": "is_item",
+    "file": "items/src/depotlocker.rs",
+    "line": 179,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/depotlocker.h",
+    "cpp_snippet": "DepotLocker extends Item — is_item() = true",
+    "test_name": "test_depotlocker_implements_thing_is_container"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "items/src/depotlocker.rs",
+    "line": 182,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/depotlocker.h",
+    "cpp_snippet": "Item::isRemoved() returns false by default; DepotLocker does not override",
+    "test_name": "test_depotlocker_is_removed_returns_false_matching_cpp"
+  },
+  {
+    "fn_name": "can_remove",
+    "file": "items/src/inbox.rs",
+    "line": 62,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/inbox.h",
+    "cpp_snippet": "inbox.h:25 — bool canRemove() const override { return false; }",
+    "test_name": "test_can_remove_always_false"
+  },
+  {
+    "fn_name": "is_container",
+    "file": "items/src/inbox.rs",
+    "line": 114,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/inbox.h",
+    "cpp_snippet": "Inbox extends Container — is_container() = true",
+    "test_name": "test_inbox_implements_thing_is_container"
+  },
+  {
+    "fn_name": "is_item",
+    "file": "items/src/inbox.rs",
+    "line": 117,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/inbox.h",
+    "cpp_snippet": "Inbox extends Item — is_item() = true",
+    "test_name": "test_inbox_implements_thing_is_container"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "items/src/inbox.rs",
+    "line": 120,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/inbox.h",
+    "cpp_snippet": "Item::isRemoved() returns false by default; Inbox does not override",
+    "test_name": "test_inbox_implements_thing_is_container"
+  },
+  {
+    "fn_name": "can_remove",
+    "file": "items/src/item.rs",
+    "line": 484,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/item.h",
+    "cpp_snippet": "item.h:893 — virtual bool canRemove() const { return true; }",
+    "test_name": "test_can_remove_returns_true_matching_cpp_base_default"
+  },
+  {
+    "fn_name": "can_transform",
+    "file": "items/src/item.rs",
+    "line": 1669,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/item.h",
+    "cpp_snippet": "item.h — virtual bool canTransform() const { return true; }",
+    "test_name": "test_can_transform_always_true"
+  },
+  {
+    "fn_name": "store_item",
+    "file": "items/src/mailbox.rs",
+    "line": 101,
+    "classification": "intentional-deferred",
+    "cpp_evidence": "forgottenserver-upstream/src/mailbox.cpp",
+    "cpp_snippet": "Mailbox::addThing calls g_game.internalMoveItem — cross-crate game dispatch",
+    "intentional_diff_id": "cross-crate-behavior-dispatch-deferred-to-game-glue"
+  },
+  {
+    "fn_name": "is_mailbox",
+    "file": "items/src/mailbox.rs",
+    "line": 107,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/mailbox.h",
+    "cpp_snippet": "mailbox.h — Mailbox* getMailbox() override { return this; } (non-null = true)",
+    "test_name": "test_is_mailbox_returns_true"
+  },
+  {
+    "fn_name": "is_store_inbox",
+    "file": "items/src/storeinbox.rs",
+    "line": 122,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/storeinbox.h",
+    "cpp_snippet": "storeinbox.h — StoreInbox* getStoreInbox() override { return this; }",
+    "test_name": "test_is_store_inbox_returns_true"
+  },
+  {
+    "fn_name": "can_remove",
+    "file": "items/src/storeinbox.rs",
+    "line": 131,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/storeinbox.h",
+    "cpp_snippet": "storeinbox.h:25 — bool canRemove() const override { return false; }",
+    "test_name": "test_can_remove_always_false"
+  },
+  {
+    "fn_name": "is_container",
+    "file": "items/src/storeinbox.rs",
+    "line": 251,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/storeinbox.h",
+    "cpp_snippet": "StoreInbox extends Container — is_container() = true",
+    "test_name": "test_storeinbox_implements_thing_is_container"
+  },
+  {
+    "fn_name": "is_item",
+    "file": "items/src/storeinbox.rs",
+    "line": 254,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/storeinbox.h",
+    "cpp_snippet": "StoreInbox extends Item — is_item() = true",
+    "test_name": "test_storeinbox_implements_thing_is_container"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "items/src/storeinbox.rs",
+    "line": 257,
+    "classification": "correct-default",
+    "cpp_evidence": "forgottenserver-upstream/src/storeinbox.h",
+    "cpp_snippet": "Item::isRemoved() returns false by default; StoreInbox does not override",
+    "test_name": "test_storeinbox_is_removed_returns_false_matching_cpp"
+  }
+]

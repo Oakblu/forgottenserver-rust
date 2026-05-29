@@ -256,4 +256,29 @@ mod tests {
         let mgr = DatabaseManager::new();
         assert_eq!(mgr.get_database_version(&db), 0);
     }
+
+    // -----------------------------------------------------------------------
+    // Confirming stub: DatabaseManager::optimize_tables
+    // Classification: intentional-deferred
+    // intentional_diff_id: database-adapter-helpers-deferred-to-mariadb-adapter-prod
+    // In-memory DB has no tables to optimize; real MariaDB adapter sends
+    // OPTIMIZE TABLE queries to the server.
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_optimize_tables_is_noop_for_in_memory_db() {
+        // DatabaseManager::optimize_tables is a no-op for InMemoryDb —
+        // no SQL is executed and the return value is Ok(()).
+        let mut db = InMemoryDb::new();
+        db.create_table("players");
+        let mgr = DatabaseManager::new();
+        let before = db.executed_statements.len();
+        let result = mgr.optimize_tables(&mut db);
+        assert!(result.is_ok(), "optimize_tables must return Ok(())");
+        assert_eq!(
+            db.executed_statements.len(),
+            before,
+            "optimize_tables must not execute any SQL against InMemoryDb"
+        );
+    }
 }
