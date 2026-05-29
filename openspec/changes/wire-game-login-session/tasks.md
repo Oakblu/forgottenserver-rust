@@ -50,10 +50,21 @@
 - [x] 8.1 Replace the body of `GameLoginHandler::handle_connection` in `boot.rs` with the full sequence: challenge → parse_first_packet → validate echo → lookup_session → load_player_for_login → build_enter_world_burst → flush → game_loop
 - [x] 8.2 Each failure path (parse error, echo mismatch, session not found, player not found) MUST send the appropriate `serialize_disconnect` message before returning
 
-## 9. Quality gates
+## 9. Fix: Adler32 packet framing (challenge + all outbound)
 
-- [ ] 9.1 Run `cargo test --lib --workspace` — zero failures
-- [ ] 9.2 Run `cargo clippy --workspace --lib --tests -- -D warnings` — zero warnings
-- [ ] 9.3 Run `cargo fmt --all` — no diff
-- [ ] 9.4 Rebuild Docker: `docker compose down && docker compose up --build` — server logs show HTTP + game listeners starting
-- [ ] 9.5 Connect OTClient: complete login, select character — client renders the game world (map visible, player stats shown, no ERROR 60 or disconnect)
+_Discovered after tasks 1–8 were marked done. OTClient connects to 7172 but sends nothing back — the challenge wire format is wrong (missing Adler32 + wrong structure). See design.md §Defect._
+
+- [x] 9.1 In `boot.rs` `GameLoginHandler::handle_connection`, replace the `OutputMessage`-based challenge with a raw `[u8; 12]` build: `[Adler32(4)][0x0006(2)][0x1F][timestamp_le(4)][rand(1)]` using `adler_checksum` from `forgottenserver_common::tools`. Send all 12 bytes with no TCP length prefix.
+- [x] 9.2 Write unit test `challenge_packet_is_12_bytes_adler32_prefixed`: build the challenge bytes, parse the first 4 bytes as Adler32, verify it matches `adler_checksum(&buf[4..12])`, verify buf[4..6] == `[0x06, 0x00]`, buf[6] == `0x1F`.
+- [x] 9.3 Add `pub fn add_crypto_header(&mut self)` to `OutputMessage` (`crates/common/src/outputmessage.rs`): compute Adler32 over the payload (`buffer[HEADER_LENGTH..write_pos]`), write it into bytes `[HEADER_LENGTH..HEADER_LENGTH+4]` (shifting the payload right first or reserving 4 extra bytes ahead of the write cursor), then write `outer_len = 4 + payload_len` as the 2-byte header. The resulting `get_output_buffer()` slice must be `[outer_len(2)][adler32(4)][payload(N)]`.
+- [x] 9.4 Write unit tests for `add_crypto_header`: verify `get_output_buffer()[0..2]` == `(4 + payload_len).to_le_bytes()`, verify Adler32 at `[2..6]` matches `adler_checksum(payload)`, verify payload bytes after offset 6 match what was written.
+- [x] 9.5 Replace all `write_message_length()` + socket write calls that send to OTClient with `add_crypto_header()`: the disconnect packet (`boot.rs:181-185`) and the enter-world burst (`build_enter_world_burst` output in `game_handler.rs`).
+- [x] 9.6 In the XTEA game loop (task 7.2), outbound encrypted packets must also be framed with `add_crypto_header()` after `encrypt_output` (since XTEA encrypt already calls `write_message_length`; replace that call with `add_crypto_header`).
+
+## 10. Quality gates
+
+- [x] 10.1 Run `cargo test --lib --workspace` — zero failures
+- [x] 10.2 Run `cargo clippy --workspace --lib --tests -- -D warnings` — zero warnings
+- [x] 10.3 Run `cargo fmt --all` — no diff
+- [ ] 10.4 Rebuild Docker: `docker compose down && docker compose up --build` — server logs show HTTP + game listeners starting
+- [ ] 10.5 Connect OTClient: complete login, select character — client renders the game world (map visible, player stats shown, no ERROR 60 or disconnect)

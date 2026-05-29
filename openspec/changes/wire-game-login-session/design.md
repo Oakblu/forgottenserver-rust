@@ -105,3 +105,103 @@ The default OTLand RSA private key (used by OTClient out of the box) is already 
 - Should the enter-world burst include skills and inventory in this change, or is the minimum (map + stats) sufficient to close task 7.7?
 - Should `rsa::load_pem` be called from `tfs/src/main.rs` or from `start_game_listener`? (The key is global so either works; `main.rs` is cleaner.)
 - After the player enters, should we write `lastlogintime` to the DB immediately (like C++ does) or defer to a future task?
+
+---
+
+## Defect: Challenge packet Adler32 framing (discovered post-implementation)
+
+### Root cause
+
+Port 7172 sends a challenge but OTClient connects and sends nothing back — `[game]` log lines never appear. The bug is in the wire format of the challenge packet and all subsequent server→client packets.
+
+**C++ `NetworkMessage` buffer layout (from `networkmessage.h`):**
+```
+[0..2)  outer length (HEADER_LENGTH = 2)
+[2..6)  Adler32 checksum (CHECKSUM_LENGTH = 4)
+[6..8)  inner / encrypted length
+[8..)   payload (INITIAL_BUFFER_POSITION = 8)
+```
+
+The C++ `OutputMessage::add_header(T)` prepends headers backwards from position 8, so `addCryptoHeader(CHECKSUM_ADLER)` produces `[outer_len][Adler32]` before the payload. The Rust `OutputMessage` has no equivalent — only `write_message_length()`.
+
+### Challenge wire format
+
+Two different framing styles are used in TFS:
+
+**Challenge (NO outer TCP length — OTClient reads a fixed 12-byte frame):**
+```
+[4-byte Adler32 over bytes 4..12] [2-byte inner_len = 0x0006] [0x1F] [4-byte ts] [1-byte rand]
+```
+C++ source (`protocolgame.cpp` `sendChallenge`):
+1. `skipBytes(4)` — reserve 4 bytes for Adler32
+2. `add<uint16_t>(0x0006)` — inner_length = 6 (opcode + ts + rand)
+3. `addByte(0x1F)` + `add<uint32_t>(ts)` + `addByte(rand)`
+4. `skipBytes(-12)` — seek back to start
+5. `add<uint32_t>(adlerChecksum(buf + 4, 8))` — Adler32 over bytes 4..12
+6. `send(output)` — sends the 12 raw bytes directly (no TCP length prefix)
+
+**Normal game packets:**
+```
+[2-byte outer_len (= 4 + payload_len)] [4-byte Adler32 over payload] [payload]
+```
+C++ uses `addCryptoHeader(CHECKSUM_ADLER)` which backwards-prepends `[adler32][outer_len]`.
+
+### What the Rust code sends (wrong)
+
+```
+// boot.rs:149-153
+let mut challenge = OutputMessage::new();
+challenge.add_u8(0x1F);
+challenge.add_u32(timestamp);
+challenge.add_u8(rand_byte);
+challenge.write_message_length();
+stream.write_all(challenge.get_output_buffer())
+// → sends [0x06, 0x00, 0x1F, ts0, ts1, ts2, ts3, rand] = 8 bytes
+```
+
+OTClient reads 4 bytes as Adler32 (`0x001F0006`), then 2 bytes as inner_length (timestamp high bytes ≈ 50 000+), then tries to read ~50 000 more bytes — it times out or silently drops the connection.
+
+### Affected locations (in priority order)
+
+| Location | Bug | Fix |
+|---|---|---|
+| `boot.rs:149-154` | Challenge: uses `OutputMessage` + `write_message_length()` | Build raw 12-byte buffer: `[Adler32(4)][0x0006(2)][0x1F][ts(4)][rand(1)]` |
+| `OutputMessage` (`common/src/outputmessage.rs`) | No `add_crypto_header` method | Add `add_crypto_header(mode)` mirroring C++ `addCryptoHeader` |
+| All outbound packets (burst + game loop) | `encode()` / `serialize_*()` return raw payload; callers add no Adler32 | Wrap with `[outer_len][Adler32][payload]` before writing to socket |
+| `boot.rs:181-185` | Disconnect packet missing Adler32 | Apply same `add_crypto_header` framing |
+
+### D8 — Challenge packet: build manually, not via `OutputMessage`
+
+`OutputMessage` is not the right abstraction for the challenge because:
+- The challenge has no outer TCP length prefix (OTClient reads a fixed 12-byte frame)
+- The C++ code writes forward with `skipBytes` then patches the checksum in-place
+
+Fix: build a `[u8; 12]` array directly in `boot.rs`:
+```
+buf[0..4]  = Adler32 of buf[4..12]
+buf[4..6]  = 0x0006 (inner_length)
+buf[6]     = 0x1F
+buf[7..11] = timestamp.to_le_bytes()
+buf[11]    = rand_byte
+```
+
+### D9 — `OutputMessage::add_crypto_header(mode)` for game packets
+
+Normal game packets need `[outer_len][Adler32][payload]`. Add to `OutputMessage`:
+```rust
+pub fn add_crypto_header(&mut self) {
+    // Compute Adler32 over [2..write_pos) (the payload)
+    // Prepend 4-byte checksum then update the 2-byte length field to include it
+}
+```
+This should be called instead of `write_message_length()` whenever writing a packet
+that OTClient will validate (all game loop outbound packets + burst + disconnect).
+
+### D10 — Outer_len value
+
+The C++ `outer_len` field covers `[Adler32(4) + payload(N)]`, not just the payload:
+```
+outer_len = 4 + N   // N = payload bytes after the Adler32
+```
+OTClient reads `outer_len` bytes after the 2-byte header, which includes the Adler32 + payload.
+The existing Rust `write_message_length()` writes `N` (payload only) — this must change to `4 + N` when crypto framing is applied.
