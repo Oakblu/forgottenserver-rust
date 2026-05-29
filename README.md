@@ -1,7 +1,7 @@
 # forgottenserver-rust
 
 ![tests](https://img.shields.io/badge/tests-6455%20passing-brightgreen?style=flat-square)
-![coverage](https://img.shields.io/badge/coverage-83.46%25-green?style=flat-square)
+![coverage](https://img.shields.io/badge/coverage-94.33%25-brightgreen?style=flat-square)
 ![build](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)
 ![rust](https://img.shields.io/badge/rust-1.94-orange?style=flat-square&logo=rust&logoColor=white)
 ![license](https://img.shields.io/badge/license-GPL--2.0-blue?style=flat-square)

@@ -126,6 +126,8 @@ mapAuthor = "Komic"
                     config_path.to_str().expect("config path not UTF-8"),
                     "/srv/config.lua",
                 ))
+                .with_mapped_port(0, 7171u16.tcp())
+                .with_mapped_port(0, 7172u16.tcp())
                 .with_mapped_port(0, 8080u16.tcp())
                 .start()
                 .await
