@@ -54,9 +54,9 @@ def strip_test_blocks(src: str) -> str:
 
 _FN_RE = re.compile(
     r"^\s*"
-    r"(?:pub\s+)?(?:pub\s*\([^)]*\)\s+)?"  # visibility
-    r"(?:async\s+)?(?:unsafe\s+)?"           # qualifiers
-    r"fn\s+(\w+)"                             # fn keyword + name
+    r"(?:pub\s+)?(?:pub\s*\([^)]*\)\s+)?"                    # visibility
+    r"(?:(?:async\s+)?(?:unsafe\s+)?|(?:unsafe\s+)?(?:async\s+)?)?"  # qualifiers (both orderings)
+    r"fn\s+(\w+)"                                              # fn keyword + name
 )
 
 
@@ -81,7 +81,23 @@ def find_fn_bodies(lines: list) -> list:
         depth = 0
         open_idx = -1
         found = False
+        in_string = False
+        escape_next = False
         for pos, ch in enumerate(window):
+            if escape_next:
+                escape_next = False
+                continue
+            if ch == "\\" and in_string:
+                escape_next = True
+                continue
+            if ch == '"' and not in_string:
+                in_string = True
+                continue
+            if ch == '"' and in_string:
+                in_string = False
+                continue
+            if in_string:
+                continue
             if ch == "{":
                 depth += 1
                 if open_idx == -1:

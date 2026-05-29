@@ -102,6 +102,12 @@ class TestFindFnBodies(unittest.TestCase):
         self.assertEqual(len(bodies), 1)
         self.assertEqual(bodies[0]["fn_name"], "outer")
 
+    def test_string_literal_with_braces_in_body(self):
+        src = 'fn tricky() { let s = "{hello}"; }\n'
+        bodies = self._bodies(src)
+        self.assertEqual(len(bodies), 1)
+        self.assertEqual(bodies[0]["fn_name"], "tricky")
+
 
 if __name__ == "__main__":
     unittest.main()
