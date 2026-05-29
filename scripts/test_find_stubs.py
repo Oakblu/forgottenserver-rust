@@ -58,5 +58,50 @@ class TestStripTestBlocks(unittest.TestCase):
         self.assertNotIn("fn y()", out)
 
 
+class TestFindFnBodies(unittest.TestCase):
+    def _bodies(self, src):
+        return find_stubs.find_fn_bodies(src.splitlines())
+
+    def test_single_line_fn(self):
+        bodies = self._bodies("fn foo() { 42 }\n")
+        self.assertEqual(len(bodies), 1)
+        self.assertEqual(bodies[0]["fn_name"], "foo")
+        self.assertIn("42", bodies[0]["body"])
+
+    def test_multi_line_signature(self):
+        src = "fn bar(\n    x: i32,\n) -> i32 {\n    x + 1\n}\n"
+        bodies = self._bodies(src)
+        self.assertEqual(len(bodies), 1)
+        self.assertEqual(bodies[0]["fn_name"], "bar")
+        self.assertIn("x + 1", bodies[0]["body"])
+
+    def test_two_sequential_fns(self):
+        src = "fn a() { 1 }\nfn b() { 2 }\n"
+        bodies = self._bodies(src)
+        names = [b["fn_name"] for b in bodies]
+        self.assertIn("a", names)
+        self.assertIn("b", names)
+
+    def test_empty_body(self):
+        bodies = self._bodies("pub fn noop() {}\n")
+        self.assertEqual(len(bodies), 1)
+        self.assertEqual(bodies[0]["body"].strip(), "")
+
+    def test_start_line_is_correct(self):
+        src = "// comment\nfn foo() {\n    1\n}\n"
+        bodies = self._bodies(src)
+        self.assertEqual(bodies[0]["start_line"], 2)
+
+    def test_pub_async_fn(self):
+        bodies = self._bodies("pub async fn run() { loop {} }\n")
+        self.assertEqual(bodies[0]["fn_name"], "run")
+
+    def test_nested_braces_in_body(self):
+        src = "fn outer() {\n    if x { a() } else { b() }\n}\n"
+        bodies = self._bodies(src)
+        self.assertEqual(len(bodies), 1)
+        self.assertEqual(bodies[0]["fn_name"], "outer")
+
+
 if __name__ == "__main__":
     unittest.main()

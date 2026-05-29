@@ -52,6 +52,61 @@ def strip_test_blocks(src: str) -> str:
     return "".join(chars)
 
 
+_FN_RE = re.compile(
+    r"^\s*"
+    r"(?:pub\s+)?(?:pub\s*\([^)]*\)\s+)?"  # visibility
+    r"(?:async\s+)?(?:unsafe\s+)?"           # qualifiers
+    r"fn\s+(\w+)"                             # fn keyword + name
+)
+
+
+def find_fn_bodies(lines: list) -> list:
+    """Return [{fn_name, start_line, end_line, body}] for every fn in lines.
+
+    Uses brace-depth tracking over a 300-line lookahead window.
+    start_line and end_line are 1-indexed.
+    """
+    results = []
+    n = len(lines)
+    i = 0
+    while i < n:
+        m = _FN_RE.match(lines[i])
+        if not m:
+            i += 1
+            continue
+        fn_name = m.group(1)
+        start_line = i + 1
+        # Join a lookahead window and track balanced braces
+        window = "\n".join(lines[i : min(i + 300, n)])
+        depth = 0
+        open_idx = -1
+        found = False
+        for pos, ch in enumerate(window):
+            if ch == "{":
+                depth += 1
+                if open_idx == -1:
+                    open_idx = pos
+            elif ch == "}":
+                depth -= 1
+                if depth == 0 and open_idx != -1:
+                    body = window[open_idx + 1 : pos]
+                    end_offset = window[:pos].count("\n")
+                    results.append(
+                        {
+                            "fn_name": fn_name,
+                            "start_line": start_line,
+                            "end_line": i + end_offset + 1,
+                            "body": body,
+                        }
+                    )
+                    i += end_offset + 1
+                    found = True
+                    break
+        if not found:
+            i += 1
+    return results
+
+
 def main() -> None:
     manifest = load_manifest(MANIFEST_PATH)
     stubs = []
