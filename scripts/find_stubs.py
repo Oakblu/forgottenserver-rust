@@ -244,6 +244,83 @@ def detect_panic_stubs(src: str) -> list:
     return hits
 
 
+def enclosing_fn(line: int, bodies: list) -> str:
+    """Return the name of the function that contains the given 1-indexed line."""
+    for b in bodies:
+        if b["start_line"] <= line <= b["end_line"]:
+            return b["fn_name"]
+    return "<unknown>"
+
+
+def load_manifest(path: Path) -> dict:
+    """Load rust_symbol_manifest.json into a {fn_name: [entry, ...]} dict.
+
+    Keys are the last component of qualified_name (the bare function name).
+    Returns {} if the file is missing or malformed.
+    """
+    try:
+        data = json.loads(path.read_text())
+    except Exception:
+        return {}
+    lookup: dict = {}
+    for entry in data:
+        qname = entry.get("qualified_name", "")
+        key = qname.split("::")[-1] if qname else ""
+        if key:
+            lookup.setdefault(key, []).append(entry)
+    return lookup
+
+
+def walk_rs_files(root: Path):
+    """Yield every .rs file under root, skipping 'tests' sub-directories."""
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = [d for d in dirnames if d != "tests"]
+        for fname in filenames:
+            if fname.endswith(".rs"):
+                yield Path(dirpath) / fname
+
+
+def scan_file(path: Path, crates_dir: Path, manifest: dict) -> list:
+    """Scan a single .rs file for stubs and return a list of hit dicts."""
+    try:
+        raw = path.read_text(encoding="utf-8", errors="replace")
+    except Exception:
+        return []
+
+    src = strip_test_blocks(raw)
+    lines = src.splitlines()
+    bodies = find_fn_bodies(lines)
+
+    hits: list = []
+    hits.extend(detect_empty_bodies(lines, bodies))
+    hits.extend(detect_trivial_bodies(lines, bodies))
+    hits.extend(detect_dropped_work(lines, bodies))
+
+    for hit in detect_panic_stubs(src):
+        hit["fn_name"] = enclosing_fn(hit["line"], bodies)
+        hits.append(hit)
+
+    # Enrich with file metadata and manifest cross-reference
+    try:
+        rel = str(path.relative_to(crates_dir))
+    except ValueError:
+        rel = str(path)
+    crate = rel.split(os.sep)[0]
+
+    for hit in hits:
+        hit["file"] = rel
+        hit["crate"] = crate
+        matches = manifest.get(hit["fn_name"], [])
+        hit["ledger_symbol"] = (
+            matches[0].get("qualified_name") if len(matches) == 1 else None
+        )
+        hit["manifest_match"] = (
+            matches[0] if len(matches) == 1 else (matches if matches else None)
+        )
+
+    return hits
+
+
 def main() -> None:
     manifest = load_manifest(MANIFEST_PATH)
     stubs = []

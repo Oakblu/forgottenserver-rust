@@ -227,5 +227,93 @@ class TestDetectPanicStubs(unittest.TestCase):
         self.assertEqual(hits, [])
 
 
+class TestEnclosingFn(unittest.TestCase):
+    def test_finds_enclosing(self):
+        bodies = [{"fn_name": "foo", "start_line": 2, "end_line": 5}]
+        self.assertEqual(find_stubs.enclosing_fn(3, bodies), "foo")
+
+    def test_returns_unknown_when_outside(self):
+        bodies = [{"fn_name": "foo", "start_line": 2, "end_line": 5}]
+        self.assertEqual(find_stubs.enclosing_fn(10, bodies), "<unknown>")
+
+    def test_boundary_lines_included(self):
+        bodies = [{"fn_name": "bar", "start_line": 1, "end_line": 3}]
+        self.assertEqual(find_stubs.enclosing_fn(1, bodies), "bar")
+        self.assertEqual(find_stubs.enclosing_fn(3, bodies), "bar")
+
+
+class TestLoadManifest(unittest.TestCase):
+    def test_empty_file_returns_empty_dict(self):
+        import tempfile, json
+        with tempfile.NamedTemporaryFile(suffix=".json", mode="w", delete=False) as f:
+            json.dump([], f)
+            name = f.name
+        result = find_stubs.load_manifest(Path(name))
+        self.assertEqual(result, {})
+
+    def test_entry_keyed_by_fn_name(self):
+        import tempfile, json
+        entry = {
+            "file": "crates/foo/src/lib.rs",
+            "kind": "fn",
+            "qualified_name": "foo::bar::baz",
+        }
+        with tempfile.NamedTemporaryFile(suffix=".json", mode="w", delete=False) as f:
+            json.dump([entry], f)
+            name = f.name
+        result = find_stubs.load_manifest(Path(name))
+        self.assertIn("baz", result)
+        self.assertEqual(result["baz"][0]["qualified_name"], "foo::bar::baz")
+
+    def test_missing_file_returns_empty_dict(self):
+        result = find_stubs.load_manifest(Path("/nonexistent/path.json"))
+        self.assertEqual(result, {})
+
+
+class TestScanFileIntegration(unittest.TestCase):
+    """Integration: scan_file on synthetic Rust snippets."""
+
+    def _scan(self, src):
+        import tempfile
+        with tempfile.NamedTemporaryFile(
+            suffix=".rs", mode="w", dir="/tmp", delete=False
+        ) as f:
+            f.write(src)
+            p = Path(f.name)
+        hits = find_stubs.scan_file(p, Path("/tmp"), {})
+        p.unlink()
+        return hits
+
+    def test_drop_stub_detected(self):
+        src = "fn accept() {\n    let s = listener.accept();\n    drop(s);\n}\n"
+        hits = self._scan(src)
+        patterns = [h["pattern"] for h in hits]
+        self.assertIn("dropped_work", patterns)
+
+    def test_empty_body_detected(self):
+        src = "pub fn noop() {}\n"
+        hits = self._scan(src)
+        self.assertTrue(any(h["pattern"] == "empty_body" for h in hits))
+
+    def test_test_block_excluded(self):
+        src = (
+            "fn real() {}\n"
+            "#[cfg(test)]\n"
+            "mod tests { fn stub_in_test() {} }\n"
+        )
+        hits = self._scan(src)
+        fn_names = [h["fn_name"] for h in hits]
+        self.assertNotIn("stub_in_test", fn_names)
+
+    def test_output_has_required_keys(self):
+        src = "pub fn noop() {}\n"
+        hits = self._scan(src)
+        self.assertTrue(len(hits) > 0)
+        required = {"file", "line", "crate", "fn_name", "pattern", "snippet",
+                    "ledger_symbol", "manifest_match"}
+        for hit in hits:
+            self.assertEqual(required, required & hit.keys())
+
+
 if __name__ == "__main__":
     unittest.main()
