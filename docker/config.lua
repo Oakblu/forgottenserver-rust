@@ -7,6 +7,7 @@ gameProtocolPort = 7172
 statusProtocolPort = 7171
 httpPort = 8080
 httpWorkers = 1
+httpLoginBindAddress = "127.0.0.1"
 maxPlayers = 0
 
 mysqlHost = "db"

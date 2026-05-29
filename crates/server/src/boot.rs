@@ -246,16 +246,20 @@ pub fn start_http_listener(
         return Ok(());
     }
     let workers = (config.get_integer(IntegerKey::HttpWorkers) as usize).max(1);
+    let bind_addr = {
+        let s = config.get_string(StringKey::HttpBindAddress);
+        if s.is_empty() { "127.0.0.1" } else { s }.to_owned()
+    };
 
     let login_config = Arc::new(build_login_config(&config));
     let session = Arc::new(HttpConnectionSession::new(db, login_config, vocations));
 
     let listener = Arc::new(
-        TcpListener::bind(format!("0.0.0.0:{http_port}"))
+        TcpListener::bind(format!("{bind_addr}:{http_port}"))
             .map_err(|e| format!("Cannot bind HTTP port {http_port}: {e}"))?,
     );
 
-    eprintln!(">> HTTP login server online on port {http_port} ({workers} worker(s)).");
+    eprintln!(">> HTTP login server online on {bind_addr}:{http_port} ({workers} worker(s)).");
 
     for _ in 0..workers {
         let l = Arc::clone(&listener);
@@ -691,6 +695,10 @@ mod tests {
     }
 
     fn http_config(http_port: u16) -> Arc<ConfigManager> {
+        http_config_bind(http_port, "127.0.0.1")
+    }
+
+    fn http_config_bind(http_port: u16, bind_addr: &str) -> Arc<ConfigManager> {
         let mut cm = ConfigManager::new();
         cm.set_integer(IntegerKey::HttpPort, http_port as i64);
         cm.set_integer(IntegerKey::HttpWorkers, 1);
@@ -699,6 +707,7 @@ mod tests {
         cm.set_integer(IntegerKey::GamePort, 7172);
         cm.set_string(StringKey::Location, "EU");
         cm.set_string(StringKey::WorldType, "pvp");
+        cm.set_string(StringKey::HttpBindAddress, bind_addr);
         Arc::new(cm)
     }
 
@@ -712,7 +721,8 @@ mod tests {
     #[test]
     fn start_http_listener_errors_when_port_already_bound() {
         let port = free_port();
-        let _hog = std::net::TcpListener::bind(format!("0.0.0.0:{port}")).unwrap();
+        // Pre-bind on 127.0.0.1 — the same address start_http_listener defaults to.
+        let _hog = std::net::TcpListener::bind(format!("127.0.0.1:{port}")).unwrap();
 
         let res = start_http_listener(http_config(port), empty_db(), empty_vocations());
         let err = res.expect_err("must error when port already bound");
@@ -771,6 +781,81 @@ mod tests {
         assert!(
             response.contains("\"playersonline\""),
             "expected playersonline key in cacheinfo response: {response:?}"
+        );
+    }
+
+    #[test]
+    fn start_http_listener_defaults_to_loopback_when_bind_address_not_set() {
+        // When HttpBindAddress is absent from config the listener MUST bind to
+        // 127.0.0.1. We verify by using http_config (which leaves HttpBindAddress
+        // empty) and confirming the listener accepts a connection on 127.0.0.1.
+        let mut cm = ConfigManager::new();
+        cm.set_integer(IntegerKey::HttpPort, free_port() as i64);
+        cm.set_integer(IntegerKey::HttpWorkers, 1);
+        cm.set_string(StringKey::ServerName, "TestServer");
+        cm.set_string(StringKey::Ip, "127.0.0.1");
+        cm.set_integer(IntegerKey::GamePort, 7172);
+        cm.set_string(StringKey::Location, "EU");
+        cm.set_string(StringKey::WorldType, "pvp");
+        // HttpBindAddress intentionally NOT set — empty string fallback.
+        let port = cm.get_integer(IntegerKey::HttpPort) as u16;
+        let config = Arc::new(cm);
+
+        let res = start_http_listener(config, empty_db(), empty_vocations());
+        assert!(res.is_ok(), "start must succeed: {res:?}");
+
+        // Verify the listener is reachable on loopback.
+        let conn = std::net::TcpStream::connect(format!("127.0.0.1:{port}"));
+        assert!(
+            conn.is_ok(),
+            "listener must accept connections on 127.0.0.1 when bind address is unset"
+        );
+    }
+
+    #[test]
+    fn start_http_listener_binds_to_configured_address_when_set_to_all_interfaces() {
+        // When HttpBindAddress = "0.0.0.0" the listener must bind to all interfaces.
+        let port = free_port();
+        let config = http_config_bind(port, "0.0.0.0");
+
+        let res = start_http_listener(config, empty_db(), empty_vocations());
+        assert!(res.is_ok(), "start must succeed with 0.0.0.0: {res:?}");
+
+        // Both loopback and 0.0.0.0 bindings accept connections on 127.0.0.1.
+        let conn = std::net::TcpStream::connect(format!("127.0.0.1:{port}"));
+        assert!(
+            conn.is_ok(),
+            "listener must accept connections when bound to 0.0.0.0"
+        );
+    }
+
+    #[test]
+    fn start_http_listener_empty_bind_address_does_not_produce_bare_colon_port() {
+        // Ensure the empty-string fallback produces "127.0.0.1:<port>", not ":<port>".
+        // We verify this by confirming the listener accepts on 127.0.0.1, which
+        // would fail if the bind string were ":<port>" (invalid address).
+        let port = free_port();
+        let mut cm = ConfigManager::new();
+        cm.set_integer(IntegerKey::HttpPort, port as i64);
+        cm.set_integer(IntegerKey::HttpWorkers, 1);
+        cm.set_string(StringKey::ServerName, "TestServer");
+        cm.set_string(StringKey::Ip, "127.0.0.1");
+        cm.set_integer(IntegerKey::GamePort, 7172);
+        cm.set_string(StringKey::Location, "EU");
+        cm.set_string(StringKey::WorldType, "pvp");
+        cm.set_string(StringKey::HttpBindAddress, ""); // explicitly empty
+        let config = Arc::new(cm);
+
+        let res = start_http_listener(config, empty_db(), empty_vocations());
+        assert!(
+            res.is_ok(),
+            "empty bind address must fall back to 127.0.0.1, not fail: {res:?}"
+        );
+
+        let conn = std::net::TcpStream::connect(format!("127.0.0.1:{port}"));
+        assert!(
+            conn.is_ok(),
+            "listener must be reachable on 127.0.0.1 after empty-string fallback"
         );
     }
 }

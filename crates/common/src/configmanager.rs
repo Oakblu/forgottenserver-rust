@@ -92,6 +92,7 @@ pub enum StringKey {
     ConfigFile,
     AdminPassword,
     Motd,
+    HttpBindAddress,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -410,6 +411,7 @@ impl ConfigManager {
             "adminPassword" => Some(StringKey::AdminPassword),
             "motd" => Some(StringKey::Motd),
             "configFile" => Some(StringKey::ConfigFile),
+            "httpLoginBindAddress" => Some(StringKey::HttpBindAddress),
             _ => None,
         }
     }
@@ -861,6 +863,7 @@ serverName = "Test" -- inline comment
             StringKey::DefaultPriority,
             StringKey::MapAuthor,
             StringKey::ConfigFile,
+            StringKey::HttpBindAddress,
         ];
         let mut cm = ConfigManager::new();
         for key in all_keys {
@@ -871,6 +874,26 @@ serverName = "Test" -- inline comment
                 "round-trip failed for {key:?}"
             );
         }
+    }
+
+    #[test]
+    fn test_http_bind_address_lua_name_maps_and_round_trips() {
+        // Verifies the Lua key "httpLoginBindAddress" is recognized and that
+        // StringKey::HttpBindAddress round-trips through set/get.
+        let cfg = "httpLoginBindAddress = \"10.0.0.1\"\n";
+        let f = write_config(cfg);
+        let mut cm = ConfigManager::new();
+        cm.load(f.path()).expect("load ok");
+        assert_eq!(
+            cm.get_string(StringKey::HttpBindAddress),
+            "10.0.0.1",
+            "httpLoginBindAddress Lua name must map to StringKey::HttpBindAddress"
+        );
+
+        // Also verify the set/get round-trip independent of file loading.
+        let mut cm2 = ConfigManager::new();
+        cm2.set_string(StringKey::HttpBindAddress, "192.168.1.5");
+        assert_eq!(cm2.get_string(StringKey::HttpBindAddress), "192.168.1.5");
     }
 
     // -----------------------------------------------------------------------
