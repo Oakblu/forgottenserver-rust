@@ -167,6 +167,22 @@ pub fn serialize_character_list(chars: &[CharacterEntry]) -> Vec<u8> {
     out.get_output_buffer()[2..].to_vec()
 }
 
+/// Serialize a disconnect packet (opcode `0x14`).
+///
+/// Mirrors C++ `ProtocolGame::disconnectClient` in
+/// `forgottenserver-upstream/src/protocolgame.cpp`.
+///
+/// Wire layout:
+/// * opcode `0x14` (u8)
+/// * `message` (u16 LE length + UTF-8 bytes)
+pub fn serialize_disconnect(message: &str) -> Vec<u8> {
+    let mut out = OutputMessage::new();
+    out.add_u8(0x14);
+    out.add_string(message);
+    out.write_message_length();
+    out.get_output_buffer()[2..].to_vec()
+}
+
 /// Parse a walk packet (single direction byte).
 pub fn parse_walk_packet(msg: &mut NetworkMessage) -> Result<WalkPacket, String> {
     let direction = msg.get_u8();
@@ -5723,5 +5739,36 @@ mod tests {
         let mut msg = NetworkMessage::new();
         let err = parse_open_private_channel(&mut msg).expect_err("empty buffer should overrun");
         assert_eq!(err, "open private channel packet overrun");
+    }
+
+    // -----------------------------------------------------------------------
+    // serialize_disconnect
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn serialize_disconnect_opcode_is_0x14() {
+        let bytes = serialize_disconnect("hello");
+        assert_eq!(bytes[0], 0x14, "disconnect opcode must be 0x14");
+    }
+
+    #[test]
+    fn serialize_disconnect_includes_message_as_length_prefixed_string() {
+        let msg = "Account name or password is not correct.";
+        let bytes = serialize_disconnect(msg);
+        // bytes[0] = 0x14 opcode
+        // bytes[1..3] = u16 LE string length
+        // bytes[3..] = string bytes
+        let len = u16::from_le_bytes([bytes[1], bytes[2]]) as usize;
+        assert_eq!(len, msg.len());
+        assert_eq!(&bytes[3..3 + len], msg.as_bytes());
+    }
+
+    #[test]
+    fn serialize_disconnect_empty_message_produces_3_bytes() {
+        let bytes = serialize_disconnect("");
+        // opcode (1) + length u16 (2) + string (0) = 3 bytes
+        assert_eq!(bytes.len(), 3);
+        assert_eq!(bytes[0], 0x14);
+        assert_eq!(u16::from_le_bytes([bytes[1], bytes[2]]), 0);
     }
 }

@@ -1,0 +1,21 @@
+[package]
+name = "perf-bot"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "perf-bot"
+path = "src/main.rs"
+
+[dependencies]
+forgottenserver-common = { path = "../common" }
+tokio = { workspace = true, features = ["net", "time", "sync", "rt-multi-thread", "macros", "io-util"] }
+clap = { version = "4", features = ["derive"] }
+hdrhistogram = "7"
+sysinfo = "0.33"
+rand = { version = "0.8", features = ["small_rng"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+rsa = { version = "0.9", features = ["pem", "hazmat"] }
+num-bigint = "0.4"

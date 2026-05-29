@@ -13,6 +13,7 @@ members = [
     "crates/tfs",
     "crates/harness-tools",
     "crates/e2e",
+    "crates/perf-bot",
 ]
 resolver = "2"
 
