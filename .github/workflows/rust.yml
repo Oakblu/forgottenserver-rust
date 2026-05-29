@@ -24,31 +24,58 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Restore benchmark baselines
-      uses: actions/cache@v4
-      with:
-        path: benches/baselines
-        key: bench-baselines-${{ github.base_ref || github.ref_name }}
-        restore-keys: |
-          bench-baselines-main
-
-    - name: Run benchmarks
+    - name: Run benchmarks and check for regressions
       run: |
-        cargo bench --workspace -- --output-format bencher | tee bench-output.txt
+        # Copy committed baselines into target/ so Criterion can compare against them.
+        for bench_dir in benches/baselines/*/; do
+          name=$(basename "$bench_dir")
+          mkdir -p "target/criterion/$name/main"
+          cp "$bench_dir/estimates.json" "target/criterion/$name/main/estimates.json"
+        done
 
-    - name: Regression check (PRs only)
+        # Run all Criterion [[bench]] targets.  Pass --load-baseline main so
+        # Criterion prints regression warnings; pipe to tee for the artifact.
+        cargo bench \
+          -p forgottenserver-common --bench crypto \
+          -p forgottenserver-items  --bench registry \
+          -p forgottenserver-map    --bench spatial \
+          -p forgottenserver-entity --bench conditions \
+          -p forgottenserver-game   --bench combat \
+          -p forgottenserver-network --bench codec \
+          -- --load-baseline main 2>&1 | tee bench-output.txt
+
+    - name: Fail on regression (PRs only)
       if: github.event_name == 'pull_request'
       run: |
-        # Fail if any benchmark regressed more than 10% vs the saved main baseline.
-        # Criterion writes machine-readable output; grep for "regressed" in its output.
         if grep -q "Performance has regressed" bench-output.txt; then
-          echo "::error::Benchmark regression detected — see bench-output.txt"
+          echo "::error::Benchmark regression detected — see bench-output.txt artifact"
           exit 1
         fi
 
-    - name: Save baselines (main branch only)
+    - name: Update baselines (main branch only)
       if: github.ref == 'refs/heads/main'
-      run: cargo bench --workspace -- --save-baseline main
+      run: |
+        cargo bench \
+          -p forgottenserver-common --bench crypto \
+          -p forgottenserver-items  --bench registry \
+          -p forgottenserver-map    --bench spatial \
+          -p forgottenserver-entity --bench conditions \
+          -p forgottenserver-game   --bench combat \
+          -p forgottenserver-network --bench codec \
+          -- --save-baseline main
+
+        # Copy updated baselines back to benches/baselines/ for commit.
+        for bench_dir in target/criterion/*/main; do
+          name=$(basename "$(dirname "$bench_dir")")
+          mkdir -p "benches/baselines/$name"
+          cp "$bench_dir/estimates.json" "benches/baselines/$name/estimates.json"
+        done
+
+        git config user.name  "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add benches/baselines/
+        git diff --cached --quiet || git commit -m "chore(bench): update baselines [skip ci]"
+        git push
 
     - name: Upload benchmark results
       uses: actions/upload-artifact@v4
