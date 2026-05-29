@@ -199,8 +199,31 @@ def detect_dropped_work(lines: list, bodies: list) -> list:
     return hits
 
 
+def _strip_string_literals(line: str) -> str:
+    """Replace contents of double-quoted strings with spaces (preserves length)."""
+    result = list(line)
+    in_string = False
+    i = 0
+    while i < len(line):
+        ch = line[i]
+        if ch == "\\" and in_string:
+            # Skip escaped char
+            if i + 1 < len(line):
+                result[i + 1] = " "
+            i += 2
+            continue
+        if ch == '"':
+            in_string = not in_string
+            i += 1
+            continue
+        if in_string:
+            result[i] = " "
+        i += 1
+    return "".join(result)
+
+
 def detect_panic_stubs(src: str) -> list:
-    """Flag panic!/unreachable! calls in non-comment lines.
+    """Flag panic!/unreachable! calls in non-comment, non-string-literal lines.
 
     fn_name is set to '<unknown>' here; scan_file fills it in via enclosing_fn().
     """
@@ -208,7 +231,7 @@ def detect_panic_stubs(src: str) -> list:
     for i, line in enumerate(src.splitlines(), 1):
         if _COMMENT_RE.match(line):
             continue
-        m = _PANIC_RE.search(line)
+        m = _PANIC_RE.search(_strip_string_literals(line))
         if m:
             hits.append(
                 {

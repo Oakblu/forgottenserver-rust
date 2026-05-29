@@ -221,6 +221,11 @@ class TestDetectPanicStubs(unittest.TestCase):
         hits = self._run(src)
         self.assertEqual(hits, [])
 
+    def test_panic_in_string_literal_not_flagged(self):
+        src = 'fn bar() { let msg = "panic!()"; }\n'
+        hits = self._run(src)
+        self.assertEqual(hits, [])
+
 
 if __name__ == "__main__":
     unittest.main()
