@@ -2,6 +2,8 @@ use std::collections::HashMap;
 
 use forgottenserver_entity::player::Player;
 
+use crate::database::Database;
+
 // ── Records ───────────────────────────────────────────────────────────────────
 
 /// Mirrors the `players` table row — all columns that `IOLoginData::loadPlayer`
@@ -176,6 +178,116 @@ pub struct VipEntry {
     pub description: String,
     pub icon: u32,
     pub notify: bool,
+}
+
+// ── PlayerLoginData ───────────────────────────────────────────────────────────
+
+/// Minimal player data needed to construct the enter-world burst.
+///
+/// Mirrors the columns read by `load_player_for_login`.
+#[derive(Debug, Clone, PartialEq)]
+pub struct PlayerLoginData {
+    pub name: String,
+    pub level: u32,
+    pub health: u32,
+    pub healthmax: u32,
+    pub mana: u32,
+    pub manamax: u32,
+    pub stamina: u32,
+    pub posx: u16,
+    pub posy: u16,
+    pub posz: u8,
+}
+
+/// Load the minimal player data needed for the enter-world burst.
+///
+/// Issues:
+/// ```sql
+/// SELECT name, level, health, healthmax, mana, manamax, stamina, posx, posy, posz
+/// FROM players
+/// WHERE id = {character_id}
+/// ```
+///
+/// Returns `None` if no row is found.  If the returned position is `(0, 0, 0)`
+/// the player has no saved position and the default temple coordinates
+/// `(100, 100, 7)` are substituted.
+pub fn load_player_for_login(db: &dyn Database, character_id: i64) -> Option<PlayerLoginData> {
+    let sql = format!(
+        "SELECT name, level, health, healthmax, mana, manamax, stamina, posx, posy, posz \
+         FROM players \
+         WHERE id = {character_id}"
+    );
+
+    let rows = db.query(&sql).ok()?;
+    let row = rows.into_iter().next()?;
+
+    let mut posx: u16 = row.get("posx").unwrap_or(0);
+    let mut posy: u16 = row.get("posy").unwrap_or(0);
+    let mut posz: u8 = row.get("posz").unwrap_or(0);
+
+    if posx == 0 && posy == 0 && posz == 0 {
+        posx = 100;
+        posy = 100;
+        posz = 7;
+    }
+
+    Some(PlayerLoginData {
+        name: row.get("name").unwrap_or_default(),
+        level: row.get("level").unwrap_or(1),
+        health: row.get("health").unwrap_or(100),
+        healthmax: row.get("healthmax").unwrap_or(100),
+        mana: row.get("mana").unwrap_or(0),
+        manamax: row.get("manamax").unwrap_or(0),
+        stamina: row.get("stamina").unwrap_or(2520),
+        posx,
+        posy,
+        posz,
+    })
+}
+
+// ── Session lookup ────────────────────────────────────────────────────────────
+
+/// Look up the `account_id` and `character_id` for a valid, non-expired session
+/// that matches `token_blob` and is linked to a player named `character_name`.
+///
+/// Mirrors C++ `ProtocolGame::login` (forgottenserver/src/protocolgame.cpp ~line 437):
+/// ```sql
+/// SELECT a.id AS account_id, p.id AS character_id
+/// FROM accounts a
+/// JOIN sessions s ON a.id = s.account_id
+/// JOIN players p ON a.id = p.account_id
+/// WHERE s.token = {escaped_blob}
+///   AND s.expired_at IS NULL
+///   AND p.name = {escaped_string}
+///   AND p.deletion = 0
+/// ```
+///
+/// Returns `Some((account_id, character_id))` on success, `None` if no matching
+/// row is found or if either id cannot be parsed from the result.
+pub fn lookup_session(
+    db: &dyn Database,
+    token_blob: &[u8],
+    character_name: &str,
+) -> Option<(i64, i64)> {
+    let escaped_token = db.escape_blob(token_blob);
+    let escaped_name = db.escape_string(character_name);
+
+    let sql = format!(
+        "SELECT a.id AS account_id, p.id AS character_id \
+         FROM accounts a \
+         JOIN sessions s ON a.id = s.account_id \
+         JOIN players p ON a.id = p.account_id \
+         WHERE s.token = {escaped_token} \
+           AND s.expired_at IS NULL \
+           AND p.name = '{escaped_name}' \
+           AND p.deletion = 0"
+    );
+
+    let rows = db.query(&sql).ok()?;
+    let row = rows.into_iter().next()?;
+    let account_id: i64 = row.get("account_id")?;
+    let character_id: i64 = row.get("character_id")?;
+    Some((account_id, character_id))
 }
 
 // ── In-memory store ───────────────────────────────────────────────────────────
@@ -1426,5 +1538,350 @@ mod tests {
         // A freshly-defaulted instance should behave identically to ::new().
         assert!(io.load_player(&db, "anyone").is_none());
         assert_eq!(io.get_guid_by_name(&db, "anyone"), 0);
+    }
+
+    // ── lookup_session tests ──────────────────────────────────────────────────
+
+    use crate::database::{DbError, DbValue, Row};
+
+    /// A test-only `Database` that stores accounts, sessions, and players rows
+    /// in-memory and answers the 3-table JOIN query issued by `lookup_session`.
+    ///
+    /// The `query` method parses the escaped token from `WHERE s.token = X'...'`
+    /// and the player name from `AND p.name = '...'`, then performs the join
+    /// manually so we never need a real SQL engine.
+    struct SessionTestDb {
+        /// accounts rows: (id, ...)
+        accounts: Vec<(i64,)>,
+        /// sessions rows: (token_hex, account_id, expired_at_is_null)
+        sessions: Vec<(String, i64, bool)>,
+        /// players rows: (id, account_id, name, deletion)
+        players: Vec<(i64, i64, String, i64)>,
+    }
+
+    impl SessionTestDb {
+        fn new() -> Self {
+            Self {
+                accounts: Vec::new(),
+                sessions: Vec::new(),
+                players: Vec::new(),
+            }
+        }
+
+        fn add_account(&mut self, id: i64) {
+            self.accounts.push((id,));
+        }
+
+        /// Add a session. `expired_at_is_null` = true means the session is still active.
+        fn add_session(&mut self, token: &[u8], account_id: i64, expired_at_is_null: bool) {
+            // Store the token as uppercase hex without the X'...' wrapper for easy comparison.
+            let hex: String = token.iter().map(|b| format!("{b:02X}")).collect();
+            self.sessions.push((hex, account_id, expired_at_is_null));
+        }
+
+        fn add_player(&mut self, id: i64, account_id: i64, name: &str, deletion: i64) {
+            self.players
+                .push((id, account_id, name.to_string(), deletion));
+        }
+    }
+
+    impl crate::database::Database for SessionTestDb {
+        fn query(&self, sql: &str) -> Result<Vec<Row>, DbError> {
+            // Extract the hex token from: s.token = X'<HEX>'
+            let token_hex = {
+                let marker = "s.token = X'";
+                let start = sql.find(marker).map(|p| p + marker.len());
+                let token_hex =
+                    start.and_then(|s| sql[s..].find('\'').map(|e| sql[s..s + e].to_uppercase()));
+                match token_hex {
+                    Some(h) => h,
+                    None => return Ok(vec![]),
+                }
+            };
+
+            // Extract the player name from: p.name = '<NAME>'
+            let player_name = {
+                let marker = "p.name = '";
+                let start = sql.find(marker).map(|p| p + marker.len());
+                let name = start.and_then(|s| {
+                    sql[s..].find('\'').map(|e| {
+                        // Unescape \' → '
+                        sql[s..s + e].replace("\\'", "'")
+                    })
+                });
+                match name {
+                    Some(n) => n,
+                    None => return Ok(vec![]),
+                }
+            };
+
+            // Perform the join in memory.
+            let mut result_rows = Vec::new();
+
+            for (account_id,) in &self.accounts {
+                // Find a matching, non-expired session for this account with the right token.
+                let session_matches = self.sessions.iter().any(|(tok, acc_id, not_expired)| {
+                    tok == &token_hex && acc_id == account_id && *not_expired
+                });
+                if !session_matches {
+                    continue;
+                }
+
+                // Find a matching player for this account with the right name and no deletion.
+                let player = self.players.iter().find(|(_, acc_id, name, deletion)| {
+                    acc_id == account_id && name == &player_name && *deletion == 0
+                });
+
+                if let Some((player_id, _, _, _)) = player {
+                    let mut cols = std::collections::HashMap::new();
+                    cols.insert("account_id".to_string(), DbValue::Integer(*account_id));
+                    cols.insert("character_id".to_string(), DbValue::Integer(*player_id));
+                    result_rows.push(Row::new(cols));
+                }
+            }
+
+            Ok(result_rows)
+        }
+
+        fn execute(&mut self, _sql: &str) -> Result<u64, DbError> {
+            Ok(1)
+        }
+
+        fn escape_string(&self, s: &str) -> String {
+            let mut out = String::with_capacity(s.len());
+            for ch in s.chars() {
+                match ch {
+                    '\\' => out.push_str("\\\\"),
+                    '\'' => out.push_str("\\'"),
+                    c => out.push(c),
+                }
+            }
+            out
+        }
+    }
+
+    #[test]
+    fn lookup_session_valid_token_returns_account_and_character() {
+        let mut db = SessionTestDb::new();
+        db.add_account(1);
+        db.add_session(b"valid_token_123456", 1, true);
+        db.add_player(1, 1, "Alice", 0);
+
+        let result = super::lookup_session(&db, b"valid_token_123456", "Alice");
+        assert_eq!(result, Some((1, 1)));
+    }
+
+    #[test]
+    fn lookup_session_wrong_character_name_returns_none() {
+        let mut db = SessionTestDb::new();
+        db.add_account(1);
+        db.add_session(b"valid_token_123456", 1, true);
+        db.add_player(1, 1, "Alice", 0);
+
+        let result = super::lookup_session(&db, b"valid_token_123456", "Bob");
+        assert_eq!(result, None);
+    }
+
+    #[test]
+    fn lookup_session_expired_session_returns_none() {
+        let mut db = SessionTestDb::new();
+        db.add_account(1);
+        // expired_at_is_null = false means the session is expired (expired_at IS NOT NULL)
+        db.add_session(b"valid_token_123456", 1, false);
+        db.add_player(1, 1, "Alice", 0);
+
+        let result = super::lookup_session(&db, b"valid_token_123456", "Alice");
+        assert_eq!(result, None);
+    }
+
+    #[test]
+    fn lookup_session_unknown_token_returns_none() {
+        let mut db = SessionTestDb::new();
+        db.add_account(1);
+        db.add_session(b"known_token_000000", 1, true);
+        db.add_player(1, 1, "Alice", 0);
+
+        let result = super::lookup_session(&db, b"unknown_token_xxxx", "Alice");
+        assert_eq!(result, None);
+    }
+
+    // ── load_player_for_login tests ───────────────────────────────────────────
+
+    /// Backing row for `LoginTestDb`.
+    struct LoginTestRow {
+        id: i64,
+        name: String,
+        level: i64,
+        health: i64,
+        healthmax: i64,
+        mana: i64,
+        manamax: i64,
+        stamina: i64,
+        posx: i64,
+        posy: i64,
+        posz: i64,
+    }
+
+    /// A test-only `Database` that holds `players` rows in memory and answers
+    /// the `SELECT ... FROM players WHERE id = {id}` query issued by
+    /// `load_player_for_login`.
+    struct LoginTestDb {
+        players: Vec<LoginTestRow>,
+    }
+
+    impl LoginTestDb {
+        fn new() -> Self {
+            Self {
+                players: Vec::new(),
+            }
+        }
+
+        #[allow(clippy::too_many_arguments)]
+        fn add_player(
+            &mut self,
+            id: i64,
+            name: &str,
+            level: i64,
+            health: i64,
+            healthmax: i64,
+            mana: i64,
+            manamax: i64,
+            stamina: i64,
+            posx: i64,
+            posy: i64,
+            posz: i64,
+        ) {
+            self.players.push(LoginTestRow {
+                id,
+                name: name.to_string(),
+                level,
+                health,
+                healthmax,
+                mana,
+                manamax,
+                stamina,
+                posx,
+                posy,
+                posz,
+            });
+        }
+    }
+
+    impl crate::database::Database for LoginTestDb {
+        fn query(&self, sql: &str) -> Result<Vec<crate::database::Row>, crate::database::DbError> {
+            // Extract the id from: WHERE id = {id}
+            let id_value: i64 = {
+                let marker = "WHERE id = ";
+                match sql.find(marker) {
+                    Some(pos) => {
+                        let rest = sql[pos + marker.len()..].trim();
+                        match rest.parse::<i64>() {
+                            Ok(n) => n,
+                            Err(_) => return Ok(vec![]),
+                        }
+                    }
+                    None => return Ok(vec![]),
+                }
+            };
+
+            let mut result_rows = Vec::new();
+            for row in &self.players {
+                if row.id != id_value {
+                    continue;
+                }
+                let mut cols = std::collections::HashMap::new();
+                cols.insert(
+                    "name".to_string(),
+                    crate::database::DbValue::Text(row.name.clone()),
+                );
+                cols.insert(
+                    "level".to_string(),
+                    crate::database::DbValue::Integer(row.level),
+                );
+                cols.insert(
+                    "health".to_string(),
+                    crate::database::DbValue::Integer(row.health),
+                );
+                cols.insert(
+                    "healthmax".to_string(),
+                    crate::database::DbValue::Integer(row.healthmax),
+                );
+                cols.insert(
+                    "mana".to_string(),
+                    crate::database::DbValue::Integer(row.mana),
+                );
+                cols.insert(
+                    "manamax".to_string(),
+                    crate::database::DbValue::Integer(row.manamax),
+                );
+                cols.insert(
+                    "stamina".to_string(),
+                    crate::database::DbValue::Integer(row.stamina),
+                );
+                cols.insert(
+                    "posx".to_string(),
+                    crate::database::DbValue::Integer(row.posx),
+                );
+                cols.insert(
+                    "posy".to_string(),
+                    crate::database::DbValue::Integer(row.posy),
+                );
+                cols.insert(
+                    "posz".to_string(),
+                    crate::database::DbValue::Integer(row.posz),
+                );
+                result_rows.push(crate::database::Row::new(cols));
+            }
+
+            Ok(result_rows)
+        }
+
+        fn execute(&mut self, _sql: &str) -> Result<u64, crate::database::DbError> {
+            Ok(1)
+        }
+
+        fn escape_string(&self, s: &str) -> String {
+            s.to_string()
+        }
+    }
+
+    #[test]
+    fn load_player_valid_id_returns_data() {
+        let mut db = LoginTestDb::new();
+        db.add_player(1, "Hero", 5, 200, 300, 50, 100, 2000, 150, 200, 7);
+
+        let result = super::load_player_for_login(&db, 1);
+        assert!(result.is_some());
+        let data = result.unwrap();
+        assert_eq!(data.name, "Hero");
+        assert_eq!(data.level, 5);
+        assert_eq!(data.health, 200);
+        assert_eq!(data.healthmax, 300);
+        assert_eq!(data.mana, 50);
+        assert_eq!(data.manamax, 100);
+        assert_eq!(data.stamina, 2000);
+        assert_eq!(data.posx, 150);
+        assert_eq!(data.posy, 200);
+        assert_eq!(data.posz, 7);
+    }
+
+    #[test]
+    fn load_player_unknown_id_returns_none() {
+        let db = LoginTestDb::new();
+        let result = super::load_player_for_login(&db, 999);
+        assert_eq!(result, None);
+    }
+
+    #[test]
+    fn load_player_zero_position_uses_fallback() {
+        let mut db = LoginTestDb::new();
+        db.add_player(1, "Hero", 5, 200, 300, 50, 100, 2000, 0, 0, 0);
+
+        let result = super::load_player_for_login(&db, 1);
+        assert!(result.is_some());
+        let data = result.unwrap();
+        assert_eq!(data.posx, 100);
+        assert_eq!(data.posy, 100);
+        assert_eq!(data.posz, 7);
     }
 }

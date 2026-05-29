@@ -86,6 +86,24 @@ impl FromDbValue for u32 {
     }
 }
 
+impl FromDbValue for u16 {
+    fn from_db_value(v: &DbValue) -> Option<Self> {
+        match v {
+            DbValue::Integer(n) if *n >= 0 && *n <= u16::MAX as i64 => Some(*n as u16),
+            _ => None,
+        }
+    }
+}
+
+impl FromDbValue for u8 {
+    fn from_db_value(v: &DbValue) -> Option<Self> {
+        match v {
+            DbValue::Integer(n) if *n >= 0 && *n <= u8::MAX as i64 => Some(*n as u8),
+            _ => None,
+        }
+    }
+}
+
 impl FromDbValue for String {
     fn from_db_value(v: &DbValue) -> Option<Self> {
         match v {

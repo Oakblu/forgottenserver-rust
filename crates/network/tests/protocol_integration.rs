@@ -3,51 +3,39 @@
 //! These tests exercise full parse→serialize round-trips using NetworkMessage directly.
 //! No TCP sockets or Docker required.
 
-use forgottenserver_common::networkmessage::{NetworkMessage, INITIAL_BUFFER_POSITION};
+use forgottenserver_common::networkmessage::NetworkMessage;
 use forgottenserver_network::protocolgame::{
-    parse_login_packet, serialize_character_list, serialize_disconnect, CharacterEntry,
+    parse_first_packet, serialize_character_list, serialize_disconnect, CharacterEntry,
 };
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-/// Build a raw login payload byte vector (just the payload, not the header).
+/// Build a minimal first-packet header byte vector (os + version only).
 ///
-/// The wire format (as read by `parse_login_packet`) is:
-///   client_version (u16) + xtea_key (4×u32) + account_name (u16-len + bytes)
-///   + password (u16-len + bytes)
-fn login_payload(version: u16) -> Vec<u8> {
-    let mut msg = NetworkMessage::new();
-    msg.add_u16(version);
-    // xtea key (4 × u32, all zeros)
-    msg.add_u32(0);
-    msg.add_u32(0);
-    msg.add_u32(0);
-    msg.add_u32(0);
-    // account_name "" (u16 length = 0, no body bytes)
-    msg.add_u16(0);
-    // password "" (u16 length = 0, no body bytes)
-    msg.add_u16(0);
-
-    // Payload lives at buffer[INITIAL_BUFFER_POSITION .. INITIAL_BUFFER_POSITION + length]
-    let len = msg.get_message_length() as usize;
-    let start = INITIAL_BUFFER_POSITION as usize;
-    msg.get_buffer()[start..start + len].to_vec()
+/// The wire format for the unencrypted header region of `parse_first_packet` is:
+///   os (u16) + version (u16) + ...
+/// For version rejection tests we only need the first 4 bytes.
+fn first_packet_header_payload(os: u16, version: u16) -> Vec<u8> {
+    let mut out = Vec::new();
+    out.extend_from_slice(&os.to_le_bytes());
+    out.extend_from_slice(&version.to_le_bytes());
+    out
 }
 
 /// Stuff `payload` into a fresh `NetworkMessage` starting at position 0
 /// (which `NetworkMessage::set_buffer_position(0)` maps to `INITIAL_BUFFER_POSITION`),
-/// then hand it to `parse_login_packet`.
+/// then hand it to `parse_first_packet`.
 fn parse_from_bytes(
     payload: &[u8],
-) -> Result<forgottenserver_network::protocolgame::LoginPacket, String> {
+) -> Result<forgottenserver_network::protocolgame::FirstPacket, String> {
     let mut msg = NetworkMessage::new();
     msg.add_bytes(payload);
     // set_buffer_position(0) sets the absolute position to INITIAL_BUFFER_POSITION,
     // which is where add_bytes just wrote.
     msg.set_buffer_position(0);
-    parse_login_packet(&mut msg)
+    parse_first_packet(&mut msg)
 }
 
 // ---------------------------------------------------------------------------
@@ -56,7 +44,7 @@ fn parse_from_bytes(
 
 #[test]
 fn game_login_version_too_low_returns_disconnect_message() {
-    let payload = login_payload(760);
+    let payload = first_packet_header_payload(3, 760);
     let result = parse_from_bytes(&payload);
     assert!(result.is_err(), "version 760 must be rejected");
     let msg = result.unwrap_err();
@@ -71,7 +59,7 @@ fn game_login_version_too_low_returns_disconnect_message() {
 
 #[test]
 fn game_login_version_too_high_returns_disconnect_message() {
-    let payload = login_payload(9999);
+    let payload = first_packet_header_payload(3, 9999);
     let result = parse_from_bytes(&payload);
     assert!(result.is_err(), "version 9999 must be rejected");
     let msg = result.unwrap_err();
@@ -81,27 +69,29 @@ fn game_login_version_too_high_returns_disconnect_message() {
 }
 
 #[test]
-fn game_login_version_1310_accepted() {
-    let payload = login_payload(1310);
+fn game_login_version_1310_not_a_version_error() {
+    // The truncated payload will fail later (e.g. on the RSA block), but
+    // the error must NOT be about the version number.
+    let payload = first_packet_header_payload(3, 1310);
     let result = parse_from_bytes(&payload);
-    assert!(
-        result.is_ok(),
-        "version 1310 must be accepted: {:?}",
-        result
-    );
-    assert_eq!(result.unwrap().client_version, 1310);
+    if let Err(e) = &result {
+        assert!(
+            !e.contains("protocol"),
+            "version 1310 must not trigger a version error, got: {e}"
+        );
+    }
 }
 
 #[test]
-fn game_login_version_1311_accepted() {
-    let payload = login_payload(1311);
+fn game_login_version_1311_not_a_version_error() {
+    let payload = first_packet_header_payload(3, 1311);
     let result = parse_from_bytes(&payload);
-    assert!(
-        result.is_ok(),
-        "version 1311 must be accepted: {:?}",
-        result
-    );
-    assert_eq!(result.unwrap().client_version, 1311);
+    if let Err(e) = &result {
+        assert!(
+            !e.contains("protocol"),
+            "version 1311 must not trigger a version error, got: {e}"
+        );
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -176,7 +166,7 @@ fn serialize_character_list_multiple_entries() {
 #[test]
 fn rejected_version_round_trip_produces_valid_disconnect_wire_bytes() {
     // Parse a too-low version → get error message → serialize as disconnect
-    let payload = login_payload(100);
+    let payload = first_packet_header_payload(1, 100);
     let err_msg = parse_from_bytes(&payload).unwrap_err();
 
     let wire = serialize_disconnect(&err_msg);

@@ -4,13 +4,12 @@
 //!
 //! All functions are pure data transformations — no sockets, no I/O.
 
-use forgottenserver_common::definitions::{
-    CLIENT_VERSION_MAX, CLIENT_VERSION_MIN, CLIENT_VERSION_STR,
-};
+use forgottenserver_common::base64;
 use forgottenserver_common::networkmessage::{
     ItemTypeMeta, NetworkMessage, PodiumMeta, INITIAL_BUFFER_POSITION,
 };
 use forgottenserver_common::outputmessage::OutputMessage;
+use forgottenserver_common::rsa;
 
 // ---------------------------------------------------------------------------
 // Internal helpers
@@ -51,12 +50,21 @@ fn append_item_instance(
 // Packet structs
 // ---------------------------------------------------------------------------
 
+/// TFS 13 first-packet fields parsed from `onRecvFirstMessage`.
 #[derive(Debug, PartialEq)]
-pub struct LoginPacket {
-    pub account_name: String,
-    pub password: String,
-    pub client_version: u16,
+pub struct FirstPacket {
+    /// OperatingSystem identifier sent by the client (first u16 on the wire).
+    pub os: u16,
+    /// XTEA decryption key (4 × u32 LE from the RSA-decrypted block).
     pub xtea_key: [u32; 4],
+    /// Base64-decoded session token bytes.
+    pub session_token: Vec<u8>,
+    /// Character name the client wants to log in with.
+    pub character_name: String,
+    /// Challenge timestamp echoed by the client.
+    pub challenge_timestamp: u32,
+    /// Challenge random byte echoed by the client.
+    pub challenge_random: u8,
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -119,39 +127,113 @@ pub struct VipPacket {
 // Parse functions
 // ---------------------------------------------------------------------------
 
-/// Parse a login packet from an inbound `NetworkMessage`.
+/// Parse the TFS 13 client's first message (`onRecvFirstMessage`).
 ///
-/// Wire format:
-/// - `client_version` (u16)
-/// - `xtea_key`       (4 × u32)
-/// - `account_name`   (length-prefixed string)
-/// - `password`       (length-prefixed string)
-pub fn parse_login_packet(msg: &mut NetworkMessage) -> Result<LoginPacket, String> {
-    let client_version = msg.get_u16();
+/// Wire format (unencrypted header region):
+/// 1. `os`      (u16) — OperatingSystem
+/// 2. `version` (u16) — must be 1310 or 1311
+/// 3. skip 4 bytes (client build u32)
+/// 4. if version >= 1240 and remaining > 132: read and discard client version string
+/// 5. skip 3 bytes (dat revision u16 + preview state u8)
+/// 6. read 128-byte RSA block, decrypt in-place; buf[0] must be 0x00
+/// 7. from buf[1..]: XTEA key (4 × u32 LE), gm_flag (u8), session_token
+///    (u16 len + bytes, base64-decoded), character_name (u16 len + bytes),
+///    challenge_timestamp (u32 LE), challenge_random (u8)
+pub fn parse_first_packet(msg: &mut NetworkMessage) -> Result<FirstPacket, String> {
+    // Step 1: OperatingSystem
+    let os = msg.get_u16();
 
-    if !(CLIENT_VERSION_MIN as u16..=CLIENT_VERSION_MAX as u16).contains(&client_version) {
-        return Err(format!(
-            "Only clients with protocol {} allowed!",
-            CLIENT_VERSION_STR
-        ));
+    // Step 2: client version check
+    let version = msg.get_u16();
+    if !(1310..=1311).contains(&version) {
+        return Err("Only clients with protocol 13.10 allowed!".to_string());
     }
 
-    let k0 = msg.get_u32();
-    let k1 = msg.get_u32();
-    let k2 = msg.get_u32();
-    let k3 = msg.get_u32();
-    let account_name = msg.get_string(0);
-    let password = msg.get_string(0);
+    // Step 3: skip client build (u32)
+    msg.skip_bytes(4);
 
-    if msg.is_overrun() {
-        return Err("login packet overrun".into());
+    // Step 4: if version >= 1240 and remaining > 132, discard client version string
+    if version >= 1240 && msg.get_remaining_buffer_length() > 132 {
+        msg.get_string(0);
     }
 
-    Ok(LoginPacket {
-        account_name,
-        password,
-        client_version,
+    // Step 5: skip dat revision (u16) + preview state (u8) = 3 bytes
+    msg.skip_bytes(3);
+
+    // Step 6: read 128-byte RSA block and decrypt in-place
+    let rsa_bytes = msg.get_bytes(128);
+    if rsa_bytes.len() != 128 {
+        return Err("first packet overrun reading RSA block".to_string());
+    }
+    let mut buf: [u8; 128] = rsa_bytes
+        .try_into()
+        .map_err(|_| "RSA block length error".to_string())?;
+    rsa::decrypt(&mut buf).map_err(|e| e.to_string())?;
+    if buf[0] != 0x00 {
+        return Err("RSA decrypt failed".to_string());
+    }
+
+    // Step 7: parse fields from decrypted buf starting at index 1
+    let mut cur: usize = 1;
+
+    // XTEA key: 4 × u32 LE from buf[1..17]
+    let k0 = u32::from_le_bytes(buf[cur..cur + 4].try_into().unwrap());
+    cur += 4;
+    let k1 = u32::from_le_bytes(buf[cur..cur + 4].try_into().unwrap());
+    cur += 4;
+    let k2 = u32::from_le_bytes(buf[cur..cur + 4].try_into().unwrap());
+    cur += 4;
+    let k3 = u32::from_le_bytes(buf[cur..cur + 4].try_into().unwrap());
+    cur += 4;
+
+    // Skip gm_flag (buf[17])
+    cur += 1;
+
+    // Session token: u16 LE length, then that many bytes; then base64-decode
+    if cur + 2 > 128 {
+        return Err("first packet overrun reading session token length".to_string());
+    }
+    let st_len = u16::from_le_bytes([buf[cur], buf[cur + 1]]) as usize;
+    cur += 2;
+    if cur + st_len > 128 {
+        return Err("first packet overrun reading session token".to_string());
+    }
+    let st_raw = &buf[cur..cur + st_len];
+    cur += st_len;
+    let st_str = std::str::from_utf8(st_raw).map_err(|e| e.to_string())?;
+    let session_token = base64::decode(st_str).map_err(|e| e.to_string())?;
+    if session_token.is_empty() {
+        return Err("Malformed session key.".to_string());
+    }
+
+    // Character name: u16 LE length, then that many bytes as UTF-8
+    if cur + 2 > 128 {
+        return Err("first packet overrun reading character name length".to_string());
+    }
+    let cn_len = u16::from_le_bytes([buf[cur], buf[cur + 1]]) as usize;
+    cur += 2;
+    if cur + cn_len > 128 {
+        return Err("first packet overrun reading character name".to_string());
+    }
+    let cn_bytes = &buf[cur..cur + cn_len];
+    cur += cn_len;
+    let character_name = String::from_utf8(cn_bytes.to_vec()).map_err(|e| e.to_string())?;
+
+    // Challenge echo: timestamp (u32 LE) + random (u8)
+    if cur + 5 > 128 {
+        return Err("first packet overrun reading challenge".to_string());
+    }
+    let challenge_timestamp = u32::from_le_bytes(buf[cur..cur + 4].try_into().unwrap());
+    cur += 4;
+    let challenge_random = buf[cur];
+
+    Ok(FirstPacket {
+        os,
         xtea_key: [k0, k1, k2, k3],
+        session_token,
+        character_name,
+        challenge_timestamp,
+        challenge_random,
     })
 }
 
@@ -4064,27 +4146,71 @@ mod tests {
     }
 
     // -----------------------------------------------------------------------
-    // parse_login_packet
+    // parse_first_packet
     // -----------------------------------------------------------------------
 
-    #[test]
-    fn test_parse_login_packet() {
-        // version=1310 (minimum allowed), key=[1,2,3,4], account="acc", password="pass"
+    /// Helper: build a NetworkMessage from raw bytes with the read cursor at
+    /// position 0 (start of the payload region).
+    fn first_packet_msg(bytes: &[u8]) -> NetworkMessage {
         let mut msg = NetworkMessage::new();
-        msg.add_u16(1310);
-        msg.add_u32(1);
-        msg.add_u32(2);
-        msg.add_u32(3);
-        msg.add_u32(4);
-        msg.add_string("acc");
-        msg.add_string("pass");
+        msg.add_bytes(bytes);
         msg.set_buffer_position(0);
+        msg
+    }
 
-        let pkt = parse_login_packet(&mut msg).expect("parse should succeed");
-        assert_eq!(pkt.client_version, 1310);
-        assert_eq!(pkt.xtea_key, [1, 2, 3, 4]);
-        assert_eq!(pkt.account_name, "acc");
-        assert_eq!(pkt.password, "pass");
+    #[test]
+    fn parse_first_packet_rejects_old_version() {
+        // OS=1 (u16), version=1098 (u16) — below the allowed 1310/1311 range
+        let payload: &[u8] = &[
+            0x01, 0x00, // os = 1
+            0x4A, 0x04, // version = 1098
+        ];
+        let mut msg = first_packet_msg(payload);
+        let result = parse_first_packet(&mut msg);
+        assert!(result.is_err(), "version 1098 must be rejected");
+        let err = result.unwrap_err();
+        assert!(
+            err.contains("protocol"),
+            "error must mention 'protocol': {err}"
+        );
+    }
+
+    #[test]
+    fn parse_first_packet_accepts_version_1310() {
+        // OS=3, version=1310 (0x1E, 0x05 LE) — truncated buffer after version
+        // The function will fail later (e.g. on RSA block), but NOT on version check.
+        let payload: &[u8] = &[
+            0x03, 0x00, // os = 3
+            0x1E, 0x05, // version = 1310
+                  // truncated: no more bytes
+        ];
+        let mut msg = first_packet_msg(payload);
+        let result = parse_first_packet(&mut msg);
+        // Must NOT be a version error
+        if let Err(e) = &result {
+            assert!(
+                !e.contains("protocol"),
+                "version 1310 must not trigger a version error, got: {e}"
+            );
+        }
+    }
+
+    #[test]
+    fn parse_first_packet_accepts_version_1311() {
+        // OS=3, version=1311 (0x1F, 0x05 LE) — truncated buffer after version
+        let payload: &[u8] = &[
+            0x03, 0x00, // os = 3
+            0x1F, 0x05, // version = 1311
+                  // truncated
+        ];
+        let mut msg = first_packet_msg(payload);
+        let result = parse_first_packet(&mut msg);
+        if let Err(e) = &result {
+            assert!(
+                !e.contains("protocol"),
+                "version 1311 must not trigger a version error, got: {e}"
+            );
+        }
     }
 
     // -----------------------------------------------------------------------
@@ -5500,11 +5626,12 @@ mod tests {
     // -----------------------------------------------------------------------
 
     #[test]
-    fn test_parse_login_packet_overrun() {
-        // An empty buffer reads version=0 (overrun sentinel), which is below the
-        // minimum allowed version — the version check fires before the overrun check.
+    fn test_parse_first_packet_overrun() {
+        // An empty buffer reads os=0, version=0 (overrun sentinels), which is
+        // below the minimum allowed version — the version check fires before
+        // the overrun check.
         let mut msg = NetworkMessage::new();
-        let err = parse_login_packet(&mut msg).expect_err("empty buffer should be rejected");
+        let err = parse_first_packet(&mut msg).expect_err("empty buffer should be rejected");
         assert!(
             err.contains("13.10"),
             "empty buffer produces version-check error: {err}"
@@ -5762,23 +5889,21 @@ mod tests {
     // -----------------------------------------------------------------------
 
     // -----------------------------------------------------------------------
-    // parse_login_packet — version range check
+    // parse_first_packet — version range check (bottom-of-file variants)
     // -----------------------------------------------------------------------
 
     #[test]
-    fn parse_login_version_760_returns_err_with_version_message() {
+    fn parse_first_packet_version_760_returns_err_with_version_message() {
         use forgottenserver_common::networkmessage::NetworkMessage;
-        // version=760 (0xF8, 0x02 LE) + xtea key (16 bytes) + account "" + password ""
+        // os=1 (u16), version=760 (0xF8, 0x02 LE) — below allowed range
         let payload: &[u8] = &[
+            0x01, 0x00, // os = 1
             0xF8, 0x02, // version 760
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // xtea key (all zeros)
-            0x00, 0x00, // account_name length = 0
-            0x00, 0x00, // password length = 0
         ];
         let mut msg = NetworkMessage::new();
         msg.add_bytes(payload);
         msg.set_buffer_position(0);
-        let result = parse_login_packet(&mut msg);
+        let result = parse_first_packet(&mut msg);
         assert!(result.is_err(), "version 760 must be rejected");
         let err = result.unwrap_err();
         assert!(
@@ -5788,62 +5913,59 @@ mod tests {
     }
 
     #[test]
-    fn parse_login_version_9999_returns_err_with_version_message() {
+    fn parse_first_packet_version_9999_returns_err_with_version_message() {
         use forgottenserver_common::networkmessage::NetworkMessage;
-        // version=9999 (0x0F, 0x27 LE)
+        // os=1 (u16), version=9999 (0x0F, 0x27 LE) — above allowed range
         let payload: &[u8] = &[
+            0x01, 0x00, // os = 1
             0x0F, 0x27, // version 9999
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x00, 0x00, 0x00, 0x00,
         ];
         let mut msg = NetworkMessage::new();
         msg.add_bytes(payload);
         msg.set_buffer_position(0);
-        let result = parse_login_packet(&mut msg);
+        let result = parse_first_packet(&mut msg);
         assert!(result.is_err(), "version 9999 must be rejected");
         assert!(result.unwrap_err().contains("13.10"));
     }
 
     #[test]
-    fn parse_login_version_1310_returns_ok() {
+    fn parse_first_packet_version_1310_proceeds_past_version_check() {
         use forgottenserver_common::networkmessage::NetworkMessage;
-        // version=1310 (0x1E, 0x05 LE)
+        // os=3, version=1310 — truncated, so it fails later but NOT on version
         let payload: &[u8] = &[
-            0x1E, 0x05, // version 1310
-            1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0, // xtea key
-            0x03, 0x00, b'a', b'c', b'c', // account_name "acc"
-            0x04, 0x00, b'p', b'a', b's', b's', // password "pass"
+            0x03, 0x00, // os = 3
+            0x1E, 0x05, // version = 1310
         ];
         let mut msg = NetworkMessage::new();
         msg.add_bytes(payload);
         msg.set_buffer_position(0);
-        let result = parse_login_packet(&mut msg);
-        assert!(
-            result.is_ok(),
-            "version 1310 must be accepted: {:?}",
-            result
-        );
-        let packet = result.unwrap();
-        assert_eq!(packet.client_version, 1310);
+        let result = parse_first_packet(&mut msg);
+        if let Err(e) = &result {
+            assert!(
+                !e.contains("protocol"),
+                "version 1310 must not trigger a version error, got: {e}"
+            );
+        }
     }
 
     #[test]
-    fn parse_login_version_1311_returns_ok() {
+    fn parse_first_packet_version_1311_proceeds_past_version_check() {
         use forgottenserver_common::networkmessage::NetworkMessage;
-        // version=1311 (0x1F, 0x05 LE)
+        // os=3, version=1311 — truncated, so it fails later but NOT on version
         let payload: &[u8] = &[
-            0x1F, 0x05, // version 1311
-            1, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 4, 0, 0, 0, 0x00, 0x00, 0x00, 0x00,
+            0x03, 0x00, // os = 3
+            0x1F, 0x05, // version = 1311
         ];
         let mut msg = NetworkMessage::new();
         msg.add_bytes(payload);
         msg.set_buffer_position(0);
-        let result = parse_login_packet(&mut msg);
-        assert!(
-            result.is_ok(),
-            "version 1311 must be accepted: {:?}",
-            result
-        );
-        assert_eq!(result.unwrap().client_version, 1311);
+        let result = parse_first_packet(&mut msg);
+        if let Err(e) = &result {
+            assert!(
+                !e.contains("protocol"),
+                "version 1311 must not trigger a version error, got: {e}"
+            );
+        }
     }
 
     #[test]

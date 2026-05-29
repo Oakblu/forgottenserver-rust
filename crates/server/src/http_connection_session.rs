@@ -87,11 +87,14 @@ impl HttpConnectionSession {
         let json: serde_json::Value = match serde_json::from_str(body) {
             Ok(v) => v,
             Err(e) => {
-                eprintln!("[HTTP] dispatch from {ip}: parse error ({:?})", e.classify());
+                eprintln!(
+                    "[HTTP] dispatch from {ip}: parse error ({:?})",
+                    e.classify()
+                );
                 return (
                     200,
                     r#"{"errorCode":2,"errorMessage":"Invalid request body."}"#.to_string(),
-                )
+                );
             }
         };
 

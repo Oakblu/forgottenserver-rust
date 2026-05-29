@@ -159,8 +159,12 @@ pub fn initialise_modules(config_path: &Path, data_dir: &Path) -> Result<Modules
 pub fn start_listeners(modules: &Modules) -> Result<()> {
     srv_boot::start_admin_and_status(modules.config.clone(), modules.game_state.clone())
         .map_err(|e| anyhow!("Failed to start admin/status listeners: {e}"))?;
-    srv_boot::start_game_listener(modules.config.clone(), modules.game_state.clone())
-        .map_err(|e| anyhow!("Failed to start game listener: {e}"))?;
+    srv_boot::start_game_listener(
+        modules.config.clone(),
+        modules.game_state.clone(),
+        modules.db.clone(),
+    )
+    .map_err(|e| anyhow!("Failed to start game listener: {e}"))?;
     srv_boot::start_http_listener(
         modules.config.clone(),
         modules.db.clone(),

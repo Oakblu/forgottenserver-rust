@@ -205,7 +205,7 @@ pub fn encrypt_output(msg: &mut OutputMessage, key: &xtea::Key) -> usize {
     // Simpler approach: store the encrypted bytes and rebuild the output buffer.
     let mut out = OutputMessage::new();
     out.add_bytes(&payload_copy);
-    out.write_message_length();
+    out.add_crypto_header();
     *msg = out;
     padded_len
 }
@@ -585,12 +585,19 @@ mod tests {
         // Encrypt
         encrypt_output(&mut out, &key);
 
-        // The encrypted output should differ from the original
+        // Layout after add_crypto_header: [outer_len:2=20][adler32:4][encrypted:16]
         let encrypted_buf = out.get_output_buffer();
-        assert_ne!(&encrypted_buf[2..18], &payload[..]);
+        assert_eq!(encrypted_buf.len(), 22, "2 + 4 + 16 = 22 bytes total");
+        assert_eq!(
+            u16::from_le_bytes([encrypted_buf[0], encrypted_buf[1]]),
+            20,
+            "outer_len = 4 (adler32) + 16 (encrypted)"
+        );
+        // Encrypted data starts at offset 6 (after outer_len:2 + adler32:4)
+        assert_ne!(&encrypted_buf[6..22], &payload[..]);
 
         // Decrypt back: put encrypted payload into a NetworkMessage
-        let encrypted_payload: Vec<u8> = encrypted_buf[2..18].to_vec();
+        let encrypted_payload: Vec<u8> = encrypted_buf[6..22].to_vec();
         let mut msg = NetworkMessage::new();
         msg.add_bytes(&encrypted_payload);
         decrypt_message(&mut msg, &key);
@@ -675,12 +682,12 @@ mod tests {
             "13-byte payload should round up to 16 bytes (next 8-byte boundary)"
         );
 
-        // The encrypted buffer length should be header (2) + padded payload (16) = 18.
-        assert_eq!(out.get_output_buffer().len(), 18);
+        // Layout after add_crypto_header: [outer_len:2=20][adler32:4][encrypted:16] = 22 bytes.
+        assert_eq!(out.get_output_buffer().len(), 22);
 
         // Decrypting the encrypted payload should recover original 13 bytes
         // followed by 3 zero padding bytes.
-        let encrypted_payload: Vec<u8> = out.get_output_buffer()[2..18].to_vec();
+        let encrypted_payload: Vec<u8> = out.get_output_buffer()[6..22].to_vec();
         let mut msg = NetworkMessage::new();
         msg.add_bytes(&encrypted_payload);
         decrypt_message(&mut msg, &key);
