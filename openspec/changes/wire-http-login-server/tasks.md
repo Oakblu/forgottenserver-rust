@@ -55,8 +55,8 @@
 - [x] 7.1 Run `cargo test --lib --workspace` — zero failures
 - [x] 7.2 Run `cargo clippy --workspace --lib --tests -- -D warnings` — zero warnings
 - [x] 7.3 Run `cargo fmt --all` — no diff
-- [ ] 7.4 Run `docker compose up --build`; confirm server logs show HTTP server starting on port 8080
-- [ ] 7.5 Run `curl -s http://localhost:8080/` — response starts with `HTTP` or body is `{}`
-- [ ] 7.6 Run `curl -s -X POST http://localhost:8080/ -H 'Content-Type: application/json' -d '{"type":"cacheinfo"}'` — response contains `"playersonline"`
+- [x] 7.4 Run `docker compose up --build`; confirm server logs show HTTP server starting on port 8080
+- [x] 7.5 Run `curl -s http://localhost:8080/` — response starts with `HTTP` or body is `{}`
+- [x] 7.6 Run `curl -s -X POST http://localhost:8080/ -H 'Content-Type: application/json' -d '{"type":"cacheinfo"}'` — response contains `"playersonline"`
 - [ ] 7.7 Connect OTClient to the server — login dialog proceeds past the "Failed to connect to server (HTTP)" error (character list loads or shows account-not-found, not a network error)
-- [ ] 7.8 Run E2E tests: `cargo test -p forgottenserver-e2e --features e2e -- --test-threads=1` — `http_port_accepts_tcp_connection` and `http_port_returns_200_for_get_request` both pass
+- [x] 7.8 Run E2E tests: `cargo test -p forgottenserver-e2e --features e2e -- --test-threads=1` — `http_port_accepts_tcp_connection` and `http_port_returns_200_for_get_request` both pass

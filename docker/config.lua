@@ -1,7 +1,7 @@
 -- Docker runtime config for forgottenserver-rust.
 -- mysqlHost points to the "db" compose service, not localhost.
 worldType = "pvp"
-ip = "0.0.0.0"
+ip = "127.0.0.1"
 bindOnlyGlobalAddress = false
 gameProtocolPort = 7172
 statusProtocolPort = 7171

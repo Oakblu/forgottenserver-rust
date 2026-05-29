@@ -86,7 +86,8 @@ impl HttpConnectionSession {
     fn dispatch(&self, body: &str, ip: &str) -> (u16, String) {
         let json: serde_json::Value = match serde_json::from_str(body) {
             Ok(v) => v,
-            Err(_) => {
+            Err(e) => {
+                eprintln!("[HTTP] dispatch from {ip}: parse error ({:?})", e.classify());
                 return (
                     200,
                     r#"{"errorCode":2,"errorMessage":"Invalid request body."}"#.to_string(),
@@ -103,6 +104,8 @@ impl HttpConnectionSession {
                 )
             }
         };
+
+        eprintln!("[HTTP] dispatch from {ip}: type={type_val}");
 
         match type_val {
             "login" => self.dispatch_login(&json, ip),
