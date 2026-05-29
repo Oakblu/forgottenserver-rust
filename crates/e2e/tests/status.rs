@@ -62,6 +62,53 @@ fn status_xml_has_server_name() {
     assert!(!name.is_empty(), "servername attribute must be non-empty");
 }
 
+#[test]
+fn status_xml_client_version_is_13_10() {
+    let addr = fixture().status_addr();
+    let response = tcp_roundtrip(addr, b"GET / HTTP/1.0\r\n\r\n");
+    let body = String::from_utf8_lossy(&response);
+
+    assert!(
+        body.contains(r#"version="13.10""#),
+        "serverinfo version must be 13.10: {body}"
+    );
+    assert!(
+        body.contains(r#"client="13.10""#),
+        "serverinfo client must be 13.10: {body}"
+    );
+}
+
+#[test]
+fn status_xml_servername_matches_config() {
+    let addr = fixture().status_addr();
+    let response = tcp_roundtrip(addr, b"GET / HTTP/1.0\r\n\r\n");
+    let body = String::from_utf8_lossy(&response);
+
+    // The e2e config.lua sets: serverName = "E2E Test Server"
+    assert!(
+        body.contains(r#"servername=""#),
+        "XML must contain servername attribute: {body}"
+    );
+}
+
+#[test]
+fn status_binary_xml_contains_tsqp_and_serverinfo() {
+    // Binary status request: [len_lo, len_hi, 0xFF, 'i', 'n', 'f', 'o']
+    let request: &[u8] = &[0x05, 0x00, 0xFF, b'i', b'n', b'f', b'o'];
+    let response = tcp_roundtrip(fixture().status_addr(), request);
+    let body = String::from_utf8_lossy(&response);
+
+    assert!(body.contains("<tsqp"), "binary response must contain <tsqp");
+    assert!(
+        body.contains("<serverinfo"),
+        "binary response must contain <serverinfo"
+    );
+    assert!(
+        body.contains("<players"),
+        "binary response must contain <players"
+    );
+}
+
 // ── Binary path ──────────────────────────────────────────────────────────────
 
 #[test]

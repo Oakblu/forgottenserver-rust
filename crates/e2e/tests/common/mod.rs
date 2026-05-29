@@ -150,7 +150,14 @@ mapAuthor = "Komic"
 
             seed::seed_db(&mariadb).await;
 
-            (mariadb, server, config_dir, status_port, game_port, http_port)
+            (
+                mariadb,
+                server,
+                config_dir,
+                status_port,
+                game_port,
+                http_port,
+            )
         });
 
         ServerFixture {

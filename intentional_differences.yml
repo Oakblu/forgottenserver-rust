@@ -1212,6 +1212,71 @@ differences:
     reviewed_by: upstream-sync-2026-05-28
     status: ACCEPTED
 
+  - id: game-listener-challenge-no-adler32
+    cpp_symbol: "ProtocolGame::sendChallenge / Protocol::send (Adler32 checksum header)"
+    cpp_file: "forgottenserver-upstream/src/protocolgame.cpp"
+    rust_symbol: "server::boot::GameLoginHandler::handle_connection"
+    rust_module: "crates/server/src/boot.rs"
+    divergence: |
+      The C++ `sendChallenge` call dispatches through `Protocol::send()`, which
+      wraps outgoing packets with an Adler32 checksum in the first 4 bytes of
+      the framing header (when checksum mode is enabled). The Rust game handler
+      sends the challenge packet (opcode 0x1F + 4-byte timestamp + 1-byte random)
+      using a raw 2-byte LE length prefix only — no Adler32 checksum is included.
+      The Rust implementation is a minimal game-listener skeleton (bind + challenge
+      + version-check only); full TFS 13.10 wire-protocol compliance, including
+      Adler32 framing, is deferred.
+    reason: |
+      Adler32 framing is part of the full TFS 13.10 protocol stack, which requires
+      the complete RSA decryption / XTEA key exchange / session-token flow. That
+      stack is not yet implemented in the Rust network crate. Wiring the checksum
+      before the rest of the protocol is in place would produce dead code and is
+      tracked as a PARTIAL gap in MIGRATION_LEDGER.yml under protocolgame.cpp.
+    observable_equivalence: |
+      Until the full TFS 13.10 protocol is implemented, no production client
+      will successfully authenticate — Adler32 absence is not observable in
+      isolation. When the full protocol is wired, the Adler32 framing will be
+      added and this entry removed or superseded.
+    verification_state: UNVERIFIED
+    date: 2026-05-29
+    reviewed_by: Task-5 code-quality fix (2026-05-29)
+    status: ACCEPTED
+
+  - id: parse-login-version-check-before-xtea-read
+    cpp_symbol: "ProtocolGame::parseFirstPacket"
+    cpp_file: "forgottenserver-upstream/src/protocolgame.cpp:347"
+    rust_symbol: "network::protocolgame::parse_login_packet"
+    rust_module: "crates/network/src/protocolgame.rs"
+    divergence: |
+      C++ `parseFirstPacket` checks the client version AFTER RSA decryption of
+      the payload and after reading the OS type byte (the version field lives
+      inside the RSA-encrypted block). Rust `parse_login_packet` checks the
+      client version immediately after reading the first u16 from the wire
+      buffer — before reading the XTEA key or any other fields. There is no
+      RSA decryption step and no OS-type branching in the Rust implementation.
+    reason: |
+      The Rust network crate is a pure packet deserializer with no RSA
+      decryption or OS-type branching. The packet format presented to
+      `parse_login_packet` is the already-decrypted payload (RSA and OS
+      handling are responsibility of a higher layer or a future adapter).
+      An early-exit on an invalid version avoids reading further bytes from
+      a partial parse path that does not exist in the Rust implementation,
+      making the failure mode cleaner and the code easier to reason about.
+      The observable wire contract is unaffected: a client sending a version
+      outside [CLIENT_VERSION_MIN, CLIENT_VERSION_MAX] receives a disconnect
+      in both implementations.
+    observable_equivalence: |
+      Any client version outside [1310, 1311] triggers an immediate `Err`
+      from `parse_login_packet`, which the connection handler maps to a
+      disconnect packet. This matches the C++ end-to-end outcome. Tests:
+      `network::protocolgame::tests::test_parse_login_version_too_low`,
+      `test_parse_login_version_too_high`, and
+      `test_parse_login_version_exactly_min_max`.
+    verification_state: TESTED
+    date: 2026-05-29
+    reviewed_by: Task-2 code-quality fix (2026-05-29)
+    status: ACCEPTED
+
 # ═════════════════════════════════════════════════════════════════════════
 # Items reclassified as debt (NOT divergences)
 # ═════════════════════════════════════════════════════════════════════════

@@ -1,0 +1,667 @@
+[
+  {
+    "fn_name": "cylinder_post_add",
+    "file": "common/src/cylinder.rs",
+    "line": 117,
+    "body_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "cylinder_post_remove",
+    "file": "common/src/cylinder.rs",
+    "line": 130,
+    "body_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "cylinder_first_index",
+    "file": "common/src/cylinder.rs",
+    "line": 36,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "cylinder_last_index",
+    "file": "common/src/cylinder.rs",
+    "line": 44,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "cylinder_item_type_count",
+    "file": "common/src/cylinder.rs",
+    "line": 52,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "cylinder_thing_index",
+    "file": "common/src/cylinder.rs",
+    "line": 60,
+    "body_hash": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "get_number",
+    "file": "common/src/luavariant.rs",
+    "line": 136,
+    "body_hash": "aab4f5e3adf5207b5e22912b554a5ac5ce56fbd56e2a84fd8b09038c03238b07",
+    "classification": "panic-correct"
+  },
+  {
+    "fn_name": "get_position",
+    "file": "common/src/luavariant.rs",
+    "line": 145,
+    "body_hash": "4e37b08da1e7709594e7c1e88e863092935695acbcbc0a1e9da7d610326e4030",
+    "classification": "panic-correct"
+  },
+  {
+    "fn_name": "get_target_position",
+    "file": "common/src/luavariant.rs",
+    "line": 157,
+    "body_hash": "662833240ecc10d8b1392b1b1b6e50a12515254c72eac8c80e5fa6d049ca1249",
+    "classification": "panic-correct"
+  },
+  {
+    "fn_name": "get_string",
+    "file": "common/src/luavariant.rs",
+    "line": 169,
+    "body_hash": "325a8f8288f6146e3efff40af6178748225ed0c625128329b43aedfaa074458b",
+    "classification": "panic-correct"
+  },
+  {
+    "fn_name": "get_header_position",
+    "file": "common/src/outputmessage.rs",
+    "line": 180,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "get_description",
+    "file": "common/src/thing.rs",
+    "line": 83,
+    "body_hash": "77f0daf880439021873be08337d10fd7546cb6df401df83f435503d928218910",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "get_throw_range",
+    "file": "common/src/thing.rs",
+    "line": 88,
+    "body_hash": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_pushable",
+    "file": "common/src/thing.rs",
+    "line": 93,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_removable",
+    "file": "common/src/thing.rs",
+    "line": 98,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "common/src/thing.rs",
+    "line": 107,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "get_first_index",
+    "file": "common/src/thing.rs",
+    "line": 116,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "get_last_index",
+    "file": "common/src/thing.rs",
+    "line": 123,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "get_thing_index",
+    "file": "common/src/thing.rs",
+    "line": 132,
+    "body_hash": "1bad6b8cf97131fceab8543e81f7757195fbb1d36b376ee994ad1cf17699c464",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "get_item_type_count",
+    "file": "common/src/thing.rs",
+    "line": 140,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_creature",
+    "file": "common/src/thing.rs",
+    "line": 159,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_item",
+    "file": "common/src/thing.rs",
+    "line": 163,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_teleport",
+    "file": "common/src/thing.rs",
+    "line": 167,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_magic_field",
+    "file": "common/src/thing.rs",
+    "line": 171,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_trash_holder",
+    "file": "common/src/thing.rs",
+    "line": 175,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_container",
+    "file": "common/src/thing.rs",
+    "line": 179,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_door",
+    "file": "common/src/thing.rs",
+    "line": 183,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_moveable",
+    "file": "common/src/thing.rs",
+    "line": 187,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_ground",
+    "file": "common/src/thing.rs",
+    "line": 191,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_invisible",
+    "file": "common/src/thing.rs",
+    "line": 195,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "get_tile",
+    "file": "common/src/thing.rs",
+    "line": 214,
+    "body_hash": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "get_item",
+    "file": "common/src/thing.rs",
+    "line": 222,
+    "body_hash": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "get_creature",
+    "file": "common/src/thing.rs",
+    "line": 230,
+    "body_hash": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "get_receiver",
+    "file": "common/src/thing.rs",
+    "line": 238,
+    "body_hash": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "get_parent",
+    "file": "common/src/thing.rs",
+    "line": 245,
+    "body_hash": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "get_position_tuple",
+    "file": "common/src/thing.rs",
+    "line": 276,
+    "body_hash": "dc937b59892604f5a86ac96936cd7ff09e25f18ae6b758e8014a24c7fa039e91",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "u8_to_state",
+    "file": "common/src/thread_holder_base.rs",
+    "line": 35,
+    "body_hash": "21175641a4dad91984361613cf7854d57969e6ce64939f32a2157ed5eb0a150e",
+    "classification": "panic-correct"
+  },
+  {
+    "fn_name": "is_attackable",
+    "file": "entity/src/creature.rs",
+    "line": 816,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "can_see_invisibility",
+    "file": "entity/src/creature.rs",
+    "line": 821,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "can_see_ghost_mode",
+    "file": "entity/src/creature.rs",
+    "line": 826,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_creature",
+    "file": "entity/src/creature.rs",
+    "line": 983,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_removable",
+    "file": "entity/src/creature.rs",
+    "line": 989,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "get_throw_range",
+    "file": "entity/src/creature.rs",
+    "line": 999,
+    "body_hash": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "post_add_notification",
+    "file": "entity/src/player.rs",
+    "line": 1253,
+    "body_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "post_remove_notification",
+    "file": "entity/src/player.rs",
+    "line": 1256,
+    "body_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "is_container",
+    "file": "items/src/container.rs",
+    "line": 434,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_item",
+    "file": "items/src/container.rs",
+    "line": 437,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "items/src/container.rs",
+    "line": 440,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "get_first_index",
+    "file": "items/src/container.rs",
+    "line": 443,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "cylinder_first_index",
+    "file": "items/src/container.rs",
+    "line": 469,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "can_remove",
+    "file": "items/src/depotchest.rs",
+    "line": 126,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_container",
+    "file": "items/src/depotchest.rs",
+    "line": 136,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_item",
+    "file": "items/src/depotchest.rs",
+    "line": 139,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "items/src/depotchest.rs",
+    "line": 142,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "query_add",
+    "file": "items/src/depotlocker.rs",
+    "line": 81,
+    "body_hash": "15329d27d85dcfbf5bf0e34a9dbe9f51252f02919f7597ec867a6fe04930996b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "can_remove",
+    "file": "items/src/depotlocker.rs",
+    "line": 86,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_container",
+    "file": "items/src/depotlocker.rs",
+    "line": 176,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_item",
+    "file": "items/src/depotlocker.rs",
+    "line": 179,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "items/src/depotlocker.rs",
+    "line": 182,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "can_remove",
+    "file": "items/src/inbox.rs",
+    "line": 62,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_container",
+    "file": "items/src/inbox.rs",
+    "line": 114,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_item",
+    "file": "items/src/inbox.rs",
+    "line": 117,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "items/src/inbox.rs",
+    "line": 120,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "can_remove",
+    "file": "items/src/item.rs",
+    "line": 484,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "can_transform",
+    "file": "items/src/item.rs",
+    "line": 1669,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "store_item",
+    "file": "items/src/mailbox.rs",
+    "line": 101,
+    "body_hash": "8f9da6ebb74583a113183d5795f82d68692f4ecdef680722f276ffaa9ad2cc55",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "is_mailbox",
+    "file": "items/src/mailbox.rs",
+    "line": 107,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_store_inbox",
+    "file": "items/src/storeinbox.rs",
+    "line": 122,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "can_remove",
+    "file": "items/src/storeinbox.rs",
+    "line": 131,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_container",
+    "file": "items/src/storeinbox.rs",
+    "line": 251,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_item",
+    "file": "items/src/storeinbox.rs",
+    "line": 254,
+    "body_hash": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "items/src/storeinbox.rs",
+    "line": 257,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "query_add_for_non_member",
+    "file": "map/src/housetile.rs",
+    "line": 88,
+    "body_hash": "34c02472b9ea7855d2ede119cfeda54ce0294a93ca39e8e375f87bf0772ef9a7",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "query_add_item_for_non_member",
+    "file": "map/src/housetile.rs",
+    "line": 93,
+    "body_hash": "34c02472b9ea7855d2ede119cfeda54ce0294a93ca39e8e375f87bf0772ef9a7",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "query_add_non_player_creature",
+    "file": "map/src/housetile.rs",
+    "line": 100,
+    "body_hash": "734c4575eed0691b672366c1511ec568a3f5adb7b694c3521c272d55fa3b04d6",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "query_remove_for_non_member",
+    "file": "map/src/housetile.rs",
+    "line": 108,
+    "body_hash": "34c02472b9ea7855d2ede119cfeda54ce0294a93ca39e8e375f87bf0772ef9a7",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "post_add_item",
+    "file": "map/src/tile.rs",
+    "line": 1349,
+    "body_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "post_remove_item",
+    "file": "map/src/tile.rs",
+    "line": 1352,
+    "body_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "get_first_index",
+    "file": "map/src/tile.rs",
+    "line": 813,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "is_removed",
+    "file": "map/src/tile.rs",
+    "line": 1400,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "get_first_index",
+    "file": "map/src/tile.rs",
+    "line": 1406,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "cylinder_first_index",
+    "file": "map/src/tile.rs",
+    "line": 1418,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "query_add",
+    "file": "map/src/trashholder.rs",
+    "line": 55,
+    "body_hash": "b32551e9b7f4fc6fef157682da621d7ebab1b62d84746041b68f67f0392cc2fe",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "item_count",
+    "file": "map/src/trashholder.rs",
+    "line": 103,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "add_item",
+    "file": "map/src/trashholder.rs",
+    "line": 71,
+    "body_hash": "e0180a9dee02de06cf561a0c7722a466e426095f567a3b09b42c06f8e9350b99",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "get_element_damage",
+    "file": "game/src/weapons.rs",
+    "line": 285,
+    "body_hash": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "accept_loop",
+    "file": "server/src/http.rs",
+    "line": 218,
+    "body_hash": "9f507a3868f5627124f6e5171525a5b01795254eaa640f27c2010bba5d92eaa3",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "can_transform",
+    "file": "world/src/house.rs",
+    "line": 1043,
+    "body_hash": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "begin_transaction",
+    "file": "database/src/database.rs",
+    "line": 137,
+    "body_hash": "b32551e9b7f4fc6fef157682da621d7ebab1b62d84746041b68f67f0392cc2fe",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "commit",
+    "file": "database/src/database.rs",
+    "line": 142,
+    "body_hash": "b32551e9b7f4fc6fef157682da621d7ebab1b62d84746041b68f67f0392cc2fe",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "rollback",
+    "file": "database/src/database.rs",
+    "line": 147,
+    "body_hash": "b32551e9b7f4fc6fef157682da621d7ebab1b62d84746041b68f67f0392cc2fe",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "optimize_tables",
+    "file": "database/src/databasemanager.rs",
+    "line": 37,
+    "body_hash": "b32551e9b7f4fc6fef157682da621d7ebab1b62d84746041b68f67f0392cc2fe",
+    "classification": "intentional-deferred"
+  },
+  {
+    "fn_name": "load_script",
+    "file": "scripting/src/engine.rs",
+    "line": 71,
+    "body_hash": "b32551e9b7f4fc6fef157682da621d7ebab1b62d84746041b68f67f0392cc2fe",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "reset",
+    "file": "scripting/src/engine.rs",
+    "line": 83,
+    "body_hash": "b32551e9b7f4fc6fef157682da621d7ebab1b62d84746041b68f67f0392cc2fe",
+    "classification": "correct-default"
+  },
+  {
+    "fn_name": "register_event",
+    "file": "scripting/src/engine.rs",
+    "line": 87,
+    "body_hash": "b32551e9b7f4fc6fef157682da621d7ebab1b62d84746041b68f67f0392cc2fe",
+    "classification": "correct-default"
+  }
+]

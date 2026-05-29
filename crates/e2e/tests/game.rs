@@ -18,101 +18,87 @@ fn fixture() -> &'static ServerFixture {
 #[test]
 fn game_port_accepts_tcp_connection() {
     let addr = fixture().game_addr();
-
     let stream = TcpStream::connect_timeout(&addr, Duration::from_secs(5));
     assert!(
         stream.is_ok(),
         "game port refused connection — port may not be bound: {:?}",
         stream.err()
     );
-
-    let mut stream = stream.unwrap();
-    stream
-        .set_read_timeout(Some(Duration::from_secs(1)))
-        .unwrap();
-
-    // Either read some bytes (server sends a greeting) or time out / get EOF.
-    // Both are acceptable — what's NOT acceptable is connection-refused above.
-    let mut buf = [0u8; 64];
-    let result = stream.read(&mut buf);
-    match result {
-        Ok(_) => {}
-        Err(e)
-            if e.kind() == std::io::ErrorKind::WouldBlock
-                || e.kind() == std::io::ErrorKind::TimedOut =>
-        {
-            // read timed out — connection was accepted, server is just quiet
-        }
-        Err(e) => panic!("unexpected error reading from game port: {e}"),
-    }
 }
 
 #[test]
-fn game_login_records_server_response() {
-    // Tibia 7.60 game login packet (see parse_login_packet in protocolgame.rs):
-    //   [0x1E, 0x00]                    — 2-byte LE length prefix = 30
-    //   [0x0a]                          — packet type: game login
-    //   [0xF8, 0x02]                    — client version 760 (LE u16)
-    //   [0x01,0x00,0x00,0x00]           — XTEA key[0] = 1
-    //   [0x02,0x00,0x00,0x00]           — XTEA key[1] = 2
-    //   [0x03,0x00,0x00,0x00]           — XTEA key[2] = 3
-    //   [0x04,0x00,0x00,0x00]           — XTEA key[3] = 4
-    //   [0x03,0x00, b'a',b'c',b'c']     — account "acc"
-    //   [0x04,0x00, b'p',b'a',b's',b's'] — password "pass"
-    #[rustfmt::skip]
-    let packet: &[u8] = &[
-        0x1E, 0x00,
-        0x0a,
-        0xF8, 0x02,
-        0x01, 0x00, 0x00, 0x00,
-        0x02, 0x00, 0x00, 0x00,
-        0x03, 0x00, 0x00, 0x00,
-        0x04, 0x00, 0x00, 0x00,
-        0x03, 0x00, b'a', b'c', b'c',
-        0x04, 0x00, b'p', b'a', b's', b's',
-    ];
-
+fn game_port_sends_challenge_on_connect() {
+    // TFS 13.10 sends a challenge packet (opcode 0x1F) when client connects.
+    // Wire: [len_lo, len_hi, 0x1F, ts0, ts1, ts2, ts3, rand]
     let addr = fixture().game_addr();
-    let mut stream = TcpStream::connect_timeout(&addr, Duration::from_secs(5))
-        .expect("game port refused connection");
+    let mut stream =
+        TcpStream::connect_timeout(&addr, Duration::from_secs(5)).expect("game port must accept");
     stream
         .set_read_timeout(Some(Duration::from_secs(3)))
         .unwrap();
 
+    let mut buf = [0u8; 16];
+    let n = stream.read(&mut buf).unwrap_or(0);
+    assert!(n >= 3, "challenge packet must be at least 3 bytes, got {n}");
+    assert_eq!(
+        buf[2], 0x1F,
+        "first payload byte (after 2-byte length prefix) must be challenge opcode 0x1F"
+    );
+}
+
+#[test]
+fn game_login_bad_version_gets_disconnect() {
+    // Send a minimal login packet with version 760 (0xF8 0x02).
+    // Server must respond with a disconnect packet (opcode 0x14).
+    //
+    // Wire format for our game listener: read 2-byte length, then body.
+    // body[0] = opcode (0x0a), body[1..] = payload parsed by parse_login_packet:
+    //   version (u16), xtea×4 (u32 each), account_name (string), password (string)
+    //
+    // Body length = 1 (opcode) + 2 (version) + 16 (xtea) + 2 (acc len=0) + 2 (pwd len=0) = 23
+    #[rustfmt::skip]
+    let login_packet: &[u8] = &[
+        0x17, 0x00,                      // 2-byte LE body length = 23
+        0x0a,                            // opcode: game login
+        0xF8, 0x02,                      // client version 760 (LE)
+        0x01, 0x00, 0x00, 0x00,          // XTEA key[0]
+        0x02, 0x00, 0x00, 0x00,          // XTEA key[1]
+        0x03, 0x00, 0x00, 0x00,          // XTEA key[2]
+        0x04, 0x00, 0x00, 0x00,          // XTEA key[3]
+        0x00, 0x00,                      // account_name: empty pascal string (length=0)
+        0x00, 0x00,                      // password: empty pascal string (length=0)
+    ];
+
+    let addr = fixture().game_addr();
+    let mut stream =
+        TcpStream::connect_timeout(&addr, Duration::from_secs(5)).expect("game port must accept");
     stream
-        .write_all(packet)
-        .expect("failed to send login packet");
+        .set_read_timeout(Some(Duration::from_secs(3)))
+        .unwrap();
+
+    // Read and discard the challenge packet first
+    let mut challenge_buf = [0u8; 16];
+    let _ = stream.read(&mut challenge_buf);
+
+    // Send the bad-version login packet
+    stream.write_all(login_packet).expect("write login packet");
     let _ = stream.shutdown(std::net::Shutdown::Write);
 
+    // Read the disconnect response
     let mut response = Vec::new();
-    let result = stream.read_to_end(&mut response);
+    let _ = stream.read_to_end(&mut response);
 
-    match result {
-        Ok(0) => {
-            // Server closed connection cleanly — game wiring not yet complete.
-            eprintln!("[game_login_records_server_response] server closed with 0 bytes (expected at current scope)");
-        }
-        Ok(_) => {
-            // Server responded — log bytes for future spec tightening.
-            eprintln!(
-                "[game_login_records_server_response] server responded with {} bytes: {:02X?}",
-                response.len(),
-                &response[..response.len().min(64)]
-            );
-        }
-        Err(e)
-            if e.kind() == std::io::ErrorKind::WouldBlock
-                || e.kind() == std::io::ErrorKind::TimedOut =>
-        {
-            eprintln!("[game_login_records_server_response] read timed out (server accepted but sent nothing)");
-        }
-        Err(e) if e.kind() == std::io::ErrorKind::ConnectionReset => {
-            // Server sent TCP RST — connection was accepted and reset without data.
-            // Expected when game login handling is partially wired.
-            eprintln!("[game_login_records_server_response] connection reset by server (partially wired, no response)");
-        }
-        Err(e) => {
-            panic!("unexpected error reading game login response: {e}");
-        }
-    }
+    assert!(
+        !response.is_empty(),
+        "server must send a disconnect packet for version 760"
+    );
+    assert!(
+        response.len() >= 3,
+        "disconnect packet must be at least 3 bytes"
+    );
+    // After 2-byte length prefix, first byte is opcode 0x14 (disconnect)
+    assert_eq!(
+        response[2], 0x14,
+        "disconnect opcode must be 0x14 (after 2-byte length prefix)"
+    );
 }

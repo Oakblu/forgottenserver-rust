@@ -8,9 +8,7 @@ fn repo_root() -> std::path::PathBuf {
     let manifest_dir = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     manifest_dir
         .ancestors()
-        .find(|p| {
-            p.join("Cargo.toml").exists() && p.join("docker-compose.perf.yml").exists()
-        })
+        .find(|p| p.join("Cargo.toml").exists() && p.join("docker-compose.perf.yml").exists())
         .expect("could not locate repo root (expected Cargo.toml + docker-compose.perf.yml)")
         .to_path_buf()
 }
@@ -118,8 +116,7 @@ fn test_perf_stack_rust_login_flood() {
     let output_str = output.to_str().unwrap();
     run_perf_bot_single("rust", 7472, output_str);
 
-    let content = std::fs::read_to_string(output_str)
-        .expect("perf-bot did not write JSON output");
+    let content = std::fs::read_to_string(output_str).expect("perf-bot did not write JSON output");
     let report: serde_json::Value =
         serde_json::from_str(&content).expect("perf-bot output is not valid JSON");
 
@@ -149,8 +146,7 @@ fn test_perf_stack_cpp_login_flood() {
     let output_str = output.to_str().unwrap();
     run_perf_bot_single("cpp", 7372, output_str);
 
-    let content = std::fs::read_to_string(output_str)
-        .expect("perf-bot did not write JSON output");
+    let content = std::fs::read_to_string(output_str).expect("perf-bot did not write JSON output");
     let report: serde_json::Value =
         serde_json::from_str(&content).expect("perf-bot output is not valid JSON");
 

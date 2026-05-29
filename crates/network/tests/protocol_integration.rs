@@ -84,7 +84,11 @@ fn game_login_version_too_high_returns_disconnect_message() {
 fn game_login_version_1310_accepted() {
     let payload = login_payload(1310);
     let result = parse_from_bytes(&payload);
-    assert!(result.is_ok(), "version 1310 must be accepted: {:?}", result);
+    assert!(
+        result.is_ok(),
+        "version 1310 must be accepted: {:?}",
+        result
+    );
     assert_eq!(result.unwrap().client_version, 1310);
 }
 
@@ -92,7 +96,11 @@ fn game_login_version_1310_accepted() {
 fn game_login_version_1311_accepted() {
     let payload = login_payload(1311);
     let result = parse_from_bytes(&payload);
-    assert!(result.is_ok(), "version 1311 must be accepted: {:?}", result);
+    assert!(
+        result.is_ok(),
+        "version 1311 must be accepted: {:?}",
+        result
+    );
     assert_eq!(result.unwrap().client_version, 1311);
 }
 
