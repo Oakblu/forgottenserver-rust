@@ -7,6 +7,7 @@ pub mod game_handler;
 pub mod game_state;
 pub mod http;
 pub mod http_cacheinfo;
+pub mod http_connection_session;
 pub mod http_error;
 pub mod http_listener;
 pub mod http_login;

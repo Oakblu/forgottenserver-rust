@@ -13,6 +13,10 @@ forgottenserver-database = { path = "../database" }
 forgottenserver-game = { path = "../game" }
 forgottenserver-scripting = { path = "../scripting", features = ["lua-scripting"] }
 forgottenserver-network = { path = "../network" }
+httparse   = { workspace = true }
+rand       = { workspace = true }
+serde      = { workspace = true }
+serde_json = { workspace = true }
 
 [dev-dependencies]
 tempfile = "3"

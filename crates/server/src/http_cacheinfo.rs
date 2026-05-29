@@ -56,6 +56,34 @@ pub fn handle_cacheinfo(_body: &str, _ip: &str, player_count: Option<u32>) -> (u
     }
 }
 
+/// Live variant of `handle_cacheinfo` that queries the real database.
+///
+/// Executes `SELECT COUNT(*) AS count FROM players_online` and returns:
+/// - `(200, {"playersonline":<n>})` on success, where `<n>` is the row count
+///   (defaulting to 0 if the result set is empty or the column is missing).
+/// - `(200, {"errorCode":2,"errorMessage":"..."})` on any `DbError`.
+///
+/// HTTP status is always 200 to match the C++ `status::ok` return in both
+/// the success path and the `make_error_response()` error path.
+pub fn handle_cacheinfo_db(
+    db: &(dyn forgottenserver_database::database::Database + Send),
+) -> (u16, String) {
+    match db.query("SELECT COUNT(*) AS count FROM players_online") {
+        Ok(rows) => {
+            let count: u32 = rows
+                .first()
+                .and_then(|row| row.get::<u32>("count"))
+                .unwrap_or(0);
+            (200, format!(r#"{{"playersonline":{}}}"#, count))
+        }
+        Err(_) => (
+            200,
+            r#"{"errorCode":2,"errorMessage":"Internal error. Please try again later or contact customer support if the problem persists."}"#
+                .to_string(),
+        ),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -193,5 +221,117 @@ mod tests {
             "not JSON-shaped: {}",
             body
         );
+    }
+
+    // ── handle_cacheinfo_db tests ────────────────────────────────────────────
+
+    use forgottenserver_database::database::{DbError, DbValue, Database, Row};
+    use std::collections::HashMap;
+
+    /// Minimal mock DB whose `query` returns a fixed result.
+    struct MockDb {
+        result: Result<Vec<Row>, DbError>,
+    }
+
+    impl MockDb {
+        fn with_count(count: u32) -> Self {
+            let mut cols = HashMap::new();
+            cols.insert("count".to_string(), DbValue::Integer(count as i64));
+            let row = Row::new(cols);
+            Self { result: Ok(vec![row]) }
+        }
+
+        fn with_error(err: DbError) -> Self {
+            Self { result: Err(err) }
+        }
+
+        fn empty() -> Self {
+            Self { result: Ok(vec![]) }
+        }
+    }
+
+    impl Database for MockDb {
+        fn query(&self, _sql: &str) -> Result<Vec<Row>, DbError> {
+            self.result.clone()
+        }
+
+        fn execute(&mut self, _sql: &str) -> Result<u64, DbError> {
+            Ok(0)
+        }
+
+        fn escape_string(&self, s: &str) -> String {
+            s.to_string()
+        }
+    }
+
+    #[test]
+    fn handle_cacheinfo_db_zero_players_returns_playersonline_zero() {
+        let db = MockDb::with_count(0);
+        let (status, body) = handle_cacheinfo_db(&db);
+        assert_eq!(status, 200);
+        assert_eq!(body, r#"{"playersonline":0}"#);
+    }
+
+    #[test]
+    fn handle_cacheinfo_db_nonzero_count_returns_correct_value() {
+        let db = MockDb::with_count(42);
+        let (status, body) = handle_cacheinfo_db(&db);
+        assert_eq!(status, 200);
+        assert_eq!(body, r#"{"playersonline":42}"#);
+    }
+
+    #[test]
+    fn handle_cacheinfo_db_large_count_returned_correctly() {
+        let db = MockDb::with_count(1000);
+        let (_status, body) = handle_cacheinfo_db(&db);
+        assert_eq!(body, r#"{"playersonline":1000}"#);
+    }
+
+    #[test]
+    fn handle_cacheinfo_db_query_error_returns_error_envelope() {
+        let db = MockDb::with_error(DbError::QueryError("table not found".to_string()));
+        let (status, body) = handle_cacheinfo_db(&db);
+        assert_eq!(status, 200, "HTTP status must be 200 even on DB error");
+        assert!(
+            body.contains("\"errorCode\":2"),
+            "expected errorCode=2 in body: {}",
+            body
+        );
+        assert!(
+            body.contains("\"errorMessage\""),
+            "expected errorMessage in body: {}",
+            body
+        );
+    }
+
+    #[test]
+    fn handle_cacheinfo_db_connection_error_returns_error_envelope() {
+        let db = MockDb::with_error(DbError::ConnectionFailed);
+        let (status, body) = handle_cacheinfo_db(&db);
+        assert_eq!(status, 200);
+        assert!(body.contains("\"errorCode\":2"), "body: {}", body);
+    }
+
+    #[test]
+    fn handle_cacheinfo_db_empty_result_set_returns_zero() {
+        // When the result set is empty (no rows), default to 0 online players.
+        let db = MockDb::empty();
+        let (status, body) = handle_cacheinfo_db(&db);
+        assert_eq!(status, 200);
+        assert_eq!(body, r#"{"playersonline":0}"#);
+    }
+
+    #[test]
+    fn handle_cacheinfo_db_status_always_200_on_success() {
+        let db = MockDb::with_count(5);
+        let (status, _body) = handle_cacheinfo_db(&db);
+        assert_eq!(status, 200);
+    }
+
+    #[test]
+    fn handle_cacheinfo_db_status_always_200_on_error() {
+        let db = MockDb::with_error(DbError::NotFound);
+        let (status, _body) = handle_cacheinfo_db(&db);
+        assert_eq!(status, 200);
     }
 }
