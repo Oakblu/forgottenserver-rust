@@ -21,6 +21,7 @@ resolver = "2"
 # member uses the same version of shared deps without listing them per-crate.
 [workspace.dependencies]
 anyhow      = "1"
+criterion   = { version = "0.5", features = ["html_reports"] }
 libc        = "0.2"
 thiserror   = "1"
 

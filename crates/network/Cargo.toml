@@ -9,3 +9,10 @@ forgottenserver-items = { path = "../items" }
 forgottenserver-entity = { path = "../entity" }
 forgottenserver-game = { path = "../game" }
 forgottenserver-scripting = { path = "../scripting" }
+
+[dev-dependencies]
+criterion = { workspace = true }
+
+[[bench]]
+name = "codec"
+harness = false

@@ -8,4 +8,9 @@ forgottenserver-common = { path = "../common" }
 forgottenserver-items = { path = "../items" }
 
 [dev-dependencies]
+criterion = { workspace = true }
 tempfile = "3"
+
+[[bench]]
+name = "spatial"
+harness = false

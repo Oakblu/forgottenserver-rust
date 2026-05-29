@@ -6,3 +6,10 @@ edition = "2021"
 [dependencies]
 forgottenserver-common = { path = "../common" }
 roxmltree = "0.20"
+
+[dev-dependencies]
+criterion = { workspace = true }
+
+[[bench]]
+name = "registry"
+harness = false

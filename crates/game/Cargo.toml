@@ -12,3 +12,10 @@ forgottenserver-world = { path = "../world" }
 forgottenserver-database = { path = "../database" }
 bitflags = "2"
 roxmltree = "0.20"
+
+[dev-dependencies]
+criterion = { workspace = true }
+
+[[bench]]
+name = "combat"
+harness = false
