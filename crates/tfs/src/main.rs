@@ -96,7 +96,7 @@ fn main() -> ExitCode {
         return ExitCode::from(1);
     }
 
-    let modules = match boot::initialise_modules(&cli.config_path, &cli.data_dir) {
+    let mut modules = match boot::initialise_modules(&cli.config_path, &cli.data_dir) {
         Ok(m) => m,
         Err(e) => {
             eprintln!("[FATAL] Failed to initialise modules: {e:#}");
@@ -106,13 +106,14 @@ fn main() -> ExitCode {
 
     let backend = boot::resolve_backend(cli.db_backend, &modules.config);
     println!(">> Using database backend: {backend:?}");
-    let _database = match boot::connect_database(backend, &modules.config) {
+    let database = match boot::connect_database(backend, &modules.config) {
         Ok(db) => db,
         Err(e) => {
             eprintln!("[FATAL] Failed to connect database: {e:#}");
             return ExitCode::from(1);
         }
     };
+    modules.db = std::sync::Arc::new(std::sync::Mutex::new(database));
 
     #[cfg(feature = "lua-scripting")]
     let spell_count = modules

@@ -30,6 +30,8 @@ use std::{
     thread::JoinHandle,
 };
 
+use crate::http_listener::SessionFactory;
+
 /// Default port used by C++ `tfs::http::start` when the caller omits `port`.
 pub const DEFAULT_HTTP_PORT: u16 = 8080;
 
@@ -133,6 +135,7 @@ pub fn start(
     ots_ip: &str,
     port: u16,
     threads: i32,
+    factory: SessionFactory,
     server_out: &mut Option<HttpServer>,
 ) -> StartOutcome {
     // Matches C++ `if (port == 0 || threads < 1) { return; }`
@@ -159,8 +162,9 @@ pub fn start(
     for _ in 0..threads {
         let listener_clone = Arc::clone(&listener);
         let running_clone = Arc::clone(&running);
+        let factory_clone = Arc::clone(&factory);
         workers.push(std::thread::spawn(move || {
-            accept_loop(listener_clone, running_clone);
+            accept_loop(listener_clone, running_clone, factory_clone);
         }));
     }
 
@@ -206,16 +210,16 @@ pub fn stop(server_in: &mut Option<HttpServer>) {
 /// Per-thread accept loop. Each worker calls `accept()` in a tight loop until
 /// the `running` flag is cleared by `stop`. Mirrors the role of
 /// `boost::asio::io_context::run` in the C++ version.
-pub(crate) fn accept_loop(listener: Arc<TcpListener>, running: Arc<AtomicBool>) {
+pub(crate) fn accept_loop(
+    listener: Arc<TcpListener>,
+    running: Arc<AtomicBool>,
+    factory: SessionFactory,
+) {
     while running.load(Ordering::SeqCst) {
         match listener.accept() {
             Ok((stream, _addr)) => {
-                // C++ delegates each connection to `Listener::on_accept` which
-                // hands it off to a session; that wiring lives in the
-                // sibling `listener.rs` / `session.rs` Rust modules. From this
-                // module's perspective, accepting the connection is the
-                // observable contract.
-                drop(stream);
+                let f = Arc::clone(&factory);
+                std::thread::spawn(move || f(stream));
             }
             Err(_) => {
                 // EINTR / shutdown — exit the loop if running cleared.
@@ -282,12 +286,16 @@ mod tests {
         assert!(err.contains("not-an-ip"));
     }
 
+    fn noop_factory() -> SessionFactory {
+        Arc::new(|_: TcpStream| {})
+    }
+
     // ---- start: invalid-args early returns --------------------------------
 
     #[test]
     fn start_returns_invalid_args_for_port_zero() {
         let mut server = None;
-        let outcome = start(false, "", 0, 1, &mut server);
+        let outcome = start(false, "", 0, 1, noop_factory(), &mut server);
         assert_eq!(outcome, StartOutcome::InvalidArgs);
         assert!(server.is_none(), "no server should be created");
     }
@@ -295,7 +303,7 @@ mod tests {
     #[test]
     fn start_returns_invalid_args_for_zero_threads() {
         let mut server = None;
-        let outcome = start(false, "", 8080, 0, &mut server);
+        let outcome = start(false, "", 8080, 0, noop_factory(), &mut server);
         assert_eq!(outcome, StartOutcome::InvalidArgs);
         assert!(server.is_none());
     }
@@ -303,7 +311,7 @@ mod tests {
     #[test]
     fn start_returns_invalid_args_for_negative_threads() {
         let mut server = None;
-        let outcome = start(false, "", 8080, -3, &mut server);
+        let outcome = start(false, "", 8080, -3, noop_factory(), &mut server);
         assert_eq!(outcome, StartOutcome::InvalidArgs);
         assert!(server.is_none());
     }
@@ -311,7 +319,7 @@ mod tests {
     #[test]
     fn start_returns_invalid_args_when_pinned_ip_is_garbage() {
         let mut server = None;
-        let outcome = start(true, "not-an-ip", 1234, 1, &mut server);
+        let outcome = start(true, "not-an-ip", 1234, 1, noop_factory(), &mut server);
         assert_eq!(outcome, StartOutcome::InvalidArgs);
         assert!(server.is_none());
     }
@@ -333,7 +341,7 @@ mod tests {
         let free_port = pick_free_port();
 
         let mut server = None;
-        let outcome = start(true, "127.0.0.1", free_port, 3, &mut server);
+        let outcome = start(true, "127.0.0.1", free_port, 3, noop_factory(), &mut server);
         assert_eq!(outcome, StartOutcome::Started);
         let s = server.as_ref().expect("server must be populated");
         assert_eq!(s.worker_count(), 3);
@@ -353,7 +361,7 @@ mod tests {
         let free_port = pick_free_port();
 
         let mut server = None;
-        let outcome = start(true, "127.0.0.1", free_port, 4, &mut server);
+        let outcome = start(true, "127.0.0.1", free_port, 4, noop_factory(), &mut server);
         assert_eq!(outcome, StartOutcome::Started);
 
         assert!(server.as_ref().unwrap().is_running());
@@ -380,7 +388,7 @@ mod tests {
         let port = occupied.local_addr().unwrap().port();
 
         let mut server = None;
-        let outcome = start(true, "127.0.0.1", port, 1, &mut server);
+        let outcome = start(true, "127.0.0.1", port, 1, noop_factory(), &mut server);
         assert!(
             matches!(outcome, StartOutcome::BindFailed(_)),
             "expected BindFailed"
@@ -406,7 +414,7 @@ mod tests {
 
         let mut server = None;
         assert_eq!(
-            start(true, "127.0.0.1", free_port, 1, &mut server),
+            start(true, "127.0.0.1", free_port, 1, noop_factory(), &mut server),
             StartOutcome::Started
         );
 
@@ -416,7 +424,7 @@ mod tests {
             Duration::from_secs(1)
         ));
 
-        // Connecting should succeed (worker accepts + drops).
+        // Connecting should succeed (worker accepts + noop factory runs).
         let conn = TcpStream::connect(SocketAddr::new(
             IpAddr::V4(std::net::Ipv4Addr::LOCALHOST),
             free_port,
@@ -469,7 +477,7 @@ mod tests {
 
         let lc = Arc::clone(&listener);
         let rc = Arc::clone(&running);
-        let handle = std::thread::spawn(move || accept_loop(lc, rc));
+        let handle = std::thread::spawn(move || accept_loop(lc, rc, noop_factory()));
 
         // Let the loop spin on Err(WouldBlock) for a moment so the Err arm
         // executes at least once with `running == true`.

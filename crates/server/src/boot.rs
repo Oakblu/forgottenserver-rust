@@ -8,22 +8,28 @@ use std::{
 use forgottenserver_common::configmanager::{ConfigManager, IntegerKey, StringKey};
 use forgottenserver_common::networkmessage::NetworkMessage;
 use forgottenserver_common::outputmessage::OutputMessage;
+use forgottenserver_database::database::Database;
 use forgottenserver_game::{
     npc_registry::{load_npcs_xml, NpcRegistry},
     spell_registry::{load_spells_xml, SpellRegistry},
     weapon_registry::{load_weapons_xml, WeaponRegistry},
 };
-use forgottenserver_items::registry::ItemsRegistry;
+use forgottenserver_items::{registry::ItemsRegistry, vocation::Vocations};
 use forgottenserver_map::items_loader::load_items_otb;
 use forgottenserver_network::protocolgame::{parse_login_packet, serialize_disconnect};
 
-use crate::{admin_handler::AdminHandler, game_state::GameState, status_handler::StatusHandler};
+use crate::{
+    admin_handler::AdminHandler, game_state::GameState,
+    http_connection_session::HttpConnectionSession, http_login::LoginConfig,
+    status_handler::StatusHandler,
+};
 
 pub struct GameData {
     pub items: ItemsRegistry,
     pub spells: SpellRegistry,
     pub weapons: WeaponRegistry,
     pub npcs: NpcRegistry,
+    pub vocations: Arc<Vocations>,
 }
 
 /// Load all four game data registries from `data_dir` before entering the game loop.
@@ -36,11 +42,21 @@ pub fn boot(data_dir: &Path) -> Result<GameData, String> {
     let weapons = load_weapons_xml(&data_dir.join("weapons/weapons.xml"))?;
     let npcs = load_npcs_xml(&data_dir.join("npc"))?;
 
+    let vocations_path = data_dir.join("XML/vocations.xml");
+    let vocations = Arc::new(if vocations_path.exists() {
+        let xml = std::fs::read_to_string(&vocations_path)
+            .map_err(|e| format!("Cannot read vocations.xml: {e}"))?;
+        Vocations::load_from_xml(&xml).map_err(|e| format!("Failed to parse vocations.xml: {e}"))?
+    } else {
+        Vocations::load_from_xml("<vocations/>").unwrap()
+    });
+
     Ok(GameData {
         items,
         spells,
         weapons,
         npcs,
+        vocations,
     })
 }
 
@@ -197,6 +213,64 @@ pub fn start_game_listener(
 }
 
 // ---------------------------------------------------------------------------
+// HTTP login listener (port 8080)
+// ---------------------------------------------------------------------------
+
+fn build_login_config(config: &ConfigManager) -> LoginConfig {
+    let pvp_type = match config.get_string(StringKey::WorldType) {
+        "no-pvp" => 1u8,
+        "pvp-enforced" => 2u8,
+        _ => 0u8,
+    };
+    LoginConfig {
+        server_name: config.get_string(StringKey::ServerName).to_string(),
+        ip: config.get_string(StringKey::Ip).to_string(),
+        game_port: config.get_integer(IntegerKey::GamePort) as u16,
+        location: config.get_string(StringKey::Location).to_string(),
+        pvp_type,
+    }
+}
+
+/// Bind the HTTP login listener on the configured `httpPort` and spawn
+/// `httpWorkers` worker threads accepting connections.
+///
+/// Mirrors C++ `otserv.cpp` `mainLoader` step 16. Returns `Ok(())` when
+/// `httpPort == 0` (feature disabled in config).
+pub fn start_http_listener(
+    config: Arc<ConfigManager>,
+    db: Arc<Mutex<Box<dyn Database + Send>>>,
+    vocations: Arc<Vocations>,
+) -> Result<(), String> {
+    let http_port = config.get_integer(IntegerKey::HttpPort) as u16;
+    if http_port == 0 {
+        return Ok(());
+    }
+    let workers = (config.get_integer(IntegerKey::HttpWorkers) as usize).max(1);
+
+    let login_config = Arc::new(build_login_config(&config));
+    let session = Arc::new(HttpConnectionSession::new(db, login_config, vocations));
+
+    let listener = Arc::new(
+        TcpListener::bind(format!("0.0.0.0:{http_port}"))
+            .map_err(|e| format!("Cannot bind HTTP port {http_port}: {e}"))?,
+    );
+
+    eprintln!(">> HTTP login server online on port {http_port} ({workers} worker(s)).");
+
+    for _ in 0..workers {
+        let l = Arc::clone(&listener);
+        let s = Arc::clone(&session);
+        std::thread::spawn(move || {
+            while let Ok((stream, _)) = l.accept() {
+                s.handle(stream);
+            }
+        });
+    }
+
+    Ok(())
+}
+
+// ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
 
@@ -243,7 +317,7 @@ mod tests {
     }
 
     // -----------------------------------------------------------------------
-    // Test: all four loaders are called before the game loop (integration)
+    // Test: all loaders are called before the game loop (integration)
     // -----------------------------------------------------------------------
     #[test]
     fn boot_all_four_loaders_called_before_game_loop() {
@@ -269,6 +343,12 @@ mod tests {
         assert!(
             !game_data.npcs.is_empty(),
             "NpcRegistry should be populated from data/npc/"
+        );
+
+        // Vocations: XML/vocations.xml includes at least the "None" vocation (id 0)
+        assert!(
+            game_data.vocations.get_vocation(0).is_some(),
+            "vocations should include vocation id 0 from vocations.xml"
         );
     }
 
@@ -595,5 +675,102 @@ mod tests {
         assert!(res.is_err(), "must error when port is already bound");
         let err = res.unwrap_err();
         assert!(err.contains("Cannot bind game port"), "error: {err}");
+    }
+
+    // -----------------------------------------------------------------------
+    // Phase 16 — start_http_listener (port 8080)
+    // -----------------------------------------------------------------------
+
+    fn empty_db() -> Arc<Mutex<Box<dyn Database + Send>>> {
+        use forgottenserver_database::database::InMemoryDb;
+        Arc::new(Mutex::new(Box::new(InMemoryDb::new())))
+    }
+
+    fn empty_vocations() -> Arc<Vocations> {
+        Arc::new(Vocations::load_from_xml("<vocations/>").unwrap())
+    }
+
+    fn http_config(http_port: u16) -> Arc<ConfigManager> {
+        let mut cm = ConfigManager::new();
+        cm.set_integer(IntegerKey::HttpPort, http_port as i64);
+        cm.set_integer(IntegerKey::HttpWorkers, 1);
+        cm.set_string(StringKey::ServerName, "TestServer");
+        cm.set_string(StringKey::Ip, "127.0.0.1");
+        cm.set_integer(IntegerKey::GamePort, 7172);
+        cm.set_string(StringKey::Location, "EU");
+        cm.set_string(StringKey::WorldType, "pvp");
+        Arc::new(cm)
+    }
+
+    #[test]
+    fn start_http_listener_skips_when_port_zero() {
+        let config = Arc::new(ConfigManager::new()); // httpPort defaults to 0
+        let res = start_http_listener(config, empty_db(), empty_vocations());
+        assert!(res.is_ok(), "port 0 means disabled, must return Ok");
+    }
+
+    #[test]
+    fn start_http_listener_errors_when_port_already_bound() {
+        let port = free_port();
+        let _hog = std::net::TcpListener::bind(format!("0.0.0.0:{port}")).unwrap();
+
+        let res = start_http_listener(http_config(port), empty_db(), empty_vocations());
+        let err = res.expect_err("must error when port already bound");
+        assert!(
+            err.contains("Cannot bind HTTP port"),
+            "unexpected error: {err}"
+        );
+    }
+
+    #[test]
+    fn start_http_listener_binds_and_returns_ok() {
+        let port = free_port();
+        let res = start_http_listener(http_config(port), empty_db(), empty_vocations());
+        assert!(res.is_ok(), "start_http_listener must succeed: {res:?}");
+
+        // Port should now be accepting connections.
+        let conn = std::net::TcpStream::connect(format!("127.0.0.1:{port}"));
+        assert!(
+            conn.is_ok(),
+            "HTTP port must accept connections after start"
+        );
+    }
+
+    #[test]
+    fn start_http_listener_handles_cacheinfo_request() {
+        use std::io::{Read as _, Write as _};
+
+        let port = free_port();
+        let res = start_http_listener(http_config(port), empty_db(), empty_vocations());
+        assert!(res.is_ok(), "start failed: {res:?}");
+
+        // Give the accept loop a moment to start.
+        std::thread::sleep(std::time::Duration::from_millis(50));
+
+        let body = b"{\"type\":\"cacheinfo\"}";
+        let request = format!("POST / HTTP/1.0\r\nContent-Length: {}\r\n\r\n", body.len());
+
+        let mut stream = std::net::TcpStream::connect(format!("127.0.0.1:{port}")).unwrap();
+        stream
+            .set_read_timeout(Some(std::time::Duration::from_secs(5)))
+            .unwrap();
+        stream.write_all(request.as_bytes()).unwrap();
+        stream.write_all(body).unwrap();
+
+        let mut response = String::new();
+        let _ = stream.read_to_string(&mut response);
+
+        assert!(
+            response.contains("HTTP/1.1 200"),
+            "expected HTTP 200 in response: {response:?}"
+        );
+        assert!(
+            response.contains("Content-Type: application/json"),
+            "expected Content-Type: application/json: {response:?}"
+        );
+        assert!(
+            response.contains("\"playersonline\""),
+            "expected playersonline key in cacheinfo response: {response:?}"
+        );
     }
 }

@@ -38,23 +38,23 @@
 
 ## 5. Boot wiring
 
-- [ ] 5.1 Add `pub fn start_http_listener(config: Arc<ConfigManager>, db: Arc<Mutex<Box<dyn Database + Send>>>) -> Result<(), String>` to `crates/server/src/boot.rs`
-- [ ] 5.2 Inside `start_http_listener`: read `httpPort` (skip if 0) and `httpWorkers`; bind `TcpListener` on `0.0.0.0:{httpPort}`; spawn `httpWorkers` threads running the accept loop
-- [ ] 5.3 Each accepted connection clones `Arc<Mutex<db>>` and the config values, then spawns a thread calling `HttpConnectionSession::handle(stream)`
-- [ ] 5.4 Add `Arc<Mutex<Box<dyn Database + Send>>>` as a field to `Modules` in `crates/tfs/src/boot.rs` so it can be passed to `start_listeners`
-- [ ] 5.5 Call `srv_boot::start_http_listener(config.clone(), db.clone())` inside `start_listeners()` in `crates/tfs/src/boot.rs`
-- [ ] 5.6 Write integration test: bind on port 0, send `POST /` with `{"type":"cacheinfo"}`, assert 200 response with `Content-Type: application/json`
+- [x] 5.1 Add `pub fn start_http_listener(config: Arc<ConfigManager>, db: Arc<Mutex<Box<dyn Database + Send>>>, vocations: Arc<Vocations>) -> Result<(), String>` to `crates/server/src/boot.rs`
+- [x] 5.2 Inside `start_http_listener`: read `httpPort` (skip if 0) and `httpWorkers`; bind `TcpListener` on `0.0.0.0:{httpPort}`; spawn `httpWorkers` threads running the accept loop
+- [x] 5.3 Each accepted connection calls `HttpConnectionSession::handle(stream)` directly in the worker thread
+- [x] 5.4 Add `db: Arc<Mutex<Box<dyn Database + Send>>>` as a field to `Modules` in `crates/tfs/src/boot.rs`; also updated `main.rs` to replace with real DB after `connect_database`
+- [x] 5.5 Call `srv_boot::start_http_listener(config.clone(), db.clone(), vocations.clone())` inside `start_listeners()` in `crates/tfs/src/boot.rs`
+- [x] 5.6 Write integration test: bind on port 0, send `POST /` with `{"type":"cacheinfo"}`, assert 200 response with `Content-Type: application/json`
 
 ## 6. Wire `http.rs` accept_loop (replace drop(stream) stub)
 
-- [ ] 6.1 In `crates/server/src/http.rs` `accept_loop`: replace `drop(stream)` with a call to `HttpConnectionSession::handle(stream)` (or dispatch to the factory, consistent with `http_listener.rs` pattern)
-- [ ] 6.2 Ensure the existing `http.rs` tests still pass after the stub is replaced
+- [x] 6.1 In `crates/server/src/http.rs` `accept_loop`: added `factory: SessionFactory` parameter; replaced `drop(stream)` with spawning a thread calling `factory(stream)`. Also updated `start()` to accept a factory.
+- [x] 6.2 Ensure the existing `http.rs` tests still pass after the stub is replaced
 
 ## 7. Quality gates
 
-- [ ] 7.1 Run `cargo test --lib --workspace` — zero failures
-- [ ] 7.2 Run `cargo clippy --workspace --lib --tests -- -D warnings` — zero warnings
-- [ ] 7.3 Run `cargo fmt --all` — no diff
+- [x] 7.1 Run `cargo test --lib --workspace` — zero failures
+- [x] 7.2 Run `cargo clippy --workspace --lib --tests -- -D warnings` — zero warnings
+- [x] 7.3 Run `cargo fmt --all` — no diff
 - [ ] 7.4 Run `docker compose up --build`; confirm server logs show HTTP server starting on port 8080
 - [ ] 7.5 Run `curl -s http://localhost:8080/` — response starts with `HTTP` or body is `{}`
 - [ ] 7.6 Run `curl -s -X POST http://localhost:8080/ -H 'Content-Type: application/json' -d '{"type":"cacheinfo"}'` — response contains `"playersonline"`

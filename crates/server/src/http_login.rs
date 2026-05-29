@@ -6,8 +6,8 @@
 //   * Accounts may carry a TOTP `secret`; when set, the request must include
 //     a `token` matching the C++ ±1 30-second window check.
 
-use forgottenserver_common::tools::{generate_token, transform_to_sha1, transform_to_sha1_hex};
 use forgottenserver_common::base64;
+use forgottenserver_common::tools::{generate_token, transform_to_sha1, transform_to_sha1_hex};
 use forgottenserver_database::database::Database;
 use forgottenserver_items::vocation::Vocations;
 use rand::random;
@@ -270,7 +270,10 @@ pub fn handle_login_db(
     let account_rows = match db.query(&account_sql) {
         Ok(rows) => rows,
         Err(_) => {
-            return login_error(3, "Tibia account email address or Tibia password is not correct.")
+            return login_error(
+                3,
+                "Tibia account email address or Tibia password is not correct.",
+            )
         }
     };
 
@@ -319,12 +322,7 @@ pub fn handle_login_db(
     if !secret_str.is_empty() {
         let token = match req.token.as_deref() {
             Some(t) if !t.is_empty() => t,
-            _ => {
-                return login_error(
-                    6,
-                    "Two-factor token required for authentication.",
-                )
-            }
+            _ => return login_error(6, "Two-factor token required for authentication."),
         };
 
         let secret_bytes = secret_str.as_bytes();
@@ -348,7 +346,10 @@ pub fn handle_login_db(
     );
 
     if db.execute(&session_sql).is_err() {
-        return login_error(255, "An unexpected error has occurred. Please try again later.");
+        return login_error(
+            255,
+            "An unexpected error has occurred. Please try again later.",
+        );
     }
 
     let session_key = base64::encode(&token_bytes);
@@ -439,8 +440,9 @@ pub fn handle_login_db(
         },
     };
 
-    let json = serde_json::to_string(&response)
-        .unwrap_or_else(|_| r#"{"errorCode":255,"errorMessage":"Serialization error."}"#.to_string());
+    let json = serde_json::to_string(&response).unwrap_or_else(|_| {
+        r#"{"errorCode":255,"errorMessage":"Serialization error."}"#.to_string()
+    });
 
     (200, json)
 }
@@ -671,9 +673,7 @@ mod tests {
                 None => return Ok(vec![]),
             };
             let rest = sql[from_pos..].trim_start();
-            let table_end = rest
-                .find(|c: char| c.is_whitespace())
-                .unwrap_or(rest.len());
+            let table_end = rest.find(|c: char| c.is_whitespace()).unwrap_or(rest.len());
             let table = &rest[..table_end];
 
             let rows = self.tables.get(table).cloned().unwrap_or_default();
@@ -691,10 +691,7 @@ mod tests {
                         return Ok(rows
                             .into_iter()
                             .filter(|r| {
-                                r.get::<String>("email")
-                                    .as_deref()
-                                    .unwrap_or("")
-                                    == email_val
+                                r.get::<String>("email").as_deref().unwrap_or("") == email_val
                             })
                             .collect());
                     }
@@ -830,7 +827,14 @@ mod tests {
     #[test]
     fn db_login_totp_required_when_secret_present_and_token_absent() {
         let mut db = TestDb::new();
-        insert_account(&mut db, 1, "alice@example.com", "pass", "12345678901234567890", 0);
+        insert_account(
+            &mut db,
+            1,
+            "alice@example.com",
+            "pass",
+            "12345678901234567890",
+            0,
+        );
         let req = make_login_req("alice@example.com", "pass");
         let vocs = make_vocations_empty();
         let config = make_config();
@@ -872,7 +876,10 @@ mod tests {
         let (status, body) = handle_login_db(&mut db, &req, "127.0.0.1", &config, &vocs, now);
         assert_eq!(status, 200);
         let v: serde_json::Value = serde_json::from_str(&body).unwrap();
-        assert!(v.get("errorCode").is_none(), "expected success, got: {body}");
+        assert!(
+            v.get("errorCode").is_none(),
+            "expected success, got: {body}"
+        );
         assert!(v["session"].is_object());
     }
 
@@ -902,8 +909,7 @@ mod tests {
         let req = make_login_req("alice@example.com", "pass");
         let vocs = make_vocations_empty();
         let config = make_config();
-        let (status, body) =
-            handle_login_db(&mut db, &req, "127.0.0.1", &config, &vocs, now_secs);
+        let (status, body) = handle_login_db(&mut db, &req, "127.0.0.1", &config, &vocs, now_secs);
         assert_eq!(status, 200);
         let v: serde_json::Value = serde_json::from_str(&body).unwrap();
         assert_eq!(v["session"]["ispremium"], true);

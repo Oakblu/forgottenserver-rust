@@ -225,7 +225,7 @@ mod tests {
 
     // ── handle_cacheinfo_db tests ────────────────────────────────────────────
 
-    use forgottenserver_database::database::{DbError, DbValue, Database, Row};
+    use forgottenserver_database::database::{Database, DbError, DbValue, Row};
     use std::collections::HashMap;
 
     /// Minimal mock DB whose `query` returns a fixed result.
@@ -238,7 +238,9 @@ mod tests {
             let mut cols = HashMap::new();
             cols.insert("count".to_string(), DbValue::Integer(count as i64));
             let row = Row::new(cols);
-            Self { result: Ok(vec![row]) }
+            Self {
+                result: Ok(vec![row]),
+            }
         }
 
         fn with_error(err: DbError) -> Self {

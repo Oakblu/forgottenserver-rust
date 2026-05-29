@@ -132,7 +132,14 @@ impl HttpConnectionSession {
             .map(|d| d.as_secs())
             .unwrap_or(0);
         let mut guard = self.db.lock().unwrap();
-        handle_login_db(&mut **guard, &req, ip, &self.config, &self.vocations, now_secs)
+        handle_login_db(
+            &mut **guard,
+            &req,
+            ip,
+            &self.config,
+            &self.vocations,
+            now_secs,
+        )
     }
 }
 
@@ -231,10 +238,12 @@ mod tests {
         })
     }
 
-    fn make_session(
-        db: Arc<Mutex<Box<dyn Database + Send>>>,
-    ) -> Arc<HttpConnectionSession> {
-        Arc::new(HttpConnectionSession::new(db, test_config(), empty_vocations()))
+    fn make_session(db: Arc<Mutex<Box<dyn Database + Send>>>) -> Arc<HttpConnectionSession> {
+        Arc::new(HttpConnectionSession::new(
+            db,
+            test_config(),
+            empty_vocations(),
+        ))
     }
 
     /// Spin up a session on a free port; connect, write `request`, read full response.
@@ -266,10 +275,7 @@ mod tests {
 
     #[test]
     fn get_slash_returns_200_ok() {
-        let resp = roundtrip(
-            make_session(empty_db()),
-            b"GET / HTTP/1.0\r\n\r\n",
-        );
+        let resp = roundtrip(make_session(empty_db()), b"GET / HTTP/1.0\r\n\r\n");
         let text = String::from_utf8_lossy(&resp);
         assert!(
             text.starts_with("HTTP/1.1 200") || text.starts_with("HTTP/1.0 200"),
@@ -279,10 +285,7 @@ mod tests {
 
     #[test]
     fn get_slash_response_has_json_content_type() {
-        let resp = roundtrip(
-            make_session(empty_db()),
-            b"GET / HTTP/1.0\r\n\r\n",
-        );
+        let resp = roundtrip(make_session(empty_db()), b"GET / HTTP/1.0\r\n\r\n");
         let text = String::from_utf8_lossy(&resp);
         assert!(
             text.contains("Content-Type: application/json"),
@@ -343,10 +346,7 @@ mod tests {
     #[test]
     fn non_json_body_returns_error_code_2() {
         let body = b"not json at all";
-        let req = format!(
-            "POST / HTTP/1.0\r\nContent-Length: {}\r\n\r\n",
-            body.len()
-        );
+        let req = format!("POST / HTTP/1.0\r\nContent-Length: {}\r\n\r\n", body.len());
         let mut full = req.into_bytes();
         full.extend_from_slice(body);
         let resp = roundtrip(make_session(empty_db()), &full);
@@ -371,12 +371,14 @@ mod tests {
         let cl_val: usize = text
             .lines()
             .find(|l| l.to_lowercase().starts_with("content-length:"))
-            .and_then(|l| l.splitn(2, ':').nth(1))
+            .and_then(|l| l.split_once(':').map(|(_, v)| v))
             .and_then(|v| v.trim().parse().ok())
             .expect("Content-Length header must be present");
 
         // Split on \r\n\r\n to find body.
-        let body_start = text.find("\r\n\r\n").expect("must have header/body separator");
+        let body_start = text
+            .find("\r\n\r\n")
+            .expect("must have header/body separator");
         let body = &text[body_start + 4..];
         assert_eq!(
             cl_val,
@@ -391,10 +393,7 @@ mod tests {
     #[test]
     fn missing_type_field_returns_error_code_2() {
         let body = b"{\"foo\":\"bar\"}";
-        let req = format!(
-            "POST / HTTP/1.0\r\nContent-Length: {}\r\n\r\n",
-            body.len()
-        );
+        let req = format!("POST / HTTP/1.0\r\nContent-Length: {}\r\n\r\n", body.len());
         let mut full = req.into_bytes();
         full.extend_from_slice(body);
         let resp = roundtrip(make_session(empty_db()), &full);
@@ -410,10 +409,7 @@ mod tests {
     #[test]
     fn cacheinfo_type_returns_playersonline_key() {
         let body = b"{\"type\":\"cacheinfo\"}";
-        let req = format!(
-            "POST / HTTP/1.0\r\nContent-Length: {}\r\n\r\n",
-            body.len()
-        );
+        let req = format!("POST / HTTP/1.0\r\nContent-Length: {}\r\n\r\n", body.len());
         let mut full = req.into_bytes();
         full.extend_from_slice(body);
         let resp = roundtrip(make_session(empty_db()), &full);

@@ -34,6 +34,7 @@ use std::time::Duration;
 use anyhow::{anyhow, Result};
 
 use forgottenserver_common::configmanager::ConfigManager;
+use forgottenserver_database::database::{Database, InMemoryDb};
 use forgottenserver_server::{boot as srv_boot, game_state::GameState};
 
 /// Fully-initialised module bundle returned by [`initialise_modules`].
@@ -47,6 +48,10 @@ pub struct Modules {
     /// Number of Lua scripts loaded during boot (0 when lua-scripting feature
     /// is disabled or no scripts directory is present).
     pub scripts_loaded: usize,
+    /// Database connection shared by the HTTP listener and other subsystems.
+    /// Initialised to `InMemoryDb`; replaced by the caller with the real
+    /// backend after [`connect_database`] succeeds.
+    pub db: Arc<Mutex<Box<dyn Database + Send>>>,
     /// Embedded Lua state with the Rust-side C++→Lua bindings
     /// installed (Position so far; per-class follow-ups extend this).
     /// `None` if the `lua-scripting` feature was disabled at build time
@@ -138,6 +143,7 @@ pub fn initialise_modules(config_path: &Path, data_dir: &Path) -> Result<Modules
         game_state,
         game_data,
         scripts_loaded,
+        db: Arc::new(Mutex::new(Box::new(InMemoryDb::new()))),
         #[cfg(feature = "lua-scripting")]
         lua,
     })
@@ -155,6 +161,12 @@ pub fn start_listeners(modules: &Modules) -> Result<()> {
         .map_err(|e| anyhow!("Failed to start admin/status listeners: {e}"))?;
     srv_boot::start_game_listener(modules.config.clone(), modules.game_state.clone())
         .map_err(|e| anyhow!("Failed to start game listener: {e}"))?;
+    srv_boot::start_http_listener(
+        modules.config.clone(),
+        modules.db.clone(),
+        modules.game_data.vocations.clone(),
+    )
+    .map_err(|e| anyhow!("Failed to start HTTP listener: {e}"))?;
     Ok(())
 }
 
