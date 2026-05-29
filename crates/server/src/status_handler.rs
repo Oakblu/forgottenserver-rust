@@ -6,6 +6,7 @@ use std::{
 };
 
 use forgottenserver_common::configmanager::{ConfigManager, IntegerKey, StringKey};
+use forgottenserver_common::definitions::CLIENT_VERSION_STR;
 use forgottenserver_network::protocolstatus::{
     parse_request, ProtocolStatus, ServerStatus, StatusRequest,
 };
@@ -136,7 +137,7 @@ impl StatusHandler {
             magic_rate: self.config.get_integer(IntegerKey::RateMagic) as u32,
             spawn_rate: self.config.get_integer(IntegerKey::RateSpawn) as u32,
             server_version: "Rust port".to_owned(),
-            client_version: "860".to_owned(),
+            client_version: CLIENT_VERSION_STR.to_owned(),
         }
     }
 
@@ -154,10 +155,11 @@ impl StatusHandler {
         let online = state.online_player_count();
         let peak = state.peak_players();
 
+        let version_str = CLIENT_VERSION_STR;
         format!(
             r#"<?xml version="1.0"?>
 <tsqp version="1.0">
-<serverinfo uptime="{uptime}" ip="{ip}" servername="{server_name}" port="{game_port}" version="860" client="860"/>
+<serverinfo uptime="{uptime}" ip="{ip}" servername="{server_name}" port="{game_port}" version="{version_str}" client="{version_str}"/>
 <owner name="{owner_name}" email="{owner_email}"/>
 <players online="{online}" max="{max_players}" peak="{peak}"/>
 <motd>{motd}</motd>
@@ -365,6 +367,36 @@ mod tests {
     }
 
     #[test]
+    fn build_xml_version_field_matches_client_version_str() {
+        use forgottenserver_common::configmanager::ConfigManager;
+
+        let gs = Arc::new(Mutex::new(GameState::new()));
+        let config = Arc::new(ConfigManager::new());
+        let handler = StatusHandler::new(gs, config);
+        let xml = handler.build_xml();
+
+        // Must NOT contain the wrong hardcoded version
+        assert!(
+            !xml.contains(r#"version="860""#),
+            "XML must not contain hardcoded version 860"
+        );
+        assert!(
+            !xml.contains(r#"client="860""#),
+            "XML must not contain hardcoded client 860"
+        );
+
+        // Must contain the correct version string from definitions
+        assert!(
+            xml.contains(r#"version="13.10""#),
+            "XML version must be 13.10: {xml}"
+        );
+        assert!(
+            xml.contains(r#"client="13.10""#),
+            "XML client must be 13.10: {xml}"
+        );
+    }
+
+    #[test]
     fn dispatch_request_round_trip_matches_handle_connection_for_http() {
         // The dispatch_request return-value contract: for HTTP input it
         // produces the same byte stream that handle_connection would write.
@@ -385,6 +417,21 @@ mod tests {
         assert!(
             body.starts_with("<?xml"),
             "body must start with XML preamble, got: {body}"
+        );
+    }
+
+    #[test]
+    fn build_server_status_client_version_matches_definitions() {
+        use forgottenserver_common::configmanager::ConfigManager;
+
+        let gs = Arc::new(Mutex::new(GameState::new()));
+        let config = Arc::new(ConfigManager::new());
+        let handler = StatusHandler::new(gs, config);
+        let status = handler.build_server_status();
+        assert_eq!(
+            status.client_version, "13.10",
+            "client_version must be 13.10, got: {}",
+            status.client_version
         );
     }
 }

@@ -129,9 +129,7 @@ pub struct VipPacket {
 pub fn parse_login_packet(msg: &mut NetworkMessage) -> Result<LoginPacket, String> {
     let client_version = msg.get_u16();
 
-    if (client_version as i32) < CLIENT_VERSION_MIN
-        || (client_version as i32) > CLIENT_VERSION_MAX
-    {
+    if !(CLIENT_VERSION_MIN as u16..=CLIENT_VERSION_MAX as u16).contains(&client_version) {
         return Err(format!(
             "Only clients with protocol {} allowed!",
             CLIENT_VERSION_STR

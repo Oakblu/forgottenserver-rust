@@ -8,6 +8,9 @@
 
 #![cfg(feature = "lua-scripting")]
 
+use forgottenserver_common::definitions::{
+    CLIENT_VERSION_MAX, CLIENT_VERSION_MIN, CLIENT_VERSION_STR,
+};
 use mlua::Value;
 
 pub fn install(lua: &mlua::Lua) -> mlua::Result<()> {
@@ -105,6 +108,13 @@ pub fn install(lua: &mlua::Lua) -> mlua::Result<()> {
     lua.globals().set("openLevelDoors", lua.create_table()?)?;
     lua.globals().set("openQuestDoors", lua.create_table()?)?;
 
+    // ── CLIENT_VERSION — mirrors C++ luascript.cpp:5134-5136 ───────────────
+    let client_version_tbl = lua.create_table()?;
+    client_version_tbl.set("min", CLIENT_VERSION_MIN as i64)?;
+    client_version_tbl.set("max", CLIENT_VERSION_MAX as i64)?;
+    client_version_tbl.set("string", CLIENT_VERSION_STR)?;
+    lua.globals().set("CLIENT_VERSION", client_version_tbl)?;
+
     Ok(())
 }
 
@@ -201,5 +211,36 @@ mod tests {
             "openQuestDoors check should not error: {result:?}"
         );
         assert!(result.unwrap(), "openQuestDoors should be a table");
+    }
+
+    #[test]
+    fn client_version_table_has_min_field() {
+        let lua = fresh_lua();
+        let min: i64 = lua.load("return CLIENT_VERSION.min").eval().unwrap();
+        assert_eq!(min, 1310, "CLIENT_VERSION.min must be 1310");
+    }
+
+    #[test]
+    fn client_version_table_has_max_field() {
+        let lua = fresh_lua();
+        let max: i64 = lua.load("return CLIENT_VERSION.max").eval().unwrap();
+        assert_eq!(max, 1311, "CLIENT_VERSION.max must be 1311");
+    }
+
+    #[test]
+    fn client_version_table_has_string_field() {
+        let lua = fresh_lua();
+        let s: String = lua.load("return CLIENT_VERSION.string").eval().unwrap();
+        assert_eq!(s, "13.10", "CLIENT_VERSION.string must be '13.10'");
+    }
+
+    #[test]
+    fn client_version_table_is_a_table() {
+        let lua = fresh_lua();
+        let is_table: bool = lua
+            .load(r#"return type(CLIENT_VERSION) == "table""#)
+            .eval()
+            .unwrap();
+        assert!(is_table, "CLIENT_VERSION must be a table");
     }
 }
