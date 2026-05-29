@@ -1,0 +1,382 @@
+nodes:
+  - file: "src/item.cpp"
+    qualified_name: "Item::CreateItem"
+    edges: []
+  - file: "src/item.cpp"
+    qualified_name: "Item::CreateItemAsContainer"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::CreateItemAsContainer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::CreateItem"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::CreateItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::clone"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::CreateItem"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::clone"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/item.cpp"
+    qualified_name: "Item::equals"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::equals"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::setDefaultSubtype"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::setDefaultSubtype"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::onRemoved"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removeUniqueItem"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::onRemoved"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::removeTempItem"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/item.cpp"
+    qualified_name: "Item::setID"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::setID"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::getTopParent"
+    edges: []
+  - file: "src/item.cpp"
+    qualified_name: "Item::getTopParent"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::getTopParent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::getTile"
+    edges: []
+  - file: "src/item.cpp"
+    qualified_name: "Item::getTile"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::getTile"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::getSubType"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::getSubType"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::getHoldingPlayer"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::getHoldingPlayer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::setSubType"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::setSubType"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::readAttr"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::readAttr"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::unserializeAttr"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::unserializeAttr"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::unserializeItemNode"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::unserializeItemNode"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::serializeAttr"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::serializeAttr"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::hasProperty"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::hasProperty"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::getWeight"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::getWeight"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::getNameDescription"
+    edges: []
+  - file: "src/item.cpp"
+    qualified_name: "Item::getNameDescription"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::getNameDescription"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::getWeightDescription"
+    edges: []
+  - file: "src/item.cpp"
+    qualified_name: "Item::getWeightDescription"
+    edges: []
+  - file: "src/item.cpp"
+    qualified_name: "Item::getWeightDescription"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::getWeightDescription"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::setUniqueId"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addUniqueItem"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::setUniqueId"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/item.cpp"
+    qualified_name: "Item::setDefaultDuration"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::setDefaultDuration"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::canDecay"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::canDecay"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::getWorth"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::getWorth"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::getLightInfo"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::getLightInfo"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::getReflect"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::getReflect"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::getBoostPercent"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::getBoostPercent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "ItemAttributes::getStrAttr"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "ItemAttributes::getStrAttr"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "ItemAttributes::setStrAttr"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "ItemAttributes::setStrAttr"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "ItemAttributes::removeAttribute"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "ItemAttributes::removeAttribute"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "ItemAttributes::getIntAttr"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "ItemAttributes::getIntAttr"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "ItemAttributes::setIntAttr"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "ItemAttributes::setIntAttr"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "ItemAttributes::increaseIntAttr"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "ItemAttributes::increaseIntAttr"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "ItemAttributes::getExistingAttr"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "ItemAttributes::getExistingAttr"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "ItemAttributes::getAttr"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "ItemAttributes::getAttr"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/item.cpp"
+    qualified_name: "Item::startDecaying"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::startDecay"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::startDecaying"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/item.cpp"
+    qualified_name: "Item::hasMarketAttributes"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::hasMarketAttributes"
+        kind: static
+        confidence: static
+        order: 1

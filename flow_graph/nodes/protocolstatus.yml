@@ -1,0 +1,79 @@
+nodes:
+  - file: "src/protocolstatus.cpp"
+    qualified_name: "ProtocolStatus::ipConnectMap"
+    edges: []
+  - file: "src/protocolstatus.cpp"
+    qualified_name: "ProtocolStatus::start"
+    edges: []
+  - file: "src/protocolstatus.cpp"
+    qualified_name: RequestedInfo_t
+    edges: []
+  - file: "src/protocolstatus.cpp"
+    qualified_name: "RequestedInfo_t::REQUEST_BASIC_SERVER_INFO"
+    edges: []
+  - file: "src/protocolstatus.cpp"
+    qualified_name: "RequestedInfo_t::REQUEST_OWNER_SERVER_INFO"
+    edges: []
+  - file: "src/protocolstatus.cpp"
+    qualified_name: "RequestedInfo_t::REQUEST_MISC_SERVER_INFO"
+    edges: []
+  - file: "src/protocolstatus.cpp"
+    qualified_name: "RequestedInfo_t::REQUEST_PLAYERS_INFO"
+    edges: []
+  - file: "src/protocolstatus.cpp"
+    qualified_name: "RequestedInfo_t::REQUEST_MAP_INFO"
+    edges: []
+  - file: "src/protocolstatus.cpp"
+    qualified_name: "RequestedInfo_t::REQUEST_EXT_PLAYERS_INFO"
+    edges: []
+  - file: "src/protocolstatus.cpp"
+    qualified_name: "RequestedInfo_t::REQUEST_PLAYER_STATUS_INFO"
+    edges: []
+  - file: "src/protocolstatus.cpp"
+    qualified_name: "RequestedInfo_t::REQUEST_SERVER_SOFTWARE_INFO"
+    edges: []
+  - file: "src/protocolstatus.cpp"
+    qualified_name: "ProtocolStatus::onRecvFirstMessage"
+    edges:
+      - target:
+          file: "src/protocolstatus.cpp"
+          qualified_name: "ProtocolStatus::onRecvFirstMessage"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolstatus.cpp"
+    qualified_name: "ProtocolStatus::sendStatusString"
+    edges:
+      - target:
+          file: "src/outputmessage.cpp"
+          qualified_name: "tfs::net::make_output_message"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/protocolstatus.cpp"
+          qualified_name: "ProtocolStatus::sendStatusString"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/protocolstatus.cpp"
+    qualified_name: "ProtocolStatus::sendInfo"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getPlayerByName"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/outputmessage.cpp"
+          qualified_name: "tfs::net::make_output_message"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/protocolstatus.cpp"
+          qualified_name: "ProtocolStatus::sendInfo"
+        kind: static
+        confidence: static
+        order: 3

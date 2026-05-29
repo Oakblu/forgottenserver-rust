@@ -1,0 +1,13 @@
+nodes:
+  - file: "src/inbox.h"
+    qualified_name: Inbox
+    edges: []
+  - file: "src/inbox.h"
+    qualified_name: "Inbox::canRemove"
+    edges: []
+  - file: "src/inbox.h"
+    qualified_name: Inbox_ptr
+    edges: []
+  - file: "src/inbox.h"
+    qualified_name: FS_INBOX_H
+    edges: []

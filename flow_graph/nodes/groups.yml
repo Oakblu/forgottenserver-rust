@@ -1,0 +1,22 @@
+nodes:
+  - file: "src/groups.cpp"
+    qualified_name: ParsePlayerFlagMap
+    edges: []
+  - file: "src/groups.cpp"
+    qualified_name: "Groups::load"
+    edges:
+      - target:
+          file: "src/groups.cpp"
+          qualified_name: "Groups::load"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/groups.cpp"
+    qualified_name: "Groups::getGroup"
+    edges:
+      - target:
+          file: "src/groups.cpp"
+          qualified_name: "Groups::getGroup"
+        kind: static
+        confidence: static
+        order: 1

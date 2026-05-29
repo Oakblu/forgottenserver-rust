@@ -1,0 +1,34 @@
+nodes:
+  - file: "src/tasks.cpp"
+    qualified_name: createTask
+    edges: []
+  - file: "src/tasks.cpp"
+    qualified_name: createTask
+    edges: []
+  - file: "src/tasks.cpp"
+    qualified_name: "Dispatcher::threadMain"
+    edges:
+      - target:
+          file: "src/tasks.cpp"
+          qualified_name: "Dispatcher::threadMain"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tasks.cpp"
+    qualified_name: "Dispatcher::addTask"
+    edges:
+      - target:
+          file: "src/tasks.cpp"
+          qualified_name: "Dispatcher::addTask"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tasks.cpp"
+    qualified_name: "Dispatcher::shutdown"
+    edges:
+      - target:
+          file: "src/tasks.cpp"
+          qualified_name: "Dispatcher::shutdown"
+        kind: static
+        confidence: static
+        order: 1

@@ -1,0 +1,10 @@
+nodes:
+  - file: "src/iologindata.h"
+    qualified_name: ItemBlockList
+    edges: []
+  - file: "src/iologindata.h"
+    qualified_name: IOLoginData
+    edges: []
+  - file: "src/iologindata.h"
+    qualified_name: "IOLoginData::ItemMap"
+    edges: []

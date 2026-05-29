@@ -1,0 +1,454 @@
+nodes:
+  - file: "src/luascript.h"
+    qualified_name: luaL_register_compat
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: Combat_ptr
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: EVENT_ID_USER
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: LuaTimerEventDesc
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaTimerEventDesc::scriptId"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaTimerEventDesc::function"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaTimerEventDesc::parameters"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaTimerEventDesc::eventId"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaTimerEventDesc::LuaTimerEventDesc"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaTimerEventDesc::LuaTimerEventDesc(LuaTimerEventDesc&&)"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: ScriptEnvironment
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::ScriptEnvironment"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::~ScriptEnvironment"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::ScriptEnvironment(const ScriptEnvironment&)"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::operator="
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::resetEnv"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::setScriptId"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::setCallbackId"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::getScriptId"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::getScriptInterface"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::setTimerEvent"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::getEventInfo"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::addThing"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::insertItem"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::setNpc"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::getNpc"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::getThingByUID"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::getItemByUID"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::getContainerByUID"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::removeItemByUID"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::interface"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::curNpc"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::localMap"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::lastUID"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::scriptId"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::callbackId"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ScriptEnvironment::timerEvent"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: ErrorCode_t
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ErrorCode_t::LUA_ERROR_PLAYER_NOT_FOUND"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ErrorCode_t::LUA_ERROR_CREATURE_NOT_FOUND"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ErrorCode_t::LUA_ERROR_ITEM_NOT_FOUND"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ErrorCode_t::LUA_ERROR_THING_NOT_FOUND"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ErrorCode_t::LUA_ERROR_TILE_NOT_FOUND"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ErrorCode_t::LUA_ERROR_HOUSE_NOT_FOUND"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ErrorCode_t::LUA_ERROR_COMBAT_NOT_FOUND"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ErrorCode_t::LUA_ERROR_CONDITION_NOT_FOUND"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ErrorCode_t::LUA_ERROR_AREA_NOT_FOUND"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ErrorCode_t::LUA_ERROR_CONTAINER_NOT_FOUND"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ErrorCode_t::LUA_ERROR_VARIANT_NOT_FOUND"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ErrorCode_t::LUA_ERROR_VARIANT_UNKNOWN"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "ErrorCode_t::LUA_ERROR_SPELL_NOT_FOUND"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: LuaScriptInterface
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::LuaScriptInterface"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::~LuaScriptInterface"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::LuaScriptInterface(const LuaScriptInterface&)"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::operator="
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::initState"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::reInitState"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::loadFile"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::getFileById"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::getEvent(std::string_view)"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::getEvent()"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::getMetaEvent"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::getInterfaceName"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::getLastLuaError"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::getLuaState"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::pushFunction"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::callFunction"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::callVoidFunction"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::luaBitReg"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::luaConfigManagerTable"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::luaDatabaseTable"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::luaResultTable"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::closeState"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::registerFunctions"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::L"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::eventTableRef"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::runningEventId"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::cacheFiles"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::lastLuaError"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::interfaceName"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaScriptInterface::loadingFile"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: LuaEnvironment
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::LuaEnvironment"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::~LuaEnvironment"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::LuaEnvironment(const LuaEnvironment&)"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::operator="
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::initState"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::reInitState"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::closeState"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::getTestInterface"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::getCombatObject"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::createCombatObject"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::clearCombatObjects"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::getAreaObject"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::createAreaObject"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::clearAreaObjects"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::executeTimerEvent"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::timerEvents"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::combatMap"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::areaMap"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::combatIdMap"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::areaIdMap"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::testInterface"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::lastEventTimerId"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::lastCombatId"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::lastAreaId"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::friend_LuaScriptInterface"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "LuaEnvironment::friend_CombatSpell"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::removeTempItem"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::getScriptEnv"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::reserveScriptEnv"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::resetScriptEnv"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::reportError"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: reportErrorFunc
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::pushThing"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::pushVariant"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::pushString"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::pushCallback"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::popString"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::popCallback"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::pushUserdata"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::setMetatable"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::setItemMetatable"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::setCreatureMetatable"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::getNumber<enum T>"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::getNumber<unsigned T>"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::getNumber<signed/floating T>"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::getNumber<T,default>"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::getRawUserdata"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::getUserdata"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::getBoolean"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::getBoolean(default)"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::getString"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::getPosition"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::getPosition(stackpos)"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::getThing"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::getCreature"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::getPlayer"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::getField"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::getField(default)"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::getFieldString"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::pushBoolean"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::pushSpell"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::pushPosition"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::pushOutfit(Outfit_t)"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::pushOutfit(Outfit*)"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::protectedCall"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::registerMethod"
+    edges: []
+  - file: "src/luascript.h"
+    qualified_name: "tfs::lua::getErrorDesc"
+    edges: []

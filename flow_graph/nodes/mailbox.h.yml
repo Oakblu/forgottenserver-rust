@@ -1,0 +1,28 @@
+nodes:
+  - file: "src/mailbox.h"
+    qualified_name: Mailbox
+    edges: []
+  - file: "src/mailbox.h"
+    qualified_name: "Mailbox::Mailbox"
+    edges: []
+  - file: "src/mailbox.h"
+    qualified_name: "Mailbox::addThing (Thing*)"
+    edges: []
+  - file: "src/mailbox.h"
+    qualified_name: "Mailbox::getMailbox (const)"
+    edges: []
+  - file: "src/mailbox.h"
+    qualified_name: "Mailbox::getMailbox (non-const)"
+    edges: []
+  - file: "src/mailbox.h"
+    qualified_name: "Mailbox::getReceiver (const)"
+    edges: []
+  - file: "src/mailbox.h"
+    qualified_name: "Mailbox::getReceiver (non-const)"
+    edges: []
+  - file: "src/mailbox.h"
+    qualified_name: "Mailbox::queryDestination"
+    edges: []
+  - file: "src/mailbox.h"
+    qualified_name: FS_MAILBOX_H
+    edges: []

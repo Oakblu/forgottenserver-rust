@@ -1,0 +1,34 @@
+nodes:
+  - file: "src/bed.h"
+    qualified_name: BedItem
+    edges: []
+  - file: "src/bed.h"
+    qualified_name: "BedItem::house"
+    edges: []
+  - file: "src/bed.h"
+    qualified_name: "BedItem::sleepStart"
+    edges: []
+  - file: "src/bed.h"
+    qualified_name: "BedItem::sleeperGUID"
+    edges: []
+  - file: "src/bed.h"
+    qualified_name: "BedItem::canRemove"
+    edges: []
+  - file: "src/bed.h"
+    qualified_name: "BedItem::getBed (const)"
+    edges: []
+  - file: "src/bed.h"
+    qualified_name: "BedItem::getBed (non-const)"
+    edges: []
+  - file: "src/bed.h"
+    qualified_name: "BedItem::getHouse"
+    edges: []
+  - file: "src/bed.h"
+    qualified_name: "BedItem::getSleeper"
+    edges: []
+  - file: "src/bed.h"
+    qualified_name: "BedItem::setHouse"
+    edges: []
+  - file: "src/bed.h"
+    qualified_name: FS_BED_H
+    edges: []

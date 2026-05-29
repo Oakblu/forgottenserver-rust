@@ -1,0 +1,139 @@
+nodes:
+  - file: "src/events.h"
+    qualified_name: EventInfoId
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "EventInfoId::CREATURE_ONHEAR"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "EventInfoId::MONSTER_ONSPAWN"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::load"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::reload"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::getScriptId"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::creature::onChangeOutfit"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::creature::onAreaCombat"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::creature::onTargetCombat"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::creature::onHear"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::creature::onChangeZone"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::creature::onUpdateStorage"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::party::onJoin"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::party::onLeave"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::party::onDisband"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::party::onShareExperience"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::party::onInvite"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::party::onRevokeInvitation"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::party::onPassLeadership"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onBrowseField"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onLook"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onLookInBattleList"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onLookInTrade"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onLookInShop"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onLookInMarket"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onMoveItem"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onItemMoved"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onMoveCreature"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onReportRuleViolation"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onReportBug"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onRotateItem"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onTurn"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onTradeRequest"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onTradeAccept"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onTradeCompleted"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onPodiumRequest"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onPodiumEdit"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onGainExperience"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onLoseExperience"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onGainSkillTries"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onWrapItem"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onInventoryUpdate"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onNetworkMessage"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::player::onSpellCheck"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::monster::onDropLoot"
+    edges: []
+  - file: "src/events.h"
+    qualified_name: "tfs::events::monster::onSpawn"
+    edges: []

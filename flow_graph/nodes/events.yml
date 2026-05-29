@@ -1,0 +1,280 @@
+nodes:
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::scriptInterface"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::CreatureHandlers"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::CreatureHandlers::onChangeOutfit"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::CreatureHandlers::onAreaCombat"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::CreatureHandlers::onTargetCombat"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::CreatureHandlers::onHear"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::CreatureHandlers::onChangeZone"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::CreatureHandlers::onUpdateStorage"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::creatureHandlers"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PartyHandlers"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PartyHandlers::onJoin"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PartyHandlers::onLeave"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PartyHandlers::onDisband"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PartyHandlers::onShareExperience"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PartyHandlers::onInvite"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PartyHandlers::onRevokeInvitation"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PartyHandlers::onPassLeadership"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::partyHandlers"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onBrowseField"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onLook"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onLookInBattleList"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onLookInTrade"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onLookInShop"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onLookInMarket"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onMoveItem"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onItemMoved"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onMoveCreature"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onReportRuleViolation"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onReportBug"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onRotateItem"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onTurn"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onTradeRequest"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onTradeAccept"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onTradeCompleted"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onPodiumRequest"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onPodiumEdit"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onGainExperience"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onLoseExperience"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onGainSkillTries"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onWrapItem"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onInventoryUpdate"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onNetworkMessage"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::PlayerHandlers::onSpellCheck"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::playerHandlers"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::MonsterHandlers"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::MonsterHandlers::onDropLoot"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::MonsterHandlers::onSpawn"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::monsterHandlers"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "(anonymous)::load_from_xml"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::getScriptId"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::load"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::reload"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::creature::onChangeOutfit"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::creature::onAreaCombat"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::creature::onTargetCombat"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::creature::onHear"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::creature::onChangeZone"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::creature::onUpdateStorage"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::party::onJoin"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::party::onLeave"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::party::onDisband"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::party::onInvite"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::party::onRevokeInvitation"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::party::onPassLeadership"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::party::onShareExperience"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onBrowseField"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onLook"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onLookInBattleList"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onLookInTrade"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onLookInShop"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onLookInMarket"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onMoveItem"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onItemMoved"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onMoveCreature"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onReportRuleViolation"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onReportBug"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onRotateItem"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onTurn"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onTradeRequest"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onTradeAccept"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onTradeCompleted"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onPodiumRequest"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onPodiumEdit"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onGainExperience"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onLoseExperience"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onGainSkillTries"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onWrapItem"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onInventoryUpdate"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onNetworkMessage"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::player::onSpellCheck"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::monster::onSpawn"
+    edges: []
+  - file: "src/events.cpp"
+    qualified_name: "tfs::events::monster::onDropLoot"
+    edges: []

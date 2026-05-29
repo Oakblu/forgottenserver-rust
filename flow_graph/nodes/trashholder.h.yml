@@ -1,0 +1,31 @@
+nodes:
+  - file: "src/trashholder.h"
+    qualified_name: TrashHolder
+    edges: []
+  - file: "src/trashholder.h"
+    qualified_name: "TrashHolder::TrashHolder"
+    edges: []
+  - file: "src/trashholder.h"
+    qualified_name: "TrashHolder::addThing (Thing*)"
+    edges: []
+  - file: "src/trashholder.h"
+    qualified_name: "TrashHolder::getReceiver (const)"
+    edges: []
+  - file: "src/trashholder.h"
+    qualified_name: "TrashHolder::getReceiver (non-const)"
+    edges: []
+  - file: "src/trashholder.h"
+    qualified_name: "TrashHolder::getTrashHolder (const)"
+    edges: []
+  - file: "src/trashholder.h"
+    qualified_name: "TrashHolder::getTrashHolder (non-const)"
+    edges: []
+  - file: "src/trashholder.h"
+    qualified_name: "TrashHolder::queryAdd"
+    edges: []
+  - file: "src/trashholder.h"
+    qualified_name: "TrashHolder::queryDestination"
+    edges: []
+  - file: "src/trashholder.h"
+    qualified_name: FS_TRASHHOLDER_H
+    edges: []

@@ -1,0 +1,22 @@
+nodes:
+  - file: "src/http/login.cpp"
+    qualified_name: "tfs::http::handle_login"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/http/login.cpp"
+          qualified_name: "tfs::http::handle_login"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/vocation.cpp"
+          qualified_name: "Vocations::getVocation"
+        kind: static
+        confidence: static
+        order: 3

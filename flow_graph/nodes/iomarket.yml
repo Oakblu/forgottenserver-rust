@@ -1,0 +1,199 @@
+nodes:
+  - file: "src/iomarket.cpp"
+    qualified_name: g_game
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "(anonymous)::purchaseStatistics"
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "(anonymous)::saleStatistics"
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "tfs::iomarket::getActiveOffers"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/iomarket.cpp"
+    qualified_name: "market_offers.amount"
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "market_offers.anonymous"
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "market_offers.created"
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "market_offers.id"
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "market_offers.itemtype"
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "market_offers.price"
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "market_offers.sale"
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "tfs::iomarket::getOwnOffers"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/iomarket.cpp"
+    qualified_name: "market_offers.player_id"
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "tfs::iomarket::getOwnHistory"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/iomarket.cpp"
+    qualified_name: "tfs::iomarket::processExpiredOffers"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getPlayerByGUID"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalAddItem"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::increaseBankBalance"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::loadPlayerById"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::savePlayer"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::CreateItem"
+        kind: static
+        confidence: static
+        order: 6
+  - file: "src/iomarket.cpp"
+    qualified_name: "tfs::iomarket::checkExpiredOffers"
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "tfs::iomarket::getPlayerOfferCount"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/iomarket.cpp"
+    qualified_name: "tfs::iomarket::getOfferByCounter"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/iomarket.cpp"
+    qualified_name: "tfs::iomarket::createOffer"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/iomarket.cpp"
+    qualified_name: "tfs::iomarket::acceptOffer"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/iomarket.cpp"
+    qualified_name: "tfs::iomarket::deleteOffer"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/iomarket.cpp"
+    qualified_name: "tfs::iomarket::appendHistory"
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "market_history.amount"
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "market_history.expires_at"
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "market_history.inserted"
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "market_history.itemtype"
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "market_history.player_id"
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "market_history.price"
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "market_history.sale"
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "market_history.state"
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "tfs::iomarket::moveOfferToHistory"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/iomarket.cpp"
+    qualified_name: "tfs::iomarket::updateStatistics"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/iomarket.cpp"
+    qualified_name: "tfs::iomarket::getPurchaseStatistics"
+    edges: []
+  - file: "src/iomarket.cpp"
+    qualified_name: "tfs::iomarket::getSaleStatistics"
+    edges: []

@@ -1,0 +1,106 @@
+nodes:
+  - file: "src/position.h"
+    qualified_name: Direction
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Direction::DIRECTION_NORTH"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Direction::DIRECTION_EAST"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Direction::DIRECTION_SOUTH"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Direction::DIRECTION_WEST"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Direction::DIRECTION_DIAGONAL_MASK"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Direction::DIRECTION_SOUTHWEST"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Direction::DIRECTION_SOUTHEAST"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Direction::DIRECTION_NORTHWEST"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Direction::DIRECTION_NORTHEAST"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Direction::DIRECTION_LAST"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Direction::DIRECTION_NONE"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: tfs
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "tfs::abs"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: Position
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Position::Position()"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Position::Position(uint16_t,uint16_t,uint8_t)"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Position::isInRange(2D)"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Position::isInRange(3D)"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Position::getOffsetX"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Position::getOffsetY"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Position::getOffsetZ"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Position::getDistanceX"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Position::getDistanceY"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Position::getDistanceZ"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Position::x"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Position::y"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Position::z"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Position::operator=="
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Position::operator!="
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Position::operator<"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Position::getX"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Position::getY"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "Position::getZ"
+    edges: []
+  - file: "src/position.h"
+    qualified_name: "operator<<(std::ostream&,const Position&)"
+    edges: []

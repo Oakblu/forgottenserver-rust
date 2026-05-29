@@ -1,0 +1,39 @@
+nodes:
+  - file: "src/main.cpp"
+    qualified_name: argumentsHandler
+    edges:
+      - target:
+          file: "src/otserv.cpp"
+          qualified_name: printServerVersion
+        kind: static
+        confidence: curated
+        order: 1
+        condition: "--version flag"
+      - target:
+          file: "src/configmanager.cpp"
+          qualified_name: "ConfigManager::setNumber"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/configmanager.cpp"
+          qualified_name: "ConfigManager::setString"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/main.cpp"
+    qualified_name: main
+    edges:
+      - target:
+          file: "src/main.cpp"
+          qualified_name: argumentsHandler
+        kind: static
+        confidence: curated
+        order: 1
+      - target:
+          file: "src/otserv.cpp"
+          qualified_name: startServer
+        kind: static
+        confidence: curated
+        order: 2
+        condition: "argumentsHandler returns true"

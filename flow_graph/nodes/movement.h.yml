@@ -1,0 +1,40 @@
+nodes:
+  - file: "src/movement.h"
+    qualified_name: FS_MOVEMENT_H
+    edges: []
+  - file: "src/movement.h"
+    qualified_name: MoveEvent_t
+    edges: []
+  - file: "src/movement.h"
+    qualified_name: "MoveEvent_t::MOVE_EVENT_STEP_IN"
+    edges: []
+  - file: "src/movement.h"
+    qualified_name: "MoveEvent_t::MOVE_EVENT_STEP_OUT"
+    edges: []
+  - file: "src/movement.h"
+    qualified_name: "MoveEvent_t::MOVE_EVENT_EQUIP"
+    edges: []
+  - file: "src/movement.h"
+    qualified_name: "MoveEvent_t::MOVE_EVENT_DEEQUIP"
+    edges: []
+  - file: "src/movement.h"
+    qualified_name: "MoveEvent_t::MOVE_EVENT_ADD_ITEM"
+    edges: []
+  - file: "src/movement.h"
+    qualified_name: "MoveEvent_t::MOVE_EVENT_REMOVE_ITEM"
+    edges: []
+  - file: "src/movement.h"
+    qualified_name: "MoveEvent_t::MOVE_EVENT_ADD_ITEM_ITEMTILE"
+    edges: []
+  - file: "src/movement.h"
+    qualified_name: "MoveEvent_t::MOVE_EVENT_REMOVE_ITEM_ITEMTILE"
+    edges: []
+  - file: "src/movement.h"
+    qualified_name: "MoveEvent_t::MOVE_EVENT_LAST"
+    edges: []
+  - file: "src/movement.h"
+    qualified_name: "MoveEvent_t::MOVE_EVENT_NONE"
+    edges: []
+  - file: "src/movement.h"
+    qualified_name: MoveEventList
+    edges: []

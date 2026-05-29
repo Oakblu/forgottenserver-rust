@@ -1,0 +1,64 @@
+nodes:
+  - file: "src/databasetasks.cpp"
+    qualified_name: g_dispatcher
+    edges: []
+  - file: "src/databasetasks.cpp"
+    qualified_name: "DatabaseTasks::start"
+    edges:
+      - target:
+          file: "src/databasetasks.cpp"
+          qualified_name: "DatabaseTasks::start"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/databasetasks.cpp"
+    qualified_name: "DatabaseTasks::threadMain"
+    edges:
+      - target:
+          file: "src/databasetasks.cpp"
+          qualified_name: "DatabaseTasks::threadMain"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/databasetasks.cpp"
+    qualified_name: "DatabaseTasks::addTask"
+    edges:
+      - target:
+          file: "src/databasetasks.cpp"
+          qualified_name: "DatabaseTasks::addTask"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/databasetasks.cpp"
+    qualified_name: "DatabaseTasks::runTask"
+    edges:
+      - target:
+          file: "src/databasetasks.cpp"
+          qualified_name: "DatabaseTasks::runTask"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/tasks.cpp"
+          qualified_name: "Dispatcher::addTask"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/databasetasks.cpp"
+    qualified_name: "DatabaseTasks::flush"
+    edges:
+      - target:
+          file: "src/databasetasks.cpp"
+          qualified_name: "DatabaseTasks::flush"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/databasetasks.cpp"
+    qualified_name: "DatabaseTasks::shutdown"
+    edges:
+      - target:
+          file: "src/databasetasks.cpp"
+          qualified_name: "DatabaseTasks::shutdown"
+        kind: static
+        confidence: static
+        order: 1

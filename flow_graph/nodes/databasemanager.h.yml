@@ -1,0 +1,4 @@
+nodes:
+  - file: "src/databasemanager.h"
+    qualified_name: DatabaseManager
+    edges: []

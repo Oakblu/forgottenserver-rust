@@ -1,0 +1,55 @@
+nodes:
+  - file: "src/outfit.h"
+    qualified_name: Outfit
+    edges: []
+  - file: "src/outfit.h"
+    qualified_name: "Outfit::name"
+    edges: []
+  - file: "src/outfit.h"
+    qualified_name: "Outfit::lookType"
+    edges: []
+  - file: "src/outfit.h"
+    qualified_name: "Outfit::premium"
+    edges: []
+  - file: "src/outfit.h"
+    qualified_name: "Outfit::unlocked"
+    edges: []
+  - file: "src/outfit.h"
+    qualified_name: "operator==(const Outfit&, const Outfit&)"
+    edges: []
+  - file: "src/outfit.h"
+    qualified_name: ProtocolOutfit
+    edges: []
+  - file: "src/outfit.h"
+    qualified_name: "ProtocolOutfit::ProtocolOutfit"
+    edges: []
+  - file: "src/outfit.h"
+    qualified_name: "ProtocolOutfit::name"
+    edges: []
+  - file: "src/outfit.h"
+    qualified_name: "ProtocolOutfit::lookType"
+    edges: []
+  - file: "src/outfit.h"
+    qualified_name: "ProtocolOutfit::addons"
+    edges: []
+  - file: "src/outfit.h"
+    qualified_name: Outfits
+    edges: []
+  - file: "src/outfit.h"
+    qualified_name: "Outfits::getInstance"
+    edges: []
+  - file: "src/outfit.h"
+    qualified_name: "Outfits::loadFromXml"
+    edges: []
+  - file: "src/outfit.h"
+    qualified_name: "Outfits::getOutfitByLookType(PlayerSex_t, uint16_t)"
+    edges: []
+  - file: "src/outfit.h"
+    qualified_name: "Outfits::getOutfitByLookType(uint16_t)"
+    edges: []
+  - file: "src/outfit.h"
+    qualified_name: "Outfits::getOutfits"
+    edges: []
+  - file: "src/outfit.h"
+    qualified_name: "Outfits::outfits"
+    edges: []

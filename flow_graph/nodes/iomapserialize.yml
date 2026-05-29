@@ -1,0 +1,130 @@
+nodes:
+  - file: "src/iomapserialize.cpp"
+    qualified_name: "IOMapSerialize::loadHouseItems"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iomapserialize.cpp"
+          qualified_name: "IOMapSerialize::loadHouseItems"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iomapserialize.cpp"
+    qualified_name: "IOMapSerialize::saveHouseItems"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iomapserialize.cpp"
+          qualified_name: "IOMapSerialize::saveHouseItems"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iomapserialize.cpp"
+    qualified_name: "IOMapSerialize::loadContainer"
+    edges:
+      - target:
+          file: "src/iomapserialize.cpp"
+          qualified_name: "IOMapSerialize::loadContainer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/iomapserialize.cpp"
+    qualified_name: "IOMapSerialize::loadItem"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removeBedSleeper"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::transformItem"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/iomapserialize.cpp"
+          qualified_name: "IOMapSerialize::loadItem"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::CreateItem"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/iomapserialize.cpp"
+    qualified_name: "IOMapSerialize::saveItem"
+    edges:
+      - target:
+          file: "src/iomapserialize.cpp"
+          qualified_name: "IOMapSerialize::saveItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/iomapserialize.cpp"
+    qualified_name: "IOMapSerialize::saveTile"
+    edges:
+      - target:
+          file: "src/iomapserialize.cpp"
+          qualified_name: "IOMapSerialize::saveTile"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/iomapserialize.cpp"
+    qualified_name: "IOMapSerialize::loadHouseInfo"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iomapserialize.cpp"
+          qualified_name: "IOMapSerialize::loadHouseInfo"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iomapserialize.cpp"
+    qualified_name: "IOMapSerialize::saveHouseInfo"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iomapserialize.cpp"
+          qualified_name: "IOMapSerialize::saveHouseInfo"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iomapserialize.cpp"
+    qualified_name: "IOMapSerialize::saveHouse"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iomapserialize.cpp"
+          qualified_name: "IOMapSerialize::saveHouse"
+        kind: static
+        confidence: static
+        order: 2

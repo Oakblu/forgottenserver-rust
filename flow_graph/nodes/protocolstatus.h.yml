@@ -1,0 +1,34 @@
+nodes:
+  - file: "src/protocolstatus.h"
+    qualified_name: ProtocolStatus
+    edges: []
+  - file: "src/protocolstatus.h"
+    qualified_name: "ProtocolStatus::server_sends_first"
+    edges: []
+  - file: "src/protocolstatus.h"
+    qualified_name: "ProtocolStatus::protocol_identifier"
+    edges: []
+  - file: "src/protocolstatus.h"
+    qualified_name: "ProtocolStatus::use_checksum"
+    edges: []
+  - file: "src/protocolstatus.h"
+    qualified_name: "ProtocolStatus::protocol_name"
+    edges: []
+  - file: "src/protocolstatus.h"
+    qualified_name: "ProtocolStatus::ProtocolStatus"
+    edges: []
+  - file: "src/protocolstatus.h"
+    qualified_name: "ProtocolStatus::onRecvFirstMessage"
+    edges: []
+  - file: "src/protocolstatus.h"
+    qualified_name: "ProtocolStatus::sendStatusString"
+    edges: []
+  - file: "src/protocolstatus.h"
+    qualified_name: "ProtocolStatus::sendInfo"
+    edges: []
+  - file: "src/protocolstatus.h"
+    qualified_name: "ProtocolStatus::start"
+    edges: []
+  - file: "src/protocolstatus.h"
+    qualified_name: "ProtocolStatus::ipConnectMap"
+    edges: []

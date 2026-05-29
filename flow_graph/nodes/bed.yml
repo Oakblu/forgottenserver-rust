@@ -1,0 +1,256 @@
+nodes:
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::BedItem"
+    edges:
+      - target:
+          file: "src/bed.cpp"
+          qualified_name: "BedItem::BedItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::canUse"
+    edges: []
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::getNextBedItem"
+    edges: []
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::internalRemoveSleeper"
+    edges: []
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::internalSetSleeper"
+    edges: []
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::readAttr"
+    edges: []
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::regeneratePlayer"
+    edges: []
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::serializeAttr"
+    edges: []
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::sleep"
+    edges: []
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::trySleep"
+    edges: []
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::updateAppearance"
+    edges: []
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::wakeUp"
+    edges: []
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::readAttr"
+    edges:
+      - target:
+          file: "src/bed.cpp"
+          qualified_name: "BedItem::readAttr"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::setBedSleeper"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::getNameByGuid"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::readAttr"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::serializeAttr"
+    edges:
+      - target:
+          file: "src/bed.cpp"
+          qualified_name: "BedItem::serializeAttr"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::getNextBedItem"
+    edges:
+      - target:
+          file: "src/bed.cpp"
+          qualified_name: "BedItem::getNextBedItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::canUse"
+    edges:
+      - target:
+          file: "src/bed.cpp"
+          qualified_name: "BedItem::canUse"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::loadPlayerById"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::trySleep"
+    edges:
+      - target:
+          file: "src/bed.cpp"
+          qualified_name: "BedItem::trySleep"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMagicEffect"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::sleep"
+    edges:
+      - target:
+          file: "src/bed.cpp"
+          qualified_name: "BedItem::sleep"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/bed.cpp"
+          qualified_name: "BedItem::wakeUp"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addCreatureHealth"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMagicEffect"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::kickPlayer"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removeBedSleeper"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::setBedSleeper"
+        kind: static
+        confidence: static
+        order: 7
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::loadPlayerById"
+        kind: static
+        confidence: static
+        order: 8
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::savePlayer"
+        kind: static
+        confidence: static
+        order: 9
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::wakeUp"
+    edges:
+      - target:
+          file: "src/bed.cpp"
+          qualified_name: "BedItem::regeneratePlayer"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/bed.cpp"
+          qualified_name: "BedItem::wakeUp"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addCreatureHealth"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removeBedSleeper"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::loadPlayerById"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::savePlayer"
+        kind: static
+        confidence: static
+        order: 6
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::regeneratePlayer"
+    edges:
+      - target:
+          file: "src/bed.cpp"
+          qualified_name: "BedItem::regeneratePlayer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::updateAppearance"
+    edges:
+      - target:
+          file: "src/bed.cpp"
+          qualified_name: "BedItem::updateAppearance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::transformItem"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::internalSetSleeper"
+    edges:
+      - target:
+          file: "src/bed.cpp"
+          qualified_name: "BedItem::internalSetSleeper"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/bed.cpp"
+    qualified_name: "BedItem::internalRemoveSleeper"
+    edges:
+      - target:
+          file: "src/bed.cpp"
+          qualified_name: "BedItem::internalRemoveSleeper"
+        kind: static
+        confidence: static
+        order: 1

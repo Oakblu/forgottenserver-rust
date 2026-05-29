@@ -1,0 +1,46 @@
+nodes:
+  - file: "src/mounts.h"
+    qualified_name: Mount
+    edges: []
+  - file: "src/mounts.h"
+    qualified_name: "Mount::Mount"
+    edges: []
+  - file: "src/mounts.h"
+    qualified_name: "Mount::name"
+    edges: []
+  - file: "src/mounts.h"
+    qualified_name: "Mount::speed"
+    edges: []
+  - file: "src/mounts.h"
+    qualified_name: "Mount::clientId"
+    edges: []
+  - file: "src/mounts.h"
+    qualified_name: "Mount::id"
+    edges: []
+  - file: "src/mounts.h"
+    qualified_name: "Mount::premium"
+    edges: []
+  - file: "src/mounts.h"
+    qualified_name: Mounts
+    edges: []
+  - file: "src/mounts.h"
+    qualified_name: "Mounts::reload"
+    edges: []
+  - file: "src/mounts.h"
+    qualified_name: "Mounts::loadFromXml"
+    edges: []
+  - file: "src/mounts.h"
+    qualified_name: "Mounts::getMountByID"
+    edges: []
+  - file: "src/mounts.h"
+    qualified_name: "Mounts::getMountByName"
+    edges: []
+  - file: "src/mounts.h"
+    qualified_name: "Mounts::getMountByClientID"
+    edges: []
+  - file: "src/mounts.h"
+    qualified_name: "Mounts::getMounts"
+    edges: []
+  - file: "src/mounts.h"
+    qualified_name: "Mounts::mounts"
+    edges: []

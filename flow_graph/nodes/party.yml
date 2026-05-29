@@ -1,0 +1,310 @@
+nodes:
+  - file: "src/party.cpp"
+    qualified_name: "Party::Party"
+    edges:
+      - target:
+          file: "src/party.cpp"
+          qualified_name: "Party::Party"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/party.cpp"
+    qualified_name: "anon::getSharedExpReturnMessage"
+    edges: []
+  - file: "src/party.cpp"
+    qualified_name: "Party::broadcastPartyMessage"
+    edges: []
+  - file: "src/party.cpp"
+    qualified_name: "Party::canOpenCorpse"
+    edges: []
+  - file: "src/party.cpp"
+    qualified_name: "Party::canUseSharedExperience"
+    edges: []
+  - file: "src/party.cpp"
+    qualified_name: "Party::clearPlayerPoints"
+    edges: []
+  - file: "src/party.cpp"
+    qualified_name: "Party::disband"
+    edges: []
+  - file: "src/party.cpp"
+    qualified_name: "Party::getMemberSharedExperienceStatus"
+    edges: []
+  - file: "src/party.cpp"
+    qualified_name: "Party::getSharedExperienceStatus"
+    edges: []
+  - file: "src/party.cpp"
+    qualified_name: "Party::invitePlayer"
+    edges: []
+  - file: "src/party.cpp"
+    qualified_name: "Party::isPlayerInvited"
+    edges: []
+  - file: "src/party.cpp"
+    qualified_name: "Party::joinParty"
+    edges: []
+  - file: "src/party.cpp"
+    qualified_name: "Party::leaveParty"
+    edges: []
+  - file: "src/party.cpp"
+    qualified_name: "Party::passPartyLeadership"
+    edges: []
+  - file: "src/party.cpp"
+    qualified_name: "Party::removeInvite"
+    edges: []
+  - file: "src/party.cpp"
+    qualified_name: "Party::revokeInvitation"
+    edges: []
+  - file: "src/party.cpp"
+    qualified_name: "Party::setSharedExperience"
+    edges: []
+  - file: "src/party.cpp"
+    qualified_name: "Party::shareExperience"
+    edges: []
+  - file: "src/party.cpp"
+    qualified_name: "Party::updateAllPartyIcons"
+    edges: []
+  - file: "src/party.cpp"
+    qualified_name: "Party::updatePlayerTicks"
+    edges: []
+  - file: "src/party.cpp"
+    qualified_name: "Party::updateSharedExperience"
+    edges: []
+  - file: "src/party.cpp"
+    qualified_name: "Party::disband"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::party::onDisband"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::updatePlayerShield"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/party.cpp"
+          qualified_name: "Party::disband"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/party.cpp"
+    qualified_name: "Party::leaveParty"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::party::onLeave"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::updatePlayerShield"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/party.cpp"
+          qualified_name: "Party::leaveParty"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/party.cpp"
+    qualified_name: "Party::passPartyLeadership"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::party::onPassLeadership"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/party.cpp"
+          qualified_name: "Party::passPartyLeadership"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/party.cpp"
+    qualified_name: "Party::joinParty"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::party::onJoin"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::updatePlayerShield"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/party.cpp"
+          qualified_name: "Party::joinParty"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/party.cpp"
+    qualified_name: "Party::removeInvite"
+    edges:
+      - target:
+          file: "src/party.cpp"
+          qualified_name: "Party::removeInvite"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/party.cpp"
+    qualified_name: "Party::revokeInvitation"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::party::onRevokeInvitation"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/party.cpp"
+          qualified_name: "Party::revokeInvitation"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/party.cpp"
+    qualified_name: "Party::invitePlayer"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::updatePlayerShield"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/party.cpp"
+          qualified_name: "Party::invitePlayer"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/party.cpp"
+    qualified_name: "Party::isPlayerInvited"
+    edges:
+      - target:
+          file: "src/party.cpp"
+          qualified_name: "Party::isPlayerInvited"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/party.cpp"
+    qualified_name: "Party::updateAllPartyIcons"
+    edges:
+      - target:
+          file: "src/party.cpp"
+          qualified_name: "Party::updateAllPartyIcons"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/party.cpp"
+    qualified_name: "Party::broadcastPartyMessage"
+    edges:
+      - target:
+          file: "src/party.cpp"
+          qualified_name: "Party::broadcastPartyMessage"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/party.cpp"
+    qualified_name: "Party::updateSharedExperience"
+    edges:
+      - target:
+          file: "src/party.cpp"
+          qualified_name: "Party::updateSharedExperience"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/party.cpp"
+    qualified_name: getSharedExpReturnMessage
+    edges: []
+  - file: "src/party.cpp"
+    qualified_name: "Party::setSharedExperience"
+    edges:
+      - target:
+          file: "src/party.cpp"
+          qualified_name: "Party::setSharedExperience"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/party.cpp"
+    qualified_name: "Party::shareExperience"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::party::onShareExperience"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/party.cpp"
+          qualified_name: "Party::shareExperience"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/party.cpp"
+    qualified_name: "Party::canUseSharedExperience"
+    edges:
+      - target:
+          file: "src/party.cpp"
+          qualified_name: "Party::canUseSharedExperience"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/party.cpp"
+    qualified_name: "Party::getMemberSharedExperienceStatus"
+    edges:
+      - target:
+          file: "src/party.cpp"
+          qualified_name: "Party::getMemberSharedExperienceStatus"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/party.cpp"
+    qualified_name: "Party::getSharedExperienceStatus"
+    edges:
+      - target:
+          file: "src/party.cpp"
+          qualified_name: "Party::getSharedExperienceStatus"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/party.cpp"
+    qualified_name: "Party::updatePlayerTicks"
+    edges:
+      - target:
+          file: "src/party.cpp"
+          qualified_name: "Party::updatePlayerTicks"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/party.cpp"
+    qualified_name: "Party::clearPlayerPoints"
+    edges:
+      - target:
+          file: "src/party.cpp"
+          qualified_name: "Party::clearPlayerPoints"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/party.cpp"
+    qualified_name: "Party::canOpenCorpse"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getPlayerByID"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/party.cpp"
+          qualified_name: "Party::canOpenCorpse"
+        kind: static
+        confidence: static
+        order: 2

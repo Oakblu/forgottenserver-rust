@@ -1,0 +1,154 @@
+nodes:
+  - file: "src/thing.h"
+    qualified_name: INDEX_WHEREEVER
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: ReceiverFlag_t
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "ReceiverFlag_t::FLAG_NOLIMIT"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "ReceiverFlag_t::FLAG_IGNOREBLOCKITEM"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "ReceiverFlag_t::FLAG_IGNOREBLOCKCREATURE"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "ReceiverFlag_t::FLAG_CHILDISOWNER"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "ReceiverFlag_t::FLAG_PATHFINDING"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "ReceiverFlag_t::FLAG_IGNOREFIELDDAMAGE"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "ReceiverFlag_t::FLAG_IGNORENOTMOVEABLE"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "ReceiverFlag_t::FLAG_IGNOREAUTOSTACK"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: ReceiverLink_t
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "ReceiverLink_t::LINK_OWNER"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "ReceiverLink_t::LINK_PARENT"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "ReceiverLink_t::LINK_TOPPARENT"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "ReceiverLink_t::LINK_NEAR"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: Thing
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::Thing"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::~Thing"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::hasParent"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::getParent"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::getRealParent"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::setParent"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::getPosition"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::getThrowRange"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::isPushable"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::getTile"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::getItem"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::getCreature"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::isRemoved"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::getReceiver"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::queryAdd"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::queryMaxCount"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::queryRemove"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::queryDestination"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::addThing(Thing*)"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::addThing(int32_t,Thing*)"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::updateThing"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::replaceThing"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::removeThing"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::postAddNotification"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::postRemoveNotification"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::getThingIndex"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::getFirstIndex"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::getLastIndex"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::getThing"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::getItemTypeCount"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::getAllItemTypeCount"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::internalRemoveThing"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::internalAddThing(Thing*)"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::internalAddThing(uint32_t,Thing*)"
+    edges: []
+  - file: "src/thing.h"
+    qualified_name: "Thing::parent"
+    edges: []

@@ -1,0 +1,328 @@
+nodes:
+  - file: "src/map.cpp"
+    qualified_name: "Map::loadMap"
+    edges:
+      - target:
+          file: "src/iomapserialize.cpp"
+          qualified_name: "IOMapSerialize::loadHouseInfo"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iomapserialize.cpp"
+          qualified_name: "IOMapSerialize::loadHouseItems"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "Map::loadMap"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/map.cpp"
+    qualified_name: "Map::save"
+    edges:
+      - target:
+          file: "src/iomapserialize.cpp"
+          qualified_name: "IOMapSerialize::saveHouseInfo"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iomapserialize.cpp"
+          qualified_name: "IOMapSerialize::saveHouseItems"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "Map::save"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/map.cpp"
+    qualified_name: "Map::getTile"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "Map::getTile"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: "Map::setTile"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "Map::setTile"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: "Map::removeTile"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalRemoveItem"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalTeleport"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removeCreature"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "Map::removeTile"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/map.cpp"
+    qualified_name: "Map::placeCreature"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "Map::placeCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: "Map::moveCreature"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "Map::moveCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: "Map::getSpectatorsInternal"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "Map::getSpectatorsInternal"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: "Map::getSpectators"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "Map::getSpectators"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: "Map::clearSpectatorCache"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "Map::clearSpectatorCache"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: "Map::clearPlayersSpectatorCache"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "Map::clearPlayersSpectatorCache"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: "Map::canThrowObjectTo"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "Map::canThrowObjectTo"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: "Map::isTileClear"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "Map::isTileClear"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: checkSteepLine
+    edges: []
+  - file: "src/map.cpp"
+    qualified_name: checkSlightLine
+    edges: []
+  - file: "src/map.cpp"
+    qualified_name: "Map::checkSightLine"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "Map::checkSightLine"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: "Map::isSightClear"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "Map::isSightClear"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: "Map::canWalkTo"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "Map::canWalkTo"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: calculateHeuristic
+    edges: []
+  - file: "src/map.cpp"
+    qualified_name: "Map::getPathMatching"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "Map::getPathMatching"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: "AStarNodes::createNode"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "AStarNodes::createNode"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: "AStarNodes::getBestNode"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "AStarNodes::getBestNode"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: "AStarNodes::getNodeByPosition"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "AStarNodes::getNodeByPosition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: "AStarNodes::getMapWalkCost"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "AStarNodes::getMapWalkCost"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: "AStarNodes::getTileWalkCost"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::DamageToConditionType"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "AStarNodes::getTileWalkCost"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/map.cpp"
+    qualified_name: "QTreeNode::getLeaf"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "QTreeNode::getLeaf"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: "QTreeNode::createLeaf"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "QTreeNode::createLeaf"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: "QTreeLeafNode::createFloor"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "QTreeLeafNode::createFloor"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: "QTreeLeafNode::addCreature"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "QTreeLeafNode::addCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: "QTreeLeafNode::removeCreature"
+    edges:
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "QTreeLeafNode::removeCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/map.cpp"
+    qualified_name: "Map::clean"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getGameState"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalRemoveItem"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::setGameState"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "Map::clean"
+        kind: static
+        confidence: static
+        order: 4

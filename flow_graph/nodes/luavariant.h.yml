@@ -1,0 +1,64 @@
+nodes:
+  - file: "src/luavariant.h"
+    qualified_name: LuaVariantType_t
+    edges: []
+  - file: "src/luavariant.h"
+    qualified_name: "LuaVariantType_t::VARIANT_NUMBER"
+    edges: []
+  - file: "src/luavariant.h"
+    qualified_name: "LuaVariantType_t::VARIANT_POSITION"
+    edges: []
+  - file: "src/luavariant.h"
+    qualified_name: "LuaVariantType_t::VARIANT_TARGETPOSITION"
+    edges: []
+  - file: "src/luavariant.h"
+    qualified_name: "LuaVariantType_t::VARIANT_STRING"
+    edges: []
+  - file: "src/luavariant.h"
+    qualified_name: "LuaVariantType_t::VARIANT_NONE"
+    edges: []
+  - file: "src/luavariant.h"
+    qualified_name: LuaVariant
+    edges: []
+  - file: "src/luavariant.h"
+    qualified_name: "LuaVariant::getNumber"
+    edges: []
+  - file: "src/luavariant.h"
+    qualified_name: "LuaVariant::getPosition"
+    edges: []
+  - file: "src/luavariant.h"
+    qualified_name: "LuaVariant::getTargetPosition"
+    edges: []
+  - file: "src/luavariant.h"
+    qualified_name: "LuaVariant::getString"
+    edges: []
+  - file: "src/luavariant.h"
+    qualified_name: "LuaVariant::isNumber"
+    edges: []
+  - file: "src/luavariant.h"
+    qualified_name: "LuaVariant::isPosition"
+    edges: []
+  - file: "src/luavariant.h"
+    qualified_name: "LuaVariant::isTargetPosition"
+    edges: []
+  - file: "src/luavariant.h"
+    qualified_name: "LuaVariant::isString"
+    edges: []
+  - file: "src/luavariant.h"
+    qualified_name: "LuaVariant::setNumber"
+    edges: []
+  - file: "src/luavariant.h"
+    qualified_name: "LuaVariant::setPosition"
+    edges: []
+  - file: "src/luavariant.h"
+    qualified_name: "LuaVariant::setTargetPosition"
+    edges: []
+  - file: "src/luavariant.h"
+    qualified_name: "LuaVariant::setString"
+    edges: []
+  - file: "src/luavariant.h"
+    qualified_name: "LuaVariant::type"
+    edges: []
+  - file: "src/luavariant.h"
+    qualified_name: "LuaVariant::variant"
+    edges: []

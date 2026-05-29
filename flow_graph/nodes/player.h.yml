@@ -1,0 +1,118 @@
+nodes:
+  - file: "src/player.h"
+    qualified_name: skillsid_t
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "skillsid_t::SKILLVALUE_LEVEL"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "skillsid_t::SKILLVALUE_TRIES"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "skillsid_t::SKILLVALUE_PERCENT"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: fightMode_t
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "fightMode_t::FIGHTMODE_ATTACK"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "fightMode_t::FIGHTMODE_BALANCED"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "fightMode_t::FIGHTMODE_DEFENSE"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: pvpMode_t
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "pvpMode_t::PVP_MODE_DOVE"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "pvpMode_t::PVP_MODE_WHITE_HAND"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "pvpMode_t::PVP_MODE_YELLOW_HAND"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "pvpMode_t::PVP_MODE_RED_FIST"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: tradestate_t
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "tradestate_t::TRADE_NONE"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "tradestate_t::TRADE_INITIATED"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "tradestate_t::TRADE_ACCEPT"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "tradestate_t::TRADE_ACKNOWLEDGE"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "tradestate_t::TRADE_TRANSFER"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: VIPEntry
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "VIPEntry::VIPEntry"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "VIPEntry::guid"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "VIPEntry::name"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "VIPEntry::description"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "VIPEntry::icon"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "VIPEntry::notify"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: OpenContainer
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "OpenContainer::container"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "OpenContainer::index"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: MINIMUM_SKILL_LEVEL
+    edges: []
+  - file: "src/player.h"
+    qualified_name: Skill
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "Skill::tries"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "Skill::level"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: "Skill::percent"
+    edges: []
+  - file: "src/player.h"
+    qualified_name: MuteCountMap
+    edges: []
+  - file: "src/player.h"
+    qualified_name: PLAYER_MAX_SPEED
+    edges: []
+  - file: "src/player.h"
+    qualified_name: PLAYER_MIN_SPEED
+    edges: []
+  - file: "src/player.h"
+    qualified_name: NOTIFY_DEPOT_BOX_RANGE
+    edges: []
+  - file: "src/player.h"
+    qualified_name: Player
+    edges: []

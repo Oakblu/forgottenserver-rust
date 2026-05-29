@@ -1,0 +1,16 @@
+nodes:
+  - file: "src/definitions.h"
+    qualified_name: FS_DEFINITIONS_H
+    edges: []
+  - file: "src/definitions.h"
+    qualified_name: BOOST_ASIO_NO_DEPRECATED
+    edges: []
+  - file: "src/definitions.h"
+    qualified_name: NOMINMAX
+    edges: []
+  - file: "src/definitions.h"
+    qualified_name: WIN32_LEAN_AND_MEAN
+    edges: []
+  - file: "src/definitions.h"
+    qualified_name: HAS_ITERATOR_DEBUGGING
+    edges: []

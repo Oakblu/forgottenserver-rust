@@ -1,0 +1,172 @@
+nodes:
+  - file: "src/spawn.cpp"
+    qualified_name: "Spawns::loadFromXml"
+    edges:
+      - target:
+          file: "src/monsters.cpp"
+          qualified_name: "Monsters::getMonsterType"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::createNpc"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/spawn.cpp"
+          qualified_name: "Spawns::loadFromXml"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/spawn.cpp"
+    qualified_name: "Spawns::startup"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::placeCreature"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/spawn.cpp"
+          qualified_name: "Spawns::startup"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/spawn.cpp"
+    qualified_name: "Spawns::clear"
+    edges:
+      - target:
+          file: "src/spawn.cpp"
+          qualified_name: "Spawns::clear"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spawn.cpp"
+    qualified_name: "Spawns::isInZone"
+    edges:
+      - target:
+          file: "src/spawn.cpp"
+          qualified_name: "Spawns::isInZone"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spawn.cpp"
+    qualified_name: "Spawn::startSpawnCheck"
+    edges:
+      - target:
+          file: "src/spawn.cpp"
+          qualified_name: "Spawn::startSpawnCheck"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spawn.cpp"
+    qualified_name: "Spawn::findPlayer"
+    edges:
+      - target:
+          file: "src/spawn.cpp"
+          qualified_name: "Spawn::findPlayer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spawn.cpp"
+    qualified_name: "Spawn::spawnMonster"
+    edges: []
+  - file: "src/spawn.cpp"
+    qualified_name: "Spawn::spawnMonster"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::monster::onSpawn"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalPlaceCreature"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::placeCreature"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/spawn.cpp"
+          qualified_name: "Spawn::spawnMonster"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/spawn.cpp"
+    qualified_name: "Spawn::startup"
+    edges:
+      - target:
+          file: "src/spawn.cpp"
+          qualified_name: "Spawn::startup"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spawn.cpp"
+    qualified_name: "Spawn::checkSpawn"
+    edges:
+      - target:
+          file: "src/spawn.cpp"
+          qualified_name: "Spawn::checkSpawn"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spawn.cpp"
+    qualified_name: "Spawn::cleanup"
+    edges:
+      - target:
+          file: "src/spawn.cpp"
+          qualified_name: "Spawn::cleanup"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spawn.cpp"
+    qualified_name: "Spawn::addBlock"
+    edges:
+      - target:
+          file: "src/spawn.cpp"
+          qualified_name: "Spawn::addBlock"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spawn.cpp"
+    qualified_name: "Spawn::addMonster"
+    edges:
+      - target:
+          file: "src/monsters.cpp"
+          qualified_name: "Monsters::getMonsterType"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/spawn.cpp"
+          qualified_name: "Spawn::addMonster"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/spawn.cpp"
+    qualified_name: "Spawn::removeMonster"
+    edges:
+      - target:
+          file: "src/spawn.cpp"
+          qualified_name: "Spawn::removeMonster"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spawn.cpp"
+    qualified_name: "Spawn::stopEvent"
+    edges:
+      - target:
+          file: "src/spawn.cpp"
+          qualified_name: "Spawn::stopEvent"
+        kind: static
+        confidence: static
+        order: 1

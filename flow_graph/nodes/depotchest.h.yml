@@ -1,0 +1,19 @@
+nodes:
+  - file: "src/depotchest.h"
+    qualified_name: DepotChest
+    edges: []
+  - file: "src/depotchest.h"
+    qualified_name: "DepotChest::maxDepotItems"
+    edges: []
+  - file: "src/depotchest.h"
+    qualified_name: "DepotChest::canRemove"
+    edges: []
+  - file: "src/depotchest.h"
+    qualified_name: "DepotChest::setMaxDepotItems"
+    edges: []
+  - file: "src/depotchest.h"
+    qualified_name: DepotChest_ptr
+    edges: []
+  - file: "src/depotchest.h"
+    qualified_name: FS_DEPOTCHEST_H
+    edges: []

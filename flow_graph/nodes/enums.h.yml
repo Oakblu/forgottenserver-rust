@@ -1,0 +1,1372 @@
+nodes:
+  - file: "src/enums.h"
+    qualified_name: FS_ENUMS_H
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: RuleViolationType_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationType_t::REPORT_TYPE_NAME"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationType_t::REPORT_TYPE_STATEMENT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationType_t::REPORT_TYPE_BOT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: RuleViolationReasons_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationReasons_t::REPORT_REASON_NAMEINAPPROPRIATE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationReasons_t::REPORT_REASON_NAMEPOORFORMATTED"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationReasons_t::REPORT_REASON_NAMEADVERTISING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationReasons_t::REPORT_REASON_NAMEUNFITTING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationReasons_t::REPORT_REASON_NAMERULEVIOLATION"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationReasons_t::REPORT_REASON_INSULTINGSTATEMENT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationReasons_t::REPORT_REASON_SPAMMING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationReasons_t::REPORT_REASON_ADVERTISINGSTATEMENT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationReasons_t::REPORT_REASON_UNFITTINGSTATEMENT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationReasons_t::REPORT_REASON_LANGUAGESTATEMENT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationReasons_t::REPORT_REASON_DISCLOSURE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationReasons_t::REPORT_REASON_RULEVIOLATION"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationReasons_t::REPORT_REASON_STATEMENT_BUGABUSE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationReasons_t::REPORT_REASON_UNOFFICIALSOFTWARE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationReasons_t::REPORT_REASON_PRETENDING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationReasons_t::REPORT_REASON_HARASSINGOWNERS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationReasons_t::REPORT_REASON_FALSEINFO"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationReasons_t::REPORT_REASON_ACCOUNTSHARING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationReasons_t::REPORT_REASON_STEALINGDATA"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationReasons_t::REPORT_REASON_SERVICEATTACKING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RuleViolationReasons_t::REPORT_REASON_SERVICEAGREEMENT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: ThreadState
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ThreadState::THREAD_STATE_RUNNING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ThreadState::THREAD_STATE_CLOSING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ThreadState::THREAD_STATE_TERMINATED"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: itemAttrTypes
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_NONE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_ACTIONID"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_UNIQUEID"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_DESCRIPTION"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_TEXT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_DATE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_WRITER"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_NAME"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_ARTICLE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_PLURALNAME"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_WEIGHT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_ATTACK"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_DEFENSE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_EXTRADEFENSE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_ARMOR"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_HITCHANCE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_SHOOTRANGE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_OWNER"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_DURATION"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_DECAYSTATE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_CORPSEOWNER"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_CHARGES"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_FLUIDTYPE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_DOORID"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_DECAYTO"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_WRAPID"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_STOREITEM"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_ATTACK_SPEED"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_OPENCONTAINER"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_DURATION_MIN"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_DURATION_MAX"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "itemAttrTypes::ITEM_ATTRIBUTE_CUSTOM"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: VipStatus_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "VipStatus_t::VIPSTATUS_OFFLINE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "VipStatus_t::VIPSTATUS_ONLINE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "VipStatus_t::VIPSTATUS_PENDING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "VipStatus_t::VIPSTATUS_TRAINING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: MarketAction_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MarketAction_t::MARKETACTION_BUY"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MarketAction_t::MARKETACTION_SELL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: MarketRequest_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MarketRequest_t::MARKETREQUEST_OWN_HISTORY"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MarketRequest_t::MARKETREQUEST_OWN_OFFERS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MarketRequest_t::MARKETREQUEST_ITEM"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: MarketOfferState_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MarketOfferState_t::OFFERSTATE_ACTIVE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MarketOfferState_t::OFFERSTATE_CANCELLED"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MarketOfferState_t::OFFERSTATE_EXPIRED"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MarketOfferState_t::OFFERSTATE_ACCEPTED"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MarketOfferState_t::OFFERSTATE_ACCEPTEDEX"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: ChannelEvent_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ChannelEvent_t::CHANNELEVENT_JOIN"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ChannelEvent_t::CHANNELEVENT_LEAVE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ChannelEvent_t::CHANNELEVENT_INVITE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ChannelEvent_t::CHANNELEVENT_EXCLUDE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: CreatureType_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CreatureType_t::CREATURETYPE_PLAYER"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CreatureType_t::CREATURETYPE_MONSTER"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CreatureType_t::CREATURETYPE_NPC"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CreatureType_t::CREATURETYPE_SUMMON_OWN"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CreatureType_t::CREATURETYPE_SUMMON_OTHERS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CreatureType_t::CREATURETYPE_HIDDEN"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: OperatingSystem_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "OperatingSystem_t::CLIENTOS_NONE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "OperatingSystem_t::CLIENTOS_LINUX"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "OperatingSystem_t::CLIENTOS_WINDOWS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "OperatingSystem_t::CLIENTOS_FLASH"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "OperatingSystem_t::CLIENTOS_QT_LINUX"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "OperatingSystem_t::CLIENTOS_QT_WINDOWS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "OperatingSystem_t::CLIENTOS_QT_MAC"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "OperatingSystem_t::CLIENTOS_QT_LINUX2"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "OperatingSystem_t::CLIENTOS_OTCLIENT_LINUX"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "OperatingSystem_t::CLIENTOS_OTCLIENT_WINDOWS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "OperatingSystem_t::CLIENTOS_OTCLIENT_MAC"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: SpellGroup_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpellGroup_t::SPELLGROUP_NONE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpellGroup_t::SPELLGROUP_ATTACK"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpellGroup_t::SPELLGROUP_HEALING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpellGroup_t::SPELLGROUP_SUPPORT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpellGroup_t::SPELLGROUP_SPECIAL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpellGroup_t::SPELLGROUP_CRIPPLING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpellGroup_t::SPELLGROUP_FOCUS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpellGroup_t::SPELLGROUP_ULTIMATESTRIKES"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: SpellType_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpellType_t::SPELL_UNDEFINED"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpellType_t::SPELL_INSTANT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpellType_t::SPELL_RUNE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: AccountType_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "AccountType_t::ACCOUNT_TYPE_NORMAL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "AccountType_t::ACCOUNT_TYPE_TUTOR"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "AccountType_t::ACCOUNT_TYPE_SENIORTUTOR"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "AccountType_t::ACCOUNT_TYPE_GAMEMASTER"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "AccountType_t::ACCOUNT_TYPE_COMMUNITYMANAGER"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "AccountType_t::ACCOUNT_TYPE_GOD"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: RaceType_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RaceType_t::RACE_NONE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RaceType_t::RACE_VENOM"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RaceType_t::RACE_BLOOD"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RaceType_t::RACE_UNDEAD"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RaceType_t::RACE_FIRE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RaceType_t::RACE_ENERGY"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "RaceType_t::RACE_INK"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: CombatType_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatType_t::COMBAT_NONE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatType_t::COMBAT_PHYSICALDAMAGE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatType_t::COMBAT_ENERGYDAMAGE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatType_t::COMBAT_EARTHDAMAGE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatType_t::COMBAT_FIREDAMAGE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatType_t::COMBAT_UNDEFINEDDAMAGE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatType_t::COMBAT_LIFEDRAIN"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatType_t::COMBAT_MANADRAIN"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatType_t::COMBAT_HEALING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatType_t::COMBAT_DROWNDAMAGE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatType_t::COMBAT_ICEDAMAGE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatType_t::COMBAT_HOLYDAMAGE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatType_t::COMBAT_DEATHDAMAGE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatType_t::COMBAT_COUNT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: CombatParam_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatParam_t::COMBAT_PARAM_TYPE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatParam_t::COMBAT_PARAM_EFFECT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatParam_t::COMBAT_PARAM_DISTANCEEFFECT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatParam_t::COMBAT_PARAM_BLOCKSHIELD"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatParam_t::COMBAT_PARAM_BLOCKARMOR"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatParam_t::COMBAT_PARAM_TARGETCASTERORTOPMOST"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatParam_t::COMBAT_PARAM_CREATEITEM"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatParam_t::COMBAT_PARAM_AGGRESSIVE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatParam_t::COMBAT_PARAM_DISPEL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatParam_t::COMBAT_PARAM_USECHARGES"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: CallBackParam_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CallBackParam_t::CALLBACK_PARAM_LEVELMAGICVALUE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CallBackParam_t::CALLBACK_PARAM_SKILLVALUE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CallBackParam_t::CALLBACK_PARAM_TARGETTILE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CallBackParam_t::CALLBACK_PARAM_TARGETCREATURE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: ConditionParam_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_OWNER"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_TICKS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_HEALTHGAIN"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_HEALTHTICKS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_MANAGAIN"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_MANATICKS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_DELAYED"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SPEED"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_LIGHT_LEVEL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_LIGHT_COLOR"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SOULGAIN"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SOULTICKS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_MINVALUE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_MAXVALUE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_STARTVALUE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_TICKINTERVAL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_FORCEUPDATE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SKILL_MELEE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SKILL_FIST"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SKILL_CLUB"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SKILL_SWORD"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SKILL_AXE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SKILL_DISTANCE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SKILL_SHIELD"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SKILL_FISHING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_STAT_MAXHITPOINTS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_STAT_MAXMANAPOINTS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_STAT_MAGICPOINTS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_STAT_MAXHITPOINTSPERCENT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_STAT_MAXMANAPOINTSPERCENT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_STAT_MAGICPOINTSPERCENT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_PERIODICDAMAGE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SKILL_MELEEPERCENT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SKILL_FISTPERCENT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SKILL_CLUBPERCENT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SKILL_SWORDPERCENT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SKILL_AXEPERCENT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SKILL_DISTANCEPERCENT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SKILL_SHIELDPERCENT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SKILL_FISHINGPERCENT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_BUFF_SPELL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SUBID"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_FIELD"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_DISABLE_DEFENSE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SPECIALSKILL_CRITICALHITCHANCE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SPECIALSKILL_CRITICALHITAMOUNT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SPECIALSKILL_LIFELEECHCHANCE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SPECIALSKILL_LIFELEECHAMOUNT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SPECIALSKILL_MANALEECHCHANCE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_SPECIALSKILL_MANALEECHAMOUNT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_AGGRESSIVE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_DRUNKENNESS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionParam_t::CONDITION_PARAM_MANASHIELD_BREAKABLE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: BlockType_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "BlockType_t::BLOCK_NONE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "BlockType_t::BLOCK_DEFENSE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "BlockType_t::BLOCK_ARMOR"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "BlockType_t::BLOCK_IMMUNITY"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: skills_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "skills_t::SKILL_FIST"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "skills_t::SKILL_CLUB"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "skills_t::SKILL_SWORD"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "skills_t::SKILL_AXE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "skills_t::SKILL_DISTANCE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "skills_t::SKILL_SHIELD"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "skills_t::SKILL_FISHING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "skills_t::SKILL_MAGLEVEL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "skills_t::SKILL_LEVEL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "skills_t::SKILL_FIRST"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "skills_t::SKILL_LAST"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: stats_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "stats_t::STAT_MAXHITPOINTS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "stats_t::STAT_MAXMANAPOINTS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "stats_t::STAT_SOULPOINTS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "stats_t::STAT_MAGICPOINTS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "stats_t::STAT_FIRST"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "stats_t::STAT_LAST"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: SpecialSkills_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpecialSkills_t::SPECIALSKILL_CRITICALHITCHANCE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpecialSkills_t::SPECIALSKILL_CRITICALHITAMOUNT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpecialSkills_t::SPECIALSKILL_LIFELEECHCHANCE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpecialSkills_t::SPECIALSKILL_LIFELEECHAMOUNT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpecialSkills_t::SPECIALSKILL_MANALEECHCHANCE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpecialSkills_t::SPECIALSKILL_MANALEECHAMOUNT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpecialSkills_t::SPECIALSKILL_FIRST"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpecialSkills_t::SPECIALSKILL_LAST"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: formulaType_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "formulaType_t::COMBAT_FORMULA_UNDEFINED"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "formulaType_t::COMBAT_FORMULA_LEVELMAGIC"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "formulaType_t::COMBAT_FORMULA_SKILL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "formulaType_t::COMBAT_FORMULA_DAMAGE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: ConditionType_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_NONE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_POISON"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_FIRE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_ENERGY"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_BLEEDING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_HASTE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_PARALYZE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_OUTFIT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_INVISIBLE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_LIGHT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_MANASHIELD"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_INFIGHT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_DRUNK"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_EXHAUST_WEAPON"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_REGENERATION"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_SOUL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_DROWN"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_MUTED"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_CHANNELMUTEDTICKS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_YELLTICKS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_ATTRIBUTES"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_FREEZING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_DAZZLED"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_CURSED"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_EXHAUST_COMBAT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_EXHAUST_HEAL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_PACIFIED"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_SPELLCOOLDOWN"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_SPELLGROUPCOOLDOWN"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_ROOT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionType_t::CONDITION_MANASHIELD_BREAKABLE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: ConditionId_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionId_t::CONDITIONID_DEFAULT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionId_t::CONDITIONID_COMBAT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionId_t::CONDITIONID_HEAD"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionId_t::CONDITIONID_NECKLACE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionId_t::CONDITIONID_BACKPACK"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionId_t::CONDITIONID_ARMOR"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionId_t::CONDITIONID_RIGHT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionId_t::CONDITIONID_LEFT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionId_t::CONDITIONID_LEGS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionId_t::CONDITIONID_FEET"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionId_t::CONDITIONID_RING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ConditionId_t::CONDITIONID_AMMO"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: PlayerSex_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "PlayerSex_t::PLAYERSEX_FEMALE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "PlayerSex_t::PLAYERSEX_MALE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "PlayerSex_t::PLAYERSEX_LAST"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: ReturnValue
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_NOERROR"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_NOTPOSSIBLE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_NOTENOUGHROOM"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_PLAYERISPZLOCKED"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_PLAYERISNOTINVITED"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_CANNOTTHROW"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_THEREISNOWAY"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_DESTINATIONOUTOFREACH"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_CREATUREBLOCK"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_NOTMOVEABLE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_DROPTWOHANDEDITEM"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_BOTHHANDSNEEDTOBEFREE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_CANONLYUSEONEWEAPON"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_NEEDEXCHANGE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_CANNOTBEDRESSED"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_PUTTHISOBJECTINYOURHAND"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_PUTTHISOBJECTINBOTHHANDS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_TOOFARAWAY"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_FIRSTGODOWNSTAIRS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_FIRSTGOUPSTAIRS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_CONTAINERNOTENOUGHROOM"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_NOTENOUGHCAPACITY"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_CANNOTPICKUP"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_THISISIMPOSSIBLE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_DEPOTISFULL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_CREATUREDOESNOTEXIST"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_CANNOTUSETHISOBJECT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_PLAYERWITHTHISNAMEISNOTONLINE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_NOTREQUIREDLEVELTOUSERUNE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_YOUAREALREADYTRADING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_THISPLAYERISALREADYTRADING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_YOUMAYNOTLOGOUTDURINGAFIGHT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_DIRECTPLAYERSHOOT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_NOTENOUGHLEVEL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_NOTENOUGHMAGICLEVEL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_NOTENOUGHMANA"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_NOTENOUGHSOUL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_YOUAREEXHAUSTED"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_YOUCANNOTUSEOBJECTSTHATFAST"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_PLAYERISNOTREACHABLE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_CANONLYUSETHISRUNEONCREATURES"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_YOUMAYNOTATTACKAPERSONINPROTECTIONZONE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_YOUMAYNOTATTACKAPERSONWHILEINPROTECTIONZONE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_YOUCANONLYUSEITONCREATURES"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_CREATUREISNOTREACHABLE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_TURNSECUREMODETOATTACKUNMARKEDPLAYERS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_YOUNEEDPREMIUMACCOUNT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_YOUNEEDTOLEARNTHISSPELL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_YOURVOCATIONCANNOTUSETHISSPELL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_YOUNEEDAWEAPONTOUSETHISSPELL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_PLAYERISPZLOCKEDLEAVEPVPZONE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_PLAYERISPZLOCKEDENTERPVPZONE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_YOUCANNOTLOGOUTHERE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_YOUNEEDAMAGICITEMTOCASTSPELL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_NAMEISTOOAMBIGUOUS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_CANONLYUSEONESHIELD"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_NOPARTYMEMBERSINRANGE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_YOUARENOTTHEOWNER"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_TRADEPLAYERFARAWAY"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_YOUDONTOWNTHISHOUSE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_TRADEPLAYERALREADYOWNSAHOUSE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_TRADEPLAYERHIGHESTBIDDER"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_YOUCANNOTTRADETHISHOUSE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_YOUDONTHAVEREQUIREDPROFESSION"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_CANNOTMOVEITEMISNOTSTOREITEM"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_ITEMCANNOTBEMOVEDTHERE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_YOUCANNOTUSETHISBED"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ReturnValue::RETURNVALUE_QUIVERAMMOONLY"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: SpeechBubble_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpeechBubble_t::SPEECHBUBBLE_NONE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpeechBubble_t::SPEECHBUBBLE_NORMAL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpeechBubble_t::SPEECHBUBBLE_TRADE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpeechBubble_t::SPEECHBUBBLE_QUEST"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpeechBubble_t::SPEECHBUBBLE_COMPASS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpeechBubble_t::SPEECHBUBBLE_NORMAL2"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpeechBubble_t::SPEECHBUBBLE_NORMAL3"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpeechBubble_t::SPEECHBUBBLE_HIRELING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "SpeechBubble_t::SPEECHBUBBLE_LAST"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: MapMark_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MapMark_t::MAPMARK_TICK"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MapMark_t::MAPMARK_QUESTION"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MapMark_t::MAPMARK_EXCLAMATION"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MapMark_t::MAPMARK_STAR"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MapMark_t::MAPMARK_CROSS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MapMark_t::MAPMARK_TEMPLE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MapMark_t::MAPMARK_KISS"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MapMark_t::MAPMARK_SHOVEL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MapMark_t::MAPMARK_SWORD"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MapMark_t::MAPMARK_FLAG"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MapMark_t::MAPMARK_LOCK"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MapMark_t::MAPMARK_BAG"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MapMark_t::MAPMARK_SKULL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MapMark_t::MAPMARK_DOLLAR"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MapMark_t::MAPMARK_REDNORTH"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MapMark_t::MAPMARK_REDSOUTH"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MapMark_t::MAPMARK_REDEAST"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MapMark_t::MAPMARK_REDWEST"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MapMark_t::MAPMARK_GREENNORTH"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MapMark_t::MAPMARK_GREENSOUTH"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: Outfit_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: LightInfo
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: ShopInfo
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ShopInfo::ShopInfo"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: MarketOffer
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: MarketOfferEx
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MarketOfferEx::MarketOfferEx"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: HistoryMarketOffer
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: MarketStatistics
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: ModalWindow
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: CombatOrigin
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatOrigin::ORIGIN_NONE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatOrigin::ORIGIN_CONDITION"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatOrigin::ORIGIN_SPELL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatOrigin::ORIGIN_MELEE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatOrigin::ORIGIN_RANGED"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatOrigin::ORIGIN_WAND"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatOrigin::ORIGIN_REFLECT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: CombatDamage
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatDamage::type"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "CombatDamage::value"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: MonstersEvent_t
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MonstersEvent_t::MONSTERS_EVENT_NONE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MonstersEvent_t::MONSTERS_EVENT_THINK"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MonstersEvent_t::MONSTERS_EVENT_APPEAR"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MonstersEvent_t::MONSTERS_EVENT_DISAPPEAR"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MonstersEvent_t::MONSTERS_EVENT_MOVE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "MonstersEvent_t::MONSTERS_EVENT_SAY"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: Reflect
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "Reflect::Reflect"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "Reflect::Reflect"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: ClientDamageType
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ClientDamageType::CLIENT_DAMAGETYPE_PHYSICAL"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ClientDamageType::CLIENT_DAMAGETYPE_FIRE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ClientDamageType::CLIENT_DAMAGETYPE_EARTH"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ClientDamageType::CLIENT_DAMAGETYPE_ENERGY"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ClientDamageType::CLIENT_DAMAGETYPE_ICE"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ClientDamageType::CLIENT_DAMAGETYPE_HOLY"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ClientDamageType::CLIENT_DAMAGETYPE_DEATH"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ClientDamageType::CLIENT_DAMAGETYPE_HEALING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ClientDamageType::CLIENT_DAMAGETYPE_DROWN"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ClientDamageType::CLIENT_DAMAGETYPE_LIFEDRAIN"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "ClientDamageType::CLIENT_DAMAGETYPE_UNDEFINED"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: DamageAnalyzerImpactType
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "DamageAnalyzerImpactType::HEALING"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "DamageAnalyzerImpactType::DEALT"
+    edges: []
+  - file: "src/enums.h"
+    qualified_name: "DamageAnalyzerImpactType::RECEIVED"
+    edges: []

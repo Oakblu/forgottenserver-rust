@@ -1,0 +1,25 @@
+nodes:
+  - file: "src/http/session.cpp"
+    qualified_name: "tfs::http::Session::Session"
+    edges: []
+  - file: "src/http/session.cpp"
+    qualified_name: "tfs::http::Session::read"
+    edges: []
+  - file: "src/http/session.cpp"
+    qualified_name: "tfs::http::Session::write"
+    edges: []
+  - file: "src/http/session.cpp"
+    qualified_name: "tfs::http::Session::close"
+    edges: []
+  - file: "src/http/session.cpp"
+    qualified_name: "tfs::http::Session::run"
+    edges: []
+  - file: "src/http/session.cpp"
+    qualified_name: "tfs::http::Session::on_read"
+    edges: []
+  - file: "src/http/session.cpp"
+    qualified_name: "tfs::http::Session::on_write"
+    edges: []
+  - file: "src/http/session.cpp"
+    qualified_name: "tfs::http::make_session"
+    edges: []

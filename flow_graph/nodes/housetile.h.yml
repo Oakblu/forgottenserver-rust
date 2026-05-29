@@ -1,0 +1,4 @@
+nodes:
+  - file: "src/housetile.h"
+    qualified_name: FS_HOUSETILE_H
+    edges: []

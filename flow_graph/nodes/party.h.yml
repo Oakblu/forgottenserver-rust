@@ -1,0 +1,157 @@
+nodes:
+  - file: "src/party.h"
+    qualified_name: Party
+    edges: []
+  - file: "src/party.h"
+    qualified_name: EXPERIENCE_SHARE_FLOORS
+    edges: []
+  - file: "src/party.h"
+    qualified_name: EXPERIENCE_SHARE_RANGE
+    edges: []
+  - file: "src/party.h"
+    qualified_name: SharedExpStatus_t
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "SharedExpStatus_t::SHAREDEXP_EMPTYPARTY"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "SharedExpStatus_t::SHAREDEXP_LEVELDIFFTOOLARGE"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "SharedExpStatus_t::SHAREDEXP_MEMBERINACTIVE"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "SharedExpStatus_t::SHAREDEXP_OK"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "SharedExpStatus_t::SHAREDEXP_TOOFARAWAY"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::inviteList"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::leader"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::memberList"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::sharedExpActive"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::sharedExpEnabled"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::ticksMap"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::empty"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::getInvitationCount"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::getInvitees"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::getLeader"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::getMemberCount"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::getMembers"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::isSharedExperienceActive"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::isSharedExperienceEnabled"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: PlayerVector
+    edges: []
+  - file: "src/party.h"
+    qualified_name: FS_PARTY_H
+    edges: []
+  - file: "src/party.h"
+    qualified_name: SharedExpStatus_t
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "SharedExpStatus_t::SHAREDEXP_OK"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "SharedExpStatus_t::SHAREDEXP_TOOFARAWAY"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "SharedExpStatus_t::SHAREDEXP_LEVELDIFFTOOLARGE"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "SharedExpStatus_t::SHAREDEXP_MEMBERINACTIVE"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "SharedExpStatus_t::SHAREDEXP_EMPTYPARTY"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: Party
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::Party"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::disband"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::invitePlayer"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::joinParty"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::revokeInvitation"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::passPartyLeadership"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::leaveParty"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::removeInvite"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::isPlayerInvited"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::updateAllPartyIcons"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::broadcastPartyMessage"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::canOpenCorpse"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::shareExperience"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::setSharedExperience"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::canUseSharedExperience"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::getMemberSharedExperienceStatus"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::updateSharedExperience"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::updatePlayerTicks"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::clearPlayerPoints"
+    edges: []
+  - file: "src/party.h"
+    qualified_name: "Party::getSharedExperienceStatus"
+    edges: []

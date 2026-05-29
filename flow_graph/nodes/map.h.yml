@@ -1,0 +1,103 @@
+nodes:
+  - file: "src/map.h"
+    qualified_name: FS_MAP_H
+    edges: []
+  - file: "src/map.h"
+    qualified_name: AStarNode
+    edges: []
+  - file: "src/map.h"
+    qualified_name: AStarNodes
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "AStarNodes::AStarNodes"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "AStarNodes::createNode"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "AStarNodes::getBestNode"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "AStarNodes::getNodeByPosition"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "AStarNodes::getMapWalkCost"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "AStarNodes::getTileWalkCost"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: Floor
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "Floor::Floor"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "Floor::Floor"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "Floor::Floor"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: QTreeNode
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "QTreeNode::QTreeNode"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "QTreeNode::QTreeNode"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "QTreeNode::QTreeNode"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "QTreeNode::getLeaf"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "QTreeNode::nullptr"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "QTreeNode::while"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "QTreeNode::createLeaf"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: Map
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "Map::clean"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "Map::loadMap"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "Map::save"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "Map::getTile"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "Map::setTile"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "Map::removeTile"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "Map::moveCreature"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "Map::clearSpectatorCache"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "Map::clearPlayersSpectatorCache"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "Map::isTileClear"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "Map::checkSightLine"
+    edges: []
+  - file: "src/map.h"
+    qualified_name: "Map::canWalkTo"
+    edges: []

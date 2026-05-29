@@ -1,0 +1,64 @@
+nodes:
+  - file: "src/matrixarea.h"
+    qualified_name: MatrixArea
+    edges: []
+  - file: "src/matrixarea.h"
+    qualified_name: "MatrixArea::Center"
+    edges: []
+  - file: "src/matrixarea.h"
+    qualified_name: "MatrixArea::Container"
+    edges: []
+  - file: "src/matrixarea.h"
+    qualified_name: "MatrixArea::MatrixArea()"
+    edges: []
+  - file: "src/matrixarea.h"
+    qualified_name: "MatrixArea::MatrixArea(uint32_t,uint32_t)"
+    edges: []
+  - file: "src/matrixarea.h"
+    qualified_name: "MatrixArea::operator()(uint32_t,uint32_t) const"
+    edges: []
+  - file: "src/matrixarea.h"
+    qualified_name: "MatrixArea::operator()(uint32_t,uint32_t)"
+    edges: []
+  - file: "src/matrixarea.h"
+    qualified_name: "MatrixArea::setCenter"
+    edges: []
+  - file: "src/matrixarea.h"
+    qualified_name: "MatrixArea::getCenter"
+    edges: []
+  - file: "src/matrixarea.h"
+    qualified_name: "MatrixArea::getRows"
+    edges: []
+  - file: "src/matrixarea.h"
+    qualified_name: "MatrixArea::getCols"
+    edges: []
+  - file: "src/matrixarea.h"
+    qualified_name: "MatrixArea::rotate90"
+    edges: []
+  - file: "src/matrixarea.h"
+    qualified_name: "MatrixArea::rotate180"
+    edges: []
+  - file: "src/matrixarea.h"
+    qualified_name: "MatrixArea::rotate270"
+    edges: []
+  - file: "src/matrixarea.h"
+    qualified_name: "MatrixArea::operator bool"
+    edges: []
+  - file: "src/matrixarea.h"
+    qualified_name: "MatrixArea::MatrixArea(Center,uint32_t,uint32_t,Container&&)"
+    edges: []
+  - file: "src/matrixarea.h"
+    qualified_name: "MatrixArea::arr"
+    edges: []
+  - file: "src/matrixarea.h"
+    qualified_name: "MatrixArea::center"
+    edges: []
+  - file: "src/matrixarea.h"
+    qualified_name: "MatrixArea::cols"
+    edges: []
+  - file: "src/matrixarea.h"
+    qualified_name: "MatrixArea::rows"
+    edges: []
+  - file: "src/matrixarea.h"
+    qualified_name: createArea
+    edges: []

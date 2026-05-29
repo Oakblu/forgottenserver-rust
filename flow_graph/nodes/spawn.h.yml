@@ -1,0 +1,70 @@
+nodes:
+  - file: "src/spawn.h"
+    qualified_name: FS_SPAWN_H
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: spawnBlock_t
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: Spawn
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: "Spawn::Spawn"
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: "Spawn::Spawn"
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: "Spawn::Spawn"
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: "Spawn::addBlock"
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: "Spawn::addMonster"
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: "Spawn::removeMonster"
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: "Spawn::startup"
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: "Spawn::startSpawnCheck"
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: "Spawn::stopEvent"
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: "Spawn::isInSpawnZone"
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: "Spawn::cleanup"
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: "Spawn::findPlayer"
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: "Spawn::spawnMonster"
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: "Spawn::spawnMonster"
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: "Spawn::checkSpawn"
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: Spawns
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: "Spawns::isInZone"
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: "Spawns::loadFromXml"
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: "Spawns::startup"
+    edges: []
+  - file: "src/spawn.h"
+    qualified_name: "Spawns::clear"
+    edges: []

@@ -1,0 +1,70 @@
+nodes:
+  - file: "src/protocol.cpp"
+    qualified_name: "(anonymous)::XTEA_encrypt"
+    edges: []
+  - file: "src/protocol.cpp"
+    qualified_name: "(anonymous)::XTEA_decrypt"
+    edges: []
+  - file: "src/protocol.cpp"
+    qualified_name: "Protocol::~Protocol"
+    edges: []
+  - file: "src/protocol.cpp"
+    qualified_name: "Protocol::onSendMessage"
+    edges:
+      - target:
+          file: "src/protocol.cpp"
+          qualified_name: "Protocol::onSendMessage"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocol.cpp"
+    qualified_name: "Protocol::onRecvMessage"
+    edges:
+      - target:
+          file: "src/protocol.cpp"
+          qualified_name: "Protocol::onRecvMessage"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocol.cpp"
+    qualified_name: "Protocol::getOutputBuffer"
+    edges:
+      - target:
+          file: "src/outputmessage.cpp"
+          qualified_name: "tfs::net::make_output_message"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/protocol.cpp"
+          qualified_name: "Protocol::getOutputBuffer"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/protocol.cpp"
+    qualified_name: "Protocol::RSA_decrypt"
+    edges:
+      - target:
+          file: "src/protocol.cpp"
+          qualified_name: "Protocol::RSA_decrypt"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocol.cpp"
+    qualified_name: "Protocol::deflateMessage"
+    edges:
+      - target:
+          file: "src/protocol.cpp"
+          qualified_name: "Protocol::deflateMessage"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocol.cpp"
+    qualified_name: "Protocol::getIP"
+    edges:
+      - target:
+          file: "src/protocol.cpp"
+          qualified_name: "Protocol::getIP"
+        kind: static
+        confidence: static
+        order: 1

@@ -1,0 +1,46 @@
+nodes:
+  - file: "src/outputmessage.h"
+    qualified_name: OutputMessage
+    edges: []
+  - file: "src/outputmessage.h"
+    qualified_name: "OutputMessage::OutputMessage"
+    edges: []
+  - file: "src/outputmessage.h"
+    qualified_name: "OutputMessage::OutputMessage(const OutputMessage&)"
+    edges: []
+  - file: "src/outputmessage.h"
+    qualified_name: "OutputMessage::operator="
+    edges: []
+  - file: "src/outputmessage.h"
+    qualified_name: "OutputMessage::getOutputBuffer"
+    edges: []
+  - file: "src/outputmessage.h"
+    qualified_name: "OutputMessage::writeMessageLength"
+    edges: []
+  - file: "src/outputmessage.h"
+    qualified_name: "OutputMessage::addCryptoHeader"
+    edges: []
+  - file: "src/outputmessage.h"
+    qualified_name: "OutputMessage::append(const NetworkMessage&)"
+    edges: []
+  - file: "src/outputmessage.h"
+    qualified_name: "OutputMessage::append(const OutputMessage_ptr&)"
+    edges: []
+  - file: "src/outputmessage.h"
+    qualified_name: "OutputMessage::setSequenceId"
+    edges: []
+  - file: "src/outputmessage.h"
+    qualified_name: "OutputMessage::getSequenceId"
+    edges: []
+  - file: "src/outputmessage.h"
+    qualified_name: "OutputMessage::add_header"
+    edges: []
+  - file: "src/outputmessage.h"
+    qualified_name: "OutputMessage::outputBufferStart"
+    edges: []
+  - file: "src/outputmessage.h"
+    qualified_name: "OutputMessage::sequenceId"
+    edges: []
+  - file: "src/outputmessage.h"
+    qualified_name: "tfs::net"
+    edges: []

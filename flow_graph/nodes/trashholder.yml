@@ -1,0 +1,61 @@
+nodes:
+  - file: "src/trashholder.cpp"
+    qualified_name: "TrashHolder::addThing (int32_t, Thing*)"
+    edges: []
+  - file: "src/trashholder.cpp"
+    qualified_name: "TrashHolder::postAddNotification"
+    edges: []
+  - file: "src/trashholder.cpp"
+    qualified_name: "TrashHolder::postRemoveNotification"
+    edges: []
+  - file: "src/trashholder.cpp"
+    qualified_name: "TrashHolder::queryMaxCount"
+    edges: []
+  - file: "src/trashholder.cpp"
+    qualified_name: "TrashHolder::queryMaxCount"
+    edges:
+      - target:
+          file: "src/trashholder.cpp"
+          qualified_name: "TrashHolder::queryMaxCount"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/trashholder.cpp"
+    qualified_name: "TrashHolder::addThing"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMagicEffect"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalRemoveItem"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/trashholder.cpp"
+          qualified_name: "TrashHolder::addThing"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/trashholder.cpp"
+    qualified_name: "TrashHolder::postAddNotification"
+    edges:
+      - target:
+          file: "src/trashholder.cpp"
+          qualified_name: "TrashHolder::postAddNotification"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/trashholder.cpp"
+    qualified_name: "TrashHolder::postRemoveNotification"
+    edges:
+      - target:
+          file: "src/trashholder.cpp"
+          qualified_name: "TrashHolder::postRemoveNotification"
+        kind: static
+        confidence: static
+        order: 1

@@ -1,0 +1,1318 @@
+nodes:
+  - file: "src/condition.cpp"
+    qualified_name: "Condition::setParam"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::setParam"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "Condition::getParam"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::getParam"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "Condition::unserialize"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::unserialize"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "Condition::unserializeProp"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::unserializeProp"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "Condition::serialize"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::serialize"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "Condition::setTicks"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::setTicks"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "Condition::executeCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::executeCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "Condition::createCondition"
+    edges: []
+  - file: "src/condition.cpp"
+    qualified_name: "Condition::createCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::createCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "Condition::startCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::startCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "Condition::isPersistent"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::isPersistent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "Condition::getIcons"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::getIcons"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "Condition::updateCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::updateCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionGeneric::startCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::startCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionGeneric::startCondition"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionGeneric::executeCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::executeCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionGeneric::executeCondition"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionGeneric::endCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionGeneric::endCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionGeneric::addCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionGeneric::addCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionGeneric::getIcons"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::getIcons"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionGeneric::getIcons"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionAttributes::addCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionAttributes::addCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionAttributes::unserializeProp"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::unserializeProp"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionAttributes::unserializeProp"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionAttributes::serialize"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::serialize"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionAttributes::serialize"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionAttributes::startCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::startCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionAttributes::startCondition"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionAttributes::updatePercentStats"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionAttributes::updatePercentStats"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionAttributes::updateStats"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionAttributes::updateStats"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionAttributes::updatePercentSkills"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionAttributes::updatePercentSkills"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionAttributes::updateSkills"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionAttributes::updateSkills"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionAttributes::executeCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionAttributes::executeCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionGeneric::executeCondition"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionAttributes::endCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionAttributes::endCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionAttributes::setParam"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionAttributes::setParam"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionAttributes::getParam"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionAttributes::getParam"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionRegeneration::addCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionRegeneration::addCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionRegeneration::unserializeProp"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::unserializeProp"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionRegeneration::unserializeProp"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionRegeneration::serialize"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::serialize"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionRegeneration::serialize"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionRegeneration::executeCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionGeneric::executeCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionRegeneration::executeCondition"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionRegeneration::setParam"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionRegeneration::setParam"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionRegeneration::getParam"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionRegeneration::getParam"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionSoul::addCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionSoul::addCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionSoul::unserializeProp"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::unserializeProp"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionSoul::unserializeProp"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionSoul::serialize"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::serialize"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionSoul::serialize"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionSoul::executeCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionGeneric::executeCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionSoul::executeCondition"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionSoul::setParam"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionSoul::setParam"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionSoul::getParam"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionSoul::getParam"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDamage::setParam"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::setParam"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDamage::setParam"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDamage::getParam"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::getParam"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDamage::getParam"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDamage::unserializeProp"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::unserializeProp"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDamage::unserializeProp"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDamage::serialize"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::serialize"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDamage::serialize"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDamage::updateCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDamage::updateCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDamage::addDamage"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDamage::addDamage"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDamage::init"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDamage::generateDamageList"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDamage::init"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDamage::startCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::startCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDamage::startCondition"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDamage::executeCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::executeCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDamage::executeCondition"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDamage::getNextDamage"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDamage::getNextDamage"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDamage::doDamage"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::ConditionToDamageType"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::canDoCombat"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDamage::doDamage"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMagicEffect"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::combatBlockHit"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::combatChangeHealth"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getCreatureByID"
+        kind: static
+        confidence: static
+        order: 7
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDamage::endCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDamage::endCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDamage::addCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDamage::addCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDamage::getTotalDamage"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDamage::getTotalDamage"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDamage::getIcons"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::getIcons"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDamage::getIcons"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDamage::generateDamageList"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDamage::generateDamageList"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionSpeed::setFormulaVars"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionSpeed::setFormulaVars"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionSpeed::setParam"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::setParam"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionSpeed::setParam"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionSpeed::getParam"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::getParam"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionSpeed::getParam"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionSpeed::unserializeProp"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::unserializeProp"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionSpeed::unserializeProp"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionSpeed::serialize"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::serialize"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionSpeed::serialize"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionSpeed::startCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::startCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionSpeed::startCondition"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::changeSpeed"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionSpeed::executeCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::executeCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionSpeed::executeCondition"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionSpeed::endCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionSpeed::endCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::changeSpeed"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionSpeed::addCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionSpeed::addCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::changeSpeed"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionSpeed::getIcons"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::getIcons"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionSpeed::getIcons"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionInvisible::startCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::startCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionInvisible::startCondition"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalCreatureChangeVisible"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionInvisible::endCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionInvisible::endCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalCreatureChangeVisible"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionOutfit::setOutfit"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionOutfit::setOutfit"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionOutfit::unserializeProp"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::unserializeProp"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionOutfit::unserializeProp"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionOutfit::serialize"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::serialize"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionOutfit::serialize"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionOutfit::startCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::startCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionOutfit::startCondition"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalCreatureChangeOutfit"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionOutfit::executeCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::executeCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionOutfit::executeCondition"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionOutfit::endCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionOutfit::endCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalCreatureChangeOutfit"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionOutfit::addCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionOutfit::addCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalCreatureChangeOutfit"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionLight::startCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::startCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionLight::startCondition"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::changeLight"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionLight::executeCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::executeCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionLight::executeCondition"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::changeLight"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionLight::endCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionLight::endCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::changeLight"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionLight::addCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionLight::addCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::changeLight"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionLight::setParam"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::setParam"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionLight::setParam"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionLight::getParam"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::getParam"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionLight::getParam"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionLight::unserializeProp"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::unserializeProp"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionLight::unserializeProp"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionLight::serialize"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::serialize"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionLight::serialize"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionSpellCooldown::addCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionSpellCooldown::addCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionSpellCooldown::startCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::startCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionSpellCooldown::startCondition"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionSpellGroupCooldown::addCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionSpellGroupCooldown::addCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionSpellGroupCooldown::startCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::startCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionSpellGroupCooldown::startCondition"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDrunk::startCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::startCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDrunk::startCondition"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDrunk::updateCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDrunk::updateCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDrunk::addCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDrunk::addCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDrunk::endCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDrunk::endCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDrunk::getIcons"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDrunk::getIcons"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionDrunk::setParam"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::setParam"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionDrunk::setParam"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionManaShield::startCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::startCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionManaShield::startCondition"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionManaShield::endCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionManaShield::endCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionManaShield::addCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionManaShield::addCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionManaShield::unserializeProp"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::unserializeProp"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionManaShield::unserializeProp"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionManaShield::onDamageTaken"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionManaShield::onDamageTaken"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionManaShield::serialize"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::serialize"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionManaShield::serialize"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionManaShield::setParam"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::setParam"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionManaShield::setParam"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/condition.cpp"
+    qualified_name: "ConditionManaShield::getIcons"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::getIcons"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "ConditionManaShield::getIcons"
+        kind: static
+        confidence: static
+        order: 2

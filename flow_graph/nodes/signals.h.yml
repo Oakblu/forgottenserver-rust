@@ -1,0 +1,13 @@
+nodes:
+  - file: "src/signals.h"
+    qualified_name: FS_SIGNALS_H
+    edges: []
+  - file: "src/signals.h"
+    qualified_name: Signals
+    edges: []
+  - file: "src/signals.h"
+    qualified_name: "Signals::Signals"
+    edges: []
+  - file: "src/signals.h"
+    qualified_name: "Signals::asyncWait"
+    edges: []

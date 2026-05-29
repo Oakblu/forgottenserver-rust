@@ -1,0 +1,694 @@
+nodes:
+  - file: "src/iologindata.cpp"
+    qualified_name: "g_game (iologindata)"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::getAccountIdByPlayerName"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::getAccountIdByPlayerName"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.account_id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::getAccountIdByPlayerId"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::getAccountIdByPlayerId"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::getAccountType"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::getAccountType"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iologindata.cpp"
+    qualified_name: "accounts.id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "accounts.type"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::setAccountType"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::setAccountType"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::updateOnlineStatus"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::updateOnlineStatus"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iologindata.cpp"
+    qualified_name: "players_online.player_id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::preloadPlayer"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::preloadPlayer"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iologindata.cpp"
+    qualified_name: "accounts.premium_ends_at"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.deletion"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.group_id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::loadPlayerById"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::loadPlayerById"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.balance"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.blessings"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.cap"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.conditions"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.currentmount"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.direction"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.experience"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.health"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.healthmax"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.lastip"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.lastlogin"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.lastlogout"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.level"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.lookaddons"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.lookbody"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.lookfeet"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.lookhead"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.looklegs"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.lookmount"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.lookmountbody"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.lookmountfeet"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.lookmounthead"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.lookmountlegs"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.looktype"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.maglevel"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.mana"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.manamax"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.manaspent"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.offlinetraining_skill"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.offlinetraining_time"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.posx"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.posy"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.posz"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.randomizemount"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.sex"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.skill_axe"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.skill_axe_tries"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.skill_club"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.skill_club_tries"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.skill_dist"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.skill_dist_tries"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.skill_fishing"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.skill_fishing_tries"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.skill_fist"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.skill_fist_tries"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.skill_shielding"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.skill_shielding_tries"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.skill_sword"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.skill_sword_tries"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.skull"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.skulltime"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.soul"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.stamina"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.town_id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.vocation"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::loadPlayerByName"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::loadPlayerByName"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iologindata.cpp"
+    qualified_name: getWarList
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/iologindata.cpp"
+    qualified_name: "guild_wars.guild1"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "guild_wars.guild2"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "guild_wars.ended"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "guild_wars.status"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::loadPlayer"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::createCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addGuild"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getGuild"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/guild.cpp"
+          qualified_name: "IOGuild::loadGuild"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::loadPlayer"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::getBasisPointLevel"
+        kind: static
+        confidence: static
+        order: 7
+  - file: "src/iologindata.cpp"
+    qualified_name: "guild_membership.guild_id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "guild_membership.nick"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "guild_membership.player_id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "guild_membership.rank_id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "guild_ranks.id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "guild_ranks.level"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "guild_ranks.name"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "player_spells.player_id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "player_items.attributes"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "player_items.count"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "player_items.itemtype"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "player_items.pid"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "player_items.sid"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "player_depotitems.player_id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "player_inboxitems.player_id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "player_storeinboxitems.player_id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "player_storage.key"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "player_storage.player_id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "player_storage.value"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "account_viplist.account_id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "account_viplist.player_id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "player_outfits.addons"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "player_outfits.outfit_id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "player_outfits.player_id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "player_mounts.mount_id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "player_mounts.player_id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::saveItems"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::saveItems"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::savePlayer"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::savePlayer"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.save"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.onlinetime"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "player_spells.name"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "player_items.player_id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::getNameByGuid"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::getNameByGuid"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.name"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::getGuidByName"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::getGuidByName"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iologindata.cpp"
+    qualified_name: "players.id"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::getGuidByNameEx"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::getGuidByNameEx"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::formatPlayerName"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::formatPlayerName"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::loadItems"
+    edges:
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::loadItems"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::CreateItem"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::increaseBankBalance"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::increaseBankBalance"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::hasBiddedOnHouse"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::hasBiddedOnHouse"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iologindata.cpp"
+    qualified_name: "houses.highest_bidder"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::getVIPEntries"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::getVIPEntries"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iologindata.cpp"
+    qualified_name: "account_viplist.description"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "account_viplist.icon"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "account_viplist.notify"
+    edges: []
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::addVIPEntry"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::addVIPEntry"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::editVIPEntry"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::editVIPEntry"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::removeVIPEntry"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::removeVIPEntry"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iologindata.cpp"
+    qualified_name: "IOLoginData::updatePremiumTime"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::updatePremiumTime"
+        kind: static
+        confidence: static
+        order: 2

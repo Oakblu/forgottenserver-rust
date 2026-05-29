@@ -1,0 +1,25 @@
+nodes:
+  - file: "src/globalevent.h"
+    qualified_name: FS_GLOBALEVENT_H
+    edges: []
+  - file: "src/globalevent.h"
+    qualified_name: GlobalEvent_t
+    edges: []
+  - file: "src/globalevent.h"
+    qualified_name: "GlobalEvent_t::GLOBALEVENT_NONE"
+    edges: []
+  - file: "src/globalevent.h"
+    qualified_name: "GlobalEvent_t::GLOBALEVENT_TIMER"
+    edges: []
+  - file: "src/globalevent.h"
+    qualified_name: "GlobalEvent_t::GLOBALEVENT_STARTUP"
+    edges: []
+  - file: "src/globalevent.h"
+    qualified_name: "GlobalEvent_t::GLOBALEVENT_SHUTDOWN"
+    edges: []
+  - file: "src/globalevent.h"
+    qualified_name: "GlobalEvent_t::GLOBALEVENT_RECORD"
+    edges: []
+  - file: "src/globalevent.h"
+    qualified_name: "GlobalEvent_t::GLOBALEVENT_SAVE"
+    edges: []

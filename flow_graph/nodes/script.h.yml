@@ -1,0 +1,19 @@
+nodes:
+  - file: "src/script.h"
+    qualified_name: Scripts
+    edges: []
+  - file: "src/script.h"
+    qualified_name: "Scripts::Scripts"
+    edges: []
+  - file: "src/script.h"
+    qualified_name: "Scripts::~Scripts"
+    edges: []
+  - file: "src/script.h"
+    qualified_name: "Scripts::loadScripts"
+    edges: []
+  - file: "src/script.h"
+    qualified_name: "Scripts::getScriptInterface"
+    edges: []
+  - file: "src/script.h"
+    qualified_name: "Scripts::scriptInterface"
+    edges: []

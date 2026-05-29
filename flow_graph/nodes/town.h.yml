@@ -1,0 +1,52 @@
+nodes:
+  - file: "src/town.h"
+    qualified_name: Towns
+    edges: []
+  - file: "src/town.h"
+    qualified_name: "Town::id"
+    edges: []
+  - file: "src/town.h"
+    qualified_name: "Town::name"
+    edges: []
+  - file: "src/town.h"
+    qualified_name: "Town::templePosition"
+    edges: []
+  - file: "src/town.h"
+    qualified_name: "Towns::townMap"
+    edges: []
+  - file: "src/town.h"
+    qualified_name: "Towns::getTown"
+    edges: []
+  - file: "src/town.h"
+    qualified_name: "Towns::getTowns"
+    edges: []
+  - file: "src/town.h"
+    qualified_name: "Towns::setTown"
+    edges: []
+  - file: "src/town.h"
+    qualified_name: Town
+    edges: []
+  - file: "src/town.h"
+    qualified_name: TownMap
+    edges: []
+  - file: "src/town.h"
+    qualified_name: FS_TOWN_H
+    edges: []
+  - file: "src/town.h"
+    qualified_name: Town
+    edges: []
+  - file: "src/town.h"
+    qualified_name: Towns
+    edges: []
+  - file: "src/town.h"
+    qualified_name: "Towns::it"
+    edges: []
+  - file: "src/town.h"
+    qualified_name: "Towns::find"
+    edges: []
+  - file: "src/town.h"
+    qualified_name: "Towns::nullptr"
+    edges: []
+  - file: "src/town.h"
+    qualified_name: "Towns::get"
+    edges: []

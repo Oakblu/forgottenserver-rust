@@ -1,0 +1,46 @@
+nodes:
+  - file: "src/mounts.cpp"
+    qualified_name: "Mounts::reload"
+    edges:
+      - target:
+          file: "src/mounts.cpp"
+          qualified_name: "Mounts::reload"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/mounts.cpp"
+    qualified_name: "Mounts::loadFromXml"
+    edges:
+      - target:
+          file: "src/mounts.cpp"
+          qualified_name: "Mounts::loadFromXml"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/mounts.cpp"
+    qualified_name: "Mounts::getMountByID"
+    edges:
+      - target:
+          file: "src/mounts.cpp"
+          qualified_name: "Mounts::getMountByID"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/mounts.cpp"
+    qualified_name: "Mounts::getMountByName"
+    edges:
+      - target:
+          file: "src/mounts.cpp"
+          qualified_name: "Mounts::getMountByName"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/mounts.cpp"
+    qualified_name: "Mounts::getMountByClientID"
+    edges:
+      - target:
+          file: "src/mounts.cpp"
+          qualified_name: "Mounts::getMountByClientID"
+        kind: static
+        confidence: static
+        order: 1

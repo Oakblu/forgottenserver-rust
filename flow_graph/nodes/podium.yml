@@ -1,0 +1,37 @@
+nodes:
+  - file: "src/podium.cpp"
+    qualified_name: "Podium::readAttr"
+    edges: []
+  - file: "src/podium.cpp"
+    qualified_name: "Podium::serializeAttr"
+    edges: []
+  - file: "src/podium.cpp"
+    qualified_name: "Podium::readAttr"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::updatePodium"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::readAttr"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/podium.cpp"
+          qualified_name: "Podium::readAttr"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/podium.cpp"
+    qualified_name: "Podium::serializeAttr"
+    edges:
+      - target:
+          file: "src/podium.cpp"
+          qualified_name: "Podium::serializeAttr"
+        kind: static
+        confidence: static
+        order: 1

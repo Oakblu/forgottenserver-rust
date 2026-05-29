@@ -1,0 +1,409 @@
+nodes:
+  - file: "src/house.h"
+    qualified_name: AccessList
+    edges: []
+  - file: "src/house.h"
+    qualified_name: Door
+    edges: []
+  - file: "src/house.h"
+    qualified_name: House
+    edges: []
+  - file: "src/house.h"
+    qualified_name: HouseTransferItem
+    edges: []
+  - file: "src/house.h"
+    qualified_name: Houses
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "HouseTransferItem::HouseTransferItem"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Houses::Houses"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Houses::~Houses"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: AccessHouseLevel_t
+    edges: []
+  - file: "src/house.h"
+    qualified_name: AccessList_t
+    edges: []
+  - file: "src/house.h"
+    qualified_name: RentPeriod_t
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessHouseLevel_t::HOUSE_GUEST"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessHouseLevel_t::HOUSE_NOT_INVITED"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessHouseLevel_t::HOUSE_OWNER"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessHouseLevel_t::HOUSE_SUBOWNER"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessList_t::GUEST_LIST"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessList_t::SUBOWNER_LIST"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "RentPeriod_t::RENTPERIOD_DAILY"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "RentPeriod_t::RENTPERIOD_MONTHLY"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "RentPeriod_t::RENTPERIOD_NEVER"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "RentPeriod_t::RENTPERIOD_WEEKLY"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "RentPeriod_t::RENTPERIOD_YEARLY"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessList::allowEveryone"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessList::guildRankList"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessList::list"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessList::playerList"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Door::accessList"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Door::house"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::bedsList"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::doorSet"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::guestList"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::houseName"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::houseTiles"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::id"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::isLoaded"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::owner"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::ownerAccountId"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::ownerName"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::paidUntil"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::posEntry"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::rent"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::rentWarnings"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::subOwnerList"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::townId"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::transferItem"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::transfer_container"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "HouseTransferItem::house"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Houses::houseMap"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Door::getDoor (const)"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Door::getDoor (non-const)"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Door::getDoorId"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Door::getHouse"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Door::serializeAttr"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Door::setDoorId"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::getBedCount"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::getBeds"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::getDoors"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::getEntryPosition"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::getId"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::getName"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::getOwner"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::getOwnerName"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::getPaidUntil"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::getPayRentWarnings"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::getRent"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::getTiles"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::getTownId"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::setEntryPos"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::setName"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::setPaidUntil"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::setPayRentWarnings"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::setRent"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::setTownId"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "HouseTransferItem::canTransform"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Houses::addHouse"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Houses::getHouse"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Houses::getHouses"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: HouseBedItemList
+    edges: []
+  - file: "src/house.h"
+    qualified_name: HouseMap
+    edges: []
+  - file: "src/house.h"
+    qualified_name: HouseTileList
+    edges: []
+  - file: "src/house.h"
+    qualified_name: FS_HOUSE_H
+    edges: []
+  - file: "src/house.h"
+    qualified_name: AccessList
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessList::parseList"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessList::addPlayer"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessList::addGuild"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessList::addGuildRank"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessList::isInList"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessList::getList"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: AccessList_t
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessList_t::GUEST_LIST"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessList_t::SUBOWNER_LIST"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: AccessHouseLevel_t
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessHouseLevel_t::HOUSE_NOT_INVITED"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessHouseLevel_t::HOUSE_GUEST"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessHouseLevel_t::HOUSE_SUBOWNER"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "AccessHouseLevel_t::HOUSE_OWNER"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: House
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::House"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::addTile"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::canEditAccessList"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::setAccessList"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::getAccessList"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::isInvited"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::getHouseAccessLevel"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::kickPlayer"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::setOwner"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::addDoor"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::removeDoor"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::getDoorByNumber"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::getDoorByPosition"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::getTransferItem"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::resetTransferItem"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::executeTransfer"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::addBed"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::transferToDepot"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "House::transferToDepot"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: RentPeriod_t
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "RentPeriod_t::RENTPERIOD_DAILY"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "RentPeriod_t::RENTPERIOD_WEEKLY"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "RentPeriod_t::RENTPERIOD_MONTHLY"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "RentPeriod_t::RENTPERIOD_YEARLY"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "RentPeriod_t::RENTPERIOD_NEVER"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: Houses
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Houses::Houses"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Houses::Houses"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Houses::it"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Houses::find"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Houses::house"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Houses::House"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Houses::house"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Houses::it"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Houses::find"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Houses::nullptr"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Houses::getHouseByPlayerId"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Houses::loadHousesXML"
+    edges: []
+  - file: "src/house.h"
+    qualified_name: "Houses::payHouses"
+    edges: []

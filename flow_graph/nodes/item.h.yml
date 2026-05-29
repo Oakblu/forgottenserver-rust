@@ -1,0 +1,217 @@
+nodes:
+  - file: "src/item.h"
+    qualified_name: ITEMPROPERTY
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "ITEMPROPERTY::CONST_PROP_BLOCKSOLID"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "ITEMPROPERTY::CONST_PROP_HASHEIGHT"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "ITEMPROPERTY::CONST_PROP_BLOCKPROJECTILE"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "ITEMPROPERTY::CONST_PROP_BLOCKPATH"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "ITEMPROPERTY::CONST_PROP_ISVERTICAL"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "ITEMPROPERTY::CONST_PROP_ISHORIZONTAL"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "ITEMPROPERTY::CONST_PROP_MOVEABLE"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "ITEMPROPERTY::CONST_PROP_IMMOVABLEBLOCKSOLID"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "ITEMPROPERTY::CONST_PROP_IMMOVABLEBLOCKPATH"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "ITEMPROPERTY::CONST_PROP_IMMOVABLENOFIELDBLOCKPATH"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "ITEMPROPERTY::CONST_PROP_NOFIELDBLOCKPATH"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "ITEMPROPERTY::CONST_PROP_SUPPORTHANGABLE"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: TradeEvents_t
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "TradeEvents_t::ON_TRADE_TRANSFER"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "TradeEvents_t::ON_TRADE_CANCEL"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: ItemDecayState_t
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "ItemDecayState_t::DECAYING_FALSE"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "ItemDecayState_t::DECAYING_TRUE"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "ItemDecayState_t::DECAYING_PENDING"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: AttrTypes_t
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_TILE_FLAGS"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_ACTION_ID"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_UNIQUE_ID"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_TEXT"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_DESC"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_TELE_DEST"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_ITEM"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_DEPOT_ID"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_RUNE_CHARGES"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_HOUSEDOORID"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_COUNT"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_DURATION"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_DECAYING_STATE"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_WRITTENDATE"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_WRITTENBY"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_SLEEPERGUID"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_SLEEPSTART"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_CHARGES"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_CONTAINER_ITEMS"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_NAME"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_ARTICLE"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_PLURALNAME"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_WEIGHT"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_ATTACK"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_DEFENSE"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_EXTRADEFENSE"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_ARMOR"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_HITCHANCE"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_SHOOTRANGE"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_CUSTOM_ATTRIBUTES"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_DECAYTO"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_WRAPID"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_STOREITEM"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_ATTACK_SPEED"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_OPENCONTAINER"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_PODIUMOUTFIT"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_REFLECT"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "AttrTypes_t::ATTR_BOOST"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: Attr_ReadValue
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "Attr_ReadValue::ATTR_READ_CONTINUE"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "Attr_ReadValue::ATTR_READ_ERROR"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "Attr_ReadValue::ATTR_READ_END"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "Item::getPluralName"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "Item::getArticle"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "Item::setStoreItem"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "Item::canTransform"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "Item::isGroundTile"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "Item::isMagicField"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "Item::isPodium"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "Item::hasWalkStack"
+    edges: []
+  - file: "src/item.h"
+    qualified_name: "Item::isSupply"
+    edges: []

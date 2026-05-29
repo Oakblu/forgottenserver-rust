@@ -1,0 +1,58 @@
+nodes:
+  - file: "src/spells.h"
+    qualified_name: FS_SPELLS_H
+    edges: []
+  - file: "src/spells.h"
+    qualified_name: BaseSpell
+    edges: []
+  - file: "src/spells.h"
+    qualified_name: "BaseSpell::BaseSpell"
+    edges: []
+  - file: "src/spells.h"
+    qualified_name: "BaseSpell::BaseSpell"
+    edges: []
+  - file: "src/spells.h"
+    qualified_name: "BaseSpell::castSpell"
+    edges: []
+  - file: "src/spells.h"
+    qualified_name: "BaseSpell::castSpell"
+    edges: []
+  - file: "src/spells.h"
+    qualified_name: Spell
+    edges: []
+  - file: "src/spells.h"
+    qualified_name: "Spell::Spell"
+    edges: []
+  - file: "src/spells.h"
+    qualified_name: "Spell::configureSpell"
+    edges: []
+  - file: "src/spells.h"
+    qualified_name: "Spell::postCastSpell"
+    edges: []
+  - file: "src/spells.h"
+    qualified_name: "Spell::postCastSpell"
+    edges: []
+  - file: "src/spells.h"
+    qualified_name: "Spell::getManaCost"
+    edges: []
+  - file: "src/spells.h"
+    qualified_name: "Spell::isInstant"
+    edges: []
+  - file: "src/spells.h"
+    qualified_name: "Spell::vocationId"
+    edges: []
+  - file: "src/spells.h"
+    qualified_name: "Spell::getVocationId"
+    edges: []
+  - file: "src/spells.h"
+    qualified_name: "Spell::empty"
+    edges: []
+  - file: "src/spells.h"
+    qualified_name: "Spell::playerSpellCheck"
+    edges: []
+  - file: "src/spells.h"
+    qualified_name: "Spell::playerInstantSpellCheck"
+    edges: []
+  - file: "src/spells.h"
+    qualified_name: "Spell::playerRuneSpellCheck"
+    edges: []

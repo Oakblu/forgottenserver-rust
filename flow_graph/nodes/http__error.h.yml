@@ -1,0 +1,7 @@
+nodes:
+  - file: "src/http/error.h"
+    qualified_name: "tfs::http::detail::ErrorResponseParams"
+    edges: []
+  - file: "src/http/error.h"
+    qualified_name: "tfs::http::make_error_response"
+    edges: []

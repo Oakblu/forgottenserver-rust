@@ -1,0 +1,253 @@
+nodes:
+  - file: "src/monsters.h"
+    qualified_name: FS_MONSTERS_H
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: LootBlock
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: Loot
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "Loot::Loot"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "Loot::Loot"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: summonBlock_t
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: spellBlock_t
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "spellBlock_t::spellBlock_t"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "spellBlock_t::spellBlock_t"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "spellBlock_t::spellBlock_t"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: voiceBlock_t
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: BestiaryInfo
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: MonsterType
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::scriptInterface"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::voiceVector"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::lootItems"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::scripts"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::attackSpells"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::defenseSpells"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::summons"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::skull"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::outfit"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::race"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::light"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::lookcorpse"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::experience"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::manaCost"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::yellChance"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::yellSpeedTicks"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::staticAttackChance"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::maxSummons"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::changeTargetSpeed"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::conditionImmunities"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::damageImmunities"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::baseSpeed"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::creatureAppearEvent"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::creatureDisappearEvent"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::creatureMoveEvent"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::creatureSayEvent"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::thinkEvent"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::targetDistance"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::runAwayHealth"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::health"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::healthMax"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::changeTargetChance"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::defense"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::armor"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::canPushItems"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::canPushCreatures"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::pushable"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::isAttackable"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::isBoss"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::isChallengeable"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::isConvinceable"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::isHostile"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::isIgnoringSpawnBlock"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::isIllusionable"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::isSummonable"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::hiddenHealth"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::canWalkOnEnergy"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::canWalkOnFire"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::canWalkOnPoison"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::eventType"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::MonsterType"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::MonsterType"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::loadCallback"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterType::loadLoot"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: MonsterSpell
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterSpell::MonsterSpell"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "MonsterSpell::MonsterSpell"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: Monsters
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "Monsters::Monsters"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "Monsters::Monsters"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "Monsters::loadFromXml"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "Monsters::reload"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "Monsters::getMonsterType"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "Monsters::deserializeSpell"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "Monsters::getMonsterType"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "Monsters::addBestiaryMonsterType"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "Monsters::isValidBestiaryInfo"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "Monsters::deserializeSpell"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "Monsters::loadMonster"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "Monsters::loadLootContainer"
+    edges: []
+  - file: "src/monsters.h"
+    qualified_name: "Monsters::loadLootItem"
+    edges: []

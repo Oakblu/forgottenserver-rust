@@ -1,0 +1,535 @@
+nodes:
+  - file: "src/house.cpp"
+    qualified_name: "Door::Door"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "House::House"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "House::House"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "anon::getGuildByName"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "AccessList::addGuild"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "AccessList::addGuildRank"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "AccessList::addPlayer"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "AccessList::getList"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "AccessList::isInList"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "AccessList::parseList"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "Door::canUse"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "Door::getAccessList"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "Door::onRemoved"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "Door::readAttr"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "Door::setAccessList"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "Door::setHouse"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "House::addBed"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "House::addDoor"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "House::addTile"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "House::canEditAccessList"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "House::executeTransfer"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "House::getAccessList"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "House::getDoorByNumber"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "House::getDoorByPosition"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "House::getHouseAccessLevel"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "House::getTransferItem"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "House::isInvited"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "House::kickPlayer"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "House::removeDoor"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "House::resetTransferItem"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "House::setAccessList"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "House::setOwner"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "House::transferToDepot (Player*)"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "House::transferToDepot (no args)"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "HouseTransferItem::createHouseTransferItem (static)"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "HouseTransferItem::onTradeEvent"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "Houses::getHouseByPlayerId"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "Houses::loadHousesXML"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "Houses::payHouses"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "House::addTile"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "House::addTile"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "House::setOwner"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "House::setOwner"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::getAccountIdByPlayerName"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::getNameByGuid"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/house.cpp"
+    qualified_name: "House::getHouseAccessLevel"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "House::getHouseAccessLevel"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "House::kickPlayer"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMagicEffect"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalTeleport"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "House::kickPlayer"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/house.cpp"
+    qualified_name: "House::setAccessList"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "House::setAccessList"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "House::transferToDepot"
+    edges: []
+  - file: "src/house.cpp"
+    qualified_name: "House::transferToDepot"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalMoveItem"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "House::transferToDepot"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/house.cpp"
+    qualified_name: "House::getAccessList"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "House::getAccessList"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "House::isInvited"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "House::isInvited"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "House::addDoor"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "House::addDoor"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "House::removeDoor"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "House::removeDoor"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "House::addBed"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "House::addBed"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "House::getDoorByNumber"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "House::getDoorByNumber"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "House::getDoorByPosition"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "House::getDoorByPosition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "House::canEditAccessList"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "House::canEditAccessList"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "House::getTransferItem"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "House::getTransferItem"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "HouseTransferItem::createHouseTransferItem"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/house.cpp"
+    qualified_name: "House::resetTransferItem"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::ReleaseItem"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "House::resetTransferItem"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/house.cpp"
+    qualified_name: "HouseTransferItem::createHouseTransferItem"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "HouseTransferItem::createHouseTransferItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "HouseTransferItem::onTradeEvent"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalRemoveItem"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "HouseTransferItem::onTradeEvent"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/house.cpp"
+    qualified_name: "House::executeTransfer"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "House::executeTransfer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "AccessList::parseList"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "AccessList::parseList"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "AccessList::addPlayer"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getPlayerByName"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "AccessList::addPlayer"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::getGuidByName"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/house.cpp"
+    qualified_name: getGuildByName
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getGuild"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/guild.cpp"
+          qualified_name: "IOGuild::getGuildIdByName"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/guild.cpp"
+          qualified_name: "IOGuild::loadGuild"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/house.cpp"
+    qualified_name: "AccessList::addGuild"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "AccessList::addGuild"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "AccessList::addGuildRank"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "AccessList::addGuildRank"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "AccessList::isInList"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "AccessList::isInList"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "AccessList::getList"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "AccessList::getList"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "Door::readAttr"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "Door::readAttr"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::readAttr"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/house.cpp"
+    qualified_name: "Door::setHouse"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "Door::setHouse"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "Door::canUse"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "Door::canUse"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "Door::setAccessList"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "Door::setAccessList"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "Door::getAccessList"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "Door::getAccessList"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "Door::onRemoved"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "Door::onRemoved"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::onRemoved"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/house.cpp"
+    qualified_name: "Houses::getHouseByPlayerId"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "Houses::getHouseByPlayerId"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "Houses::loadHousesXML"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "Houses::loadHousesXML"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/house.cpp"
+    qualified_name: "Houses::payHouses"
+    edges:
+      - target:
+          file: "src/house.cpp"
+          qualified_name: "Houses::payHouses"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::loadPlayerById"
+        kind: static
+        confidence: static
+        order: 2

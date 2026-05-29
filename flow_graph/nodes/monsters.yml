@@ -1,0 +1,139 @@
+nodes:
+  - file: "src/monsters.cpp"
+    qualified_name: "MonsterType::loadLoot"
+    edges:
+      - target:
+          file: "src/monsters.cpp"
+          qualified_name: "MonsterType::loadLoot"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monsters.cpp"
+    qualified_name: "Monsters::loadFromXml"
+    edges:
+      - target:
+          file: "src/monsters.cpp"
+          qualified_name: "Monsters::loadFromXml"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monsters.cpp"
+    qualified_name: "Monsters::reload"
+    edges:
+      - target:
+          file: "src/monsters.cpp"
+          qualified_name: "Monsters::reload"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monsters.cpp"
+    qualified_name: "Monsters::getDamageCondition"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::createCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monsters.cpp"
+          qualified_name: "Monsters::getDamageCondition"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/monsters.cpp"
+    qualified_name: "Monsters::deserializeSpell"
+    edges: []
+  - file: "src/monsters.cpp"
+    qualified_name: "Monsters::deserializeSpell"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::createCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monsters.cpp"
+          qualified_name: "Monsters::deserializeSpell"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::getSpellByName"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::getMaxMeleeDamage"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/monsters.cpp"
+    qualified_name: "Monsters::loadMonster"
+    edges:
+      - target:
+          file: "src/monsters.cpp"
+          qualified_name: "Monsters::loadMonster"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monsters.cpp"
+    qualified_name: "MonsterType::loadCallback"
+    edges:
+      - target:
+          file: "src/monsters.cpp"
+          qualified_name: "MonsterType::loadCallback"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monsters.cpp"
+    qualified_name: "Monsters::loadLootItem"
+    edges:
+      - target:
+          file: "src/monsters.cpp"
+          qualified_name: "Monsters::loadLootItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monsters.cpp"
+    qualified_name: "Monsters::loadLootContainer"
+    edges:
+      - target:
+          file: "src/monsters.cpp"
+          qualified_name: "Monsters::loadLootContainer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monsters.cpp"
+    qualified_name: "Monsters::getMonsterType"
+    edges: []
+  - file: "src/monsters.cpp"
+    qualified_name: "Monsters::getMonsterType"
+    edges:
+      - target:
+          file: "src/monsters.cpp"
+          qualified_name: "Monsters::getMonsterType"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monsters.cpp"
+    qualified_name: "Monsters::addBestiaryMonsterType"
+    edges:
+      - target:
+          file: "src/monsters.cpp"
+          qualified_name: "Monsters::addBestiaryMonsterType"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monsters.cpp"
+    qualified_name: "Monsters::isValidBestiaryInfo"
+    edges:
+      - target:
+          file: "src/monsters.cpp"
+          qualified_name: "Monsters::isValidBestiaryInfo"
+        kind: static
+        confidence: static
+        order: 1

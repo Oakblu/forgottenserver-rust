@@ -1,0 +1,85 @@
+nodes:
+  - file: "src/housetile.cpp"
+    qualified_name: "HouseTile::addThing"
+    edges:
+      - target:
+          file: "src/housetile.cpp"
+          qualified_name: "HouseTile::addThing"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::addThing"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/housetile.cpp"
+    qualified_name: "HouseTile::internalAddThing"
+    edges:
+      - target:
+          file: "src/housetile.cpp"
+          qualified_name: "HouseTile::internalAddThing"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::internalAddThing"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/housetile.cpp"
+    qualified_name: "HouseTile::updateHouse"
+    edges:
+      - target:
+          file: "src/housetile.cpp"
+          qualified_name: "HouseTile::updateHouse"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/housetile.cpp"
+    qualified_name: "HouseTile::queryAdd"
+    edges:
+      - target:
+          file: "src/housetile.cpp"
+          qualified_name: "HouseTile::queryAdd"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::queryAdd"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/housetile.cpp"
+    qualified_name: "HouseTile::queryDestination"
+    edges:
+      - target:
+          file: "src/housetile.cpp"
+          qualified_name: "HouseTile::queryDestination"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::queryDestination"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/housetile.cpp"
+    qualified_name: "HouseTile::queryRemove"
+    edges:
+      - target:
+          file: "src/housetile.cpp"
+          qualified_name: "HouseTile::queryRemove"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::queryRemove"
+        kind: static
+        confidence: static
+        order: 2

@@ -1,0 +1,52 @@
+nodes:
+  - file: "src/outputmessage.cpp"
+    qualified_name: g_scheduler
+    edges: []
+  - file: "src/outputmessage.cpp"
+    qualified_name: "(anonymous)::OUTPUTMESSAGE_FREE_LIST_CAPACITY"
+    edges: []
+  - file: "src/outputmessage.cpp"
+    qualified_name: "(anonymous)::OUTPUTMESSAGE_AUTOSEND_DELAY"
+    edges: []
+  - file: "src/outputmessage.cpp"
+    qualified_name: "(anonymous)::bufferedProtocols"
+    edges: []
+  - file: "src/outputmessage.cpp"
+    qualified_name: "(anonymous)::scheduleSendAll"
+    edges:
+      - target:
+          file: "src/scheduler.cpp"
+          qualified_name: "Scheduler::addEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/outputmessage.cpp"
+    qualified_name: "(anonymous)::sendAll"
+    edges: []
+  - file: "src/outputmessage.cpp"
+    qualified_name: "tfs::net::make_output_message"
+    edges:
+      - target:
+          file: "src/outputmessage.cpp"
+          qualified_name: "tfs::net::make_output_message"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/outputmessage.cpp"
+    qualified_name: "tfs::net::insert_protocol_to_autosend"
+    edges:
+      - target:
+          file: "src/outputmessage.cpp"
+          qualified_name: "tfs::net::insert_protocol_to_autosend"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/outputmessage.cpp"
+    qualified_name: "tfs::net::remove_protocol_from_autosend"
+    edges:
+      - target:
+          file: "src/outputmessage.cpp"
+          qualified_name: "tfs::net::remove_protocol_from_autosend"
+        kind: static
+        confidence: static
+        order: 1

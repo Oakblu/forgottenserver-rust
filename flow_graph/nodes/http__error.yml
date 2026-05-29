@@ -1,0 +1,10 @@
+nodes:
+  - file: "src/http/error.cpp"
+    qualified_name: "tfs::http::make_error_response"
+    edges:
+      - target:
+          file: "src/http/error.cpp"
+          qualified_name: "tfs::http::make_error_response"
+        kind: static
+        confidence: static
+        order: 1

@@ -1,0 +1,70 @@
+nodes:
+  - file: "src/baseevents.h"
+    qualified_name: FS_BASEEVENTS_H
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: Event
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: "Event::Event"
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: "Event::Event"
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: "Event::configureEvent"
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: "Event::checkScript"
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: "Event::loadScript"
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: "Event::loadCallback"
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: "Event::getScriptEventName"
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: BaseEvents
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: "BaseEvents::BaseEvents"
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: "BaseEvents::BaseEvents"
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: "BaseEvents::loadFromXml"
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: "BaseEvents::reload"
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: "BaseEvents::reInitState"
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: "BaseEvents::getScriptInterface"
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: "BaseEvents::getScriptBaseName"
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: "BaseEvents::getEvent"
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: "BaseEvents::registerEvent"
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: "BaseEvents::clear"
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: CallBack
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: "CallBack::CallBack"
+    edges: []
+  - file: "src/baseevents.h"
+    qualified_name: "CallBack::loadCallBack"
+    edges: []

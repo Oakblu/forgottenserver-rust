@@ -1,0 +1,856 @@
+nodes:
+  - file: "src/creature.h"
+    qualified_name: ConditionList
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: CreatureEventList
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: CreatureIconHashMap
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: slots_t
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "slots_t::CONST_SLOT_WHEREEVER"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "slots_t::CONST_SLOT_HEAD"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "slots_t::CONST_SLOT_NECKLACE"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "slots_t::CONST_SLOT_BACKPACK"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "slots_t::CONST_SLOT_ARMOR"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "slots_t::CONST_SLOT_RIGHT"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "slots_t::CONST_SLOT_LEFT"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "slots_t::CONST_SLOT_LEGS"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "slots_t::CONST_SLOT_FEET"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "slots_t::CONST_SLOT_RING"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "slots_t::CONST_SLOT_AMMO"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "slots_t::CONST_SLOT_STORE_INBOX"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "slots_t::CONST_SLOT_FIRST"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "slots_t::CONST_SLOT_LAST"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: FindPathParams
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "FindPathParams::fullPathSearch"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "FindPathParams::clearSight"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "FindPathParams::allowDiagonal"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "FindPathParams::keepDistance"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "FindPathParams::summonTargetMaster"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "FindPathParams::maxSearchDist"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "FindPathParams::minTargetDist"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "FindPathParams::maxTargetDist"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: EVENT_CREATURECOUNT
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: EVENT_CREATURE_THINK_INTERVAL
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: EVENT_CHECK_CREATURE_INTERVAL
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: CREATURE_ID_MIN
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: CREATURE_ID_MAX
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: FrozenPathingConditionCall
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "FrozenPathingConditionCall::FrozenPathingConditionCall"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "FrozenPathingConditionCall::operator()"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "FrozenPathingConditionCall::isInRange"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "FrozenPathingConditionCall::targetPos"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: Creature
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::Creature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::speedA"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::speedB"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::speedC"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::~Creature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::Creature(const Creature&)"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::operator="
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getCreature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getCreature_const"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getPlayer"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getPlayer_const"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getNpc"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getNpc_const"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getMonster"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getMonster_const"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getName"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getNameDescription"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getDescription"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getType"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::setID"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::setRemoved"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getID"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::removeList"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::addList"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::canSee_pos"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::canSeeCreature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getRace"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getSkull"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getSkullClient"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::setSkull"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getDirection"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::setDirection"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::isHealthHidden"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::setHiddenHealth"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getThrowRange"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::isPushable"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::isRemoved"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::canSeeInvisibility"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::isInGhostMode"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::canSeeGhostMode"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getWalkDelay_dir"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getWalkDelay"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getTimeSinceLastMove"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getEventStepTicks"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getStepDuration_dir"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getStepDuration"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getStepSpeed"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getSpeed"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::setSpeed"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::setBaseSpeed"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getBaseSpeed"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getHealth"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getMaxHealth"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::isDead"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::setDrunkenness"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getDrunkenness"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getCurrentOutfit"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::setCurrentOutfit"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getDefaultOutfit"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::isInvisible"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getZone"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getIcons"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getIcons_const"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::updateIcons"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::startAutoWalk"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::startAutoWalk_dir"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::startAutoWalk_list"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::addEventWalk"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::stopEventWalk"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::goToFollowCreature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::updateFollowCreaturePath"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onWalk_dir"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onWalkAborted"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onWalkComplete"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getFollowCreature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::setFollowCreature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::removeFollowCreature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::canFollowCreature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::isFollowingCreature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onFollowCreature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onUnfollowCreature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::isFollower"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::addFollower"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::removeFollower"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::removeFollowers"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::releaseFollowers"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::updateFollowersPaths"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getAttackedCreature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::setAttackedCreature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::removeAttackedCreature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::canAttackCreature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::isAttackingCreature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::blockHit"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::setMaster"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::removeMaster"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::isSummon"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getMaster"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getSummons"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getArmor"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getDefense"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getAttackFactor"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getDefenseFactor"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::addCondition"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::addCombatCondition"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::removeCondition_typeId"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::removeCondition_type"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::removeCondition_ptr"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::removeCombatCondition"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getCondition_type"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getCondition_typeIdSub"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::executeConditions"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::hasCondition"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::isImmune_condition"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::isImmune_combat"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::isSuppress"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getDamageImmunities"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getConditionImmunities"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getConditionSuppressions"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::isAttackable"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::changeHealth"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::gainHealth"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::drainHealth"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::challengeCreature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getKillers"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onDeath"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getGainedExperience"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::addDamagePoints"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::hasBeenAttacked"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onAddCondition"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onAddCombatCondition"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onEndCondition"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onTickCondition"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onCombatRemoveCondition"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onAttackedCreature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onAttacked"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onAttackedCreatureDrainHealth"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onTargetCreatureGainHealth"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onKilledCreature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onGainExperience"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onAttackedCreatureBlockHit"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onBlockHit"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onChangeZone"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onAttackedCreatureChangeZone"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onIdleStatus"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getCreatureLight"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::setNormalCreatureLight"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::setCreatureLight"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onThink"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::forceUpdatePath"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onAttacking"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onWalk"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getNextStep"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onUpdateTileItem"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onRemoveTileItem"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onCreatureAppear"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onRemoveCreature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onCreatureMove"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onAttackedCreatureDisappear"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onFollowCreatureDisappear"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onCreatureSay"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getCombatValues"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getSummonCount"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::setDropLoot"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::setSkillLoss"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::setUseDefense"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::setMovementBlocked"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::isMovementBlocked"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::registerCreatureEvent"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::unregisterCreatureEvent"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getParent"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::setParent"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getPosition"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getTile"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getTile_const"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getLastPosition"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::setLastPosition"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::canSee_static"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getDamageRatio"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getPathTo_fpp"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getPathTo_basic"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::incrementReferenceCounter"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::decrementReferenceCounter"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::setStorageValue"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getStorageValue"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getStorageMap"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::CountBlock_t"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::CountBlock_t::total"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::CountBlock_t::ticks"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::position"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::CountMap"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::damageMap"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::summons"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::eventsList"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::conditions"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::creatureIcons"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::listWalkDir"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::tile"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::attackedCreature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::master"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::followCreature"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::followers"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::lastStep"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::lastPathUpdate"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::referenceCounter"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::id"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::scriptEventsBitField"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::eventWalk"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::walkUpdateTicks"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::lastHitCreatureId"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::blockCount"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::blockTicks"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::lastStepCost"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::baseSpeed"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::varSpeed"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::health"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::healthMax"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::drunkenness"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::currentOutfit"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::defaultOutfit"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::currentMount"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::lastPosition"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::internalLight"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::direction"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::skull"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::isInternalRemoved"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::creatureCheck"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::inCheckCreaturesVector"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::skillLoss"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::lootDrop"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::cancelNextWalk"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::hasFollowPath"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::hiddenHealth"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::canUseDefense"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::movementBlocked"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::hasEventRegistered"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getCreatureEvents"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::onCreatureDisappear"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::doAttacking"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::hasExtraSwing"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getLostExperience"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::dropLoot"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getLookCorpse"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getPathSearchParams"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::death"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::dropCorpse"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::getCorpse"
+    edges: []
+  - file: "src/creature.h"
+    qualified_name: "Creature::storageMap"
+    edges: []

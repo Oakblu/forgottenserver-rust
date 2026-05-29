@@ -1,0 +1,31 @@
+nodes:
+  - file: "src/matrixarea.cpp"
+    qualified_name: "MatrixArea::rotate90"
+    edges:
+      - target:
+          file: "src/matrixarea.cpp"
+          qualified_name: "MatrixArea::rotate90"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/matrixarea.cpp"
+    qualified_name: "MatrixArea::rotate180"
+    edges:
+      - target:
+          file: "src/matrixarea.cpp"
+          qualified_name: "MatrixArea::rotate180"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/matrixarea.cpp"
+    qualified_name: "MatrixArea::rotate270"
+    edges:
+      - target:
+          file: "src/matrixarea.cpp"
+          qualified_name: "MatrixArea::rotate270"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/matrixarea.cpp"
+    qualified_name: createArea
+    edges: []

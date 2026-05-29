@@ -1,0 +1,460 @@
+nodes:
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapons::getWeapon"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::getWeapon"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapons::clear"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::clear"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapons::getScriptInterface"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::getScriptInterface"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapons::loadDefaults"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::loadDefaults"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapons::getEvent"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::getEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapons::registerEvent"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::registerEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapons::registerLuaEvent"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::registerLuaEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapons::getMaxMeleeDamage"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::getMaxMeleeDamage"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapons::getMaxWeaponDamage"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::getMaxWeaponDamage"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapon::configureEvent"
+    edges:
+      - target:
+          file: "src/vocation.cpp"
+          qualified_name: "Vocations::getPromotedVocation"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/vocation.cpp"
+          qualified_name: "Vocations::getVocationId"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapon::configureEvent"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapon::configureWeapon"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapon::configureWeapon"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapon::playerWeaponCheck"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapon::playerWeaponCheck"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapon::ammoCheck"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapon::ammoCheck"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapon::useWeapon"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapon::useWeapon"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapon::useFist"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::doTargetCombat"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapon::useFist"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::getMaxWeaponDamage"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapon::internalUseWeapon"
+    edges: []
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapon::internalUseWeapon"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::postCombatEffects"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMagicEffect"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapon::internalUseWeapon"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapon::onUsedWeapon"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalMoveItem"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::transformItem"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapon::decrementItemCount"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapon::onUsedWeapon"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapon::getManaCost"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapon::getManaCost"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapon::getHealthCost"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapon::getHealthCost"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapon::executeUseWeapon"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushVariant"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setMetatable"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapon::executeUseWeapon"
+        kind: static
+        confidence: static
+        order: 6
+  - file: "src/weapons.cpp"
+    qualified_name: "Weapon::decrementItemCount"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalRemoveItem"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::transformItem"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapon::decrementItemCount"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/weapons.cpp"
+    qualified_name: "WeaponMelee::configureWeapon"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapon::configureWeapon"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "WeaponMelee::configureWeapon"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/weapons.cpp"
+    qualified_name: "WeaponMelee::useWeapon"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "WeaponMelee::useWeapon"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/weapons.cpp"
+    qualified_name: "WeaponMelee::getSkillType"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "WeaponMelee::getSkillType"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/weapons.cpp"
+    qualified_name: "WeaponMelee::getElementDamage"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "WeaponMelee::getElementDamage"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::getMaxWeaponDamage"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/weapons.cpp"
+    qualified_name: "WeaponMelee::getWeaponDamage"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "WeaponMelee::getWeaponDamage"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::getMaxWeaponDamage"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/weapons.cpp"
+    qualified_name: "WeaponDistance::configureWeapon"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapon::configureWeapon"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "WeaponDistance::configureWeapon"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/weapons.cpp"
+    qualified_name: "WeaponDistance::useWeapon"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "WeaponDistance::useWeapon"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::getWeapon"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/weapons.cpp"
+    qualified_name: "WeaponDistance::getElementDamage"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "WeaponDistance::getElementDamage"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::getMaxWeaponDamage"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/weapons.cpp"
+    qualified_name: "WeaponDistance::getWeaponDamage"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "WeaponDistance::getWeaponDamage"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::getMaxWeaponDamage"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/weapons.cpp"
+    qualified_name: "WeaponDistance::getSkillType"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "WeaponDistance::getSkillType"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/weapons.cpp"
+    qualified_name: "WeaponWand::configureEvent"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapon::configureEvent"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "WeaponWand::configureEvent"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/weapons.cpp"
+    qualified_name: "WeaponWand::configureWeapon"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapon::configureWeapon"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "WeaponWand::configureWeapon"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/weapons.cpp"
+    qualified_name: "WeaponWand::getWeaponDamage"
+    edges:
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "WeaponWand::getWeaponDamage"
+        kind: static
+        confidence: static
+        order: 1

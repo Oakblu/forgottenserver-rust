@@ -1,0 +1,67 @@
+nodes:
+  - file: "src/weapons.h"
+    qualified_name: FS_WEAPONS_H
+    edges: []
+  - file: "src/weapons.h"
+    qualified_name: Weapon
+    edges: []
+  - file: "src/weapons.h"
+    qualified_name: "Weapon::Weapon"
+    edges: []
+  - file: "src/weapons.h"
+    qualified_name: "Weapon::configureEvent"
+    edges: []
+  - file: "src/weapons.h"
+    qualified_name: "Weapon::configureWeapon"
+    edges: []
+  - file: "src/weapons.h"
+    qualified_name: "Weapon::playerWeaponCheck"
+    edges: []
+  - file: "src/weapons.h"
+    qualified_name: "Weapon::ammoCheck"
+    edges: []
+  - file: "src/weapons.h"
+    qualified_name: "Weapon::useFist"
+    edges: []
+  - file: "src/weapons.h"
+    qualified_name: "Weapon::useWeapon"
+    edges: []
+  - file: "src/weapons.h"
+    qualified_name: "Weapon::getElementDamage"
+    edges: []
+  - file: "src/weapons.h"
+    qualified_name: "Weapon::getElementType"
+    edges: []
+  - file: "src/weapons.h"
+    qualified_name: "Weapon::vocationId"
+    edges: []
+  - file: "src/weapons.h"
+    qualified_name: "Weapon::getVocationId"
+    edges: []
+  - file: "src/weapons.h"
+    qualified_name: "Weapon::insert"
+    edges: []
+  - file: "src/weapons.h"
+    qualified_name: "Weapon::empty"
+    edges: []
+  - file: "src/weapons.h"
+    qualified_name: "Weapon::internalUseWeapon"
+    edges: []
+  - file: "src/weapons.h"
+    qualified_name: "Weapon::internalUseWeapon"
+    edges: []
+  - file: "src/weapons.h"
+    qualified_name: "Weapon::getManaCost"
+    edges: []
+  - file: "src/weapons.h"
+    qualified_name: "Weapon::getHealthCost"
+    edges: []
+  - file: "src/weapons.h"
+    qualified_name: "Weapon::executeUseWeapon"
+    edges: []
+  - file: "src/weapons.h"
+    qualified_name: "Weapon::onUsedWeapon"
+    edges: []
+  - file: "src/weapons.h"
+    qualified_name: "Weapon::decrementItemCount"
+    edges: []

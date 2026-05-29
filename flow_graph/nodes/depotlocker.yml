@@ -1,0 +1,64 @@
+nodes:
+  - file: "src/depotlocker.cpp"
+    qualified_name: "DepotLocker::DepotLocker"
+    edges:
+      - target:
+          file: "src/depotlocker.cpp"
+          qualified_name: "DepotLocker::DepotLocker"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/depotlocker.cpp"
+    qualified_name: "DepotLocker::postAddNotification"
+    edges: []
+  - file: "src/depotlocker.cpp"
+    qualified_name: "DepotLocker::postRemoveNotification"
+    edges: []
+  - file: "src/depotlocker.cpp"
+    qualified_name: "DepotLocker::readAttr"
+    edges: []
+  - file: "src/depotlocker.cpp"
+    qualified_name: "DepotLocker::removeInbox"
+    edges: []
+  - file: "src/depotlocker.cpp"
+    qualified_name: "DepotLocker::readAttr"
+    edges:
+      - target:
+          file: "src/depotlocker.cpp"
+          qualified_name: "DepotLocker::readAttr"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::readAttr"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/depotlocker.cpp"
+    qualified_name: "DepotLocker::postAddNotification"
+    edges:
+      - target:
+          file: "src/depotlocker.cpp"
+          qualified_name: "DepotLocker::postAddNotification"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/depotlocker.cpp"
+    qualified_name: "DepotLocker::postRemoveNotification"
+    edges:
+      - target:
+          file: "src/depotlocker.cpp"
+          qualified_name: "DepotLocker::postRemoveNotification"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/depotlocker.cpp"
+    qualified_name: "DepotLocker::removeInbox"
+    edges:
+      - target:
+          file: "src/depotlocker.cpp"
+          qualified_name: "DepotLocker::removeInbox"
+        kind: static
+        confidence: static
+        order: 1

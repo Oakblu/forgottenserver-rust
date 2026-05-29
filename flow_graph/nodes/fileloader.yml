@@ -1,0 +1,19 @@
+nodes:
+  - file: "src/fileloader.cpp"
+    qualified_name: "OTB::wildcard"
+    edges: []
+  - file: "src/fileloader.cpp"
+    qualified_name: "OTB::Loader::Loader"
+    edges: []
+  - file: "src/fileloader.cpp"
+    qualified_name: "OTB::NodeStack"
+    edges: []
+  - file: "src/fileloader.cpp"
+    qualified_name: "OTB::getCurrentNode"
+    edges: []
+  - file: "src/fileloader.cpp"
+    qualified_name: "OTB::Loader::parseTree"
+    edges: []
+  - file: "src/fileloader.cpp"
+    qualified_name: "OTB::Loader::getProps"
+    edges: []

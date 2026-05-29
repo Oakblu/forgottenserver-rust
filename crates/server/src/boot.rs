@@ -175,56 +175,102 @@ impl GameLoginHandler {
         }
 
         // --- Read first client packet ---
-        // Peek at the first 16 bytes to diagnose framing before committing to a read size.
-        let mut peek = [0u8; 16];
-        let peeked = {
-            let mut n = 0usize;
-            for b in peek.iter_mut() {
-                let mut tmp = [0u8; 1];
-                match stream.read(&mut tmp) {
-                    Ok(1) => {
-                        *b = tmp[0];
-                        n += 1;
-                    }
-                    _ => break,
-                }
-            }
-            n
-        };
-        let hex: String = peek[..peeked].iter().map(|b| format!("{b:02x} ")).collect();
-        eprintln!("[game] first 16 bytes ({peeked}): {hex}");
-        if peeked < 2 {
-            eprintln!("[game] too few bytes");
+        // Some clients (e.g. OtClient) send a world-name prefix — raw ASCII bytes
+        // ending with 0x0A — before the binary game-login packet.  This mirrors
+        // the C++ TFS CONNECTION_STATE_GAMEWORLD_AUTH state machine in
+        // Connection::parseHeader.
+        //
+        // Detection: read the first 2 bytes. If the high byte (index 1) is non-zero
+        // the packet length would exceed 255, which no real game-login packet does
+        // (the first packet is ~146 bytes). Treat that as the start of a text
+        // prefix; drain one byte at a time until 0x0A, then read the real 2-byte
+        // outer_len.
+        let mut hdr = [0u8; 2];
+        if let Err(e) = stream.read_exact(&mut hdr) {
+            eprintln!("[game] failed to read initial header: {e}");
             return;
         }
-        let outer_len = u16::from_le_bytes([peek[0], peek[1]]) as usize;
+
+        let outer_len = if hdr[1] != 0x00 {
+            let mut prefix: Vec<u8> = vec![hdr[0], hdr[1]];
+            loop {
+                let mut b = [0u8; 1];
+                match stream.read(&mut b) {
+                    Ok(1) if b[0] == 0x0A => {
+                        prefix.push(b[0]);
+                        break;
+                    }
+                    Ok(1) => {
+                        prefix.push(b[0]);
+                        if prefix.len() > 512 {
+                            eprintln!(
+                                "[game] GAMEWORLD_AUTH: pre-login prefix exceeds 512 bytes — closing"
+                            );
+                            return;
+                        }
+                    }
+                    _ => return,
+                }
+            }
+            let phex: String = prefix.iter().map(|b| format!("{b:02x} ")).collect();
+            let pascii: String = prefix
+                .iter()
+                .map(|&b| {
+                    if (0x20..0x7f).contains(&b) {
+                        b as char
+                    } else {
+                        '.'
+                    }
+                })
+                .collect();
+            eprintln!(
+                "[game] GAMEWORLD_AUTH prefix ({} bytes): {phex} | {pascii}",
+                prefix.len()
+            );
+            if let Err(e) = stream.read_exact(&mut hdr) {
+                eprintln!("[game] GAMEWORLD_AUTH: failed to read real outer_len: {e}");
+                return;
+            }
+            eprintln!(
+                "[game] outer_len header bytes after prefix: {:02x} {:02x}",
+                hdr[0], hdr[1]
+            );
+            u16::from_le_bytes(hdr) as usize
+        } else {
+            u16::from_le_bytes(hdr) as usize
+        };
+
         eprintln!("[game] first packet outer_len={outer_len}");
+
         if outer_len > 32_768 {
             eprintln!(
                 "[game] first packet outer_len={outer_len} exceeds limit — closing connection"
             );
             return;
         }
-        // Must have at least adler32(4) + inner_len(2) + opcode(1) = 7 bytes.
+        // Must have at least sequence(4) + opcode(1) + a minimal payload.
         if outer_len < 7 {
             eprintln!("[game] first packet too short: outer_len={outer_len}");
             return;
         }
-        // Read remaining bytes of the body (we already have peeked-2 bytes in peek[2..peeked])
-        let already_have = peeked - 2;
-        let need_more = outer_len.saturating_sub(already_have);
+
         let mut body = vec![0u8; outer_len];
-        body[..already_have].copy_from_slice(&peek[2..peeked]);
-        if need_more > 0 {
-            if let Err(e) = stream.read_exact(&mut body[already_have..]) {
-                eprintln!("[game] failed to read packet body: outer_len={outer_len} already_have={already_have} err={e}");
-                return;
-            }
+        if let Err(e) = stream.read_exact(&mut body) {
+            eprintln!("[game] failed to read packet body: outer_len={outer_len} err={e}");
+            return;
         }
-        // body[0..4] = adler32 (skip), body[4..6] = inner_len (skip), body[6] = opcode, body[7..] = payload
-        let opcode = body[6];
-        eprintln!("[game] opcode=0x{opcode:02x} outer_len={outer_len}");
-        let payload = &body[7..];
+        // OTClient game-login wire format (CHECKSUM_SEQUENCE mode):
+        //   [outer_len:2][sequence:4][opcode:1][os:2][version:2]...[RSA:128]
+        // The 4-byte sequence number is 0 for the first packet and the
+        // opcode is 0x0A (game login).  C++ ProtocolGame::onRecvFirstMessage
+        // begins reading at `os`, after the connection layer consumes the
+        // checksum/sequence (4 bytes) and the protocol-id/opcode (1 byte).
+        let opcode = body[4];
+        eprintln!(
+            "[game] seq={:02x}{:02x}{:02x}{:02x} opcode=0x{opcode:02x} outer_len={outer_len}",
+            body[0], body[1], body[2], body[3]
+        );
+        let payload: &[u8] = &body[5..];
         let mut msg = NetworkMessage::new();
         msg.add_bytes(payload);
         msg.set_buffer_position(0);
@@ -280,23 +326,44 @@ impl GameLoginHandler {
                 let player_data = match player_data {
                     Some(p) => p,
                     None => {
+                        eprintln!("[game] character {character_id} could not be loaded");
                         let disconnect =
                             serialize_disconnect("Your character could not be loaded.");
                         let _ = stream.write_all(&frame_plaintext_packet(&disconnect));
                         return;
                     }
                 };
+                eprintln!("[game] player loaded: char={character_id}");
 
                 // --- Build and flush enter-world burst (XTEA-encrypted, same as all
                 // subsequent server→client packets after enableXTEAEncryption() in TFS) ---
                 let world = World::new();
-                let burst = build_enter_world_burst(&player_data, &world);
+                // Deterministic creature id for the player avatar
+                // (mirrors C++ player ids: 0x10000000 | guid).
+                let player_creature_id = 0x1000_0000u32 | (character_id as u32);
+                let burst = build_enter_world_burst(&player_data, &world, player_creature_id);
+                eprintln!("[game] enter-world burst built: {} bytes", burst.len());
                 let framed_burst = frame_packet(&burst, packet.xtea_key);
-                let _ = stream.write_all(&framed_burst);
+                eprintln!("[game] framed burst: {} bytes", framed_burst.len());
+                match stream.write_all(&framed_burst) {
+                    Ok(()) => eprintln!("[game] enter-world burst sent"),
+                    Err(e) => {
+                        eprintln!("[game] failed to send enter-world burst: {e}");
+                        return;
+                    }
+                }
 
                 // --- Set 30-second read timeout, then enter XTEA game loop ---
+                // OTClient (os 4..=12, version >= 1111) uses CHECKSUM_SEQUENCE:
+                // the 4-byte frame prefix is a sequence number, not Adler-32.
+                let sequence_checksum = (4..=12).contains(&packet.os);
+                eprintln!(
+                    "[game] entering game loop (os={} sequence_checksum={sequence_checksum})",
+                    packet.os
+                );
                 let _ = stream.set_read_timeout(Some(Duration::from_secs(30)));
-                run_game_loop(&mut stream, packet.xtea_key);
+                run_game_loop(&mut stream, packet.xtea_key, sequence_checksum);
+                eprintln!("[game] game loop exited");
             }
         }
     }
@@ -375,24 +442,31 @@ fn frame_packet(payload: &[u8], xtea_key: [u32; 4]) -> Vec<u8> {
 /// [2..)  opcode     u8    — packet type
 /// [3..)  data             — opcode-specific bytes
 /// ```
-pub(crate) fn run_game_loop(stream: &mut std::net::TcpStream, xtea_key: [u32; 4]) {
+pub(crate) fn run_game_loop(
+    stream: &mut std::net::TcpStream,
+    xtea_key: [u32; 4],
+    sequence_checksum: bool,
+) {
     let key = xtea::Key(xtea_key);
     let round_keys = xtea::expand_key(&key);
 
     loop {
         // --- Step 1: read 2-byte outer length ---
         let mut len_buf = [0u8; 2];
-        if stream.read_exact(&mut len_buf).is_err() {
+        if let Err(e) = stream.read_exact(&mut len_buf) {
+            eprintln!("[gameloop] exit: read outer_len failed: {e}");
             break;
         }
         let outer_len = u16::from_le_bytes(len_buf) as usize;
         if outer_len == 0 {
+            eprintln!("[gameloop] exit: outer_len == 0");
             break;
         }
 
         // --- Step 2: read frame body (outer_len bytes) ---
         let mut body = vec![0u8; outer_len];
-        if stream.read_exact(&mut body).is_err() {
+        if let Err(e) = stream.read_exact(&mut body) {
+            eprintln!("[gameloop] exit: read body (outer_len={outer_len}) failed: {e}");
             break;
         }
 
@@ -400,19 +474,30 @@ pub(crate) fn run_game_loop(stream: &mut std::net::TcpStream, xtea_key: [u32; 4]
         // The XTEA region must be at least 8 bytes (one block) and a multiple of 8.
         if outer_len < 12 {
             // 4 (adler32) + 8 (minimum one XTEA block with inner_len + opcode)
+            eprintln!("[gameloop] skip: outer_len={outer_len} < 12");
             continue;
         }
         let xtea_region_len = outer_len - 4;
         if !xtea_region_len.is_multiple_of(8) {
+            eprintln!("[gameloop] skip: xtea_region_len={xtea_region_len} not multiple of 8");
             continue;
         }
 
-        // --- Step 3: validate Adler-32 checksum ---
-        // adler32 covers the XTEA region (body[4..]).
-        let stored_adler = u32::from_le_bytes([body[0], body[1], body[2], body[3]]);
-        let computed_adler = adler_checksum(&body[4..]);
-        if stored_adler != computed_adler {
-            continue;
+        // --- Step 3: validate the 4-byte checksum/sequence field ---
+        // OTClient (os in CLIENTOS_QT_LINUX..=CLIENTOS_OTCLIENT_MAC, version
+        // >= 1111) negotiates CHECKSUM_SEQUENCE mode: the 4 bytes are an
+        // incrementing sequence number, NOT an Adler-32 checksum. In that mode
+        // we skip checksum validation (mirrors C++ Protocol with
+        // CHECKSUM_SEQUENCE). Otherwise validate Adler-32 over the XTEA region.
+        if !sequence_checksum {
+            let stored_adler = u32::from_le_bytes([body[0], body[1], body[2], body[3]]);
+            let computed_adler = adler_checksum(&body[4..]);
+            if stored_adler != computed_adler {
+                eprintln!(
+                    "[gameloop] skip: adler mismatch stored={stored_adler:08x} computed={computed_adler:08x} outer_len={outer_len}"
+                );
+                continue;
+            }
         }
 
         // --- Step 4: XTEA-decrypt the region in place ---
@@ -426,12 +511,33 @@ pub(crate) fn run_game_loop(stream: &mut std::net::TcpStream, xtea_key: [u32; 4]
         // inner_len must cover at least the opcode byte and fit within the
         // decrypted region (xtea_region_len bytes starting at body[4]).
         if inner_len == 0 || inner_len + 2 > xtea_region_len {
+            eprintln!(
+                "[gameloop] skip: bad inner_len={inner_len} xtea_region_len={xtea_region_len}"
+            );
             continue;
         }
         let opcode = body[6];
+        let dump_n = inner_len.min(8);
+        let phex: String = body[6..6 + dump_n].iter().map(|b| format!("{b:02x} ")).collect();
+        eprintln!("[gameloop] recv opcode=0x{opcode:02x} inner_len={inner_len} bytes: {phex}");
 
         // --- Step 6: dispatch ---
         match opcode {
+            0x1D => {
+                // Client ping → respond with pong (0x1E). Mirrors C++
+                // Game::playerReceivePingBack → Player::sendPingBack (opcode
+                // 0x1E). Without this the client times out and disconnects.
+                let pong = frame_packet(&[0x1E], xtea_key);
+                if stream.write_all(&pong).is_err() {
+                    eprintln!("[gameloop] exit: failed to send pong");
+                    break;
+                }
+                eprintln!("[gameloop] ping (0x1D) -> sent pong (0x1E)");
+            }
+            0x1E => {
+                // Client pong (response to a server ping). No reply needed.
+                eprintln!("[gameloop] pong (0x1E) received");
+            }
             0x65 => eprintln!("[game] walk packet received"),
             0x96 => eprintln!("[game] say packet received"),
             0xBE => eprintln!("[game] use item packet received"),
@@ -1269,7 +1375,7 @@ mod tests {
             server_stream
                 .set_read_timeout(Some(std::time::Duration::from_secs(5)))
                 .unwrap();
-            run_game_loop(&mut server_stream, xtea_key);
+            run_game_loop(&mut server_stream, xtea_key, false);
         });
 
         // Client side: send one encrypted packet then close
@@ -1298,7 +1404,7 @@ mod tests {
             server_stream
                 .set_read_timeout(Some(std::time::Duration::from_secs(5)))
                 .unwrap();
-            run_game_loop(&mut server_stream, xtea_key);
+            run_game_loop(&mut server_stream, xtea_key, false);
         });
 
         // Connect then immediately close without sending anything
@@ -1540,11 +1646,20 @@ mod tests {
         pfp_payload.extend_from_slice(&[0u8; 3]); // dat revision + preview state (skipped)
         pfp_payload.extend_from_slice(&rsa_block);
 
-        // Wrap in plaintext framing: [outer_len:2][adler32:4][inner_len:2][opcode:1][pfp_payload]
-        let mut full_payload = Vec::with_capacity(1 + pfp_payload.len());
-        full_payload.push(0x0Au8); // opcode (value ignored by handle_connection)
-        full_payload.extend_from_slice(&pfp_payload);
-        let framed = frame_plaintext_packet(&full_payload);
+        // Wrap in the game-login wire framing the first-packet reader expects:
+        //   [outer_len:2][sequence:4][opcode:1][pfp_payload]
+        // `handle_connection` reads the 2-byte outer_len, then `outer_len`
+        // body bytes, treats body[0..4] as the sequence id, body[4] as the
+        // opcode (0x0A), and body[5..] as the payload fed to
+        // `parse_first_packet`.
+        let mut body = Vec::with_capacity(5 + pfp_payload.len());
+        body.extend_from_slice(&[0u8; 4]); // sequence (0 for first packet)
+        body.push(0x0Au8); // opcode = game login
+        body.extend_from_slice(&pfp_payload);
+        let outer_len = body.len() as u16;
+        let mut framed = Vec::with_capacity(2 + body.len());
+        framed.extend_from_slice(&outer_len.to_le_bytes());
+        framed.extend_from_slice(&body);
         client.write_all(&framed).unwrap();
 
         // Read the server's response: [outer_len:2][adler32:4][xtea_region].
@@ -1559,7 +1674,8 @@ mod tests {
         let mut xtea_region = vec![0u8; xtea_len];
         client.read_exact(&mut xtea_region).unwrap();
 
-        // XTEA-decrypt and verify the first opcode is 0x0A (enter-world), not 0x14 (disconnect).
+        // XTEA-decrypt and verify the first opcode is 0xA0 (player stats — the
+        // first packet of the Player::login bundle), not 0x14 (disconnect).
         let key = xtea::Key(xtea_key);
         let round_keys = xtea::expand_key(&key);
         xtea::decrypt(&mut xtea_region, &round_keys);
@@ -1569,8 +1685,8 @@ mod tests {
         );
         let resp_opcode = xtea_region[2]; // [inner_len:2][opcode:1]...
         assert_eq!(
-            resp_opcode, 0x0A,
-            "server must send enter-world ack (0x0A), got 0x{resp_opcode:02X}"
+            resp_opcode, 0xA0,
+            "server must send player stats (0xA0) as the first login packet, got 0x{resp_opcode:02X}"
         );
 
         // Close the client write side so run_game_loop gets EOF and exits.

@@ -1,0 +1,124 @@
+nodes:
+  - file: "src/databasemanager.cpp"
+    qualified_name: "DatabaseManager::optimizeTables"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/databasemanager.cpp"
+          qualified_name: "DatabaseManager::optimizeTables"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/databasemanager.cpp"
+    qualified_name: "DatabaseManager::tableExists"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/databasemanager.cpp"
+          qualified_name: "DatabaseManager::tableExists"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/databasemanager.cpp"
+    qualified_name: "DatabaseManager::isDatabaseSetup"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/databasemanager.cpp"
+          qualified_name: "DatabaseManager::isDatabaseSetup"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/databasemanager.cpp"
+    qualified_name: "DatabaseManager::getDatabaseVersion"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/databasemanager.cpp"
+          qualified_name: "DatabaseManager::getDatabaseVersion"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/databasemanager.cpp"
+    qualified_name: "server_config.config"
+    edges: []
+  - file: "src/databasemanager.cpp"
+    qualified_name: "DatabaseManager::updateDatabase"
+    edges:
+      - target:
+          file: "src/databasemanager.cpp"
+          qualified_name: "DatabaseManager::updateDatabase"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getBoolean"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::resetScriptEnv"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/databasemanager.cpp"
+    qualified_name: "DatabaseManager::getDatabaseConfig"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/databasemanager.cpp"
+          qualified_name: "DatabaseManager::getDatabaseConfig"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/databasemanager.cpp"
+    qualified_name: "server_config.value"
+    edges: []
+  - file: "src/databasemanager.cpp"
+    qualified_name: "DatabaseManager::registerDatabaseConfig"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/databasemanager.cpp"
+          qualified_name: "DatabaseManager::registerDatabaseConfig"
+        kind: static
+        confidence: static
+        order: 2

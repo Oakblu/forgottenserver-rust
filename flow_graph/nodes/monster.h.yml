@@ -1,0 +1,19 @@
+nodes:
+  - file: "src/monster.h"
+    qualified_name: FS_MONSTER_H
+    edges: []
+  - file: "src/monster.h"
+    qualified_name: TargetSearchType_t
+    edges: []
+  - file: "src/monster.h"
+    qualified_name: "TargetSearchType_t::TARGETSEARCH_DEFAULT"
+    edges: []
+  - file: "src/monster.h"
+    qualified_name: "TargetSearchType_t::TARGETSEARCH_RANDOM"
+    edges: []
+  - file: "src/monster.h"
+    qualified_name: "TargetSearchType_t::TARGETSEARCH_ATTACKRANGE"
+    edges: []
+  - file: "src/monster.h"
+    qualified_name: "TargetSearchType_t::TARGETSEARCH_NEAREST"
+    edges: []

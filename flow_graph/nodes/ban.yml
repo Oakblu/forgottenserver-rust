@@ -1,0 +1,28 @@
+nodes:
+  - file: "src/ban.cpp"
+    qualified_name: "IOBan::getAccountBanInfo"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/ban.cpp"
+    qualified_name: "IOBan::getIpBanInfo"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/ban.cpp"
+    qualified_name: "IOBan::isPlayerNamelocked"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1

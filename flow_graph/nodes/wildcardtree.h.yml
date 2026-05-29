@@ -1,0 +1,34 @@
+nodes:
+  - file: "src/wildcardtree.h"
+    qualified_name: FS_WILDCARDTREE_H
+    edges: []
+  - file: "src/wildcardtree.h"
+    qualified_name: WildcardTreeNode
+    edges: []
+  - file: "src/wildcardtree.h"
+    qualified_name: "WildcardTreeNode::WildcardTreeNode"
+    edges: []
+  - file: "src/wildcardtree.h"
+    qualified_name: "WildcardTreeNode::WildcardTreeNode"
+    edges: []
+  - file: "src/wildcardtree.h"
+    qualified_name: "WildcardTreeNode::WildcardTreeNode"
+    edges: []
+  - file: "src/wildcardtree.h"
+    qualified_name: "WildcardTreeNode::getChild"
+    edges: []
+  - file: "src/wildcardtree.h"
+    qualified_name: "WildcardTreeNode::getChild"
+    edges: []
+  - file: "src/wildcardtree.h"
+    qualified_name: "WildcardTreeNode::addChild"
+    edges: []
+  - file: "src/wildcardtree.h"
+    qualified_name: "WildcardTreeNode::insert"
+    edges: []
+  - file: "src/wildcardtree.h"
+    qualified_name: "WildcardTreeNode::remove"
+    edges: []
+  - file: "src/wildcardtree.h"
+    qualified_name: "WildcardTreeNode::findOne"
+    edges: []

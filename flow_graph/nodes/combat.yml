@@ -1,0 +1,505 @@
+nodes:
+  - file: "src/combat.cpp"
+    qualified_name: getList
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::isSightClear"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/combat.cpp"
+    qualified_name: getCombatArea
+    edges: []
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::getCombatDamage"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::getCombatDamage"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::getWeapon"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::ConditionToDamageType"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::ConditionToDamageType"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::DamageToConditionType"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::DamageToConditionType"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::isPlayerCombat"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::isPlayerCombat"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::canTargetCreature"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::canDoCombat"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::canTargetCreature"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::isInPvpZone"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::canDoCombat"
+    edges: []
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::isInPvpZone"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::isInPvpZone"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::isProtected"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::isProtected"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::canDoCombat"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::canDoCombat"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::creature::onTargetCombat"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::setPlayerCombatValues"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::setPlayerCombatValues"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::setParam"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::setParam"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::getParam"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::getParam"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::setArea"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::setArea"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::setCallback"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::setCallback"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::getCallback"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::getCallback"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::combatTileEffects"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::combatTileEffects"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMagicEffect"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalAddItem"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::startDecay"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::CreateItem"
+        kind: static
+        confidence: static
+        order: 5
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::postCombatEffects"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::postCombatEffects"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::addDistanceEffect"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::addDistanceEffect"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addDistanceEffect"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::doCombat"
+    edges: []
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::doCombat"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::canDoCombat"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::doCombat"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::doTargetCombat"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::doTargetCombat"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMagicEffect"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::combatBlockHit"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::combatChangeHealth"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::combatChangeMana"
+        kind: static
+        confidence: static
+        order: 5
+  - file: "src/combat.cpp"
+    qualified_name: "Combat::doAreaCombat"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::doAreaCombat"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/combat.cpp"
+    qualified_name: "ValueCallback::getMinMaxValues"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "ValueCallback::getMinMaxValues"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::popString"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::resetScriptEnv"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setMetatable"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 7
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::getWeapon"
+        kind: static
+        confidence: static
+        order: 8
+  - file: "src/combat.cpp"
+    qualified_name: "TileCallback::onTileCombat"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "TileCallback::onTileCombat"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushPosition"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::resetScriptEnv"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setCreatureMetatable"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 7
+  - file: "src/combat.cpp"
+    qualified_name: "TargetCallback::onTargetCombat"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "TargetCallback::onTargetCombat"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::popString"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::resetScriptEnv"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setCreatureMetatable"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 7
+  - file: "src/combat.cpp"
+    qualified_name: "AreaCombat::getArea"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "AreaCombat::getArea"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/combat.cpp"
+    qualified_name: "AreaCombat::setupArea"
+    edges: []
+  - file: "src/combat.cpp"
+    qualified_name: "AreaCombat::setupArea"
+    edges: []
+  - file: "src/combat.cpp"
+    qualified_name: "AreaCombat::setupArea"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "AreaCombat::setupArea"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/combat.cpp"
+    qualified_name: "AreaCombat::setupAreaRing"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "AreaCombat::setupAreaRing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/combat.cpp"
+    qualified_name: "AreaCombat::setupExtArea"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "AreaCombat::setupExtArea"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/combat.cpp"
+    qualified_name: "MagicField::onStepInField"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::isProtected"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "MagicField::onStepInField"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMagicEffect"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getCreatureByID"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getPlayerByID"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalRemoveItem"
+        kind: static
+        confidence: static
+        order: 6

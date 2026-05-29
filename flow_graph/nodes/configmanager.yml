@@ -1,0 +1,100 @@
+nodes:
+  - file: "src/configmanager.cpp"
+    qualified_name: getEnv
+    edges: []
+  - file: "src/configmanager.cpp"
+    qualified_name: getEnv
+    edges: []
+  - file: "src/configmanager.cpp"
+    qualified_name: getGlobalString
+    edges: []
+  - file: "src/configmanager.cpp"
+    qualified_name: getGlobalNumber
+    edges: []
+  - file: "src/configmanager.cpp"
+    qualified_name: getGlobalBoolean
+    edges: []
+  - file: "src/configmanager.cpp"
+    qualified_name: loadLuaStages
+    edges:
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::getField"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/configmanager.cpp"
+    qualified_name: loadXMLStages
+    edges: []
+  - file: "src/configmanager.cpp"
+    qualified_name: "ConfigManager::load"
+    edges:
+      - target:
+          file: "src/configmanager.cpp"
+          qualified_name: "ConfigManager::load"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/configmanager.cpp"
+    qualified_name: "ConfigManager::getString"
+    edges:
+      - target:
+          file: "src/configmanager.cpp"
+          qualified_name: "ConfigManager::getString"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/configmanager.cpp"
+    qualified_name: "ConfigManager::getNumber"
+    edges:
+      - target:
+          file: "src/configmanager.cpp"
+          qualified_name: "ConfigManager::getNumber"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/configmanager.cpp"
+    qualified_name: "ConfigManager::getBoolean"
+    edges:
+      - target:
+          file: "src/configmanager.cpp"
+          qualified_name: "ConfigManager::getBoolean"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/configmanager.cpp"
+    qualified_name: "ConfigManager::getExperienceStage"
+    edges:
+      - target:
+          file: "src/configmanager.cpp"
+          qualified_name: "ConfigManager::getExperienceStage"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/configmanager.cpp"
+    qualified_name: "ConfigManager::setString"
+    edges:
+      - target:
+          file: "src/configmanager.cpp"
+          qualified_name: "ConfigManager::setString"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/configmanager.cpp"
+    qualified_name: "ConfigManager::setNumber"
+    edges:
+      - target:
+          file: "src/configmanager.cpp"
+          qualified_name: "ConfigManager::setNumber"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/configmanager.cpp"
+    qualified_name: "ConfigManager::setBoolean"
+    edges:
+      - target:
+          file: "src/configmanager.cpp"
+          qualified_name: "ConfigManager::setBoolean"
+        kind: static
+        confidence: static
+        order: 1

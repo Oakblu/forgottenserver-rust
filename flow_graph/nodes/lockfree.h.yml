@@ -1,0 +1,43 @@
+nodes:
+  - file: "src/lockfree.h"
+    qualified_name: FS_LOCKFREE_H
+    edges: []
+  - file: "src/lockfree.h"
+    qualified_name: LockfreeFreeList
+    edges: []
+  - file: "src/lockfree.h"
+    qualified_name: "LockfreeFreeList::freeList"
+    edges: []
+  - file: "src/lockfree.h"
+    qualified_name: "LockfreeFreeList::freeList"
+    edges: []
+  - file: "src/lockfree.h"
+    qualified_name: LockfreePoolingAllocator
+    edges: []
+  - file: "src/lockfree.h"
+    qualified_name: "LockfreePoolingAllocator::other"
+    edges: []
+  - file: "src/lockfree.h"
+    qualified_name: "LockfreePoolingAllocator::LockfreePoolingAllocator"
+    edges: []
+  - file: "src/lockfree.h"
+    qualified_name: "LockfreePoolingAllocator::inst"
+    edges: []
+  - file: "src/lockfree.h"
+    qualified_name: "LockfreePoolingAllocator::sizeof"
+    edges: []
+  - file: "src/lockfree.h"
+    qualified_name: "LockfreePoolingAllocator::p"
+    edges: []
+  - file: "src/lockfree.h"
+    qualified_name: "LockfreePoolingAllocator::operator"
+    edges: []
+  - file: "src/lockfree.h"
+    qualified_name: "LockfreePoolingAllocator::inst"
+    edges: []
+  - file: "src/lockfree.h"
+    qualified_name: "LockfreePoolingAllocator::sizeof"
+    edges: []
+  - file: "src/lockfree.h"
+    qualified_name: "LockfreePoolingAllocator::operator"
+    edges: []

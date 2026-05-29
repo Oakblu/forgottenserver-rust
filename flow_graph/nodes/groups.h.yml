@@ -1,0 +1,34 @@
+nodes:
+  - file: "src/groups.h"
+    qualified_name: Group
+    edges: []
+  - file: "src/groups.h"
+    qualified_name: "Group::name"
+    edges: []
+  - file: "src/groups.h"
+    qualified_name: "Group::flags"
+    edges: []
+  - file: "src/groups.h"
+    qualified_name: "Group::maxDepotItems"
+    edges: []
+  - file: "src/groups.h"
+    qualified_name: "Group::maxVipEntries"
+    edges: []
+  - file: "src/groups.h"
+    qualified_name: "Group::id"
+    edges: []
+  - file: "src/groups.h"
+    qualified_name: "Group::access"
+    edges: []
+  - file: "src/groups.h"
+    qualified_name: Groups
+    edges: []
+  - file: "src/groups.h"
+    qualified_name: "Groups::load"
+    edges: []
+  - file: "src/groups.h"
+    qualified_name: "Groups::getGroup"
+    edges: []
+  - file: "src/groups.h"
+    qualified_name: "Groups::groups"
+    edges: []

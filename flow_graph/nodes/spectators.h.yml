@@ -1,0 +1,40 @@
+nodes:
+  - file: "src/spectators.h"
+    qualified_name: SpectatorVec
+    edges: []
+  - file: "src/spectators.h"
+    qualified_name: "SpectatorVec::Vec"
+    edges: []
+  - file: "src/spectators.h"
+    qualified_name: "SpectatorVec::Iterator"
+    edges: []
+  - file: "src/spectators.h"
+    qualified_name: "SpectatorVec::ConstIterator"
+    edges: []
+  - file: "src/spectators.h"
+    qualified_name: "SpectatorVec::SpectatorVec"
+    edges: []
+  - file: "src/spectators.h"
+    qualified_name: "SpectatorVec::addSpectators"
+    edges: []
+  - file: "src/spectators.h"
+    qualified_name: "SpectatorVec::erase"
+    edges: []
+  - file: "src/spectators.h"
+    qualified_name: "SpectatorVec::size"
+    edges: []
+  - file: "src/spectators.h"
+    qualified_name: "SpectatorVec::empty"
+    edges: []
+  - file: "src/spectators.h"
+    qualified_name: "SpectatorVec::begin"
+    edges: []
+  - file: "src/spectators.h"
+    qualified_name: "SpectatorVec::end"
+    edges: []
+  - file: "src/spectators.h"
+    qualified_name: "SpectatorVec::emplace_back"
+    edges: []
+  - file: "src/spectators.h"
+    qualified_name: "SpectatorVec::vec"
+    edges: []

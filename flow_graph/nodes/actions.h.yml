@@ -1,0 +1,13 @@
+nodes:
+  - file: "src/actions.h"
+    qualified_name: FS_ACTIONS_H
+    edges: []
+  - file: "src/actions.h"
+    qualified_name: Action
+    edges: []
+  - file: "src/actions.h"
+    qualified_name: "Action::Action"
+    edges: []
+  - file: "src/actions.h"
+    qualified_name: "Action::canExecuteAction"
+    edges: []

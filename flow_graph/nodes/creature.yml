@@ -1,0 +1,901 @@
+nodes:
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::canSee"
+    edges: []
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::canSee"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::canSee"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::canSeeCreature"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::canSeeCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::setSkull"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::setSkull"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::updateCreatureSkull"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::getTimeSinceLastMove"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::getTimeSinceLastMove"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::getWalkDelay"
+    edges: []
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::getWalkDelay"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::getWalkDelay"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onThink"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onThink"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::forceUpdatePath"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::forceUpdatePath"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::updateCreatureWalk"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onAttacking"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onAttacking"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::isSightClear"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onIdleStatus"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onIdleStatus"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onWalk"
+    edges: []
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onWalk"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onWalk"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalCreatureSay"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::getNextStep"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::getNextStep"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::startAutoWalk"
+    edges: []
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::startAutoWalk"
+    edges: []
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::startAutoWalk"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::startAutoWalk"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::addEventWalk"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::addEventWalk"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::checkCreatureWalk"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::stopEventWalk"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::stopEventWalk"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::updateIcons"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::updateIcons"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onRemoveCreature"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onRemoveCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onCreatureDisappear"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onCreatureDisappear"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::updateFollowCreaturePath"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::updateFollowCreaturePath"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onChangeZone"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onChangeZone"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onAttackedCreatureChangeZone"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onAttackedCreatureChangeZone"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onCreatureMove"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onCreatureMove"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::creature::onChangeZone"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::checkCreatureAttack"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removeCreature"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::getKillers"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::getKillers"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getCreatureByID"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onDeath"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onDeath"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getCreatureByID"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removeCreature"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::dropCorpse"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::dropCorpse"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMagicEffect"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalAddItem"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::startDecay"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::CreateItem"
+        kind: static
+        confidence: static
+        order: 5
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::hasBeenAttacked"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::hasBeenAttacked"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::getCorpse"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::getCorpse"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::CreateItem"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::changeHealth"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::changeHealth"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addCreatureHealth"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::executeDeath"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::gainHealth"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::gainHealth"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::drainHealth"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::drainHealth"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::blockHit"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::blockHit"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::setAttackedCreature"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::setAttackedCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::removeAttackedCreature"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::removeAttackedCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::canAttackCreature"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::canAttackCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::getPathSearchParams"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::getPathSearchParams"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::setFollowCreature"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::setFollowCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::removeFollowCreature"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::removeFollowCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::canFollowCreature"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::canFollowCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onFollowCreature"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onFollowCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onUnfollowCreature"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onUnfollowCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::isFollower"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::isFollower"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::addFollower"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::addFollower"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::removeFollower"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::removeFollower"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::removeFollowers"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::removeFollowers"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::releaseFollowers"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::releaseFollowers"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::updateFollowersPaths"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::updateFollowersPaths"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::updateCreatureWalk"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::getDamageRatio"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::getDamageRatio"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::getGainedExperience"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::getGainedExperience"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::addDamagePoints"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::addDamagePoints"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onAddCondition"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onAddCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onAddCombatCondition"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onAddCombatCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onEndCondition"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onEndCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onTickCondition"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onTickCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onCombatRemoveCondition"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onCombatRemoveCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onAttacked"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onAttacked"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onAttackedCreatureDrainHealth"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onAttackedCreatureDrainHealth"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onKilledCreature"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onKilledCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::onGainExperience"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onGainExperience"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::setMaster"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::setMaster"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::addCondition"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::addCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::forceAddCondition"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::addCombatCondition"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::addCombatCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::removeCondition"
+    edges: []
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::removeCondition"
+    edges: []
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::removeCombatCondition"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::removeCombatCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::removeCondition"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::removeCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::forceRemoveCondition"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::getCondition"
+    edges: []
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::getCondition"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::getCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::executeConditions"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::executeConditions"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::hasCondition"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::hasCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::isImmune"
+    edges: []
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::isImmune"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::isImmune"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::isSuppress"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::isSuppress"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::getStepDuration"
+    edges: []
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::getStepDuration"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::getStepDuration"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::getEventStepTicks"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::getEventStepTicks"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::getCreatureLight"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::getCreatureLight"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::setCreatureLight"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::setCreatureLight"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::setNormalCreatureLight"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::setNormalCreatureLight"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::registerCreatureEvent"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::registerCreatureEvent"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/creatureevent.cpp"
+          qualified_name: "CreatureEvents::getEventByName"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::unregisterCreatureEvent"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::unregisterCreatureEvent"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/creatureevent.cpp"
+          qualified_name: "CreatureEvents::getEventByName"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::getCreatureEvents"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::getCreatureEvents"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "FrozenPathingConditionCall::isInRange"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "FrozenPathingConditionCall::isInRange"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "FrozenPathingConditionCall::operator"
+    edges: []
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::isInvisible"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::isInvisible"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::getPathTo"
+    edges: []
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::getPathTo"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::getPathTo"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::setStorageValue"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::setStorageValue"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::creature::onUpdateStorage"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/creature.cpp"
+    qualified_name: "Creature::getStorageValue"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::getStorageValue"
+        kind: static
+        confidence: static
+        order: 1

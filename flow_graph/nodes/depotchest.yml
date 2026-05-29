@@ -1,0 +1,64 @@
+nodes:
+  - file: "src/depotchest.cpp"
+    qualified_name: "DepotChest::DepotChest"
+    edges:
+      - target:
+          file: "src/depotchest.cpp"
+          qualified_name: "DepotChest::DepotChest"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/depotchest.cpp"
+    qualified_name: "DepotChest::getParent"
+    edges: []
+  - file: "src/depotchest.cpp"
+    qualified_name: "DepotChest::postAddNotification"
+    edges: []
+  - file: "src/depotchest.cpp"
+    qualified_name: "DepotChest::postRemoveNotification"
+    edges: []
+  - file: "src/depotchest.cpp"
+    qualified_name: "DepotChest::queryAdd"
+    edges: []
+  - file: "src/depotchest.cpp"
+    qualified_name: "DepotChest::queryAdd"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::queryAdd"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/depotchest.cpp"
+          qualified_name: "DepotChest::queryAdd"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/depotchest.cpp"
+    qualified_name: "DepotChest::postAddNotification"
+    edges:
+      - target:
+          file: "src/depotchest.cpp"
+          qualified_name: "DepotChest::postAddNotification"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/depotchest.cpp"
+    qualified_name: "DepotChest::postRemoveNotification"
+    edges:
+      - target:
+          file: "src/depotchest.cpp"
+          qualified_name: "DepotChest::postRemoveNotification"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/depotchest.cpp"
+    qualified_name: "DepotChest::getParent"
+    edges:
+      - target:
+          file: "src/depotchest.cpp"
+          qualified_name: "DepotChest::getParent"
+        kind: static
+        confidence: static
+        order: 1

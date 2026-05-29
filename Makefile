@@ -3,7 +3,7 @@
 # Top-level targets for developers and the harness. Real builds use
 # cargo / docker compose directly; these targets are convenience wrappers.
 
-.PHONY: help harness harness-up harness-down test clippy fmt ledger ledger-test ledger-build ledger-rollup ledger-cross e2e
+.PHONY: help harness harness-up harness-down test clippy fmt ledger ledger-test ledger-build ledger-rollup ledger-cross e2e flow flow-test flow-build
 
 help:
 	@echo "Available targets:"
@@ -18,6 +18,9 @@ help:
 	@echo "  make ledger-build   — regenerate MIGRATION_LEDGER.yml from manifests"
 	@echo "  make ledger-rollup  — regenerate files: rollup from symbol rows"
 	@echo "  make ledger-cross   — phase-2 cross-validation (roundtrip + coverage + orphans)"
+	@echo "  make flow           — validate flow graph (node keys, dangling edges, orphans)"
+	@echo "  make flow-build     — bootstrap nodes + extract static edges from C++ source"
+	@echo "  make flow-test      — run scripts/flow/ unit tests"
 	@echo ""
 	@echo "Harness lane subset:"
 	@echo "  HARNESS_LANES=wire_replay,otbm_diff make harness"
@@ -59,3 +62,13 @@ ledger-rollup:
 
 ledger-cross:
 	@python3 scripts/ledger/cross_validate.py
+
+flow:
+	@python3 scripts/flow/validate.py
+
+flow-build:
+	@python3 scripts/flow/bootstrap_nodes.py
+	@python3 scripts/flow/build_edges.py
+
+flow-test:
+	@python3 -m unittest discover -s scripts/flow/tests -v

@@ -1,0 +1,40 @@
+nodes:
+  - file: "src/databasetasks.h"
+    qualified_name: DatabaseTask
+    edges: []
+  - file: "src/databasetasks.h"
+    qualified_name: "DatabaseTask::DatabaseTask"
+    edges: []
+  - file: "src/databasetasks.h"
+    qualified_name: "DatabaseTask::query"
+    edges: []
+  - file: "src/databasetasks.h"
+    qualified_name: "DatabaseTask::callback"
+    edges: []
+  - file: "src/databasetasks.h"
+    qualified_name: "DatabaseTask::store"
+    edges: []
+  - file: "src/databasetasks.h"
+    qualified_name: DatabaseTasks
+    edges: []
+  - file: "src/databasetasks.h"
+    qualified_name: "DatabaseTasks::DatabaseTasks"
+    edges: []
+  - file: "src/databasetasks.h"
+    qualified_name: "DatabaseTasks::db"
+    edges: []
+  - file: "src/databasetasks.h"
+    qualified_name: "DatabaseTasks::thread"
+    edges: []
+  - file: "src/databasetasks.h"
+    qualified_name: "DatabaseTasks::tasks"
+    edges: []
+  - file: "src/databasetasks.h"
+    qualified_name: "DatabaseTasks::taskLock"
+    edges: []
+  - file: "src/databasetasks.h"
+    qualified_name: "DatabaseTasks::taskSignal"
+    edges: []
+  - file: "src/databasetasks.h"
+    qualified_name: g_databaseTasks
+    edges: []

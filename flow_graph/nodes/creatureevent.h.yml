@@ -1,0 +1,49 @@
+nodes:
+  - file: "src/creatureevent.h"
+    qualified_name: FS_CREATUREEVENT_H
+    edges: []
+  - file: "src/creatureevent.h"
+    qualified_name: CreatureEventType_t
+    edges: []
+  - file: "src/creatureevent.h"
+    qualified_name: "CreatureEventType_t::CREATURE_EVENT_NONE"
+    edges: []
+  - file: "src/creatureevent.h"
+    qualified_name: "CreatureEventType_t::CREATURE_EVENT_LOGIN"
+    edges: []
+  - file: "src/creatureevent.h"
+    qualified_name: "CreatureEventType_t::CREATURE_EVENT_LOGOUT"
+    edges: []
+  - file: "src/creatureevent.h"
+    qualified_name: "CreatureEventType_t::CREATURE_EVENT_RECONNECT"
+    edges: []
+  - file: "src/creatureevent.h"
+    qualified_name: "CreatureEventType_t::CREATURE_EVENT_THINK"
+    edges: []
+  - file: "src/creatureevent.h"
+    qualified_name: "CreatureEventType_t::CREATURE_EVENT_PREPAREDEATH"
+    edges: []
+  - file: "src/creatureevent.h"
+    qualified_name: "CreatureEventType_t::CREATURE_EVENT_DEATH"
+    edges: []
+  - file: "src/creatureevent.h"
+    qualified_name: "CreatureEventType_t::CREATURE_EVENT_KILL"
+    edges: []
+  - file: "src/creatureevent.h"
+    qualified_name: "CreatureEventType_t::CREATURE_EVENT_ADVANCE"
+    edges: []
+  - file: "src/creatureevent.h"
+    qualified_name: "CreatureEventType_t::CREATURE_EVENT_MODALWINDOW"
+    edges: []
+  - file: "src/creatureevent.h"
+    qualified_name: "CreatureEventType_t::CREATURE_EVENT_TEXTEDIT"
+    edges: []
+  - file: "src/creatureevent.h"
+    qualified_name: "CreatureEventType_t::CREATURE_EVENT_HEALTHCHANGE"
+    edges: []
+  - file: "src/creatureevent.h"
+    qualified_name: "CreatureEventType_t::CREATURE_EVENT_MANACHANGE"
+    edges: []
+  - file: "src/creatureevent.h"
+    qualified_name: "CreatureEventType_t::CREATURE_EVENT_EXTENDED_OPCODE"
+    edges: []

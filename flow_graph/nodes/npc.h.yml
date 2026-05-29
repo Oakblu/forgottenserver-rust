@@ -1,0 +1,40 @@
+nodes:
+  - file: "src/npc.h"
+    qualified_name: FS_NPC_H
+    edges: []
+  - file: "src/npc.h"
+    qualified_name: Npcs
+    edges: []
+  - file: "src/npc.h"
+    qualified_name: "Npcs::reload"
+    edges: []
+  - file: "src/npc.h"
+    qualified_name: NpcEventsHandler
+    edges: []
+  - file: "src/npc.h"
+    qualified_name: "NpcEventsHandler::NpcEventsHandler"
+    edges: []
+  - file: "src/npc.h"
+    qualified_name: "NpcEventsHandler::onCreatureAppear"
+    edges: []
+  - file: "src/npc.h"
+    qualified_name: "NpcEventsHandler::onCreatureDisappear"
+    edges: []
+  - file: "src/npc.h"
+    qualified_name: "NpcEventsHandler::onCreatureMove"
+    edges: []
+  - file: "src/npc.h"
+    qualified_name: "NpcEventsHandler::onCreatureSay"
+    edges: []
+  - file: "src/npc.h"
+    qualified_name: "NpcEventsHandler::onPlayerCloseChannel"
+    edges: []
+  - file: "src/npc.h"
+    qualified_name: "NpcEventsHandler::onPlayerEndTrade"
+    edges: []
+  - file: "src/npc.h"
+    qualified_name: "NpcEventsHandler::onThink"
+    edges: []
+  - file: "src/npc.h"
+    qualified_name: "NpcEventsHandler::isLoaded"
+    edges: []

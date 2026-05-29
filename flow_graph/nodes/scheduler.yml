@@ -1,0 +1,31 @@
+nodes:
+  - file: "src/scheduler.cpp"
+    qualified_name: "Scheduler::addEvent"
+    edges:
+      - target:
+          file: "src/scheduler.cpp"
+          qualified_name: "Scheduler::addEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/scheduler.cpp"
+    qualified_name: "Scheduler::stopEvent"
+    edges:
+      - target:
+          file: "src/scheduler.cpp"
+          qualified_name: "Scheduler::stopEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/scheduler.cpp"
+    qualified_name: "Scheduler::shutdown"
+    edges:
+      - target:
+          file: "src/scheduler.cpp"
+          qualified_name: "Scheduler::shutdown"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/scheduler.cpp"
+    qualified_name: createSchedulerTask
+    edges: []

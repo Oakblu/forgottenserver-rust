@@ -1,0 +1,46 @@
+nodes:
+  - file: "src/storeinbox.cpp"
+    qualified_name: "StoreInbox::StoreInbox"
+    edges:
+      - target:
+          file: "src/storeinbox.cpp"
+          qualified_name: "StoreInbox::StoreInbox"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/storeinbox.cpp"
+    qualified_name: "StoreInbox::postAddNotification"
+    edges: []
+  - file: "src/storeinbox.cpp"
+    qualified_name: "StoreInbox::postRemoveNotification"
+    edges: []
+  - file: "src/storeinbox.cpp"
+    qualified_name: "StoreInbox::queryAdd"
+    edges: []
+  - file: "src/storeinbox.cpp"
+    qualified_name: "StoreInbox::queryAdd"
+    edges:
+      - target:
+          file: "src/storeinbox.cpp"
+          qualified_name: "StoreInbox::queryAdd"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/storeinbox.cpp"
+    qualified_name: "StoreInbox::postAddNotification"
+    edges:
+      - target:
+          file: "src/storeinbox.cpp"
+          qualified_name: "StoreInbox::postAddNotification"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/storeinbox.cpp"
+    qualified_name: "StoreInbox::postRemoveNotification"
+    edges:
+      - target:
+          file: "src/storeinbox.cpp"
+          qualified_name: "StoreInbox::postRemoveNotification"
+        kind: static
+        confidence: static
+        order: 1

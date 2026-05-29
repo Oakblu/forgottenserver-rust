@@ -1,0 +1,100 @@
+nodes:
+  - file: "src/signals.cpp"
+    qualified_name: sigusr1Handler
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::saveGameState"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvents::save"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/signals.cpp"
+    qualified_name: sighupHandler
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::load"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/configmanager.cpp"
+          qualified_name: "ConfigManager::load"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::reload"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/monsters.cpp"
+          qualified_name: "Monsters::reload"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npcs::reload"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::loadDefaults"
+        kind: static
+        confidence: static
+        order: 6
+  - file: "src/signals.cpp"
+    qualified_name: sigbreakHandler
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::setGameState"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/signals.cpp"
+    qualified_name: sigtermHandler
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::setGameState"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/signals.cpp"
+    qualified_name: sigintHandler
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::setGameState"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/signals.cpp"
+    qualified_name: dispatchSignalHandler
+    edges:
+      - target:
+          file: "src/tasks.cpp"
+          qualified_name: "Dispatcher::addTask"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/signals.cpp"
+    qualified_name: "Signals::asyncWait"
+    edges:
+      - target:
+          file: "src/signals.cpp"
+          qualified_name: "Signals::asyncWait"
+        kind: static
+        confidence: static
+        order: 1

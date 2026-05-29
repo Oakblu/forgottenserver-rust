@@ -1,0 +1,139 @@
+nodes:
+  - file: "src/connection.h"
+    qualified_name: ConnectionState_t
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "ConnectionState_t::CONNECTION_STATE_DISCONNECTED"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "ConnectionState_t::CONNECTION_STATE_REQUEST_CHARLIST"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "ConnectionState_t::CONNECTION_STATE_GAMEWORLD_AUTH"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "ConnectionState_t::CONNECTION_STATE_GAME"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "ConnectionState_t::CONNECTION_STATE_PENDING"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: checksumMode_t
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "checksumMode_t::CHECKSUM_DISABLED"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "checksumMode_t::CHECKSUM_ADLER"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "checksumMode_t::CHECKSUM_SEQUENCE"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: CONNECTION_WRITE_TIMEOUT
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: CONNECTION_READ_TIMEOUT
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: Protocol_ptr
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: OutputMessage_ptr
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: Connection_ptr
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: ConnectionWeak_ptr
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: Service_ptr
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: ServicePort_ptr
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: ConstServicePort_ptr
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: ConnectionManager
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "ConnectionManager::getInstance"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "ConnectionManager::ConnectionManager"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "ConnectionManager::connections"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "ConnectionManager::connectionManagerLock"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: Connection
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "Connection::Address"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "Connection::Connection(const Connection&)"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "Connection::operator="
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "Connection::FORCE_CLOSE"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "Connection::getIP"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "Connection::getSocket"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "Connection::msg"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "Connection::readTimer"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "Connection::writeTimer"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "Connection::connectionLock"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "Connection::messageQueue"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "Connection::service_port"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "Connection::protocol"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "Connection::socket"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "Connection::remoteAddress"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "Connection::timeConnected"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "Connection::packetsSent"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "Connection::connectionState"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "Connection::receivedFirst"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "Connection::receivedName"
+    edges: []
+  - file: "src/connection.h"
+    qualified_name: "Connection::receivedLastChar"
+    edges: []

@@ -1,0 +1,16 @@
+nodes:
+  - file: "src/storeinbox.h"
+    qualified_name: StoreInbox
+    edges: []
+  - file: "src/storeinbox.h"
+    qualified_name: "StoreInbox::canRemove"
+    edges: []
+  - file: "src/storeinbox.h"
+    qualified_name: "StoreInbox::getStoreInbox (const)"
+    edges: []
+  - file: "src/storeinbox.h"
+    qualified_name: "StoreInbox::getStoreInbox (non-const)"
+    edges: []
+  - file: "src/storeinbox.h"
+    qualified_name: FS_STOREINBOX_H
+    edges: []

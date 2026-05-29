@@ -1,0 +1,25 @@
+nodes:
+  - file: "src/script.cpp"
+    qualified_name: g_luaEnvironment
+    edges: []
+  - file: "src/script.cpp"
+    qualified_name: "Scripts::Scripts"
+    edges:
+      - target:
+          file: "src/script.cpp"
+          qualified_name: "Scripts::Scripts"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/script.cpp"
+    qualified_name: "Scripts::~Scripts"
+    edges: []
+  - file: "src/script.cpp"
+    qualified_name: "Scripts::loadScripts"
+    edges:
+      - target:
+          file: "src/script.cpp"
+          qualified_name: "Scripts::loadScripts"
+        kind: static
+        confidence: static
+        order: 1

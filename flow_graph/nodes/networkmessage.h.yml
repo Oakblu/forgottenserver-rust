@@ -1,0 +1,112 @@
+nodes:
+  - file: "src/networkmessage.h"
+    qualified_name: NetworkMessage_ptr
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: NetworkMessage
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::MsgSize_t"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::INITIAL_BUFFER_POSITION"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::HEADER_LENGTH"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::CHECKSUM_LENGTH"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::XTEA_MULTIPLE"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::MAX_BODY_LENGTH"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::MAX_PROTOCOL_BODY_LENGTH"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::NetworkMessage"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::reset"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::getByte"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::getPreviousByte"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::get"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::skipBytes"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::addByte"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::add"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::getLength"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::isEmpty"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::setLength"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::getBufferPosition"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::getRemainingBufferLength"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::setBufferPosition"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::getLengthHeader"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::isOverrun"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::getBuffer"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::getBuffer() const"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::getRemainingBuffer"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::getBodyBuffer"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::NetworkMessageInfo"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::NetworkMessageInfo::length"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::NetworkMessageInfo::position"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::NetworkMessageInfo::overrun"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::info"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::buffer"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::canAdd"
+    edges: []
+  - file: "src/networkmessage.h"
+    qualified_name: "NetworkMessage::canRead"
+    edges: []

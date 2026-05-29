@@ -1,0 +1,244 @@
+nodes:
+  - file: "src/combat.h"
+    qualified_name: ValueCallback
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "ValueCallback::ValueCallback"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "ValueCallback::getMinMaxValues"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "ValueCallback::type"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: TileCallback
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "TileCallback::onTileCombat"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: TargetCallback
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "TargetCallback::onTargetCombat"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: CombatParams
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "CombatParams::conditionList"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "CombatParams::valueCallback"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "CombatParams::tileCallback"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "CombatParams::targetCallback"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "CombatParams::itemId"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "CombatParams::dispelType"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "CombatParams::combatType"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "CombatParams::origin"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "CombatParams::impactEffect"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "CombatParams::distanceEffect"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "CombatParams::blockedByArmor"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "CombatParams::blockedByShield"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "CombatParams::targetCasterOrTopMost"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "CombatParams::aggressive"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "CombatParams::useCharges"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "CombatParams::ignoreResistances"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: AreaCombat
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "AreaCombat::setupArea(vector,rows)"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "AreaCombat::setupArea(length,spread)"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "AreaCombat::setupArea(radius)"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "AreaCombat::setupAreaRing"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "AreaCombat::setupExtArea"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "AreaCombat::getArea"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "AreaCombat::areas"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "AreaCombat::hasExtArea"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: Combat
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::Combat"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::Combat(const Combat&)"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::operator="
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::isInPvpZone"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::isProtected"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::isPlayerCombat"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::ConditionToDamageType"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::DamageToConditionType"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::canTargetCreature"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::canDoCombat(tile)"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::canDoCombat(target)"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::postCombatEffects"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::addDistanceEffect"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::doCombat(target)"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::doCombat(position)"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::doTargetCombat"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::doAreaCombat"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::setCallback"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::getCallback"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::setParam"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::getParam"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::setArea"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::hasArea"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::addCondition"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::clearConditions"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::setPlayerCombatValues"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::postCombatEffects(pos)"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::setOrigin"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::combatTileEffects"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::getCombatDamage"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::params"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::formulaType"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::mina"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::minb"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::maxa"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::maxb"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "Combat::area"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: MagicField
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "MagicField::MagicField"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "MagicField::getMagicField"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "MagicField::getMagicField const"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "MagicField::isReplaceable"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "MagicField::getCombatType"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "MagicField::getDamage"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "MagicField::onStepInField"
+    edges: []
+  - file: "src/combat.h"
+    qualified_name: "MagicField::createTime"
+    edges: []

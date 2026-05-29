@@ -1,0 +1,58 @@
+nodes:
+  - file: "src/inbox.cpp"
+    qualified_name: "Inbox::Inbox"
+    edges:
+      - target:
+          file: "src/inbox.cpp"
+          qualified_name: "Inbox::Inbox"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/inbox.cpp"
+    qualified_name: "Inbox::getParent"
+    edges: []
+  - file: "src/inbox.cpp"
+    qualified_name: "Inbox::postAddNotification"
+    edges: []
+  - file: "src/inbox.cpp"
+    qualified_name: "Inbox::postRemoveNotification"
+    edges: []
+  - file: "src/inbox.cpp"
+    qualified_name: "Inbox::queryAdd"
+    edges: []
+  - file: "src/inbox.cpp"
+    qualified_name: "Inbox::queryAdd"
+    edges:
+      - target:
+          file: "src/inbox.cpp"
+          qualified_name: "Inbox::queryAdd"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/inbox.cpp"
+    qualified_name: "Inbox::postAddNotification"
+    edges:
+      - target:
+          file: "src/inbox.cpp"
+          qualified_name: "Inbox::postAddNotification"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/inbox.cpp"
+    qualified_name: "Inbox::postRemoveNotification"
+    edges:
+      - target:
+          file: "src/inbox.cpp"
+          qualified_name: "Inbox::postRemoveNotification"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/inbox.cpp"
+    qualified_name: "Inbox::getParent"
+    edges:
+      - target:
+          file: "src/inbox.cpp"
+          qualified_name: "Inbox::getParent"
+        kind: static
+        confidence: static
+        order: 1

@@ -1,0 +1,169 @@
+nodes:
+  - file: "src/globalevent.cpp"
+    qualified_name: "GlobalEvents::clearMap"
+    edges:
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvents::clearMap"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/globalevent.cpp"
+    qualified_name: "GlobalEvents::clear"
+    edges:
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvents::clear"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/globalevent.cpp"
+    qualified_name: "GlobalEvents::getEvent"
+    edges:
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvents::getEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/globalevent.cpp"
+    qualified_name: "GlobalEvents::registerEvent"
+    edges:
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvents::registerEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/globalevent.cpp"
+    qualified_name: "GlobalEvents::registerLuaEvent"
+    edges:
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvents::registerLuaEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/globalevent.cpp"
+    qualified_name: "GlobalEvents::startup"
+    edges:
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvents::startup"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/globalevent.cpp"
+    qualified_name: "GlobalEvents::shutdown"
+    edges:
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvents::shutdown"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/globalevent.cpp"
+    qualified_name: "GlobalEvents::save"
+    edges:
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvents::save"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/globalevent.cpp"
+    qualified_name: "GlobalEvents::timer"
+    edges:
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvents::timer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/globalevent.cpp"
+    qualified_name: "GlobalEvents::think"
+    edges:
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvents::think"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/globalevent.cpp"
+    qualified_name: "GlobalEvents::execute"
+    edges:
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvents::execute"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/globalevent.cpp"
+    qualified_name: "GlobalEvents::getEventMap"
+    edges:
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvents::getEventMap"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/globalevent.cpp"
+    qualified_name: "GlobalEvent::configureEvent"
+    edges:
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvent::configureEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/globalevent.cpp"
+    qualified_name: "GlobalEvent::getScriptEventName"
+    edges:
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvent::getScriptEventName"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/globalevent.cpp"
+    qualified_name: "GlobalEvent::executeRecord"
+    edges:
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvent::executeRecord"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/globalevent.cpp"
+    qualified_name: "GlobalEvent::executeEvent"
+    edges:
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvent::executeEvent"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 3

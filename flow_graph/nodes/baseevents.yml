@@ -1,0 +1,70 @@
+nodes:
+  - file: "src/baseevents.cpp"
+    qualified_name: "BaseEvents::loadFromXml"
+    edges:
+      - target:
+          file: "src/baseevents.cpp"
+          qualified_name: "BaseEvents::loadFromXml"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/baseevents.cpp"
+    qualified_name: "BaseEvents::reload"
+    edges:
+      - target:
+          file: "src/baseevents.cpp"
+          qualified_name: "BaseEvents::reload"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/baseevents.cpp"
+    qualified_name: "BaseEvents::reInitState"
+    edges:
+      - target:
+          file: "src/baseevents.cpp"
+          qualified_name: "BaseEvents::reInitState"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/baseevents.cpp"
+    qualified_name: "Event::checkScript"
+    edges:
+      - target:
+          file: "src/baseevents.cpp"
+          qualified_name: "Event::checkScript"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaEnvironment::getTestInterface"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/baseevents.cpp"
+    qualified_name: "Event::loadScript"
+    edges:
+      - target:
+          file: "src/baseevents.cpp"
+          qualified_name: "Event::loadScript"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/baseevents.cpp"
+    qualified_name: "Event::loadCallback"
+    edges:
+      - target:
+          file: "src/baseevents.cpp"
+          qualified_name: "Event::loadCallback"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/baseevents.cpp"
+    qualified_name: "CallBack::loadCallBack"
+    edges:
+      - target:
+          file: "src/baseevents.cpp"
+          qualified_name: "CallBack::loadCallBack"
+        kind: static
+        confidence: static
+        order: 1

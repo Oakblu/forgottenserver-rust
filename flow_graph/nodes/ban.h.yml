@@ -1,0 +1,25 @@
+nodes:
+  - file: "src/ban.h"
+    qualified_name: IOBan
+    edges: []
+  - file: "src/ban.h"
+    qualified_name: "IOBan::BanInfo"
+    edges: []
+  - file: "src/ban.h"
+    qualified_name: "IOBan::BanInfo::bannedBy"
+    edges: []
+  - file: "src/ban.h"
+    qualified_name: "IOBan::BanInfo::reason"
+    edges: []
+  - file: "src/ban.h"
+    qualified_name: "IOBan::BanInfo::expiresAt"
+    edges: []
+  - file: "src/ban.h"
+    qualified_name: "IOBan::getAccountBanInfo"
+    edges: []
+  - file: "src/ban.h"
+    qualified_name: "IOBan::getIpBanInfo"
+    edges: []
+  - file: "src/ban.h"
+    qualified_name: "IOBan::isPlayerNamelocked"
+    edges: []

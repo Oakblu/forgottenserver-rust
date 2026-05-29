@@ -1,0 +1,1873 @@
+nodes:
+  - file: "src/protocolgame.cpp"
+    qualified_name: g_creatureEvents
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: g_chat
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "(anonymous)::waitList"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "(anonymous)::priorityEnd"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "(anonymous)::findClient"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "(anonymous)::getWaitTime"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "(anonymous)::getTimeout"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "(anonymous)::clientLogin"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "(anonymous)::getClientDamageType"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::release"
+    edges:
+      - target:
+          file: "src/outputmessage.cpp"
+          qualified_name: "tfs::net::remove_protocol_from_autosend"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/protocol.h"
+          qualified_name: "Protocol::release"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::release"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::login"
+    edges:
+      - target:
+          file: "src/ban.cpp"
+          qualified_name: "IOBan::getAccountBanInfo"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/ban.cpp"
+          qualified_name: "IOBan::isPlayerNamelocked"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::loadPlayerById"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::preloadPlayer"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/outputmessage.cpp"
+          qualified_name: "tfs::net::insert_protocol_to_autosend"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/outputmessage.cpp"
+          qualified_name: "tfs::net::make_output_message"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::login"
+        kind: static
+        confidence: static
+        order: 7
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::connect"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::removeUserFromAllChannels"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/creatureevent.cpp"
+          qualified_name: "CreatureEvents::playerReconnect"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::connect"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::release"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::logout"
+    edges:
+      - target:
+          file: "src/creatureevent.cpp"
+          qualified_name: "CreatureEvents::playerLogout"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::logout"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::onRecvFirstMessage"
+    edges:
+      - target:
+          file: "src/ban.cpp"
+          qualified_name: "IOBan::getIpBanInfo"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/protocol.cpp"
+          qualified_name: "Protocol::RSA_decrypt"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::onRecvFirstMessage"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::onConnect"
+    edges:
+      - target:
+          file: "src/outputmessage.cpp"
+          qualified_name: "tfs::net::make_output_message"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::onConnect"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::disconnectClient"
+    edges:
+      - target:
+          file: "src/outputmessage.cpp"
+          qualified_name: "tfs::net::make_output_message"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::disconnectClient"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::writeToOutputBuffer"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::writeToOutputBuffer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parsePacket"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parsePacket"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x0F_QuitInLoading"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x14_Logout"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x1D_PingBack"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x1E_Ping"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x32_ExtendedOpcode"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x64_AutoWalk"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x65_MoveNorth"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x66_MoveEast"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x67_MoveSouth"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x68_MoveWest"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x69_StopAutoWalk"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x6A_MoveNorthEast"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x6B_MoveSouthEast"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x6C_MoveSouthWest"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x6D_MoveNorthWest"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x6F_TurnNorth"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x70_TurnEast"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x71_TurnSouth"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x72_TurnWest"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x77_EquipObject"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x78_Throw"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x79_LookInShop"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x7A_PlayerPurchase"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x7B_PlayerSale"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x7C_CloseShop"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x7D_RequestTrade"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x7E_LookInTrade"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x7F_AcceptTrade"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x80_CloseTrade"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x82_UseItem"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x83_UseItemEx"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x84_UseWithCreature"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x85_RotateItem"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x86_EditPodiumRequest"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x87_CloseContainer"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x88_UpArrowContainer"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x89_TextWindow"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x8A_HouseWindow"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x8B_WrapItem"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x8C_LookAt"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x8D_LookInBattleList"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x8E_JoinAggression"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x96_Say"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x97_RequestChannels"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x98_OpenChannel"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x99_CloseChannel"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x9A_OpenPrivateChannel"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0x9E_CloseNpcChannel"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xA0_FightModes"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xA1_Attack"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xA2_Follow"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xA3_InviteToParty"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xA4_JoinParty"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xA5_RevokePartyInvite"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xA6_PassPartyLeadership"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xA7_LeaveParty"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xA8_EnableSharedPartyExperience"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xAA_CreatePrivateChannel"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xAB_ChannelInvite"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xAC_ChannelExclude"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xBE_CancelAttackAndFollow"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xC9_UpdateTile"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xCA_UpdateContainer"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xCB_BrowseField"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xCC_SeekInContainer"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xD2_RequestOutfit"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xD3_SetOutfit"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xDC_AddVip"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xDD_RemoveVip"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xDE_EditVip"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xE7_ThankYou"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xE8_DebugAssert"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xF2_RuleViolationReport"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xF3_GetObjectInfo"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xF4_MarketLeave"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xF5_MarketBrowse"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xF6_MarketCreateOffer"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xF7_MarketCancelOffer"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xF8_MarketAcceptOffer"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ClientPacket::0xF9_ModalWindowAnswer"
+    edges: []
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::GetTileDescription"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::GetTileDescription"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::GetMapDescription"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::GetMapDescription"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::GetFloorDescription"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::GetFloorDescription"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::checkCreatureAsKnown"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::checkCreatureAsKnown"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::canSee"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::canSee"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::canSee(Position)"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::canSee"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::canSee(xyz)"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::canSee"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseChannelInvite"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseChannelInvite"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseChannelExclude"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseChannelExclude"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseOpenChannel"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseOpenChannel"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseCloseChannel"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseCloseChannel"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseOpenPrivateChannel"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseOpenPrivateChannel"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseAutoWalk"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseAutoWalk"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseSetOutfit"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseSetOutfit"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseEditPodiumRequest"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseEditPodiumRequest"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseUseItem"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseUseItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseUseItemEx"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseUseItemEx"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseUseWithCreature"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseUseWithCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseCloseContainer"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseCloseContainer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseUpArrowContainer"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseUpArrowContainer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseUpdateContainer"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseUpdateContainer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseThrow"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseThrow"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseLookAt"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseLookAt"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseLookInBattleList"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseLookInBattleList"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseSay"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseSay"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseFightModes"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseFightModes"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseAttack"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseAttack"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseFollow"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseFollow"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseEquipObject"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseEquipObject"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseTextWindow"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseTextWindow"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseHouseWindow"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseHouseWindow"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseWrapItem"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseWrapItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseLookInShop"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseLookInShop"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parsePlayerPurchase"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parsePlayerPurchase"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parsePlayerSale"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parsePlayerSale"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseRequestTrade"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseRequestTrade"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseLookInTrade"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseLookInTrade"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseAddVip"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseAddVip"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseRemoveVip"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseRemoveVip"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseEditVip"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseEditVip"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseRotateItem"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseRotateItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseRuleViolationReport"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseRuleViolationReport"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseDebugAssert"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseDebugAssert"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseInviteToParty"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseInviteToParty"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseJoinParty"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseJoinParty"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseRevokePartyInvite"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseRevokePartyInvite"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parsePassPartyLeadership"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parsePassPartyLeadership"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseEnableSharedPartyExperience"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseEnableSharedPartyExperience"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseMarketLeave"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseMarketLeave"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseMarketBrowse"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseMarketBrowse"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseMarketCreateOffer"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseMarketCreateOffer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseMarketCancelOffer"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseMarketCancelOffer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseMarketAcceptOffer"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseMarketAcceptOffer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseModalWindowAnswer"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseModalWindowAnswer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseBrowseField"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseBrowseField"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseSeekInContainer"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseSeekInContainer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendOpenPrivateChannel"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendOpenPrivateChannel"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendChannelEvent"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendChannelEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendCreatureOutfit"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendCreatureOutfit"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendCreatureLight"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendCreatureLight"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendCreatureWalkthrough"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendCreatureWalkthrough"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendCreatureShield"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendCreatureShield"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendCreatureSkull"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendCreatureSkull"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendCreatureSquare"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendCreatureSquare"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendTutorial"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendTutorial"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendAddMarker"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendAddMarker"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendReLoginWindow"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendReLoginWindow"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendStats"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendStats"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendExperienceTracker"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendExperienceTracker"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendClientFeatures"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendClientFeatures"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendBasicData"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendBasicData"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendTextMessage"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendTextMessage"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendClosePrivate"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendClosePrivate"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendCreatePrivateChannel"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendCreatePrivateChannel"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendChannelsDialog"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::getChannelList"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendChannelsDialog"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendChannel"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendChannel"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendChannelMessage"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendChannelMessage"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendIcons"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendIcons"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendContainer"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendContainer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendEmptyContainer"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendEmptyContainer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendShop"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendShop"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendCloseShop"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendCloseShop"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendSaleItemList"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendSaleItemList"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendResourceBalance"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendResourceBalance"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendStoreBalance"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendStoreBalance"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendMarketEnter"
+    edges:
+      - target:
+          file: "src/iomarket.cpp"
+          qualified_name: "tfs::iomarket::getPlayerOfferCount"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendMarketEnter"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendMarketLeave"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendMarketLeave"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendMarketBrowseItem"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendMarketBrowseItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendMarketAcceptOffer"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendMarketAcceptOffer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendMarketBrowseOwnOffers"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendMarketBrowseOwnOffers"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendMarketCancelOffer"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendMarketCancelOffer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendMarketBrowseOwnHistory"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendMarketBrowseOwnHistory"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendTradeItemRequest"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendTradeItemRequest"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendCloseTrade"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendCloseTrade"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendCloseContainer"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendCloseContainer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendCreatureTurn"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendCreatureTurn"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendCreatureSay"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendCreatureSay"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendToChannel"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendToChannel"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendPrivateMessage"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendPrivateMessage"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendCancelTarget"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendCancelTarget"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendChangeSpeed"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendChangeSpeed"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendCancelWalk"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendCancelWalk"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendSkills"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendSkills"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendPing"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendPing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendPingBack"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendPingBack"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendDistanceShoot"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendDistanceShoot"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendMagicEffect"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendMagicEffect"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendCreatureHealth"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendCreatureHealth"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendFYIBox"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendFYIBox"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendMapDescription"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendMapDescription"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendAddTileItem"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendAddTileItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendUpdateTileItem"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendUpdateTileItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendRemoveTileThing"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendRemoveTileThing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendUpdateTileCreature"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendUpdateTileCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendRemoveTileCreature"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendRemoveTileCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendUpdateTile"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendUpdateTile"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendUpdateCreatureIcons"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendUpdateCreatureIcons"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendPendingStateEntered"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendPendingStateEntered"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendEnterWorld"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendEnterWorld"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendFightModes"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendFightModes"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendAddCreature"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendAddCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendMoveCreature"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendMoveCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendInventoryItem"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendInventoryItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendItems"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendItems"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendAddContainerItem"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendAddContainerItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendUpdateContainerItem"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendUpdateContainerItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendRemoveContainerItem"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendRemoveContainerItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendTextWindow"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendTextWindow"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendTextWindow(itemId)"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendTextWindow"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendHouseWindow"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendHouseWindow"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendCombatAnalyzer"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendCombatAnalyzer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendOutfitWindow"
+    edges:
+      - target:
+          file: "src/outfit.h"
+          qualified_name: "Outfits::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendOutfitWindow"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendPodiumWindow"
+    edges:
+      - target:
+          file: "src/outfit.h"
+          qualified_name: "Outfits::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendPodiumWindow"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendUpdatedVIPStatus"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendUpdatedVIPStatus"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendVIP"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendVIP"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendVIPEntries"
+    edges:
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::getVIPEntries"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendVIPEntries"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendItemClasses"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendItemClasses"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendSpellCooldown"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendSpellCooldown"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendSpellGroupCooldown"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendSpellGroupCooldown"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendUseItemCooldown"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendUseItemCooldown"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendSupplyUsed"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendSupplyUsed"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendModalWindow"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendModalWindow"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::sendSessionEnd"
+    edges:
+      - target:
+          file: "src/outputmessage.cpp"
+          qualified_name: "tfs::net::make_output_message"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::sendSessionEnd"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::AddCreature"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::AddCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::AddCreatureIcons"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::AddCreatureIcons"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::AddPlayerStats"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::AddPlayerStats"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::AddPlayerSkills"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::AddPlayerSkills"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::AddOutfit"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::AddOutfit"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::RemoveTileThing"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::RemoveTileThing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::RemoveTileCreature"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::RemoveTileCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::MoveUpCreature"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::MoveUpCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::MoveDownCreature"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::MoveDownCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::AddShopItem"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::AddShopItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/protocolgame.cpp"
+    qualified_name: "ProtocolGame::parseExtendedOpcode"
+    edges:
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseExtendedOpcode"
+        kind: static
+        confidence: static
+        order: 1

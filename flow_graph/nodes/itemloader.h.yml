@@ -1,0 +1,466 @@
+nodes:
+  - file: "src/itemloader.h"
+    qualified_name: FS_ITEMLOADER_H
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: itemgroup_t
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemgroup_t::ITEM_GROUP_NONE"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemgroup_t::ITEM_GROUP_GROUND"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemgroup_t::ITEM_GROUP_CONTAINER"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemgroup_t::ITEM_GROUP_WEAPON"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemgroup_t::ITEM_GROUP_AMMUNITION"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemgroup_t::ITEM_GROUP_ARMOR"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemgroup_t::ITEM_GROUP_CHARGES"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemgroup_t::ITEM_GROUP_TELEPORT"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemgroup_t::ITEM_GROUP_MAGICFIELD"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemgroup_t::ITEM_GROUP_WRITEABLE"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemgroup_t::ITEM_GROUP_KEY"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemgroup_t::ITEM_GROUP_SPLASH"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemgroup_t::ITEM_GROUP_FLUID"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemgroup_t::ITEM_GROUP_DOOR"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemgroup_t::ITEM_GROUP_DEPRECATED"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemgroup_t::ITEM_GROUP_PODIUM"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemgroup_t::ITEM_GROUP_LAST"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: clientVersion_t
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_750"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_755"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_760"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_770"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_780"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_790"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_792"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_800"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_810"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_811"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_820"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_830"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_840"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_841"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_842"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_850"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_854_BAD"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_854"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_855"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_860_OLD"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_860"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_861"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_862"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_870"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_871"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_872"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_873"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_900"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_910"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_920"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_940"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_944_V1"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_944_V2"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_944_V3"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_944_V4"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_946"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_950"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_952"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_953"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_954"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_960"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_961"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_963"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_970"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_980"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_981"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_982"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_983"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_985"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_986"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_1010"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_1020"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_1021"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_1030"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_1031"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_1035"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_1076"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_1098"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_1100"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_1272"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_1281"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_1285"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_1286"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_1287"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_1290"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_1310"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "clientVersion_t::CLIENT_VERSION_LAST"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: rootattrib_
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "rootattrib_::ROOT_ATTR_VERSION"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: itemattrib_t
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_FIRST"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_SERVERID"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_CLIENTID"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_NAME"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_DESCR"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_SPEED"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_SLOT"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_MAXITEMS"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_WEIGHT"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_WEAPON"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_AMU"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_ARMOR"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_MAGLEVEL"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_MAGFIELDTYPE"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_WRITEABLE"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_ROTATETO"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_DECAY"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_SPRITEHASH"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_MINIMAPCOLOR"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_07"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_08"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_LIGHT"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_DECAY2"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_WEAPON2"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_AMU2"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_ARMOR2"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_WRITEABLE2"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_LIGHT2"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_TOPORDER"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_WRITEABLE3"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_WAREID"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_CLASSIFICATION"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemattrib_t::ITEM_ATTR_LAST"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: itemflags_t
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_BLOCK_SOLID"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_BLOCK_PROJECTILE"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_BLOCK_PATHFIND"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_HAS_HEIGHT"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_USEABLE"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_PICKUPABLE"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_MOVEABLE"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_STACKABLE"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_FLOORCHANGEDOWN"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_FLOORCHANGENORTH"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_FLOORCHANGEEAST"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_FLOORCHANGESOUTH"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_FLOORCHANGEWEST"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_ALWAYSONTOP"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_READABLE"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_ROTATABLE"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_HANGABLE"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_VERTICAL"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_HORIZONTAL"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_CANNOTDECAY"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_ALLOWDISTREAD"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_CLIENTDURATION"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_CLIENTCHARGES"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_LOOKTHROUGH"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_ANIMATION"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_FULLTILE"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_FORCEUSE"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_AMMO"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: "itemflags_t::FLAG_REPORTABLE"
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: VERSIONINFO
+    edges: []
+  - file: "src/itemloader.h"
+    qualified_name: lightBlock2
+    edges: []

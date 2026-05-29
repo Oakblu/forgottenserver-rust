@@ -1,0 +1,142 @@
+nodes:
+  - file: "src/tile.h"
+    qualified_name: CreatureVector
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: ItemVector
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: tileflags_t
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_NONE"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_FLOORCHANGE_DOWN"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_FLOORCHANGE_NORTH"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_FLOORCHANGE_SOUTH"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_FLOORCHANGE_EAST"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_FLOORCHANGE_WEST"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_FLOORCHANGE_SOUTH_ALT"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_FLOORCHANGE_EAST_ALT"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_PROTECTIONZONE"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_NOPVPZONE"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_NOLOGOUT"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_PVPZONE"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_TELEPORT"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_MAGICFIELD"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_MAILBOX"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_TRASHHOLDER"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_BED"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_DEPOT"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_BLOCKSOLID"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_BLOCKPATH"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_IMMOVABLEBLOCKSOLID"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_IMMOVABLEBLOCKPATH"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_IMMOVABLENOFIELDBLOCKPATH"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_NOFIELDBLOCKPATH"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_SUPPORTS_HANGABLE"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "tileflags_t::TILESTATE_FLOORCHANGE"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: ZoneType_t
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "ZoneType_t::ZONE_PROTECTION"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "ZoneType_t::ZONE_NOPVP"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "ZoneType_t::ZONE_PVP"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "ZoneType_t::ZONE_NOLOGOUT"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "ZoneType_t::ZONE_NORMAL"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: TileItemVector
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "TileItemVector::getBeginDownItem"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "TileItemVector::getEndDownItem"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "TileItemVector::getBeginTopItem"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "TileItemVector::getEndTopItem"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "TileItemVector::getTopItemCount"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "TileItemVector::getDownItemCount"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "TileItemVector::getTopTopItem"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "TileItemVector::getTopDownItem"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "TileItemVector::addDownItemCount"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: "TileItemVector::downItemCount"
+    edges: []
+  - file: "src/tile.h"
+    qualified_name: TILE_UPDATE_THRESHOLD
+    edges: []

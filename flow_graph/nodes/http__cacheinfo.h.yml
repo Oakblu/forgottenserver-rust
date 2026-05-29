@@ -1,0 +1,4 @@
+nodes:
+  - file: "src/http/cacheinfo.h"
+    qualified_name: "tfs::http::handle_cacheinfo"
+    edges: []

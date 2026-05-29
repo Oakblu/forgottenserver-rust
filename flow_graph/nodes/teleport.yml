@@ -1,0 +1,91 @@
+nodes:
+  - file: "src/teleport.cpp"
+    qualified_name: "Teleport::addThing (int32_t, Thing*)"
+    edges: []
+  - file: "src/teleport.cpp"
+    qualified_name: "Teleport::postAddNotification"
+    edges: []
+  - file: "src/teleport.cpp"
+    qualified_name: "Teleport::postRemoveNotification"
+    edges: []
+  - file: "src/teleport.cpp"
+    qualified_name: "Teleport::readAttr"
+    edges: []
+  - file: "src/teleport.cpp"
+    qualified_name: "Teleport::serializeAttr"
+    edges: []
+  - file: "src/teleport.cpp"
+    qualified_name: "Teleport::readAttr"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::readAttr"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/teleport.cpp"
+          qualified_name: "Teleport::readAttr"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/teleport.cpp"
+    qualified_name: "Teleport::serializeAttr"
+    edges:
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::serializeAttr"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/teleport.cpp"
+          qualified_name: "Teleport::serializeAttr"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/teleport.cpp"
+    qualified_name: "Teleport::addThing"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMagicEffect"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalCreatureTurn"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalMoveItem"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/teleport.cpp"
+          qualified_name: "Teleport::addThing"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/teleport.cpp"
+    qualified_name: "Teleport::postAddNotification"
+    edges:
+      - target:
+          file: "src/teleport.cpp"
+          qualified_name: "Teleport::postAddNotification"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/teleport.cpp"
+    qualified_name: "Teleport::postRemoveNotification"
+    edges:
+      - target:
+          file: "src/teleport.cpp"
+          qualified_name: "Teleport::postRemoveNotification"
+        kind: static
+        confidence: static
+        order: 1

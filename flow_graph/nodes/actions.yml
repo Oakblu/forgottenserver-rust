@@ -1,0 +1,217 @@
+nodes:
+  - file: "src/actions.cpp"
+    qualified_name: "Actions::clearMap"
+    edges:
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Actions::clearMap"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/actions.cpp"
+    qualified_name: "Actions::clear"
+    edges:
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Actions::clear"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/actions.cpp"
+    qualified_name: "Actions::getScriptInterface"
+    edges:
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Actions::getScriptInterface"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/actions.cpp"
+    qualified_name: "Actions::getEvent"
+    edges:
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Actions::getEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/actions.cpp"
+    qualified_name: "Actions::registerLuaEvent"
+    edges:
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Actions::registerLuaEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/actions.cpp"
+    qualified_name: "Actions::canUse"
+    edges: []
+  - file: "src/actions.cpp"
+    qualified_name: "Actions::canUse"
+    edges:
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Actions::canUse"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/actions.cpp"
+    qualified_name: "Actions::canUseFar"
+    edges:
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Actions::canUseFar"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::canThrowObjectTo"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/actions.cpp"
+    qualified_name: "Actions::getAction"
+    edges:
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Actions::getAction"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::getRuneSpell"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/actions.cpp"
+    qualified_name: "Actions::internalUseItem"
+    edges:
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Actions::internalUseItem"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::sendOfflineTrainingDialog"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/actions.cpp"
+    qualified_name: showUseHotkeyMessage
+    edges: []
+  - file: "src/actions.cpp"
+    qualified_name: "Actions::useItem"
+    edges:
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Actions::useItem"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalCreatureSay"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/actions.cpp"
+    qualified_name: "Actions::useItemEx"
+    edges:
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Actions::useItemEx"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/actions.cpp"
+    qualified_name: "Action::canExecuteAction"
+    edges:
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Action::canExecuteAction"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Actions::canUse"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Actions::canUseFar"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/actions.cpp"
+    qualified_name: "Action::getTarget"
+    edges:
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Action::getTarget"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalGetThing"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/actions.cpp"
+    qualified_name: "Action::executeUse"
+    edges:
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Action::executeUse"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushPosition"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushThing"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setMetatable"
+        kind: static
+        confidence: static
+        order: 7
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 8

@@ -1,0 +1,2176 @@
+nodes:
+  - file: "src/game.cpp"
+    qualified_name: "Game::start"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::start"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::getGameState"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getGameState"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::setWorldType"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::setWorldType"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::setGameState"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::load"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::setGameState"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvents::save"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvents::shutdown"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvents::startup"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/http/http.cpp"
+          qualified_name: "tfs::http::stop"
+        kind: static
+        confidence: static
+        order: 6
+  - file: "src/game.cpp"
+    qualified_name: "Game::saveGameState"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::saveGameState"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::savePlayer"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/map.cpp"
+          qualified_name: "Map::save"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/game.cpp"
+    qualified_name: "Game::loadMainMap"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::loadMainMap"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::loadMap"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::loadMap"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::internalGetThing"
+    edges: []
+  - file: "src/game.cpp"
+    qualified_name: "Game::internalGetThing"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalGetThing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::internalGetPosition"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalGetPosition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::getCreatureByID"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getCreatureByID"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::getMonsterByID"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getMonsterByID"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::getNpcByID"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getNpcByID"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::getPlayerByID"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getPlayerByID"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::getCreatureByName"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getCreatureByName"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::getNpcByName"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getNpcByName"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::getPlayerByName"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getPlayerByName"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::getPlayerByGUID"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getPlayerByGUID"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::getPlayerByNameWildcard"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getPlayerByNameWildcard"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::getPlayerByAccount"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getPlayerByAccount"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::internalPlaceCreature"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalPlaceCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::placeCreature"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::placeCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::removeCreature"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removeCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::executeDeath"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::executeDeath"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerMoveThing"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerMoveThing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerMoveCreatureByID"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerMoveCreatureByID"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerMoveCreature"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::player::onMoveCreature"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerMoveCreature"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/spawn.cpp"
+          qualified_name: "Spawns::isInZone"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/game.cpp"
+    qualified_name: "Game::internalMoveCreature"
+    edges: []
+  - file: "src/game.cpp"
+    qualified_name: "Game::internalMoveCreature"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalMoveCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerMoveItemByPlayerID"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerMoveItemByPlayerID"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerMoveItem"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerMoveItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::internalMoveItem"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::player::onItemMoved"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::player::onMoveItem"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalMoveItem"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/game.cpp"
+    qualified_name: "Game::internalAddItem"
+    edges: []
+  - file: "src/game.cpp"
+    qualified_name: "Game::internalAddItem"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalAddItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::internalRemoveItem"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalRemoveItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::internalPlayerAddItem"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalPlayerAddItem"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::CreateItem"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::findItemOfType"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::findItemOfType"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::removeMoney"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removeMoney"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::addMoney"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMoney"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::CreateItem"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::transformItem"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::transformItem"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::CreateItem"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::internalTeleport"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalTeleport"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: searchForItem
+    edges: []
+  - file: "src/game.cpp"
+    qualified_name: getSlotType
+    edges: []
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerEquipItem"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerEquipItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerMove"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerMove"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerBroadcastMessage"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerBroadcastMessage"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerCreatePrivateChannel"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::createChannel"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerCreatePrivateChannel"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerChannelInvite"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::getPrivateChannel"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerChannelInvite"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerChannelExclude"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::getPrivateChannel"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerChannelExclude"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerRequestChannels"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerRequestChannels"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerOpenChannel"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::addUserToChannel"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerOpenChannel"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerCloseChannel"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::removeUserFromChannel"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerCloseChannel"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerOpenPrivateChannel"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerOpenPrivateChannel"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::formatPlayerName"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerCloseNpcChannel"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerCloseNpcChannel"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerReceivePing"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerReceivePing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerReceivePingBack"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerReceivePingBack"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerAutoWalk"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerAutoWalk"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerStopAutoWalk"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerStopAutoWalk"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerUseItemEx"
+    edges:
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Actions::canUse"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Actions::useItemEx"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerUseItemEx"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerUseItem"
+    edges:
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Actions::canUse"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Actions::useItem"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerUseItem"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerUseWithCreature"
+    edges:
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Actions::canUse"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Actions::useItemEx"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerUseWithCreature"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerCloseContainer"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerCloseContainer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerMoveUpContainer"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::player::onBrowseField"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerMoveUpContainer"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerUpdateContainer"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerUpdateContainer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerRotateItem"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::player::onRotateItem"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerRotateItem"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerWriteItem"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerWriteItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerBrowseField"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::player::onBrowseField"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerBrowseField"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerSeekInContainer"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerSeekInContainer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerUpdateHouseWindow"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerUpdateHouseWindow"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerWrapItem"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::player::onWrapItem"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerWrapItem"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerRequestTrade"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::player::onTradeRequest"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerRequestTrade"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::internalStartTrade"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalStartTrade"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerAcceptTrade"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::player::onTradeAccept"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::player::onTradeCompleted"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerAcceptTrade"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/game.cpp"
+    qualified_name: "Game::getTradeErrorDescription"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getTradeErrorDescription"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerLookInTrade"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::player::onLookInTrade"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerLookInTrade"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerCloseTrade"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerCloseTrade"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::internalCloseTrade"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalCloseTrade"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerPurchaseItem"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerPurchaseItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerSellItem"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerSellItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerCloseShop"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerCloseShop"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerLookInShop"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::player::onLookInShop"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerLookInShop"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerLookAt"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::player::onLook"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerLookAt"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerLookInBattleList"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::player::onLookInBattleList"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerLookInBattleList"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerCancelAttackAndFollow"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerCancelAttackAndFollow"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerSetAttackedCreature"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::canTargetCreature"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerSetAttackedCreature"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerFollowCreature"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerFollowCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerSetFightModes"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerSetFightModes"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerRequestAddVip"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerRequestAddVip"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::getGuidByNameEx"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerRequestRemoveVip"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerRequestRemoveVip"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerRequestEditVip"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerRequestEditVip"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerTurn"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::player::onTurn"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerTurn"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerRequestOutfit"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerRequestOutfit"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerRequestEditPodium"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::player::onPodiumRequest"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerRequestEditPodium"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerEditPodium"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::player::onPodiumEdit"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerEditPodium"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerToggleMount"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerToggleMount"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerChangeOutfit"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerChangeOutfit"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/outfit.h"
+          qualified_name: "Outfits::getInstance"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerSay"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::talkToChannel"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerSay"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerSaySpell"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerSaySpell"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::playerSaySpell"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/talkaction.cpp"
+          qualified_name: "TalkActions::playerSaySpell"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerWhisper"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerWhisper"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerYell"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::createCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerYell"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerSpeakTo"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerSpeakTo"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerSpeakToNpc"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerSpeakToNpc"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::canThrowObjectTo"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::canThrowObjectTo"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::isSightClear"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::isSightClear"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::internalCreatureTurn"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalCreatureTurn"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::internalCreatureSay"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::creature::onHear"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::checkCreatureWalk"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalCreatureSay"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/game.cpp"
+    qualified_name: "Game::checkCreatureWalk"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::checkCreatureWalk"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::updateCreatureWalk"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::updateCreatureWalk"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::checkCreatureAttack"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::checkCreatureAttack"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::addCreatureCheck"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addCreatureCheck"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::removeCreatureCheck"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removeCreatureCheck"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::checkCreatures"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::checkCreatures"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::updateCreaturesPath"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::updateCreaturesPath"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::changeSpeed"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::changeSpeed"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::internalCreatureChangeOutfit"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::creature::onChangeOutfit"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalCreatureChangeOutfit"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::internalCreatureChangeVisible"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalCreatureChangeVisible"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::changeLight"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::changeLight"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::combatBlockHit"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::combatBlockHit"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::combatGetTypeInfo"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::combatGetTypeInfo"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::CreateItem"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::combatChangeHealth"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::combatChangeHealth"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::combatChangeMana"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::combatChangeMana"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::addCreatureHealth"
+    edges: []
+  - file: "src/game.cpp"
+    qualified_name: "Game::addCreatureHealth"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addCreatureHealth"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::addMagicEffect"
+    edges: []
+  - file: "src/game.cpp"
+    qualified_name: "Game::addMagicEffect"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMagicEffect"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::addDistanceEffect"
+    edges: []
+  - file: "src/game.cpp"
+    qualified_name: "Game::addDistanceEffect"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addDistanceEffect"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::startDecay"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::startDecay"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::internalDecayItem"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalDecayItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::checkDecay"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::checkDecay"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::shutdown"
+    edges:
+      - target:
+          file: "src/connection.h"
+          qualified_name: "ConnectionManager::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::shutdown"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::cleanup"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::cleanup"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::ReleaseCreature"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::ReleaseCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::ReleaseItem"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::ReleaseItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::broadcastMessage"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::broadcastMessage"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::updateCreatureWalkthrough"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::updateCreatureWalkthrough"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::updateKnownCreature"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::updateKnownCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::updateCreatureSkull"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::updateCreatureSkull"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::updatePlayerShield"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::updatePlayerShield"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::checkPlayersRecord"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::checkPlayersRecord"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvents::getEventMap"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::updatePlayersRecord"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::updatePlayersRecord"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::loadPlayersRecord"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::loadPlayersRecord"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerInviteToParty"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::party::onInvite"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerInviteToParty"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerJoinParty"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerJoinParty"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerRevokePartyInvitation"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerRevokePartyInvitation"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerPassPartyLeadership"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerPassPartyLeadership"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerLeaveParty"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerLeaveParty"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerEnableSharedPartyExperience"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerEnableSharedPartyExperience"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::sendGuildMotd"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::sendGuildMotd"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::kickPlayer"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::kickPlayer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerReportRuleViolation"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::player::onReportRuleViolation"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerReportRuleViolation"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerDebugAssert"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerDebugAssert"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerLeaveMarket"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerLeaveMarket"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerBrowseMarket"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::player::onLookInMarket"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerBrowseMarket"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/iomarket.cpp"
+          qualified_name: "tfs::iomarket::getActiveOffers"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerBrowseMarketOwnOffers"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerBrowseMarketOwnOffers"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iomarket.cpp"
+          qualified_name: "tfs::iomarket::getOwnOffers"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerBrowseMarketOwnHistory"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerBrowseMarketOwnHistory"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iomarket.cpp"
+          qualified_name: "tfs::iomarket::getOwnHistory"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerCreateMarketOffer"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerCreateMarketOffer"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iomarket.cpp"
+          qualified_name: "tfs::iomarket::createOffer"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/iomarket.cpp"
+          qualified_name: "tfs::iomarket::getActiveOffers"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/iomarket.cpp"
+          qualified_name: "tfs::iomarket::getPlayerOfferCount"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerCancelMarketOffer"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerCancelMarketOffer"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iomarket.cpp"
+          qualified_name: "tfs::iomarket::getOfferByCounter"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/iomarket.cpp"
+          qualified_name: "tfs::iomarket::moveOfferToHistory"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::CreateItem"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerAcceptMarketOffer"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerAcceptMarketOffer"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::getAccountIdByPlayerId"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::increaseBankBalance"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::loadPlayerById"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::savePlayer"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/iomarket.cpp"
+          qualified_name: "tfs::iomarket::acceptOffer"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/iomarket.cpp"
+          qualified_name: "tfs::iomarket::appendHistory"
+        kind: static
+        confidence: static
+        order: 7
+      - target:
+          file: "src/iomarket.cpp"
+          qualified_name: "tfs::iomarket::deleteOffer"
+        kind: static
+        confidence: static
+        order: 8
+      - target:
+          file: "src/iomarket.cpp"
+          qualified_name: "tfs::iomarket::getOfferByCounter"
+        kind: static
+        confidence: static
+        order: 9
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::CreateItem"
+        kind: static
+        confidence: static
+        order: 10
+  - file: "src/game.cpp"
+    qualified_name: "Game::parsePlayerExtendedOpcode"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::parsePlayerExtendedOpcode"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::parsePlayerNetworkMessage"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::player::onNetworkMessage"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::parsePlayerNetworkMessage"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/game.cpp"
+    qualified_name: "Game::getMarketItemList"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getMarketItemList"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::forceAddCondition"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::forceAddCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::forceRemoveCondition"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::forceRemoveCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::sendOfflineTrainingDialog"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::sendOfflineTrainingDialog"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::playerAnswerModalWindow"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerAnswerModalWindow"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::addPlayer"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addPlayer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::removePlayer"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removePlayer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::addNpc"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addNpc"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::removeNpc"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removeNpc"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::addMonster"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMonster"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::removeMonster"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removeMonster"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::getGuild"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getGuild"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::addGuild"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addGuild"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::removeGuild"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removeGuild"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::decreaseBrowseFieldRef"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::decreaseBrowseFieldRef"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::internalRemoveItems"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalRemoveItems"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::getBedBySleeper"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getBedBySleeper"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::setBedSleeper"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::setBedSleeper"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::removeBedSleeper"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removeBedSleeper"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::updatePodium"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::updatePodium"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::getUniqueItem"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getUniqueItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::addUniqueItem"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addUniqueItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::removeUniqueItem"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removeUniqueItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/game.cpp"
+    qualified_name: "Game::reload"
+    edges:
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Actions::clear"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::load"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/configmanager.cpp"
+          qualified_name: "ConfigManager::load"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/creatureevent.cpp"
+          qualified_name: "CreatureEvents::clear"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/creatureevent.cpp"
+          qualified_name: "CreatureEvents::removeInvalidEvents"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::load"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::reload"
+        kind: static
+        confidence: static
+        order: 7
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::reload"
+        kind: static
+        confidence: static
+        order: 8
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvents::clear"
+        kind: static
+        confidence: static
+        order: 9
+      - target:
+          file: "src/monsters.cpp"
+          qualified_name: "Monsters::reload"
+        kind: static
+        confidence: static
+        order: 10
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvents::clear"
+        kind: static
+        confidence: static
+        order: 11
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npcs::reload"
+        kind: static
+        confidence: static
+        order: 12
+      - target:
+          file: "src/script.cpp"
+          qualified_name: "Scripts::loadScripts"
+        kind: static
+        confidence: static
+        order: 13
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::clear"
+        kind: static
+        confidence: static
+        order: 14
+      - target:
+          file: "src/talkaction.cpp"
+          qualified_name: "TalkActions::clear"
+        kind: static
+        confidence: static
+        order: 15
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::clear"
+        kind: static
+        confidence: static
+        order: 16
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::loadDefaults"
+        kind: static
+        confidence: static
+        order: 17

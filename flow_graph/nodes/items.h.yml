@@ -1,0 +1,682 @@
+nodes:
+  - file: "src/items.h"
+    qualified_name: FS_ITEMS_H
+    edges: []
+  - file: "src/items.h"
+    qualified_name: SlotPositionBits
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "SlotPositionBits::SLOTP_WHEREEVER"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "SlotPositionBits::SLOTP_HEAD"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "SlotPositionBits::SLOTP_NECKLACE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "SlotPositionBits::SLOTP_BACKPACK"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "SlotPositionBits::SLOTP_ARMOR"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "SlotPositionBits::SLOTP_RIGHT"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "SlotPositionBits::SLOTP_LEFT"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "SlotPositionBits::SLOTP_LEGS"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "SlotPositionBits::SLOTP_FEET"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "SlotPositionBits::SLOTP_RING"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "SlotPositionBits::SLOTP_AMMO"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "SlotPositionBits::SLOTP_DEPOT"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "SlotPositionBits::SLOTP_TWO_HAND"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "SlotPositionBits::SLOTP_HAND"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: ItemTypes_t
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemTypes_t::ITEM_TYPE_NONE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemTypes_t::ITEM_TYPE_DEPOT"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemTypes_t::ITEM_TYPE_MAILBOX"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemTypes_t::ITEM_TYPE_TRASHHOLDER"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemTypes_t::ITEM_TYPE_CONTAINER"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemTypes_t::ITEM_TYPE_DOOR"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemTypes_t::ITEM_TYPE_MAGICFIELD"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemTypes_t::ITEM_TYPE_TELEPORT"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemTypes_t::ITEM_TYPE_BED"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemTypes_t::ITEM_TYPE_KEY"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemTypes_t::ITEM_TYPE_RUNE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemTypes_t::ITEM_TYPE_PODIUM"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemTypes_t::ITEM_TYPE_LAST"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: ItemParseAttributes_t
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_TYPE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_DESCRIPTION"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_RUNESPELLNAME"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_WEIGHT"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SHOWCOUNT"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ARMOR"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_DEFENSE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_EXTRADEF"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ATTACK"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ATTACK_SPEED"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ROTATETO"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MOVEABLE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_BLOCKPROJECTILE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_PICKUPABLE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_FORCESERIALIZE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_FLOORCHANGE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_CORPSETYPE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_CONTAINERSIZE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_FLUIDSOURCE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_READABLE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_WRITEABLE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MAXTEXTLEN"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_WRITEONCEITEMID"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_WEAPONTYPE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SLOTTYPE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_AMMOTYPE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SHOOTTYPE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_EFFECT"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_RANGE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_STOPDURATION"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_DECAYTO"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_TRANSFORMEQUIPTO"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_TRANSFORMDEEQUIPTO"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_DURATION"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SHOWDURATION"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_CHARGES"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SHOWCHARGES"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SHOWATTRIBUTES"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_HITCHANCE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MAXHITCHANCE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_INVISIBLE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SPEED"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_HEALTHGAIN"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_HEALTHTICKS"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MANAGAIN"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MANATICKS"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MANASHIELD"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SKILLSWORD"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SKILLAXE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SKILLCLUB"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SKILLDIST"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SKILLFISH"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SKILLSHIELD"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SKILLFIST"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MAXHITPOINTS"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MAXHITPOINTSPERCENT"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MAXMANAPOINTS"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MAXMANAPOINTSPERCENT"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MAGICPOINTS"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MAGICPOINTSPERCENT"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_CRITICALHITCHANCE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_CRITICALHITAMOUNT"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_LIFELEECHCHANCE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_LIFELEECHAMOUNT"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MANALEECHCHANCE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MANALEECHAMOUNT"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_FIELDABSORBPERCENTENERGY"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_FIELDABSORBPERCENTFIRE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_FIELDABSORBPERCENTPOISON"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ABSORBPERCENTALL"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ABSORBPERCENTELEMENTS"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ABSORBPERCENTMAGIC"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ABSORBPERCENTENERGY"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ABSORBPERCENTFIRE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ABSORBPERCENTPOISON"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ABSORBPERCENTICE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ABSORBPERCENTHOLY"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ABSORBPERCENTDEATH"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ABSORBPERCENTLIFEDRAIN"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ABSORBPERCENTMANADRAIN"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ABSORBPERCENTDROWN"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ABSORBPERCENTPHYSICAL"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ABSORBPERCENTHEALING"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ABSORBPERCENTUNDEFINED"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MAGICLEVELENERGY"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MAGICLEVELFIRE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MAGICLEVELPOISON"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MAGICLEVELICE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MAGICLEVELHOLY"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MAGICLEVELDEATH"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MAGICLEVELLIFEDRAIN"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MAGICLEVELMANADRAIN"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MAGICLEVELDROWN"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MAGICLEVELPHYSICAL"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MAGICLEVELHEALING"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MAGICLEVELUNDEFINED"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SUPPRESSDRUNK"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SUPPRESSENERGY"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SUPPRESSFIRE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SUPPRESSPOISON"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SUPPRESSDROWN"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SUPPRESSPHYSICAL"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SUPPRESSFREEZE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SUPPRESSDAZZLE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SUPPRESSCURSE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_FIELD"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REPLACEABLE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_PARTNERDIRECTION"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_LEVELDOOR"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_MALETRANSFORMTO"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_FEMALETRANSFORMTO"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_TRANSFORMTO"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_DESTROYTO"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ELEMENTICE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ELEMENTEARTH"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ELEMENTFIRE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ELEMENTENERGY"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ELEMENTDEATH"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ELEMENTHOLY"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_WALKSTACK"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_BLOCKING"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_ALLOWDISTREAD"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_STOREITEM"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_WORTH"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTPERCENTALL"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTPERCENTELEMENTS"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTPERCENTMAGIC"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTPERCENTENERGY"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTPERCENTFIRE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTPERCENTEARTH"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTPERCENTICE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTPERCENTHOLY"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTPERCENTDEATH"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTPERCENTLIFEDRAIN"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTPERCENTMANADRAIN"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTPERCENTDROWN"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTPERCENTPHYSICAL"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTPERCENTHEALING"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTCHANCEALL"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTCHANCEELEMENTS"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTCHANCEMAGIC"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTCHANCEENERGY"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTCHANCEFIRE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTCHANCEEARTH"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTCHANCEICE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTCHANCEHOLY"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTCHANCEDEATH"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTCHANCELIFEDRAIN"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTCHANCEMANADRAIN"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTCHANCEDROWN"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTCHANCEPHYSICAL"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_REFLECTCHANCEHEALING"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_BOOSTPERCENTALL"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_BOOSTPERCENTELEMENTS"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_BOOSTPERCENTMAGIC"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_BOOSTPERCENTENERGY"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_BOOSTPERCENTFIRE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_BOOSTPERCENTEARTH"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_BOOSTPERCENTICE"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_BOOSTPERCENTHOLY"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_BOOSTPERCENTDEATH"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_BOOSTPERCENTLIFEDRAIN"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_BOOSTPERCENTMANADRAIN"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_BOOSTPERCENTDROWN"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_BOOSTPERCENTPHYSICAL"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_BOOSTPERCENTHEALING"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemParseAttributes_t::ITEM_PARSE_SUPPLY"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: Abilities
+    edges: []
+  - file: "src/items.h"
+    qualified_name: ItemType
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemType::ItemType"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemType::ItemType"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemType::ItemType"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemType::reset"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemType::pluralName"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemType::name"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemType::name"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemType::str"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemType::reserve"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemType::assign"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "ItemType::str"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: Items
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "Items::Items"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "Items::Items"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "Items::reload"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "Items::clear"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "Items::loadFromOtb"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "Items::getItemType"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "Items::getItemType"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "Items::getItemIdByClientId"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "Items::getItemIdByName"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "Items::loadFromXml"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "Items::parseItemNode"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "Items::resize"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "Items::serverId"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "Items::serverId"
+    edges: []
+  - file: "src/items.h"
+    qualified_name: "Items::vec"
+    edges: []

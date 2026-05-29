@@ -1,0 +1,10 @@
+nodes:
+  - file: "src/thing.cpp"
+    qualified_name: "Thing::getPosition"
+    edges:
+      - target:
+          file: "src/thing.cpp"
+          qualified_name: "Thing::getPosition"
+        kind: static
+        confidence: static
+        order: 1

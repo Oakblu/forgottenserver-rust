@@ -1,0 +1,142 @@
+nodes:
+  - file: "src/server.cpp"
+    qualified_name: "(anonymous)::ConnectBlock"
+    edges: []
+  - file: "src/server.cpp"
+    qualified_name: "(anonymous)::ConnectBlock::lastAttempt"
+    edges: []
+  - file: "src/server.cpp"
+    qualified_name: "(anonymous)::ConnectBlock::blockTime"
+    edges: []
+  - file: "src/server.cpp"
+    qualified_name: "(anonymous)::ConnectBlock::count"
+    edges: []
+  - file: "src/server.cpp"
+    qualified_name: "(anonymous)::acceptConnection"
+    edges: []
+  - file: "src/server.cpp"
+    qualified_name: "(anonymous)::getListenAddress"
+    edges: []
+  - file: "src/server.cpp"
+    qualified_name: "(anonymous)::openAcceptor"
+    edges: []
+  - file: "src/server.cpp"
+    qualified_name: "ServiceManager::~ServiceManager"
+    edges: []
+  - file: "src/server.cpp"
+    qualified_name: "ServiceManager::die"
+    edges:
+      - target:
+          file: "src/server.cpp"
+          qualified_name: "ServiceManager::die"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/server.cpp"
+    qualified_name: "ServiceManager::run"
+    edges:
+      - target:
+          file: "src/server.cpp"
+          qualified_name: "ServiceManager::run"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/server.cpp"
+    qualified_name: "ServiceManager::stop"
+    edges:
+      - target:
+          file: "src/server.cpp"
+          qualified_name: "ServiceManager::stop"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/server.cpp"
+    qualified_name: "ServicePort::~ServicePort"
+    edges: []
+  - file: "src/server.cpp"
+    qualified_name: "ServicePort::is_single_socket"
+    edges:
+      - target:
+          file: "src/server.cpp"
+          qualified_name: "ServicePort::is_single_socket"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/server.cpp"
+    qualified_name: "ServicePort::get_protocol_names"
+    edges:
+      - target:
+          file: "src/server.cpp"
+          qualified_name: "ServicePort::get_protocol_names"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/server.cpp"
+    qualified_name: "ServicePort::accept"
+    edges:
+      - target:
+          file: "src/connection.h"
+          qualified_name: "ConnectionManager::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/server.cpp"
+          qualified_name: "ServicePort::accept"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/server.cpp"
+    qualified_name: "ServicePort::onAccept"
+    edges:
+      - target:
+          file: "src/server.cpp"
+          qualified_name: "ServicePort::onAccept"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/server.cpp"
+    qualified_name: "ServicePort::make_protocol"
+    edges:
+      - target:
+          file: "src/server.cpp"
+          qualified_name: "ServicePort::make_protocol"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/server.cpp"
+    qualified_name: "ServicePort::onStopServer"
+    edges:
+      - target:
+          file: "src/server.cpp"
+          qualified_name: "ServicePort::onStopServer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/server.cpp"
+    qualified_name: "ServicePort::open"
+    edges:
+      - target:
+          file: "src/server.cpp"
+          qualified_name: "ServicePort::open"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/server.cpp"
+    qualified_name: "ServicePort::close"
+    edges:
+      - target:
+          file: "src/server.cpp"
+          qualified_name: "ServicePort::close"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/server.cpp"
+    qualified_name: "ServicePort::add_service"
+    edges:
+      - target:
+          file: "src/server.cpp"
+          qualified_name: "ServicePort::add_service"
+        kind: static
+        confidence: static
+        order: 1

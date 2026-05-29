@@ -1,0 +1,79 @@
+nodes:
+  - file: "src/networkmessage.cpp"
+    qualified_name: "NetworkMessage::getString"
+    edges:
+      - target:
+          file: "src/networkmessage.cpp"
+          qualified_name: "NetworkMessage::getString"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/networkmessage.cpp"
+    qualified_name: "NetworkMessage::getPosition"
+    edges:
+      - target:
+          file: "src/networkmessage.cpp"
+          qualified_name: "NetworkMessage::getPosition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/networkmessage.cpp"
+    qualified_name: "NetworkMessage::addString"
+    edges:
+      - target:
+          file: "src/networkmessage.cpp"
+          qualified_name: "NetworkMessage::addString"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/networkmessage.cpp"
+    qualified_name: "NetworkMessage::addDouble"
+    edges:
+      - target:
+          file: "src/networkmessage.cpp"
+          qualified_name: "NetworkMessage::addDouble"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/networkmessage.cpp"
+    qualified_name: "NetworkMessage::addBytes"
+    edges:
+      - target:
+          file: "src/networkmessage.cpp"
+          qualified_name: "NetworkMessage::addBytes"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/networkmessage.cpp"
+    qualified_name: "NetworkMessage::addPaddingBytes"
+    edges:
+      - target:
+          file: "src/networkmessage.cpp"
+          qualified_name: "NetworkMessage::addPaddingBytes"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/networkmessage.cpp"
+    qualified_name: "NetworkMessage::addPosition"
+    edges:
+      - target:
+          file: "src/networkmessage.cpp"
+          qualified_name: "NetworkMessage::addPosition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/networkmessage.cpp"
+    qualified_name: "NetworkMessage::addItem(uint16_t,uint8_t)"
+    edges: []
+  - file: "src/networkmessage.cpp"
+    qualified_name: "NetworkMessage::addItem(const Item*)"
+    edges: []
+  - file: "src/networkmessage.cpp"
+    qualified_name: "NetworkMessage::addItemId"
+    edges:
+      - target:
+          file: "src/networkmessage.cpp"
+          qualified_name: "NetworkMessage::addItemId"
+        kind: static
+        confidence: static
+        order: 1

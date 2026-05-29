@@ -1,0 +1,322 @@
+nodes:
+  - file: "src/configmanager.h"
+    qualified_name: FS_CONFIGMANAGER_H
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: boolean_config_t
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::ALLOW_CHANGEOUTFIT"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::ONE_PLAYER_ON_ACCOUNT"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::AIMBOT_HOTKEY_ENABLED"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::REMOVE_RUNE_CHARGES"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::REMOVE_WEAPON_AMMO"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::REMOVE_WEAPON_CHARGES"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::REMOVE_POTION_CHARGES"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::EXPERIENCE_FROM_PLAYERS"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::FREE_PREMIUM"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::REPLACE_KICK_ON_LOGIN"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::ALLOW_CLONES"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::ALLOW_WALKTHROUGH"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::BIND_ONLY_GLOBAL_ADDRESS"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::OPTIMIZE_DATABASE"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::MARKET_PREMIUM"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::EMOTE_SPELLS"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::STAMINA_SYSTEM"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::WARN_UNSAFE_SCRIPTS"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::CONVERT_UNSAFE_SCRIPTS"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::CLASSIC_EQUIPMENT_SLOTS"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::CLASSIC_ATTACK_SPEED"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::SCRIPTS_CONSOLE_LOGS"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::SERVER_SAVE_NOTIFY_MESSAGE"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::SERVER_SAVE_CLEAN_MAP"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::SERVER_SAVE_CLOSE"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::SERVER_SAVE_SHUTDOWN"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::ONLINE_OFFLINE_CHARLIST"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::YELL_ALLOW_PREMIUM"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::PREMIUM_TO_SEND_PRIVATE"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::FORCE_MONSTERTYPE_LOAD"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::HOUSE_OWNED_BY_ACCOUNT"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::CLEAN_PROTECTION_ZONES"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::HOUSE_DOOR_SHOW_PRICE"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::REMOVE_ON_DESPAWN"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::TWO_FACTOR_AUTH"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::MANASHIELD_BREAKABLE"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::CHECK_DUPLICATE_STORAGE_KEYS"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "boolean_config_t::MONSTER_OVERSPAWN"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: string_config_t
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "string_config_t::MAP_NAME"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "string_config_t::HOUSE_RENT_PERIOD"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "string_config_t::SERVER_NAME"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "string_config_t::OWNER_NAME"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "string_config_t::OWNER_EMAIL"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "string_config_t::URL"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "string_config_t::LOCATION"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "string_config_t::IP"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "string_config_t::WORLD_TYPE"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "string_config_t::MYSQL_HOST"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "string_config_t::MYSQL_USER"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "string_config_t::MYSQL_PASS"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "string_config_t::MYSQL_DB"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "string_config_t::MYSQL_SOCK"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "string_config_t::DEFAULT_PRIORITY"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "string_config_t::MAP_AUTHOR"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "string_config_t::CONFIG_FILE"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: integer_config_t
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::SQL_PORT"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::MAX_PLAYERS"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::PZ_LOCKED"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::DEFAULT_DESPAWNRANGE"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::DEFAULT_DESPAWNRADIUS"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::DEFAULT_WALKTOSPAWNRADIUS"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::RATE_EXPERIENCE"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::RATE_SKILL"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::RATE_LOOT"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::RATE_MAGIC"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::RATE_SPAWN"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::HOUSE_PRICE"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::KILLS_TO_RED"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::KILLS_TO_BLACK"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::MAX_MESSAGEBUFFER"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::ACTIONS_DELAY_INTERVAL"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::EX_ACTIONS_DELAY_INTERVAL"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::KICK_AFTER_MINUTES"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::PROTECTION_LEVEL"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::DEATH_LOSE_PERCENT"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::STATUSQUERY_TIMEOUT"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::STATUS_COUNT_MAX_PLAYERS_PER_IP"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::FRAG_TIME"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::WHITE_SKULL_TIME"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::GAME_PORT"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::STATUS_PORT"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::HTTP_PORT"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::HTTP_WORKERS"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::STAIRHOP_DELAY"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::MARKET_OFFER_DURATION"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::CHECK_EXPIRED_MARKET_OFFERS_EACH_MINUTES"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::MAX_MARKET_OFFERS_AT_A_TIME_PER_PLAYER"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::EXP_FROM_PLAYERS_LEVEL_RANGE"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::MAX_PACKETS_PER_SECOND"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::SERVER_SAVE_NOTIFY_DURATION"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::YELL_MINIMUM_LEVEL"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::MINIMUM_LEVEL_TO_SEND_PRIVATE"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::VIP_FREE_LIMIT"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::VIP_PREMIUM_LIMIT"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::DEPOT_FREE_LIMIT"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::DEPOT_PREMIUM_LIMIT"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::QUEST_TRACKER_FREE_LIMIT"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::QUEST_TRACKER_PREMIUM_LIMIT"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::STAMINA_REGEN_MINUTE"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::STAMINA_REGEN_PREMIUM"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::PATHFINDING_INTERVAL"
+    edges: []
+  - file: "src/configmanager.h"
+    qualified_name: "integer_config_t::PATHFINDING_DELAY"
+    edges: []

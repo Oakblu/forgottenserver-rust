@@ -1,0 +1,97 @@
+nodes:
+  - file: "src/protocolgame.h"
+    qualified_name: SessionEndTypes_t
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "SessionEndTypes_t::SESSION_END_LOGOUT"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "SessionEndTypes_t::SESSION_END_UNKNOWN"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "SessionEndTypes_t::SESSION_END_FORCECLOSE"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "SessionEndTypes_t::SESSION_END_UNKNOWN2"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: ProtocolGame_ptr
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: g_game
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: TextMessage
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "TextMessage::type"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "TextMessage::text"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "TextMessage::position"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "TextMessage::channelId"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "TextMessage::primary"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "TextMessage::secondary"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "TextMessage::TextMessage"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "TextMessage::TextMessage"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: ProtocolGame
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "ProtocolGame::server_sends_first"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "ProtocolGame::protocol_identifier"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "ProtocolGame::use_checksum"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "ProtocolGame::protocol_name"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "ProtocolGame::ProtocolGame"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "ProtocolGame::getVersion"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "ProtocolGame::getThis"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "ProtocolGame::knownCreatureSet"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "ProtocolGame::player"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "ProtocolGame::eventConnect"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "ProtocolGame::challengeTimestamp"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "ProtocolGame::version"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "ProtocolGame::challengeRandom"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "ProtocolGame::debugAssertSent"
+    edges: []
+  - file: "src/protocolgame.h"
+    qualified_name: "ProtocolGame::acceptPackets"
+    edges: []

@@ -1,0 +1,145 @@
+nodes:
+  - file: "src/database.cpp"
+    qualified_name: connectToDatabase
+    edges: []
+  - file: "src/database.cpp"
+    qualified_name: isLostConnectionError
+    edges: []
+  - file: "src/database.cpp"
+    qualified_name: executeQuery
+    edges: []
+  - file: "src/database.cpp"
+    qualified_name: "Database::connect"
+    edges:
+      - target:
+          file: "src/database.cpp"
+          qualified_name: "Database::connect"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/database.cpp"
+    qualified_name: "Database::beginTransaction"
+    edges:
+      - target:
+          file: "src/database.cpp"
+          qualified_name: "Database::beginTransaction"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/database.cpp"
+    qualified_name: "Database::rollback"
+    edges:
+      - target:
+          file: "src/database.cpp"
+          qualified_name: "Database::rollback"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/database.cpp"
+    qualified_name: "Database::commit"
+    edges:
+      - target:
+          file: "src/database.cpp"
+          qualified_name: "Database::commit"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/database.cpp"
+    qualified_name: "Database::executeQuery"
+    edges:
+      - target:
+          file: "src/database.cpp"
+          qualified_name: "Database::executeQuery"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/database.cpp"
+    qualified_name: "Database::storeQuery"
+    edges:
+      - target:
+          file: "src/database.cpp"
+          qualified_name: "Database::storeQuery"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/database.cpp"
+    qualified_name: "Database::escapeBlob"
+    edges:
+      - target:
+          file: "src/database.cpp"
+          qualified_name: "Database::escapeBlob"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/database.cpp"
+    qualified_name: "DBResult::DBResult"
+    edges:
+      - target:
+          file: "src/database.cpp"
+          qualified_name: "DBResult::DBResult"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/database.cpp"
+    qualified_name: "DBResult::getString"
+    edges:
+      - target:
+          file: "src/database.cpp"
+          qualified_name: "DBResult::getString"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/database.cpp"
+    qualified_name: "DBResult::hasNext"
+    edges:
+      - target:
+          file: "src/database.cpp"
+          qualified_name: "DBResult::hasNext"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/database.cpp"
+    qualified_name: "DBResult::next"
+    edges:
+      - target:
+          file: "src/database.cpp"
+          qualified_name: "DBResult::next"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/database.cpp"
+    qualified_name: "DBInsert::DBInsert"
+    edges:
+      - target:
+          file: "src/database.cpp"
+          qualified_name: "DBInsert::DBInsert"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/database.cpp"
+    qualified_name: "DBInsert::addRow(const std::string&)"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/database.cpp"
+    qualified_name: "DBInsert::addRow(std::ostringstream&)"
+    edges: []
+  - file: "src/database.cpp"
+    qualified_name: "DBInsert::execute"
+    edges:
+      - target:
+          file: "src/database.cpp"
+          qualified_name: "DBInsert::execute"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 2

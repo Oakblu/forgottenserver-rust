@@ -1,0 +1,181 @@
+nodes:
+  - file: "src/condition.h"
+    qualified_name: FS_CONDITION_H
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: ConditionAttr_t
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_TYPE"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_ID"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_TICKS"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_HEALTHTICKS"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_HEALTHGAIN"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_MANATICKS"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_MANAGAIN"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_DELAYED"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_OWNER"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_INTERVALDATA"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_SPEEDDELTA"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_FORMULA_MINA"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_FORMULA_MINB"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_FORMULA_MAXA"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_FORMULA_MAXB"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_LIGHTCOLOR"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_LIGHTLEVEL"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_LIGHTTICKS"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_LIGHTINTERVAL"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_SOULTICKS"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_SOULGAIN"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_SKILLS"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_STATS"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_OUTFIT"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_PERIODDAMAGE"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_ISBUFF"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_SUBID"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_ISAGGRESSIVE"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_DISABLEDEFENSE"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_SPECIALSKILLS"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_MANASHIELD_BREAKABLE_MANA"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_MANASHIELD_BREAKABLE_MAXMANA"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionAttr_t::CONDITIONATTR_END"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: IntervalInfo
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: Condition
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "Condition::Condition"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "Condition::Condition"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "Condition::startCondition"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "Condition::executeCondition"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "Condition::endCondition"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "Condition::addCondition"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "Condition::getIcons"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "Condition::clone"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "Condition::setTicks"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "Condition::createCondition"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "Condition::setParam"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "Condition::getParam"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "Condition::unserialize"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "Condition::serialize"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "Condition::unserializeProp"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "Condition::isPersistent"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "Condition::updateCondition"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: ConditionGeneric
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionGeneric::startCondition"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionGeneric::executeCondition"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionGeneric::endCondition"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionGeneric::addCondition"
+    edges: []
+  - file: "src/condition.h"
+    qualified_name: "ConditionGeneric::getIcons"
+    edges: []

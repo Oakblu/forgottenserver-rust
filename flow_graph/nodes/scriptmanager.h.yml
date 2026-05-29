@@ -1,0 +1,22 @@
+nodes:
+  - file: "src/scriptmanager.h"
+    qualified_name: ScriptingManager
+    edges: []
+  - file: "src/scriptmanager.h"
+    qualified_name: "ScriptingManager::ScriptingManager"
+    edges: []
+  - file: "src/scriptmanager.h"
+    qualified_name: "ScriptingManager::~ScriptingManager"
+    edges: []
+  - file: "src/scriptmanager.h"
+    qualified_name: "ScriptingManager::ScriptingManager(const ScriptingManager&)"
+    edges: []
+  - file: "src/scriptmanager.h"
+    qualified_name: "ScriptingManager::operator="
+    edges: []
+  - file: "src/scriptmanager.h"
+    qualified_name: "ScriptingManager::getInstance"
+    edges: []
+  - file: "src/scriptmanager.h"
+    qualified_name: "ScriptingManager::loadScriptSystems"
+    edges: []

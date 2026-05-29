@@ -1,0 +1,4 @@
+nodes:
+  - file: "src/otserv.h"
+    qualified_name: FS_OTSERV_H
+    edges: []

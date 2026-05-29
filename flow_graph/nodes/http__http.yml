@@ -1,0 +1,19 @@
+nodes:
+  - file: "src/http/http.cpp"
+    qualified_name: "tfs::http::start"
+    edges:
+      - target:
+          file: "src/http/http.cpp"
+          qualified_name: "tfs::http::start"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/http/http.cpp"
+    qualified_name: "tfs::http::stop"
+    edges:
+      - target:
+          file: "src/http/http.cpp"
+          qualified_name: "tfs::http::stop"
+        kind: static
+        confidence: static
+        order: 1

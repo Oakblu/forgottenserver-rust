@@ -1,0 +1,16 @@
+nodes:
+  - file: "src/http/cacheinfo.cpp"
+    qualified_name: "tfs::http::handle_cacheinfo"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/http/cacheinfo.cpp"
+          qualified_name: "tfs::http::handle_cacheinfo"
+        kind: static
+        confidence: static
+        order: 2

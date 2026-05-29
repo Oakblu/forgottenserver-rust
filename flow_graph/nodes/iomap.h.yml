@@ -1,0 +1,178 @@
+nodes:
+  - file: "src/iomap.h"
+    qualified_name: FS_IOMAP_H
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: OTBM_AttrTypes_t
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_DESCRIPTION"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_EXT_FILE"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_TILE_FLAGS"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_ACTION_ID"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_UNIQUE_ID"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_TEXT"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_DESC"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_TELE_DEST"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_ITEM"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_DEPOT_ID"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_EXT_SPAWN_FILE"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_RUNE_CHARGES"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_EXT_HOUSE_FILE"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_HOUSEDOORID"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_COUNT"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_DURATION"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_DECAYING_STATE"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_WRITTENDATE"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_WRITTENBY"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_SLEEPERGUID"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_SLEEPSTART"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_AttrTypes_t::OTBM_ATTR_CHARGES"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: OTBM_NodeTypes_t
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_NodeTypes_t::OTBM_ROOTV1"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_NodeTypes_t::OTBM_MAP_DATA"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_NodeTypes_t::OTBM_ITEM_DEF"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_NodeTypes_t::OTBM_TILE_AREA"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_NodeTypes_t::OTBM_TILE"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_NodeTypes_t::OTBM_ITEM"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_NodeTypes_t::OTBM_TILE_SQUARE"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_NodeTypes_t::OTBM_TILE_REF"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_NodeTypes_t::OTBM_SPAWNS"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_NodeTypes_t::OTBM_SPAWN_AREA"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_NodeTypes_t::OTBM_MONSTER"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_NodeTypes_t::OTBM_TOWNS"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_NodeTypes_t::OTBM_TOWN"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_NodeTypes_t::OTBM_HOUSETILE"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_NodeTypes_t::OTBM_WAYPOINTS"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_NodeTypes_t::OTBM_WAYPOINT"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: OTBM_TileFlag_t
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_TileFlag_t::OTBM_TILEFLAG_PROTECTIONZONE"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_TileFlag_t::OTBM_TILEFLAG_NOPVPZONE"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_TileFlag_t::OTBM_TILEFLAG_NOLOGOUT"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "OTBM_TileFlag_t::OTBM_TILEFLAG_PVPZONE"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: OTBM_root_header
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: OTBM_Destination_coords
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: OTBM_Tile_coords
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: IOMap
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "IOMap::createTile"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "IOMap::loadMap"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "IOMap::getString"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "IOMap::loadFromXml"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "IOMap::getString"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "IOMap::loadHousesXML"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "IOMap::parseWaypoints"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "IOMap::parseTowns"
+    edges: []
+  - file: "src/iomap.h"
+    qualified_name: "IOMap::parseTileArea"
+    edges: []

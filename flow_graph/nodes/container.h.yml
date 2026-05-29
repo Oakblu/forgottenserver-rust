@@ -1,0 +1,112 @@
+nodes:
+  - file: "src/container.h"
+    qualified_name: FS_CONTAINER_H
+    edges: []
+  - file: "src/container.h"
+    qualified_name: ContainerIterator
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "ContainerIterator::advance"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: Container
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::Container"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::Container"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::Container"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::Container"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::Container"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::clone"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::hasContainerParent"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::readAttr"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::unserializeItemNode"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::iterator"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::getName"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::addItem"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::getItemByIndex"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::isHoldingItem"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::getItemHoldingCount"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::getWeight"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::queryDestination"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::addThing"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::addItemBack"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::updateThing"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::replaceThing"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::removeThing"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::getThingIndex"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::getItemTypeCount"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::getAllItemTypeCount"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::getItems"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::internalRemoveThing"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::internalAddThing"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::startDecaying"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::onAddContainerItem"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::onUpdateContainerItem"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::onRemoveContainerItem"
+    edges: []
+  - file: "src/container.h"
+    qualified_name: "Container::updateItemWeight"
+    edges: []

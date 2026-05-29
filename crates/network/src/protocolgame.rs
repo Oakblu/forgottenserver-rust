@@ -610,6 +610,27 @@ pub fn serialize_add_creature(
     out.add_u8(pos_z);
     out.add_u8(stackpos);
 
+    append_creature(out, known, removed_known, name, meta);
+}
+
+/// Append the bare `AddCreature` block (no `0x6A`/position/stackpos prefix).
+///
+/// Mirrors C++ `ProtocolGame::AddCreature` in
+/// `forgottenserver/src/protocolgame.cpp` lines 3388–3475 — the helper invoked
+/// both by `sendAddCreature` (after writing `0x6A` + position + stackpos) and
+/// by `GetTileDescription` (inline inside the `0x64` map stream).  This is the
+/// reusable body shared by [`serialize_add_creature`] and
+/// [`serialize_map_description`].
+///
+/// Wire layout: see [`serialize_add_creature`] for the per-field breakdown
+/// (everything from the `0x62`/`0x61` known marker onward).
+pub fn append_creature(
+    out: &mut OutputMessage,
+    known: bool,
+    removed_known: u32,
+    name: &str,
+    meta: AddCreatureMeta,
+) {
     let creature_type_byte = if meta.health_hidden {
         CREATURETYPE_HIDDEN
     } else {
@@ -2231,6 +2252,209 @@ pub fn serialize_map_description_header(pos_x: u16, pos_y: u16, pos_z: u8) -> Ve
     out.get_output_buffer()[2..].to_vec()
 }
 
+// ---------------------------------------------------------------------------
+// Full map description (sendMapDescription / GetMapDescription /
+// GetFloorDescription / GetTileDescription)
+// ---------------------------------------------------------------------------
+
+/// Viewport client constants (mirrors `Map::maxClientViewportX/Y` in
+/// `forgottenserver/src/map.h` lines 161–162).
+pub const MAX_CLIENT_VIEWPORT_X: i32 = 8;
+/// See [`MAX_CLIENT_VIEWPORT_X`].
+pub const MAX_CLIENT_VIEWPORT_Y: i32 = 6;
+/// `MAP_MAX_LAYERS` (mirrors `forgottenserver/src/map.h` line 15).
+pub const MAP_MAX_LAYERS: i32 = 16;
+
+/// One creature occupying a tile, in the order the C++ `CreatureVector`
+/// would be iterated *forwards*.  [`serialize_map_description`] iterates these
+/// in reverse to match the C++ `rbegin()..rend()` traversal in
+/// `GetTileDescription` (`forgottenserver/src/protocolgame.cpp` line 833).
+#[derive(Debug, Clone)]
+pub struct MapCreature {
+    /// `true` if the creature is already in the client's known-creature set.
+    pub known: bool,
+    /// `removedKnown` id (only written when `!known`).
+    pub removed_known: u32,
+    /// `Creature::getName()`.
+    pub name: String,
+    /// Per-creature `AddCreature` metadata.
+    pub meta: AddCreatureMeta,
+}
+
+/// Plain-data view of a single tile for the map description stream.
+///
+/// Mirrors the fields read by C++ `ProtocolGame::GetTileDescription`
+/// (`forgottenserver/src/protocolgame.cpp` lines 809–856): a ground item,
+/// top items, creatures, then down items, capped at `MAX_STACKPOS = 10`.
+#[derive(Debug, Clone, Default)]
+pub struct MapTile {
+    /// Ground item payload (`tile->getGround()`), if present.
+    pub ground: Option<(u8, ItemTypeMeta)>,
+    /// Top items (`getBeginTopItem()..getEndTopItem()`), each `(count, meta)`.
+    pub top_items: Vec<(u8, ItemTypeMeta)>,
+    /// Creatures on the tile, in forward order (see [`MapCreature`]).
+    pub creatures: Vec<MapCreature>,
+    /// Down items (`getBeginDownItem()..getEndDownItem()`), each `(count, meta)`.
+    pub down_items: Vec<(u8, ItemTypeMeta)>,
+}
+
+/// Append one tile's bytes (`GetTileDescription`).
+///
+/// Mirrors C++ `ProtocolGame::GetTileDescription` in
+/// `forgottenserver/src/protocolgame.cpp` lines 809–856.  Order: ground item,
+/// then top items, then creatures (reverse iteration), then down items, with a
+/// running `count` capped at `MAX_STACKPOS = 10`.
+fn append_tile_description(out: &mut OutputMessage, tile: &MapTile) {
+    let mut count: u32 = 0;
+
+    if let Some((c, meta)) = tile.ground {
+        append_item_payload(out, c, meta);
+        count = 1;
+    }
+
+    for &(c, meta) in &tile.top_items {
+        append_item_payload(out, c, meta);
+        count += 1;
+        if count == MAX_STACKPOS {
+            break;
+        }
+    }
+
+    // Creatures, reverse order (C++ rbegin()..rend()).
+    for creature in tile.creatures.iter().rev() {
+        append_creature(
+            out,
+            creature.known,
+            creature.removed_known,
+            &creature.name,
+            creature.meta,
+        );
+        count += 1;
+    }
+
+    if count < MAX_STACKPOS {
+        for &(c, meta) in &tile.down_items {
+            append_item_payload(out, c, meta);
+            count += 1;
+            if count == MAX_STACKPOS {
+                return;
+            }
+        }
+    }
+}
+
+/// Serialize `sendMapDescription` (opcode `0x64`).
+///
+/// Mirrors C++ `ProtocolGame::sendMapDescription` +
+/// `ProtocolGame::GetMapDescription` + `GetFloorDescription` +
+/// `GetTileDescription` in `forgottenserver/src/protocolgame.cpp` lines
+/// 2599–2607, 858–907, and 809–856.
+///
+/// The world is provided as a `lookup` closure mapping an absolute
+/// `(x, y, z)` to an `Option<MapTile>` (`None` == no tile, which produces a
+/// skip marker).  This keeps the network crate free of any `World`/`Tile`
+/// dependency and lets the caller inject synthetic tiles (e.g. the player's
+/// own tile in an otherwise empty world).
+///
+/// Wire layout:
+/// * opcode `0x64` (u8)
+/// * player position (`pos_x` u16, `pos_y` u16, `pos_z` u8)
+/// * map payload via the floor/skip algorithm:
+///   - viewport `width = (8*2)+2 = 18`, `height = (6*2)+2 = 14`
+///   - start corner `x0 = pos_x - 8`, `y0 = pos_y - 6`
+///   - floor range: `z > 7 ? [z-2 ..= min(15, z+2)] step +1`
+///     else `[7 ..= 0] step -1`; per-floor `offset = z - nz`
+///   - shared `skip` (`i32`, init `-1`) across all floors
+///   - per floor, column-major (`nx` outer, `ny` inner): present tile flushes
+///     any pending skip (`skip:u8`, `0xFF`) then writes the tile bytes and
+///     resets `skip = 0`; an absent tile increments `skip`, emitting
+///     (`0xFF`, `0xFF`) and resetting `skip = -1` when it reaches `0xFE`
+///   - after all floors, a trailing pending skip is flushed (`skip:u8`,
+///     `0xFF`)
+pub fn serialize_map_description<F>(pos_x: u16, pos_y: u16, pos_z: u8, lookup: F) -> Vec<u8>
+where
+    F: Fn(i32, i32, i32) -> Option<MapTile>,
+{
+    let mut out = OutputMessage::new();
+    out.add_u8(0x64);
+    out.add_u16(pos_x);
+    out.add_u16(pos_y);
+    out.add_u8(pos_z);
+
+    let width = (MAX_CLIENT_VIEWPORT_X * 2) + 2;
+    let height = (MAX_CLIENT_VIEWPORT_Y * 2) + 2;
+    let x0 = pos_x as i32 - MAX_CLIENT_VIEWPORT_X;
+    let y0 = pos_y as i32 - MAX_CLIENT_VIEWPORT_Y;
+    let z = pos_z as i32;
+
+    let (startz, endz, zstep) = if z > 7 {
+        (z - 2, std::cmp::min(MAP_MAX_LAYERS - 1, z + 2), 1)
+    } else {
+        (7, 0, -1)
+    };
+
+    // `skip` is shared across every floor (C++ GetMapDescription line 861).
+    let mut skip: i32 = -1;
+
+    let mut nz = startz;
+    while nz != endz + zstep {
+        let offset = z - nz;
+        append_floor_description(
+            &mut out, x0, y0, nz, width, height, offset, &mut skip, &lookup,
+        );
+        nz += zstep;
+    }
+
+    if skip >= 0 {
+        out.add_u8(skip as u8);
+        out.add_u8(0xFF);
+    }
+
+    out.write_message_length();
+    out.get_output_buffer()[2..].to_vec()
+}
+
+/// Append one floor's bytes (`GetFloorDescription`).
+///
+/// Mirrors C++ `ProtocolGame::GetFloorDescription` in
+/// `forgottenserver/src/protocolgame.cpp` lines 884–907.  Column-major:
+/// `nx` outer (`0..width`), `ny` inner (`0..height`); tile lookup uses
+/// `(x + nx + offset, y + ny + offset, z)`.
+#[allow(clippy::too_many_arguments)]
+fn append_floor_description<F>(
+    out: &mut OutputMessage,
+    x: i32,
+    y: i32,
+    z: i32,
+    width: i32,
+    height: i32,
+    offset: i32,
+    skip: &mut i32,
+    lookup: &F,
+) where
+    F: Fn(i32, i32, i32) -> Option<MapTile>,
+{
+    for nx in 0..width {
+        for ny in 0..height {
+            let tile = lookup(x + nx + offset, y + ny + offset, z);
+            if let Some(tile) = tile {
+                if *skip >= 0 {
+                    out.add_u8(*skip as u8);
+                    out.add_u8(0xFF);
+                }
+                *skip = 0;
+                append_tile_description(out, &tile);
+            } else if *skip == 0xFE {
+                out.add_u8(0xFF);
+                out.add_u8(0xFF);
+                *skip = -1;
+            } else {
+                *skip += 1;
+            }
+        }
+    }
+}
+
 /// Serialize an add-tile-item packet.
 ///
 /// Wire format (opcode 0x6A — mirrors C++ `ProtocolGame::sendAddTileItem`
@@ -2435,8 +2659,9 @@ pub fn serialize_basic_data(
 /// * `free_capacity` (u32)
 /// * `experience` (u64)
 /// * `level` (u16), `level_pct` (u8)
-/// * `base_xp_gain`, `voucher_xp_gain`, `grinding_xp_gain`,
-///   `store_xp_gain`, `hunting_xp_gain` (5 × u16)
+/// * `exp_display`, `low_level_bonus`, `store_exp_bonus`, `stamina_bonus`
+///   (4 × u16 — `clientExpDisplay`, `clientLowLevelBonusDisplay`, store-exp
+///   bonus literal `0`, `clientStaminaBonusDisplay`)
 /// * `mp` (u32), `mp_max` (u32)
 /// * `soul` (u8)
 /// * `stamina_minutes` (u16)
@@ -2455,11 +2680,10 @@ pub fn serialize_stats(
     experience: u64,
     level: u16,
     level_pct: u8,
-    base_xp_gain: u16,
-    voucher_xp_gain: u16,
-    grinding_xp_gain: u16,
-    store_xp_gain: u16,
-    hunting_xp_gain: u16,
+    exp_display: u16,
+    low_level_bonus: u16,
+    store_exp_bonus: u16,
+    stamina_bonus: u16,
     mp: u32,
     mp_max: u32,
     soul: u8,
@@ -2481,11 +2705,10 @@ pub fn serialize_stats(
     msg.add_u16(level);
     msg.add_u8(level_pct);
 
-    msg.add_u16(base_xp_gain);
-    msg.add_u16(voucher_xp_gain);
-    msg.add_u16(grinding_xp_gain);
-    msg.add_u16(store_xp_gain);
-    msg.add_u16(hunting_xp_gain);
+    msg.add_u16(exp_display);
+    msg.add_u16(low_level_bonus);
+    msg.add_u16(store_exp_bonus);
+    msg.add_u16(stamina_bonus);
 
     msg.add_u32(mp);
     msg.add_u32(mp_max);
@@ -5993,5 +6216,164 @@ mod tests {
         assert_eq!(bytes.len(), 3);
         assert_eq!(bytes[0], 0x14);
         assert_eq!(u16::from_le_bytes([bytes[1], bytes[2]]), 0);
+    }
+
+    // -----------------------------------------------------------------------
+    // Map description (sendMapDescription / GetMapDescription /
+    // GetFloorDescription / GetTileDescription) + append_creature
+    // -----------------------------------------------------------------------
+
+    /// Default player-creature meta used by the map-description tests
+    /// (look_type 128, south-facing, full health, speed 220).
+    fn player_meta(creature_id: u32) -> AddCreatureMeta {
+        AddCreatureMeta {
+            creature_id,
+            creature_type: CREATURETYPE_PLAYER,
+            master_id: 0,
+            health_hidden: false,
+            health_percent: 100,
+            direction: 2, // south
+            ghost_or_invisible: false,
+            outfit: OutfitDescriptor {
+                look_type: 128,
+                ..OutfitDescriptor::default()
+            },
+            light_level: 0,
+            light_color: 0,
+            step_speed_half: 110, // 220 / 2
+            skull: 0,
+            party_shield: 0,
+            guild_emblem: 0,
+            player_vocation_client_id: 0,
+            speech_bubble: 0,
+            can_walkthrough: false,
+        }
+    }
+
+    #[test]
+    fn append_creature_unknown_player_first_bytes_match_cpp() {
+        let mut out = OutputMessage::new();
+        append_creature(&mut out, false, 0, "Hero", player_meta(0x1000_0001));
+        out.write_message_length();
+        let bytes = out.get_output_buffer()[2..].to_vec();
+
+        // 0x61 (u16) unknown marker
+        assert_eq!(u16::from_le_bytes([bytes[0], bytes[1]]), 0x61);
+        // removedKnown (u32) = 0
+        assert_eq!(
+            u32::from_le_bytes([bytes[2], bytes[3], bytes[4], bytes[5]]),
+            0
+        );
+        // creature id (u32)
+        assert_eq!(
+            u32::from_le_bytes([bytes[6], bytes[7], bytes[8], bytes[9]]),
+            0x1000_0001
+        );
+        // creature type byte = CREATURETYPE_PLAYER (0)
+        assert_eq!(bytes[10], CREATURETYPE_PLAYER);
+        // name (u16 len + bytes)
+        let name_len = u16::from_le_bytes([bytes[11], bytes[12]]) as usize;
+        assert_eq!(name_len, 4);
+        assert_eq!(&bytes[13..13 + name_len], b"Hero");
+        // health percent
+        assert_eq!(bytes[13 + name_len], 100);
+        // direction (south = 2)
+        assert_eq!(bytes[13 + name_len + 1], 2);
+    }
+
+    #[test]
+    fn map_description_opcode_and_position() {
+        let bytes = serialize_map_description(100, 100, 7, |_x, _y, _z| None);
+        assert_eq!(bytes[0], 0x64, "map opcode must be 0x64");
+        assert_eq!(u16::from_le_bytes([bytes[1], bytes[2]]), 100, "pos x");
+        assert_eq!(u16::from_le_bytes([bytes[3], bytes[4]]), 100, "pos y");
+        assert_eq!(bytes[5], 7, "pos z");
+    }
+
+    #[test]
+    fn map_description_empty_world_z7_produces_exact_skip_sequence() {
+        // z=7 -> floors 7,6,5,4,3,2,1,0 (8 floors) x 18*14 = 252 tiles each.
+        // skip is shared: 2016 empty tiles -> seven 0xFF,0xFF full-skip pairs
+        // then a trailing (223, 0xFF). Total 16 payload bytes after the
+        // 5-byte position header.
+        let bytes = serialize_map_description(100, 100, 7, |_x, _y, _z| None);
+        // Header = opcode(1) + x(2) + y(2) + z(1) = 6 bytes.
+        let payload = &bytes[6..];
+        assert_eq!(payload.len(), 16, "8 floors of empty tiles -> 16 bytes");
+        let expected: [u8; 16] = [
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+            223, 0xFF,
+        ];
+        assert_eq!(payload, &expected, "empty-world skip sequence mismatch");
+    }
+
+    #[test]
+    fn map_description_player_tile_at_center_emits_skip_then_tile() {
+        // Player at (100, 100, 7). Viewport corner x0=92, y0=94.
+        // The center tile is the FIRST present tile reached in column-major
+        // order on floor 7. Column-major: nx outer (x=92..109), ny inner
+        // (y=94..107). The player tile (100, 100) is reached when nx = 8
+        // (x=100) and ny = 6 (y=100). Empty tiles before it = 8*14 + 6 = 118.
+        // `skip` starts at -1 and increments per empty tile, so the flushed
+        // skip value is 118 - 1 = 117.
+        let ground_meta = ItemTypeMeta {
+            client_id: 106,
+            ..ItemTypeMeta::default()
+        };
+        let creature_id = 0x1000_0001u32;
+        let bytes = serialize_map_description(100, 100, 7, move |x, y, z| {
+            if x == 100 && y == 100 && z == 7 {
+                Some(MapTile {
+                    ground: Some((1, ground_meta)),
+                    creatures: vec![MapCreature {
+                        known: false,
+                        removed_known: 0,
+                        name: "Hero".to_string(),
+                        meta: player_meta(creature_id),
+                    }],
+                    ..MapTile::default()
+                })
+            } else {
+                None
+            }
+        });
+        // Header = opcode(1) + x(2) + y(2) + z(1) = 6 bytes.
+        let payload = &bytes[6..];
+
+        // First flush: skip = 117 (118 empty tiles, init -1), then 0xFF.
+        assert_eq!(payload[0], 117, "leading skip count before player tile");
+        assert_eq!(payload[1], 0xFF, "skip terminator");
+
+        // Then the ground item client id (106, u16 LE).
+        assert_eq!(
+            u16::from_le_bytes([payload[2], payload[3]]),
+            106,
+            "ground client id"
+        );
+
+        // Then the creature block: unknown marker 0x61 (u16 LE).
+        assert_eq!(
+            u16::from_le_bytes([payload[4], payload[5]]),
+            0x61,
+            "creature unknown marker"
+        );
+        // removedKnown (u32) then creature id (u32).
+        assert_eq!(
+            u32::from_le_bytes([payload[10], payload[11], payload[12], payload[13]]),
+            creature_id,
+            "creature id in stream"
+        );
+    }
+
+    #[test]
+    fn map_description_underground_z8_iterates_five_floors() {
+        // z=8 (> 7): floors z-2..=min(15, z+2) = 6..=10 (5 floors) x 252 tiles.
+        // 5*252 = 1260 empty tiles. 1260 = 4*256 + 236 -> four 0xFF,0xFF pairs
+        // and trailing (235, 0xFF) => 10 payload bytes.
+        let bytes = serialize_map_description(100, 100, 8, |_x, _y, _z| None);
+        // Header = opcode(1) + x(2) + y(2) + z(1) = 6 bytes.
+        let payload = &bytes[6..];
+        let expected: [u8; 10] = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 235, 0xFF];
+        assert_eq!(payload, &expected, "underground skip sequence mismatch");
     }
 }

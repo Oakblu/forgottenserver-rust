@@ -1,0 +1,58 @@
+nodes:
+  - file: "src/vocation.cpp"
+    qualified_name: "Vocations::loadFromXml"
+    edges:
+      - target:
+          file: "src/vocation.cpp"
+          qualified_name: "Vocations::loadFromXml"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/vocation.cpp"
+    qualified_name: "Vocations::getVocation"
+    edges:
+      - target:
+          file: "src/vocation.cpp"
+          qualified_name: "Vocations::getVocation"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/vocation.cpp"
+    qualified_name: "Vocations::getVocationId"
+    edges:
+      - target:
+          file: "src/vocation.cpp"
+          qualified_name: "Vocations::getVocationId"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/vocation.cpp"
+    qualified_name: "Vocations::getPromotedVocation"
+    edges:
+      - target:
+          file: "src/vocation.cpp"
+          qualified_name: "Vocations::getPromotedVocation"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/vocation.cpp"
+    qualified_name: skillBase
+    edges: []
+  - file: "src/vocation.cpp"
+    qualified_name: "Vocation::getReqSkillTries"
+    edges:
+      - target:
+          file: "src/vocation.cpp"
+          qualified_name: "Vocation::getReqSkillTries"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/vocation.cpp"
+    qualified_name: "Vocation::getReqMana"
+    edges:
+      - target:
+          file: "src/vocation.cpp"
+          qualified_name: "Vocation::getReqMana"
+        kind: static
+        confidence: static
+        order: 1

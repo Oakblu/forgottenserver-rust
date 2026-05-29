@@ -1,0 +1,28 @@
+nodes:
+  - file: "src/scheduler.h"
+    qualified_name: FS_SCHEDULER_H
+    edges: []
+  - file: "src/scheduler.h"
+    qualified_name: SchedulerTask
+    edges: []
+  - file: "src/scheduler.h"
+    qualified_name: "SchedulerTask::SchedulerTask"
+    edges: []
+  - file: "src/scheduler.h"
+    qualified_name: "SchedulerTask::createSchedulerTask"
+    edges: []
+  - file: "src/scheduler.h"
+    qualified_name: Scheduler
+    edges: []
+  - file: "src/scheduler.h"
+    qualified_name: "Scheduler::addEvent"
+    edges: []
+  - file: "src/scheduler.h"
+    qualified_name: "Scheduler::stopEvent"
+    edges: []
+  - file: "src/scheduler.h"
+    qualified_name: "Scheduler::shutdown"
+    edges: []
+  - file: "src/scheduler.h"
+    qualified_name: "Scheduler::get_executor"
+    edges: []

@@ -1,0 +1,103 @@
+nodes:
+  - file: "src/talkaction.cpp"
+    qualified_name: "TalkActions::clear"
+    edges:
+      - target:
+          file: "src/talkaction.cpp"
+          qualified_name: "TalkActions::clear"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/talkaction.cpp"
+    qualified_name: "TalkActions::getScriptInterface"
+    edges:
+      - target:
+          file: "src/talkaction.cpp"
+          qualified_name: "TalkActions::getScriptInterface"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/talkaction.cpp"
+    qualified_name: "TalkActions::getEvent"
+    edges:
+      - target:
+          file: "src/talkaction.cpp"
+          qualified_name: "TalkActions::getEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/talkaction.cpp"
+    qualified_name: "TalkActions::registerEvent"
+    edges:
+      - target:
+          file: "src/talkaction.cpp"
+          qualified_name: "TalkActions::registerEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/talkaction.cpp"
+    qualified_name: "TalkActions::registerLuaEvent"
+    edges:
+      - target:
+          file: "src/talkaction.cpp"
+          qualified_name: "TalkActions::registerLuaEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/talkaction.cpp"
+    qualified_name: "TalkActions::playerSaySpell"
+    edges:
+      - target:
+          file: "src/talkaction.cpp"
+          qualified_name: "TalkActions::playerSaySpell"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/talkaction.cpp"
+    qualified_name: "TalkAction::configureEvent"
+    edges:
+      - target:
+          file: "src/talkaction.cpp"
+          qualified_name: "TalkAction::configureEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/talkaction.cpp"
+    qualified_name: "TalkAction::executeSay"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushString"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setMetatable"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/talkaction.cpp"
+          qualified_name: "TalkAction::executeSay"
+        kind: static
+        confidence: static
+        order: 6

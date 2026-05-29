@@ -1,0 +1,121 @@
+nodes:
+  - file: "src/database.h"
+    qualified_name: DBResult_ptr
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "tfs::detail"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "tfs::detail::MysqlDeleter"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "tfs::detail::MysqlDeleter::operator()(MYSQL*)"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "tfs::detail::MysqlDeleter::operator()(MYSQL_RES*)"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "tfs::detail::Mysql_ptr"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "tfs::detail::MysqlResult_ptr"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: Database
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "Database::getInstance"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "Database::escapeString"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "Database::getLastInsertId"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "Database::getClientVersion"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "Database::getMaxPacketSize"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "Database::handle"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "Database::databaseLock"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "Database::maxPacketSize"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "Database::retryQueries"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: DBResult
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "DBResult::DBResult(const DBResult&)"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "DBResult::operator="
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "DBResult::getNumber"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "DBResult::handle"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "DBResult::row"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "DBResult::listNames"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: DBInsert
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "DBInsert::query"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "DBInsert::values"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "DBInsert::length"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: DBTransaction
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "DBTransaction::DBTransaction"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "DBTransaction::~DBTransaction"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "DBTransaction::DBTransaction(const DBTransaction&)"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "DBTransaction::operator="
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "DBTransaction::begin"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "DBTransaction::commit"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "DBTransaction::TransactionStates_t"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "DBTransaction::STATE_NO_START"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "DBTransaction::STATE_START"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "DBTransaction::STATE_COMMIT"
+    edges: []
+  - file: "src/database.h"
+    qualified_name: "DBTransaction::state"
+    edges: []

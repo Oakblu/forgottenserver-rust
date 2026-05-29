@@ -1,0 +1,109 @@
+nodes:
+  - file: "src/guild.h"
+    qualified_name: Guild
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::MEMBER_RANK_LEVEL_DEFAULT"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::Guild"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "GuildRank::GuildRank"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::id"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::memberCount"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::membersOnline"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::motd"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::name"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::ranks"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "GuildRank::id"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "GuildRank::level"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "GuildRank::name"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::getId"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::getMemberCount"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::getMembersOnline"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::getMotd"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::getName"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::getRanks"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::setMemberCount"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::setMotd"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: GuildRank
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: GuildRank_ptr
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: GuildWarVector
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: Guild_ptr
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: FS_GUILD_H
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: GuildRank
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "GuildRank::GuildRank"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: Guild
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::Guild"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::addMember"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::removeMember"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::addRank"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::getRankById"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::getRankByName"
+    edges: []
+  - file: "src/guild.h"
+    qualified_name: "Guild::getRankByLevel"
+    edges: []

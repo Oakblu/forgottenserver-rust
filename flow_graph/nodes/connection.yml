@@ -1,0 +1,148 @@
+nodes:
+  - file: "src/connection.cpp"
+    qualified_name: "ConnectionManager::createConnection"
+    edges:
+      - target:
+          file: "src/connection.cpp"
+          qualified_name: "ConnectionManager::createConnection"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/connection.cpp"
+    qualified_name: "ConnectionManager::releaseConnection"
+    edges:
+      - target:
+          file: "src/connection.cpp"
+          qualified_name: "ConnectionManager::releaseConnection"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/connection.cpp"
+    qualified_name: "ConnectionManager::closeAll"
+    edges:
+      - target:
+          file: "src/connection.cpp"
+          qualified_name: "ConnectionManager::closeAll"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/connection.cpp"
+    qualified_name: "Connection::Connection"
+    edges:
+      - target:
+          file: "src/connection.cpp"
+          qualified_name: "Connection::Connection"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/connection.cpp"
+    qualified_name: "Connection::close"
+    edges:
+      - target:
+          file: "src/connection.cpp"
+          qualified_name: "Connection::close"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/connection.h"
+          qualified_name: "ConnectionManager::getInstance"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/connection.cpp"
+    qualified_name: "Connection::closeSocket"
+    edges:
+      - target:
+          file: "src/connection.cpp"
+          qualified_name: "Connection::closeSocket"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/connection.cpp"
+    qualified_name: "Connection::~Connection"
+    edges: []
+  - file: "src/connection.cpp"
+    qualified_name: "Connection::accept(Protocol_ptr)"
+    edges: []
+  - file: "src/connection.cpp"
+    qualified_name: "Connection::accept()"
+    edges:
+      - target:
+          file: "src/connection.cpp"
+          qualified_name: "Connection::handleTimeout"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/connection.cpp"
+    qualified_name: "Connection::parseHeader"
+    edges:
+      - target:
+          file: "src/connection.cpp"
+          qualified_name: "Connection::handleTimeout"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/connection.cpp"
+          qualified_name: "Connection::parseHeader"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/connection.cpp"
+    qualified_name: "Connection::parsePacket"
+    edges:
+      - target:
+          file: "src/connection.cpp"
+          qualified_name: "Connection::handleTimeout"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/connection.cpp"
+          qualified_name: "Connection::parsePacket"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/connection.cpp"
+    qualified_name: "Connection::send"
+    edges:
+      - target:
+          file: "src/connection.cpp"
+          qualified_name: "Connection::send"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/connection.cpp"
+    qualified_name: "Connection::internalSend"
+    edges:
+      - target:
+          file: "src/connection.cpp"
+          qualified_name: "Connection::handleTimeout"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/connection.cpp"
+          qualified_name: "Connection::internalSend"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/connection.cpp"
+    qualified_name: "Connection::onWriteOperation"
+    edges:
+      - target:
+          file: "src/connection.cpp"
+          qualified_name: "Connection::onWriteOperation"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/connection.cpp"
+    qualified_name: "Connection::handleTimeout"
+    edges:
+      - target:
+          file: "src/connection.cpp"
+          qualified_name: "Connection::handleTimeout"
+        kind: static
+        confidence: static
+        order: 1

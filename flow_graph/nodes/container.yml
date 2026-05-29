@@ -1,0 +1,448 @@
+nodes:
+  - file: "src/container.cpp"
+    qualified_name: "Container::clone"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::clone"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::clone"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/container.cpp"
+    qualified_name: "Container::getName"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::getName"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::hasContainerParent"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::hasContainerParent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::addItem"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::addItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::readAttr"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::readAttr"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::readAttr"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/container.cpp"
+    qualified_name: "Container::unserializeItemNode"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::unserializeItemNode"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::CreateItem"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::unserializeItemNode"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/container.cpp"
+    qualified_name: "Container::updateItemWeight"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::updateItemWeight"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::getWeight"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::getWeight"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::getWeight"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/container.cpp"
+    qualified_name: "Container::getItemByIndex"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::getItemByIndex"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::getItemHoldingCount"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::getItemHoldingCount"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::isHoldingItem"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::isHoldingItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::onAddContainerItem"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::onAddContainerItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::onUpdateContainerItem"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::onUpdateContainerItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::onRemoveContainerItem"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::onRemoveContainerItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::queryAdd"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::addItemBack"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::addThing"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::getItemTypeCount"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::getItems"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::getThingIndex"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::postAddNotification"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::queryAdd"
+        kind: static
+        confidence: static
+        order: 7
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::queryDestination"
+        kind: static
+        confidence: static
+        order: 8
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::queryMaxCount"
+        kind: static
+        confidence: static
+        order: 9
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::queryRemove"
+        kind: static
+        confidence: static
+        order: 10
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::removeThing"
+        kind: static
+        confidence: static
+        order: 11
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::replaceThing"
+        kind: static
+        confidence: static
+        order: 12
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::updateThing"
+        kind: static
+        confidence: static
+        order: 13
+      - target:
+          file: "src/container.h"
+          qualified_name: "Container::getAllItemTypeCount"
+        kind: static
+        confidence: static
+        order: 14
+  - file: "src/container.cpp"
+    qualified_name: "Container::queryMaxCount"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::queryMaxCount"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::queryRemove"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::queryRemove"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::queryDestination"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::queryDestination"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::addThing"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::addThing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::addItemBack"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::addItemBack"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::updateThing"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::updateThing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::replaceThing"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::replaceThing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::removeThing"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::removeThing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::getThingIndex"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::getThingIndex"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::getItemTypeCount"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::getItemTypeCount"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::getItems"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::getItems"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::postAddNotification"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::postAddNotification"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::postRemoveNotification"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/container.cpp"
+    qualified_name: "Container::postRemoveNotification"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::internalAddThing"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::internalRemoveThing"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::iterator"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::postRemoveNotification"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::startDecaying"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::startDecaying"
+        kind: static
+        confidence: static
+        order: 6
+  - file: "src/container.cpp"
+    qualified_name: "Container::internalRemoveThing"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::internalRemoveThing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::internalAddThing"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::internalAddThing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "Container::startDecaying"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::startDecaying"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::startDecaying"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/container.cpp"
+    qualified_name: "Container::iterator"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "Container::iterator"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/container.cpp"
+    qualified_name: "ContainerIterator::advance"
+    edges:
+      - target:
+          file: "src/container.cpp"
+          qualified_name: "ContainerIterator::advance"
+        kind: static
+        confidence: static
+        order: 1

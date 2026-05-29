@@ -1,0 +1,31 @@
+nodes:
+  - file: "src/tasks.h"
+    qualified_name: FS_TASKS_H
+    edges: []
+  - file: "src/tasks.h"
+    qualified_name: Task
+    edges: []
+  - file: "src/tasks.h"
+    qualified_name: "Task::Task"
+    edges: []
+  - file: "src/tasks.h"
+    qualified_name: "Task::Task"
+    edges: []
+  - file: "src/tasks.h"
+    qualified_name: "Task::false"
+    edges: []
+  - file: "src/tasks.h"
+    qualified_name: "Task::now"
+    edges: []
+  - file: "src/tasks.h"
+    qualified_name: Dispatcher
+    edges: []
+  - file: "src/tasks.h"
+    qualified_name: "Dispatcher::addTask"
+    edges: []
+  - file: "src/tasks.h"
+    qualified_name: "Dispatcher::shutdown"
+    edges: []
+  - file: "src/tasks.h"
+    qualified_name: "Dispatcher::threadMain"
+    edges: []

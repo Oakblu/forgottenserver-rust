@@ -1,0 +1,115 @@
+nodes:
+  - file: "src/guild.cpp"
+    qualified_name: "IOGuild::getGuildIdByName"
+    edges: []
+  - file: "src/guild.cpp"
+    qualified_name: "IOGuild::loadGuild"
+    edges: []
+  - file: "src/guild.cpp"
+    qualified_name: "Guild::addMember"
+    edges: []
+  - file: "src/guild.cpp"
+    qualified_name: "Guild::addRank"
+    edges: []
+  - file: "src/guild.cpp"
+    qualified_name: "Guild::getRankById"
+    edges: []
+  - file: "src/guild.cpp"
+    qualified_name: "Guild::getRankByLevel"
+    edges: []
+  - file: "src/guild.cpp"
+    qualified_name: "Guild::getRankByName"
+    edges: []
+  - file: "src/guild.cpp"
+    qualified_name: "Guild::removeMember"
+    edges: []
+  - file: "src/guild.cpp"
+    qualified_name: "Guild::addMember"
+    edges:
+      - target:
+          file: "src/guild.cpp"
+          qualified_name: "Guild::addMember"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/guild.cpp"
+    qualified_name: "Guild::removeMember"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removeGuild"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/guild.cpp"
+          qualified_name: "Guild::removeMember"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/guild.cpp"
+    qualified_name: "Guild::addRank"
+    edges:
+      - target:
+          file: "src/guild.cpp"
+          qualified_name: "Guild::addRank"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/guild.cpp"
+    qualified_name: "Guild::getRankById"
+    edges:
+      - target:
+          file: "src/guild.cpp"
+          qualified_name: "Guild::getRankById"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/guild.cpp"
+    qualified_name: "Guild::getRankByName"
+    edges:
+      - target:
+          file: "src/guild.cpp"
+          qualified_name: "Guild::getRankByName"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/guild.cpp"
+    qualified_name: "Guild::getRankByLevel"
+    edges:
+      - target:
+          file: "src/guild.cpp"
+          qualified_name: "Guild::getRankByLevel"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/guild.cpp"
+    qualified_name: "IOGuild::loadGuild"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/guild.cpp"
+          qualified_name: "IOGuild::loadGuild"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/guild.cpp"
+    qualified_name: "IOGuild::getGuildIdByName"
+    edges:
+      - target:
+          file: "src/database.h"
+          qualified_name: "Database::getInstance"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/guild.cpp"
+          qualified_name: "IOGuild::getGuildIdByName"
+        kind: static
+        confidence: static
+        order: 2

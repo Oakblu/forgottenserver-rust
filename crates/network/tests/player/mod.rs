@@ -58,11 +58,10 @@ fn parity_stats_full_payload() {
         /* experience            */ 0x0102_0304_0506_0708,
         /* level                 */ 8,
         /* level_pct             */ 50,
-        /* base_xp_gain          */ 100,
-        /* voucher_xp_gain       */ 0,
-        /* grinding_xp_gain      */ 0,
-        /* store_xp_gain         */ 0,
-        /* hunting_xp_gain       */ 0,
+        /* exp_display           */ 100,
+        /* low_level_bonus       */ 0,
+        /* store_exp_bonus       */ 0,
+        /* stamina_bonus         */ 0,
         /* mp                    */ 60,
         /* mp_max                */ 120,
         /* soul                  */ 5,
@@ -78,7 +77,7 @@ fn parity_stats_full_payload() {
     //   opcode 0xA0
     //   hp u32 | hp_max u32 | free_capacity u32 | experience u64
     //   level u16 | level_pct u8
-    //   base/voucher/grinding/store/hunting xp gain (5 × u16)
+    //   exp_display | low_level_bonus | store_exp_bonus | stamina_bonus (4 × u16)
     //   mp u32 | mp_max u32 | soul u8 | stamina u16 | base_speed/2 u16
     //   regen u16 | offline_train_minutes u16
     //   xp_boost_time u16=0 | xp_boost_in_store u8=0
@@ -88,9 +87,9 @@ fn parity_stats_full_payload() {
         &[
             0xA0, 0x64, 0x00, 0x00, 0x00, 0xC8, 0x00, 0x00, 0x00, 0xF4, 0x01, 0x00, 0x00, 0x08,
             0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01, 0x08, 0x00, 0x32, 0x64, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3C, 0x00, 0x00, 0x00, 0x78, 0x00, 0x00, 0x00,
-            0x05, 0xD8, 0x09, 0x6E, 0x00, 0x3C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x3C, 0x00, 0x00, 0x00, 0x78, 0x00, 0x00, 0x00, 0x05, 0xD8,
+            0x09, 0x6E, 0x00, 0x3C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
         ],
     );
 }

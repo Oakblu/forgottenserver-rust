@@ -1,0 +1,100 @@
+nodes:
+  - file: "src/server.h"
+    qualified_name: ServiceBase
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServiceBase::~ServiceBase"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServiceBase::is_single_socket"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServiceBase::is_checksummed"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServiceBase::get_protocol_identifier"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServiceBase::get_protocol_name"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServiceBase::make_protocol"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: Service
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "Service::is_single_socket"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "Service::is_checksummed"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "Service::get_protocol_identifier"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "Service::get_protocol_name"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "Service::make_protocol"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: ServicePort
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServicePort::ServicePort"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServicePort::ServicePort(const ServicePort&)"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServicePort::operator="
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServicePort::io_context"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServicePort::acceptor"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServicePort::services"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServicePort::serverPort"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServicePort::pendingStart"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: ServiceManager
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServiceManager::ServiceManager"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServiceManager::ServiceManager(const ServiceManager&)"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServiceManager::operator="
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServiceManager::is_running"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServiceManager::acceptors"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServiceManager::io_context"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServiceManager::signals"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServiceManager::death_timer"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServiceManager::running"
+    edges: []
+  - file: "src/server.h"
+    qualified_name: "ServiceManager::add"
+    edges: []

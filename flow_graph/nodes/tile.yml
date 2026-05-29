@@ -1,0 +1,442 @@
+nodes:
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::hasProperty"
+    edges: []
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::hasProperty"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::hasProperty"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::hasHeight"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::hasHeight"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getCreatureCount"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getCreatureCount"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getItemCount"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getItemCount"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getTopItemCount"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getTopItemCount"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getDownItemCount"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getDownItemCount"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getTeleportItem"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getTeleportItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getFieldItem"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getFieldItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getTrashHolder"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getTrashHolder"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getMailbox"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getMailbox"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getBedItem"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getBedItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getTopCreature"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getTopCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getBottomCreature"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getBottomCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getTopVisibleCreature"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getTopVisibleCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getBottomVisibleCreature"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getBottomVisibleCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getTopDownItem"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getTopDownItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getTopTopItem"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getTopTopItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getItemByTopOrder"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getItemByTopOrder"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getTopVisibleThing"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getTopVisibleThing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::onAddTileItem"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::onAddTileItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::onUpdateTileItem"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::onUpdateTileItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::onRemoveTileItem"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::onRemoveTileItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::queryAdd"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::queryAdd"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::queryMaxCount"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::queryMaxCount"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::queryRemove"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::queryRemove"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::queryDestination"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::queryDestination"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::addThing"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::ReleaseItem"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::addThing"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::updateThing"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::updateThing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::replaceThing"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::replaceThing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::removeThing"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::removeThing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::hasCreature"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::hasCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::removeCreature"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::removeCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getThingIndex"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getThingIndex"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getClientIndexOfCreature"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getClientIndexOfCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getStackposOfItem"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getStackposOfItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getItemTypeCount"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getItemTypeCount"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getThing"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getThing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::postAddNotification"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::ReleaseCreature"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::ReleaseItem"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvents::onCreatureMove"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvents::onItemMove"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::postAddNotification"
+        kind: static
+        confidence: static
+        order: 5
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::postRemoveNotification"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvents::onCreatureMove"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvents::onItemMove"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::postRemoveNotification"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::internalAddThing"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::internalAddThing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::setTileFlags"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::setTileFlags"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::resetTileFlags"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::resetTileFlags"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::isMoveableBlocking"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::isMoveableBlocking"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/tile.cpp"
+    qualified_name: "Tile::getUseItem"
+    edges:
+      - target:
+          file: "src/tile.cpp"
+          qualified_name: "Tile::getUseItem"
+        kind: static
+        confidence: static
+        order: 1

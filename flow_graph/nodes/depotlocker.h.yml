@@ -1,0 +1,31 @@
+nodes:
+  - file: "src/depotlocker.h"
+    qualified_name: DepotLocker
+    edges: []
+  - file: "src/depotlocker.h"
+    qualified_name: "DepotLocker::depotId"
+    edges: []
+  - file: "src/depotlocker.h"
+    qualified_name: "DepotLocker::canRemove"
+    edges: []
+  - file: "src/depotlocker.h"
+    qualified_name: "DepotLocker::getDepotId"
+    edges: []
+  - file: "src/depotlocker.h"
+    qualified_name: "DepotLocker::getDepotLocker (const)"
+    edges: []
+  - file: "src/depotlocker.h"
+    qualified_name: "DepotLocker::getDepotLocker (non-const)"
+    edges: []
+  - file: "src/depotlocker.h"
+    qualified_name: "DepotLocker::queryAdd"
+    edges: []
+  - file: "src/depotlocker.h"
+    qualified_name: "DepotLocker::setDepotId"
+    edges: []
+  - file: "src/depotlocker.h"
+    qualified_name: DepotLocker_ptr
+    edges: []
+  - file: "src/depotlocker.h"
+    qualified_name: FS_DEPOTLOCKER_H
+    edges: []

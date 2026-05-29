@@ -1,0 +1,4 @@
+nodes:
+  - file: "src/position.cpp"
+    qualified_name: "operator<<(std::ostream&,const Position&)"
+    edges: []

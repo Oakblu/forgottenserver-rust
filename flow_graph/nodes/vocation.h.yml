@@ -1,0 +1,172 @@
+nodes:
+  - file: "src/vocation.h"
+    qualified_name: Vocation
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::Vocation"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::getVocName"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::getVocDescription"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::getReqSkillTries"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::getReqMana"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::getId"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::getClientId"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::getHPGain"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::getManaGain"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::getCapGain"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::getManaGainTicks"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::getManaGainAmount"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::getHealthGainTicks"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::getHealthGainAmount"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::getSoulMax"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::getSoulGainTicks"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::getAttackSpeed"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::getBaseSpeed"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::getFromVocation"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::getNoPongKickTime"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::allowsPvp"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::getMagicShield"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::meleeDamageMultiplier"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::distDamageMultiplier"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::defenseMultiplier"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::armorMultiplier"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::friend_Vocations"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::name"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::description"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::skillMultipliers"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::manaMultiplier"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::gainHealthTicks"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::gainHealthAmount"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::gainManaTicks"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::gainManaAmount"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::gainCap"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::gainMana"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::gainHP"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::fromVocation"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::attackSpeed"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::baseSpeed"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::noPongKickTime"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::id"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::gainSoulTicks"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::soulMax"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::clientId"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::allowPvp"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocation::magicShield"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: VocationMap
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: Vocations
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocations::loadFromXml"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocations::getVocation"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocations::getVocationId"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocations::getPromotedVocation"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocations::getVocations"
+    edges: []
+  - file: "src/vocation.h"
+    qualified_name: "Vocations::vocationsMap"
+    edges: []

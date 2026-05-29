@@ -1,0 +1,85 @@
+nodes:
+  - file: "src/items.cpp"
+    qualified_name: getDirection
+    edges: []
+  - file: "src/items.cpp"
+    qualified_name: "Items::clear"
+    edges:
+      - target:
+          file: "src/items.cpp"
+          qualified_name: "Items::clear"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/items.cpp"
+    qualified_name: "Items::reload"
+    edges:
+      - target:
+          file: "src/items.cpp"
+          qualified_name: "Items::reload"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::loadDefaults"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/items.cpp"
+    qualified_name: "Items::loadFromOtb"
+    edges:
+      - target:
+          file: "src/items.cpp"
+          qualified_name: "Items::loadFromOtb"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/items.cpp"
+    qualified_name: "Items::loadFromXml"
+    edges:
+      - target:
+          file: "src/items.cpp"
+          qualified_name: "Items::loadFromXml"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/items.cpp"
+    qualified_name: "Items::parseItemNode"
+    edges:
+      - target:
+          file: "src/items.cpp"
+          qualified_name: "Items::parseItemNode"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/items.cpp"
+    qualified_name: "Items::getItemType"
+    edges: []
+  - file: "src/items.cpp"
+    qualified_name: "Items::getItemType"
+    edges:
+      - target:
+          file: "src/items.cpp"
+          qualified_name: "Items::getItemType"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/items.cpp"
+    qualified_name: "Items::getItemIdByClientId"
+    edges:
+      - target:
+          file: "src/items.cpp"
+          qualified_name: "Items::getItemIdByClientId"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/items.cpp"
+    qualified_name: "Items::getItemIdByName"
+    edges:
+      - target:
+          file: "src/items.cpp"
+          qualified_name: "Items::getItemIdByName"
+        kind: static
+        confidence: static
+        order: 1

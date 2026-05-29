@@ -1,0 +1,12 @@
+root:
+  file: "src/main.cpp"
+  qualified_name: main
+entrypoint_chain:
+  - file: "src/main.cpp"
+    qualified_name: main
+  - file: "src/otserv.cpp"
+    qualified_name: startServer
+  - file: "src/otserv.cpp"
+    qualified_name: mainLoader
+unreached: []
+orphan_policy: entrypoint-only

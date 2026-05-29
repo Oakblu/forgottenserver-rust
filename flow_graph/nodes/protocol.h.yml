@@ -1,0 +1,97 @@
+nodes:
+  - file: "src/protocol.h"
+    qualified_name: Protocol
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::Protocol"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::~Protocol"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::parsePacket"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::onSendMessage"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::onRecvMessage"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::onRecvFirstMessage"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::onConnect"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::isConnectionExpired"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::getConnection"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::getIP"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::getOutputBuffer"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::getCurrentBuffer"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::send"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::getNextSequenceId"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::RSA_BUFFER_LENGTH"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::disconnect"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::enableXTEAEncryption"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::setXTEAKey"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::setChecksumMode"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::RSA_decrypt"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::deflateMessage"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::setRawMessages"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::release"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::outputBuffer"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::connection"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::key"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::sequenceNumber"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::encryptionEnabled"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::checksumMode"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::rawMessages"
+    edges: []
+  - file: "src/protocol.h"
+    qualified_name: "Protocol::zstream"
+    edges: []

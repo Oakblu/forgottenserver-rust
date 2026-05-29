@@ -1,0 +1,16 @@
+nodes:
+  - file: "src/outfit.cpp"
+    qualified_name: "Outfits::loadFromXml"
+    edges:
+      - target:
+          file: "src/outfit.cpp"
+          qualified_name: "Outfits::loadFromXml"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/outfit.cpp"
+    qualified_name: "Outfits::getOutfitByLookType(PlayerSex_t, uint16_t)"
+    edges: []
+  - file: "src/outfit.cpp"
+    qualified_name: "Outfits::getOutfitByLookType(uint16_t)"
+    edges: []

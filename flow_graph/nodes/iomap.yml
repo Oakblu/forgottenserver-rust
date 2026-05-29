@@ -1,0 +1,61 @@
+nodes:
+  - file: "src/iomap.cpp"
+    qualified_name: "IOMap::createTile"
+    edges:
+      - target:
+          file: "src/iomap.cpp"
+          qualified_name: "IOMap::createTile"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/iomap.cpp"
+    qualified_name: "IOMap::loadMap"
+    edges:
+      - target:
+          file: "src/iomap.cpp"
+          qualified_name: "IOMap::loadMap"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/iomap.cpp"
+    qualified_name: "IOMap::parseMapDataAttributes"
+    edges:
+      - target:
+          file: "src/iomap.cpp"
+          qualified_name: "IOMap::parseMapDataAttributes"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/iomap.cpp"
+    qualified_name: "IOMap::parseTileArea"
+    edges:
+      - target:
+          file: "src/iomap.cpp"
+          qualified_name: "IOMap::parseTileArea"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::CreateItem"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/iomap.cpp"
+    qualified_name: "IOMap::parseTowns"
+    edges:
+      - target:
+          file: "src/iomap.cpp"
+          qualified_name: "IOMap::parseTowns"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/iomap.cpp"
+    qualified_name: "IOMap::parseWaypoints"
+    edges:
+      - target:
+          file: "src/iomap.cpp"
+          qualified_name: "IOMap::parseWaypoints"
+        kind: static
+        confidence: static
+        order: 1

@@ -1,0 +1,49 @@
+nodes:
+  - file: "src/wildcardtree.cpp"
+    qualified_name: "WildcardTreeNode::getChild"
+    edges: []
+  - file: "src/wildcardtree.cpp"
+    qualified_name: "WildcardTreeNode::getChild"
+    edges:
+      - target:
+          file: "src/wildcardtree.cpp"
+          qualified_name: "WildcardTreeNode::getChild"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/wildcardtree.cpp"
+    qualified_name: "WildcardTreeNode::addChild"
+    edges:
+      - target:
+          file: "src/wildcardtree.cpp"
+          qualified_name: "WildcardTreeNode::addChild"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/wildcardtree.cpp"
+    qualified_name: "WildcardTreeNode::insert"
+    edges:
+      - target:
+          file: "src/wildcardtree.cpp"
+          qualified_name: "WildcardTreeNode::insert"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/wildcardtree.cpp"
+    qualified_name: "WildcardTreeNode::remove"
+    edges:
+      - target:
+          file: "src/wildcardtree.cpp"
+          qualified_name: "WildcardTreeNode::remove"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/wildcardtree.cpp"
+    qualified_name: "WildcardTreeNode::findOne"
+    edges:
+      - target:
+          file: "src/wildcardtree.cpp"
+          qualified_name: "WildcardTreeNode::findOne"
+        kind: static
+        confidence: static
+        order: 1

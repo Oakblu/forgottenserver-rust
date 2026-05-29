@@ -1,0 +1,1147 @@
+nodes:
+  - file: "src/npc.cpp"
+    qualified_name: "Npcs::reload"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npcs::reload"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::createNpc"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::createNpc"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::addList"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addNpc"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::addList"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::removeList"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removeNpc"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::removeList"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::load"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::load"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::reset"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::reset"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::reload"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::reload"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::loadFromXml"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::loadFromXml"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::canSee"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::canSee"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::canSee"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::getDescription"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::getDescription"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::goToFollowCreature"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::goToFollowCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::onCreatureAppear"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::onCreatureAppear"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::onRemoveCreature"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onRemoveCreature"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::onRemoveCreature"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::onCreatureMove"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onCreatureMove"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::onCreatureMove"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::onCreatureSay"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::onCreatureSay"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::onPlayerCloseChannel"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::onPlayerCloseChannel"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::onThink"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onThink"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::onThink"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::doSay"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalCreatureSay"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::doSay"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::doSayToPlayer"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::doSayToPlayer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::onPlayerTrade"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::onPlayerTrade"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::onPlayerEndTrade"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::onPlayerEndTrade"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::getNextStep"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::getNextStep"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::getNextStep"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::setIdle"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::setIdle"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::canWalkTo"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::canWalkTo"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/spawn.cpp"
+          qualified_name: "Spawns::isInZone"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::getRandomStep"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::getRandomStep"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::doMoveTo"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::doMoveTo"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::turnToCreature"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalCreatureTurn"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::turnToCreature"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::setCreatureFocus"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::setCreatureFocus"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::addShopPlayer"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::addShopPlayer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::removeShopPlayer"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::removeShopPlayer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "Npc::closeAllShopWindows"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::closeAllShopWindows"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "NpcScriptInterface::initState"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcScriptInterface::initState"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "NpcScriptInterface::closeState"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::closeState"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcScriptInterface::closeState"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/npc.cpp"
+    qualified_name: "NpcScriptInterface::loadNpcLib"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcScriptInterface::loadNpcLib"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "NpcScriptInterface::registerFunctions"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::registerMethod"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcScriptInterface::registerFunctions"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/npc.cpp"
+    qualified_name: "NpcScriptInterface::luaActionSay"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getPlayer"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getString"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcScriptInterface::luaActionSay"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/npc.cpp"
+    qualified_name: "NpcScriptInterface::luaActionMove"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalMoveCreature"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcScriptInterface::luaActionMove"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/npc.cpp"
+    qualified_name: "NpcScriptInterface::luaActionMoveTo"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getBoolean"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getPosition"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcScriptInterface::luaActionMoveTo"
+        kind: static
+        confidence: static
+        order: 5
+  - file: "src/npc.cpp"
+    qualified_name: "NpcScriptInterface::luaActionTurn"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalCreatureTurn"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcScriptInterface::luaActionTurn"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/npc.cpp"
+    qualified_name: "NpcScriptInterface::luaActionFollow"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getPlayer"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcScriptInterface::luaActionFollow"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/npc.cpp"
+    qualified_name: "NpcScriptInterface::luagetDistanceTo"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getErrorDesc"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcScriptInterface::luagetDistanceTo"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/npc.cpp"
+    qualified_name: "NpcScriptInterface::luaSetNpcFocus"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getCreature"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcScriptInterface::luaSetNpcFocus"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/npc.cpp"
+    qualified_name: "NpcScriptInterface::luaGetNpcCid"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcScriptInterface::luaGetNpcCid"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/npc.cpp"
+    qualified_name: "NpcScriptInterface::luaGetNpcParameter"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getString"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushString"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcScriptInterface::luaGetNpcParameter"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/npc.cpp"
+    qualified_name: "NpcScriptInterface::luaOpenShopWindow"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getErrorDesc"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getFieldString"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getPlayer"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::popCallback"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::getField"
+        kind: static
+        confidence: static
+        order: 7
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcScriptInterface::luaOpenShopWindow"
+        kind: static
+        confidence: static
+        order: 8
+  - file: "src/npc.cpp"
+    qualified_name: "NpcScriptInterface::luaCloseShopWindow"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getErrorDesc"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getPlayer"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcScriptInterface::luaCloseShopWindow"
+        kind: static
+        confidence: static
+        order: 5
+  - file: "src/npc.cpp"
+    qualified_name: "NpcScriptInterface::luaDoSellItem"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalPlayerAddItem"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::CreateItem"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getBoolean"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getErrorDesc"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getPlayer"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcScriptInterface::luaDoSellItem"
+        kind: static
+        confidence: static
+        order: 7
+  - file: "src/npc.cpp"
+    qualified_name: "NpcScriptInterface::luaNpcGetParameter"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getString"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushString"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::getUserdata"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcScriptInterface::luaNpcGetParameter"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/npc.cpp"
+    qualified_name: "NpcScriptInterface::luaNpcSetFocus"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getCreature"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::getUserdata"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcScriptInterface::luaNpcSetFocus"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/npc.cpp"
+    qualified_name: "NpcScriptInterface::luaNpcOpenShopWindow"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getErrorDesc"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getFieldString"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getPlayer"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::getField"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::getUserdata"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcScriptInterface::luaNpcOpenShopWindow"
+        kind: static
+        confidence: static
+        order: 7
+  - file: "src/npc.cpp"
+    qualified_name: "NpcScriptInterface::luaNpcCloseShopWindow"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getErrorDesc"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getPlayer"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::getUserdata"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcScriptInterface::luaNpcCloseShopWindow"
+        kind: static
+        confidence: static
+        order: 5
+  - file: "src/npc.cpp"
+    qualified_name: "NpcEventsHandler::isLoaded"
+    edges:
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcEventsHandler::isLoaded"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/npc.cpp"
+    qualified_name: "NpcEventsHandler::onCreatureAppear"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setCreatureMetatable"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcEventsHandler::onCreatureAppear"
+        kind: static
+        confidence: static
+        order: 5
+  - file: "src/npc.cpp"
+    qualified_name: "NpcEventsHandler::onCreatureDisappear"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setCreatureMetatable"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcEventsHandler::onCreatureDisappear"
+        kind: static
+        confidence: static
+        order: 5
+  - file: "src/npc.cpp"
+    qualified_name: "NpcEventsHandler::onCreatureMove"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushPosition"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setCreatureMetatable"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcEventsHandler::onCreatureMove"
+        kind: static
+        confidence: static
+        order: 6
+  - file: "src/npc.cpp"
+    qualified_name: "NpcEventsHandler::onCreatureSay"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushString"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setCreatureMetatable"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcEventsHandler::onCreatureSay"
+        kind: static
+        confidence: static
+        order: 6
+  - file: "src/npc.cpp"
+    qualified_name: "NpcEventsHandler::onPlayerTrade"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushCallback"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setMetatable"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcEventsHandler::onPlayerTrade"
+        kind: static
+        confidence: static
+        order: 7
+  - file: "src/npc.cpp"
+    qualified_name: "NpcEventsHandler::onPlayerCloseChannel"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setMetatable"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcEventsHandler::onPlayerCloseChannel"
+        kind: static
+        confidence: static
+        order: 5
+  - file: "src/npc.cpp"
+    qualified_name: "NpcEventsHandler::onPlayerEndTrade"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setMetatable"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcEventsHandler::onPlayerEndTrade"
+        kind: static
+        confidence: static
+        order: 5
+  - file: "src/npc.cpp"
+    qualified_name: "NpcEventsHandler::onThink"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "NpcEventsHandler::onThink"
+        kind: static
+        confidence: static
+        order: 3

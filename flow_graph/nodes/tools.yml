@@ -1,0 +1,118 @@
+nodes:
+  - file: "src/tools.cpp"
+    qualified_name: printXMLError
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: transformToSHA1
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: hmac
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: generateToken
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: caseInsensitiveEqual
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: caseInsensitiveStartsWith
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: explodeString
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: vectorAtoi
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: getRandomGenerator
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: uniform_random
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: normal_random
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: boolean_random
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: randomBytes
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: formatDateShort
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: getNextPosition
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: getDirectionTo
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: getDepotBoxId
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: getMagicEffect
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: getShootType
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: getCombatName
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: getAmmoType
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: getWeaponAction
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: getSkullType
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: getSpecialSkillName
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: getSkillName
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: adlerChecksum
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: ucfirst
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: ucwords
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: booleanString
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: combatTypeToIndex
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: indexToCombatType
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: serverFluidToClient
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: clientFluidToServer
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: stringToItemAttribute
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: getFirstLine
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: getReturnMessage
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: OTSYS_TIME
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: stringToSpellGroup
+    edges: []
+  - file: "src/tools.cpp"
+    qualified_name: getShuffleDirections
+    edges: []

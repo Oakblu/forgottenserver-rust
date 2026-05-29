@@ -1,0 +1,427 @@
+nodes:
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvents::clearMap"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvents::clearMap"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvents::clearPosMap"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvents::clearPosMap"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvents::clear"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvents::clear"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvents::getScriptInterface"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvents::getScriptInterface"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvents::getEvent"
+    edges: []
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvents::registerEvent"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvents::registerEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvents::registerLuaFunction"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvents::registerLuaFunction"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvents::registerLuaEvent"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvents::registerLuaEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvents::addEvent"
+    edges: []
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvents::getEvent"
+    edges: []
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvents::getEvent"
+    edges: []
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvents::addEvent"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvents::addEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvents::getEvent"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvents::getEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvents::onCreatureMove"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvents::onCreatureMove"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvents::onPlayerEquip"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvents::onPlayerEquip"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvents::onPlayerDeEquip"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvents::onPlayerDeEquip"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvents::onItemMove"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvents::onItemMove"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvent::getScriptEventName"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvent::getScriptEventName"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvent::configureEvent"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvent::configureEvent"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/vocation.cpp"
+          qualified_name: "Vocations::getVocationId"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvent::StepInField"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvent::StepInField"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvent::StepOutField"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvent::StepOutField"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvent::AddItemField"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvent::AddItemField"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvent::RemoveItemField"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvent::RemoveItemField"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvent::EquipItem"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::createCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::changeSpeed"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::startDecay"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::transformItem"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvent::EquipItem"
+        kind: static
+        confidence: static
+        order: 5
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvent::DeEquipItem"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::changeSpeed"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::startDecay"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::transformItem"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvent::DeEquipItem"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvent::loadFunction"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvent::loadFunction"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvent::getEventType"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvent::getEventType"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvent::setEventType"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvent::setEventType"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvent::fireStepEvent"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvent::fireStepEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvent::executeStep"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushPosition"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushThing"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setCreatureMetatable"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvent::executeStep"
+        kind: static
+        confidence: static
+        order: 7
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvent::fireEquip"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvent::fireEquip"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvent::executeEquip"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushThing"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setMetatable"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvent::executeEquip"
+        kind: static
+        confidence: static
+        order: 7
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvent::fireAddRemItem"
+    edges:
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvent::fireAddRemItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/movement.cpp"
+    qualified_name: "MoveEvent::executeAddRemItem"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushPosition"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushThing"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/movement.cpp"
+          qualified_name: "MoveEvent::executeAddRemItem"
+        kind: static
+        confidence: static
+        order: 5

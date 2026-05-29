@@ -1,0 +1,61 @@
+nodes:
+  - file: "src/scriptmanager.cpp"
+    qualified_name: g_actions
+    edges: []
+  - file: "src/scriptmanager.cpp"
+    qualified_name: g_creatureEvents
+    edges: []
+  - file: "src/scriptmanager.cpp"
+    qualified_name: g_chat
+    edges: []
+  - file: "src/scriptmanager.cpp"
+    qualified_name: g_globalEvents
+    edges: []
+  - file: "src/scriptmanager.cpp"
+    qualified_name: g_spells
+    edges: []
+  - file: "src/scriptmanager.cpp"
+    qualified_name: g_talkActions
+    edges: []
+  - file: "src/scriptmanager.cpp"
+    qualified_name: g_moveEvents
+    edges: []
+  - file: "src/scriptmanager.cpp"
+    qualified_name: g_weapons
+    edges: []
+  - file: "src/scriptmanager.cpp"
+    qualified_name: g_scripts
+    edges: []
+  - file: "src/scriptmanager.cpp"
+    qualified_name: g_luaEnvironment_extern
+    edges: []
+  - file: "src/scriptmanager.cpp"
+    qualified_name: "ScriptingManager::~ScriptingManager"
+    edges: []
+  - file: "src/scriptmanager.cpp"
+    qualified_name: "ScriptingManager::loadScriptSystems"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::load"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/script.cpp"
+          qualified_name: "Scripts::loadScripts"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/scriptmanager.cpp"
+          qualified_name: "ScriptingManager::loadScriptSystems"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/weapons.cpp"
+          qualified_name: "Weapons::loadDefaults"
+        kind: static
+        confidence: static
+        order: 4

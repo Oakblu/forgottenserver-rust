@@ -1,0 +1,46 @@
+nodes:
+  - file: "src/talkaction.h"
+    qualified_name: FS_TALKACTION_H
+    edges: []
+  - file: "src/talkaction.h"
+    qualified_name: TalkActionResult_t
+    edges: []
+  - file: "src/talkaction.h"
+    qualified_name: "TalkActionResult_t::TALKACTION_CONTINUE"
+    edges: []
+  - file: "src/talkaction.h"
+    qualified_name: "TalkActionResult_t::TALKACTION_BREAK"
+    edges: []
+  - file: "src/talkaction.h"
+    qualified_name: "TalkActionResult_t::TALKACTION_FAILED"
+    edges: []
+  - file: "src/talkaction.h"
+    qualified_name: TalkAction
+    edges: []
+  - file: "src/talkaction.h"
+    qualified_name: "TalkAction::TalkAction"
+    edges: []
+  - file: "src/talkaction.h"
+    qualified_name: "TalkAction::configureEvent"
+    edges: []
+  - file: "src/talkaction.h"
+    qualified_name: "TalkAction::emplace_back"
+    edges: []
+  - file: "src/talkaction.h"
+    qualified_name: "TalkAction::executeSay"
+    edges: []
+  - file: "src/talkaction.h"
+    qualified_name: "TalkAction::TalkActions"
+    edges: []
+  - file: "src/talkaction.h"
+    qualified_name: "TalkAction::~TalkAction"
+    edges: []
+  - file: "src/talkaction.h"
+    qualified_name: "TalkAction::TalkActions"
+    edges: []
+  - file: "src/talkaction.h"
+    qualified_name: "TalkAction::playerSaySpell"
+    edges: []
+  - file: "src/talkaction.h"
+    qualified_name: "TalkAction::registerLuaEvent"
+    edges: []

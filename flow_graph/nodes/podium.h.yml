@@ -1,0 +1,46 @@
+nodes:
+  - file: "src/podium.h"
+    qualified_name: Podium
+    edges: []
+  - file: "src/podium.h"
+    qualified_name: "Podium::Podium"
+    edges: []
+  - file: "src/podium.h"
+    qualified_name: "Podium::direction"
+    edges: []
+  - file: "src/podium.h"
+    qualified_name: "Podium::flags"
+    edges: []
+  - file: "src/podium.h"
+    qualified_name: "Podium::outfit"
+    edges: []
+  - file: "src/podium.h"
+    qualified_name: "Podium::getDirection"
+    edges: []
+  - file: "src/podium.h"
+    qualified_name: "Podium::getOutfit"
+    edges: []
+  - file: "src/podium.h"
+    qualified_name: "Podium::getPodium (const)"
+    edges: []
+  - file: "src/podium.h"
+    qualified_name: "Podium::getPodium (non-const)"
+    edges: []
+  - file: "src/podium.h"
+    qualified_name: "Podium::hasFlag"
+    edges: []
+  - file: "src/podium.h"
+    qualified_name: "Podium::setDirection"
+    edges: []
+  - file: "src/podium.h"
+    qualified_name: "Podium::setFlagValue"
+    edges: []
+  - file: "src/podium.h"
+    qualified_name: "Podium::setFlags"
+    edges: []
+  - file: "src/podium.h"
+    qualified_name: "Podium::setOutfit"
+    edges: []
+  - file: "src/podium.h"
+    qualified_name: FS_PODIUM_H
+    edges: []

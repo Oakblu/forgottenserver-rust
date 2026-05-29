@@ -1,0 +1,1849 @@
+nodes:
+  - file: "src/luascript.cpp"
+    qualified_name: g_luaEnvironment
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: EVENT_ID_LOADING
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "(anonymous)::LuaDataType"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaDataType::LuaData_Unknown"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaDataType::LuaData_Item"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaDataType::LuaData_Container"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaDataType::LuaData_Teleport"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaDataType::LuaData_Podium"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaDataType::LuaData_Player"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaDataType::LuaData_Monster"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaDataType::LuaData_Npc"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaDataType::LuaData_Tile"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "(anonymous)::tempItems"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "(anonymous)::lastResultId"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "(anonymous)::tempResults"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "(anonymous)::isNumber"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "(anonymous)::setField(number)"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "(anonymous)::setField(string)"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushString"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "(anonymous)::registerClass"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "(anonymous)::registerTable"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "(anonymous)::registerMetaMethod"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "(anonymous)::registerGlobalMethod"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "(anonymous)::registerVariable"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "(anonymous)::registerGlobalVariable"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "(anonymous)::registerGlobalBoolean"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "(anonymous)::getStackTrace"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::popString"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "(anonymous)::luaErrorHandler"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::popString"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushString"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/luascript.cpp"
+    qualified_name: "(anonymous)::getArea"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "(anonymous)::getSharedPtr"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "(anonymous)::pushSharedPtr"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "ScriptEnvironment::ScriptEnvironment"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "ScriptEnvironment::ScriptEnvironment"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "ScriptEnvironment::~ScriptEnvironment"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "ScriptEnvironment::resetEnv"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::ReleaseItem"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "ScriptEnvironment::resetEnv"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/luascript.cpp"
+    qualified_name: "ScriptEnvironment::setCallbackId"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "ScriptEnvironment::setCallbackId"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "ScriptEnvironment::addThing"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "ScriptEnvironment::addThing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "ScriptEnvironment::insertItem"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "ScriptEnvironment::insertItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "ScriptEnvironment::getThingByUID"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getCreatureByID"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getUniqueItem"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "ScriptEnvironment::getThingByUID"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/luascript.cpp"
+    qualified_name: "ScriptEnvironment::getItemByUID"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "ScriptEnvironment::getItemByUID"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "ScriptEnvironment::getContainerByUID"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "ScriptEnvironment::getContainerByUID"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "ScriptEnvironment::removeItemByUID"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removeUniqueItem"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "ScriptEnvironment::removeItemByUID"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/luascript.cpp"
+    qualified_name: addTempItem
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::removeTempItem"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::removeTempItem"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: addResult
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: removeResult
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: getResultByID
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::getErrorDesc"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getErrorDesc"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "(file-static)::scriptEnv"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "(file-static)::scriptEnvIndex"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::LuaScriptInterface"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaEnvironment::initState"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::LuaScriptInterface"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::~LuaScriptInterface"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::reInitState"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaEnvironment::clearAreaObjects"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaEnvironment::clearCombatObjects"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::reInitState"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::protectedCall"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::protectedCall"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::loadFile"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::loadFile"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::popString"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::protectedCall"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::resetScriptEnv"
+        kind: static
+        confidence: static
+        order: 6
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::getEvent(std::string_view)"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::getEvent()"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::getMetaEvent"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::getMetaEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::getFileById"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::getFileById"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::reportError"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reportError"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::pushFunction"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::pushFunction"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::initState"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::initState"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::closeState"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::closeState"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::callFunction"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::callFunction"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getBoolean"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getString"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::protectedCall"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::resetScriptEnv"
+        kind: static
+        confidence: static
+        order: 5
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::callVoidFunction"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::callVoidFunction"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::popString"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::protectedCall"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::resetScriptEnv"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::pushVariant"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushVariant"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::pushThing"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushThing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::pushString"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushString"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::pushCallback"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushCallback"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::popString"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::popString"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::popCallback"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::popCallback"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::setMetatable"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setMetatable"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "(file-static)::setWeakMetatable"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::setItemMetatable"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setItemMetatable"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::setCreatureMetatable"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setCreatureMetatable"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::getString"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getString"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::getPosition(stackpos)"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getPosition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::getPosition"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getPosition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "(file-static)::getOutfit"
+    edges:
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::getField"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "(file-static)::getOutfitClass"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getFieldString"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::getField"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/luascript.cpp"
+    qualified_name: "(file-static)::getVariant"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getFieldString"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getPosition"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::getField"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::getThing"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getThing"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::getCreature"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getCreatureByID"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getCreature"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::getPlayer"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getPlayerByID"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getPlayer"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::getFieldString"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getFieldString"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "(file-static)::getUserdataType"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::pushBoolean"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::pushSpell"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushSpell"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::pushPosition"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushPosition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::pushOutfit(Outfit_t)"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::pushOutfit(Outfit*)"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "(file-static)::pushLoot"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "(file-static)::pushTown"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushPosition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: registerEnum
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: registerEnumIn
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::registerFunctions"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::registerFunctions"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:doPlayerAddItem"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:isValidUID"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:isDepot"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:isMovable"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:getDepotId"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:getWorldUpTime"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:getSubTypeName"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:createCombatArea"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:doAreaCombat"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:doTargetCombat"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:doChallengeCreature"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:addEvent"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:stopEvent"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:saveServer"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:cleanMap"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:debugPrint"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:isInWar"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:getWaypointPositionByName"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:sendChannelMessage"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:sendGuildChannelMessage"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:isScriptsInterface"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:INDEX_WHEREEVER"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:VIRTUAL_PARENT"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:isType"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:rawgetmetatable"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:configKeys"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:DBInsert"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:DBInsert.__gc"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:DBTransaction"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:DBTransaction.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:DBTransaction.__gc"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Game"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Variant"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Position"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Tile"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Tile.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:NetworkMessage"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:NetworkMessage.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:NetworkMessage.__gc"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:ModalWindow"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:ModalWindow.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:ModalWindow.__gc"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Item"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Item.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Container"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Container.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Teleport"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Teleport.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Podium"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Podium.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Creature"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Creature.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Player"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Player.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Monster"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Monster.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Npc"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Npc.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Guild"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Guild.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Group"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Group.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Vocation"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Vocation.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:House"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:House.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:ItemType"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:ItemType.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Combat"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Combat.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Combat.__gc"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Condition"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Condition.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Condition.__gc"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Outfit"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Outfit.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:MonsterType"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:MonsterType.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Loot"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Loot.__gc"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:MonsterSpell"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:MonsterSpell.__gc"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Party"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Party.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Spell"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Spell.__eq"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Action"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:TalkAction"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:CreatureEvent"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:MoveEvent"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:GlobalEvent"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:Weapon"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:XMLDocument"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:XMLDocument.__gc"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:XMLNode"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "lua:XMLNode.__gc"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::getScriptEnv"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::reserveScriptEnv"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::resetScriptEnv"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::resetScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::getBoolean"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getBoolean"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::getBoolean(default)"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getBoolean"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "tfs::lua::registerMethod"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::registerMethod"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaDoPlayerAddItem"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalPlayerAddItem"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/item.cpp"
+          qualified_name: "Item::CreateItem"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaDoPlayerAddItem"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getBoolean"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getErrorDesc"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getPlayer"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 7
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 8
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaDebugPrint"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaDebugPrint"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getString"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaGetWorldUpTime"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaGetWorldUpTime"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaGetSubTypeName"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaGetSubTypeName"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushString"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaCreateCombatArea"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaEnvironment::createAreaObject"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaEnvironment::getAreaObject"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaCreateCombatArea"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 5
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaDoAreaCombat"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::doAreaCombat"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaEnvironment::getAreaObject"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaDoAreaCombat"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getBoolean"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getCreature"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getErrorDesc"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getPosition"
+        kind: static
+        confidence: static
+        order: 7
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 8
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaDoTargetCombat"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::doTargetCombat"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaDoTargetCombat"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getBoolean"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getCreature"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getErrorDesc"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 6
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaDoChallengeCreature"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaDoChallengeCreature"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getBoolean"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getCreature"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getErrorDesc"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 5
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaIsValidUID"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaIsValidUID"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaIsDepot"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaIsDepot"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaIsMoveable"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaIsMoveable"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaGetDepotId"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaGetDepotId"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getErrorDesc"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaAddEvent"
+    edges:
+      - target:
+          file: "src/configmanager.cpp"
+          qualified_name: "ConfigManager::getBoolean"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaEnvironment::executeTimerEvent"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaAddEvent"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 5
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaStopEvent"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaStopEvent"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaSaveServer"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::saveGameState"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/globalevent.cpp"
+          qualified_name: "GlobalEvents::save"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaSaveServer"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaCleanMap"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaCleanMap"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaIsInWar"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaIsInWar"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getErrorDesc"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getPlayer"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaGetWaypointPositionByName"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaGetWaypointPositionByName"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getString"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushPosition"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaSendChannelMessage"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::getChannelById"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaSendChannelMessage"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getString"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaSendGuildChannelMessage"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::getGuildChannelById"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaSendGuildChannelMessage"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getString"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaIsScriptsInterface"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaIsScriptsInterface"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/script.h"
+          qualified_name: "Scripts::getScriptInterface"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaBitReg"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaBitNot"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaBitNot"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: MULTIOP
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: SHIFTOP
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaConfigManagerTable"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaConfigManagerGetString"
+    edges:
+      - target:
+          file: "src/configmanager.cpp"
+          qualified_name: "ConfigManager::getString"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaConfigManagerGetString"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushString"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaConfigManagerGetNumber"
+    edges:
+      - target:
+          file: "src/configmanager.cpp"
+          qualified_name: "ConfigManager::getNumber"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaConfigManagerGetNumber"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaConfigManagerGetBoolean"
+    edges:
+      - target:
+          file: "src/configmanager.cpp"
+          qualified_name: "ConfigManager::getBoolean"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::luaConfigManagerGetBoolean"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaDatabaseTable"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaScriptInterface::luaResultTable"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaEnvironment::LuaEnvironment"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaEnvironment::LuaEnvironment"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaEnvironment::~LuaEnvironment"
+    edges: []
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaEnvironment::initState"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaEnvironment::initState"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaEnvironment::reInitState"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaEnvironment::reInitState"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaEnvironment::closeState"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaEnvironment::closeState"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaEnvironment::getTestInterface"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaEnvironment::getTestInterface"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaEnvironment::getCombatObject"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaEnvironment::getCombatObject"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaEnvironment::createCombatObject"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaEnvironment::createCombatObject"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaEnvironment::clearCombatObjects"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaEnvironment::clearCombatObjects"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaEnvironment::getAreaObject"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaEnvironment::getAreaObject"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaEnvironment::createAreaObject"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaEnvironment::createAreaObject"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaEnvironment::clearAreaObjects"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaEnvironment::clearAreaObjects"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/luascript.cpp"
+    qualified_name: "LuaEnvironment::executeTimerEvent"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaEnvironment::executeTimerEvent"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 3

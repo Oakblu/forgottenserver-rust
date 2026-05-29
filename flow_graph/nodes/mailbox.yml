@@ -1,0 +1,139 @@
+nodes:
+  - file: "src/mailbox.cpp"
+    qualified_name: "Mailbox::addThing (int32_t, Thing*)"
+    edges: []
+  - file: "src/mailbox.cpp"
+    qualified_name: "Mailbox::canSend (static)"
+    edges: []
+  - file: "src/mailbox.cpp"
+    qualified_name: "Mailbox::getReceiver (private)"
+    edges: []
+  - file: "src/mailbox.cpp"
+    qualified_name: "Mailbox::postAddNotification"
+    edges: []
+  - file: "src/mailbox.cpp"
+    qualified_name: "Mailbox::postRemoveNotification"
+    edges: []
+  - file: "src/mailbox.cpp"
+    qualified_name: "Mailbox::queryAdd"
+    edges: []
+  - file: "src/mailbox.cpp"
+    qualified_name: "Mailbox::queryMaxCount"
+    edges: []
+  - file: "src/mailbox.cpp"
+    qualified_name: "Mailbox::sendItem"
+    edges: []
+  - file: "src/mailbox.cpp"
+    qualified_name: "Mailbox::queryAdd"
+    edges:
+      - target:
+          file: "src/mailbox.cpp"
+          qualified_name: "Mailbox::canSend"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/mailbox.cpp"
+          qualified_name: "Mailbox::queryAdd"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/mailbox.cpp"
+    qualified_name: "Mailbox::queryMaxCount"
+    edges:
+      - target:
+          file: "src/mailbox.cpp"
+          qualified_name: "Mailbox::queryMaxCount"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/mailbox.cpp"
+    qualified_name: "Mailbox::addThing"
+    edges:
+      - target:
+          file: "src/mailbox.cpp"
+          qualified_name: "Mailbox::addThing"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/mailbox.cpp"
+          qualified_name: "Mailbox::canSend"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/mailbox.cpp"
+    qualified_name: "Mailbox::postAddNotification"
+    edges:
+      - target:
+          file: "src/mailbox.cpp"
+          qualified_name: "Mailbox::postAddNotification"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/mailbox.cpp"
+    qualified_name: "Mailbox::postRemoveNotification"
+    edges:
+      - target:
+          file: "src/mailbox.cpp"
+          qualified_name: "Mailbox::postRemoveNotification"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/mailbox.cpp"
+    qualified_name: "Mailbox::sendItem"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getPlayerByName"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalMoveItem"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::transformItem"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::loadPlayerByName"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/iologindata.cpp"
+          qualified_name: "IOLoginData::savePlayer"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/mailbox.cpp"
+          qualified_name: "Mailbox::sendItem"
+        kind: static
+        confidence: static
+        order: 6
+  - file: "src/mailbox.cpp"
+    qualified_name: "Mailbox::getReceiver"
+    edges:
+      - target:
+          file: "src/mailbox.cpp"
+          qualified_name: "Mailbox::getReceiver"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/mailbox.cpp"
+    qualified_name: "Mailbox::canSend"
+    edges:
+      - target:
+          file: "src/mailbox.cpp"
+          qualified_name: "Mailbox::canSend"
+        kind: static
+        confidence: static
+        order: 1

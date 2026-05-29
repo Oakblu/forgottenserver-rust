@@ -1,0 +1,40 @@
+nodes:
+  - file: "src/teleport.h"
+    qualified_name: Teleport
+    edges: []
+  - file: "src/teleport.h"
+    qualified_name: "Teleport::Teleport"
+    edges: []
+  - file: "src/teleport.h"
+    qualified_name: "Teleport::destPos"
+    edges: []
+  - file: "src/teleport.h"
+    qualified_name: "Teleport::addThing (Thing*)"
+    edges: []
+  - file: "src/teleport.h"
+    qualified_name: "Teleport::getDestPos"
+    edges: []
+  - file: "src/teleport.h"
+    qualified_name: "Teleport::getReceiver (const)"
+    edges: []
+  - file: "src/teleport.h"
+    qualified_name: "Teleport::getReceiver (non-const)"
+    edges: []
+  - file: "src/teleport.h"
+    qualified_name: "Teleport::getTeleport (const)"
+    edges: []
+  - file: "src/teleport.h"
+    qualified_name: "Teleport::getTeleport (non-const)"
+    edges: []
+  - file: "src/teleport.h"
+    qualified_name: "Teleport::queryDestination"
+    edges: []
+  - file: "src/teleport.h"
+    qualified_name: "Teleport::queryRemove"
+    edges: []
+  - file: "src/teleport.h"
+    qualified_name: "Teleport::setDestPos"
+    edges: []
+  - file: "src/teleport.h"
+    qualified_name: FS_TELEPORT_H
+    edges: []

@@ -1,0 +1,34 @@
+nodes:
+  - file: "src/iomapserialize.h"
+    qualified_name: FS_IOMAPSERIALIZE_H
+    edges: []
+  - file: "src/iomapserialize.h"
+    qualified_name: IOMapSerialize
+    edges: []
+  - file: "src/iomapserialize.h"
+    qualified_name: "IOMapSerialize::loadHouseItems"
+    edges: []
+  - file: "src/iomapserialize.h"
+    qualified_name: "IOMapSerialize::saveHouseItems"
+    edges: []
+  - file: "src/iomapserialize.h"
+    qualified_name: "IOMapSerialize::loadHouseInfo"
+    edges: []
+  - file: "src/iomapserialize.h"
+    qualified_name: "IOMapSerialize::saveHouseInfo"
+    edges: []
+  - file: "src/iomapserialize.h"
+    qualified_name: "IOMapSerialize::saveHouse"
+    edges: []
+  - file: "src/iomapserialize.h"
+    qualified_name: "IOMapSerialize::saveItem"
+    edges: []
+  - file: "src/iomapserialize.h"
+    qualified_name: "IOMapSerialize::saveTile"
+    edges: []
+  - file: "src/iomapserialize.h"
+    qualified_name: "IOMapSerialize::loadContainer"
+    edges: []
+  - file: "src/iomapserialize.h"
+    qualified_name: "IOMapSerialize::loadItem"
+    edges: []

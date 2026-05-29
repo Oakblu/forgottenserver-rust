@@ -1,0 +1,562 @@
+nodes:
+  - file: "src/spells.cpp"
+    qualified_name: "Spells::playerSaySpell"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::playerSaySpell"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "Spells::clearMaps"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::clearMaps"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "Spells::clear"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::clear"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "Spells::getScriptInterface"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::getScriptInterface"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "Spells::getEvent"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::getEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "Spells::registerEvent"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::registerEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "Spells::registerInstantLuaEvent"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::registerInstantLuaEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "Spells::registerRuneLuaEvent"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::registerRuneLuaEvent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "Spells::getSpellByName"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::getSpellByName"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "Spells::getRuneSpell"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::getRuneSpell"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "Spells::getRuneSpellByName"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::getRuneSpellByName"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "Spells::getInstantSpell"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::getInstantSpell"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "Spells::getInstantSpellByName"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::getInstantSpellByName"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "Spells::getCasterPosition"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::getCasterPosition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "CombatSpell::loadScriptCombat"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaEnvironment::getCombatObject"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "CombatSpell::loadScriptCombat"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/spells.cpp"
+    qualified_name: "CombatSpell::castSpell"
+    edges: []
+  - file: "src/spells.cpp"
+    qualified_name: "CombatSpell::castSpell"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "CombatSpell::castSpell"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::getCasterPosition"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/spells.cpp"
+    qualified_name: "CombatSpell::executeCastSpell"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushVariant"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setCreatureMetatable"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "CombatSpell::executeCastSpell"
+        kind: static
+        confidence: static
+        order: 6
+  - file: "src/spells.cpp"
+    qualified_name: "Spell::configureSpell"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spell::configureSpell"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "Spell::playerSpellCheck"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::player::onSpellCheck"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMagicEffect"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spell::playerSpellCheck"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/spells.cpp"
+    qualified_name: "Spell::playerInstantSpellCheck"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMagicEffect"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spell::playerInstantSpellCheck"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/spells.cpp"
+    qualified_name: "Spell::playerRuneSpellCheck"
+    edges:
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::canDoCombat"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/combat.cpp"
+          qualified_name: "Combat::isInPvpZone"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMagicEffect"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::canThrowObjectTo"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spell::playerRuneSpellCheck"
+        kind: static
+        confidence: static
+        order: 5
+  - file: "src/spells.cpp"
+    qualified_name: "Spell::postCastSpell"
+    edges: []
+  - file: "src/spells.cpp"
+    qualified_name: "Spell::postCastSpell"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spell::postCastSpell"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "Spell::getManaCost"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spell::getManaCost"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "InstantSpell::configureEvent"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "InstantSpell::configureEvent"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spell::configureSpell"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/talkaction.cpp"
+          qualified_name: "TalkAction::configureEvent"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/spells.cpp"
+    qualified_name: "InstantSpell::playerCastInstant"
+    edges:
+      - target:
+          file: "src/condition.cpp"
+          qualified_name: "Condition::createCondition"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMagicEffect"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getPlayerByNameWildcard"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "InstantSpell::playerCastInstant"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::getCasterPosition"
+        kind: static
+        confidence: static
+        order: 5
+  - file: "src/spells.cpp"
+    qualified_name: "InstantSpell::canThrowSpell"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::canThrowObjectTo"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "InstantSpell::canThrowSpell"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/spells.cpp"
+    qualified_name: "InstantSpell::castSpell"
+    edges: []
+  - file: "src/spells.cpp"
+    qualified_name: "InstantSpell::castSpell"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "InstantSpell::castSpell"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "InstantSpell::internalCastSpell"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "InstantSpell::internalCastSpell"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "InstantSpell::executeCastSpell"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushVariant"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setCreatureMetatable"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "InstantSpell::executeCastSpell"
+        kind: static
+        confidence: static
+        order: 6
+  - file: "src/spells.cpp"
+    qualified_name: "InstantSpell::canCast"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "InstantSpell::canCast"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "RuneSpell::configureEvent"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "RuneSpell::configureEvent"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spell::configureSpell"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/spells.cpp"
+    qualified_name: "RuneSpell::canExecuteAction"
+    edges:
+      - target:
+          file: "src/actions.cpp"
+          qualified_name: "Action::canExecuteAction"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "RuneSpell::canExecuteAction"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/spells.cpp"
+    qualified_name: "RuneSpell::executeUse"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::getCreatureByID"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::transformItem"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "RuneSpell::executeUse"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/spells.cpp"
+    qualified_name: "RuneSpell::castSpell"
+    edges: []
+  - file: "src/spells.cpp"
+    qualified_name: "RuneSpell::castSpell"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "RuneSpell::castSpell"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "RuneSpell::internalCastSpell"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "RuneSpell::internalCastSpell"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/spells.cpp"
+    qualified_name: "RuneSpell::executeCastSpell"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushBoolean"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushVariant"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setCreatureMetatable"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "RuneSpell::executeCastSpell"
+        kind: static
+        confidence: static
+        order: 7
+  - file: "src/spells.cpp"
+    qualified_name: "RuneSpell::canUse"
+    edges:
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "RuneSpell::canUse"
+        kind: static
+        confidence: static
+        order: 1

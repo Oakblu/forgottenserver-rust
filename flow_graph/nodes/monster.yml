@@ -1,0 +1,1015 @@
+nodes:
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::createMonster"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::createMonster"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monsters.cpp"
+          qualified_name: "Monsters::getMonsterType"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::addList"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMonster"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::addList"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::removeList"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removeMonster"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::removeList"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::getName"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::getName"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::setName"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::updateKnownCreature"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::setName"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::getNameDescription"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::getNameDescription"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::canSee"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::canSee"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::canSee"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::canWalkOnFieldType"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::canWalkOnFieldType"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::onAttackedCreatureDisappear"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onAttackedCreatureDisappear"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::onCreatureAppear"
+    edges:
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setCreatureMetatable"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setMetatable"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onCreatureAppear"
+        kind: static
+        confidence: static
+        order: 6
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::onRemoveCreature"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onRemoveCreature"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setCreatureMetatable"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setMetatable"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onRemoveCreature"
+        kind: static
+        confidence: static
+        order: 7
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::onCreatureMove"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onCreatureMove"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushPosition"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setCreatureMetatable"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setMetatable"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 7
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onCreatureMove"
+        kind: static
+        confidence: static
+        order: 8
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::onCreatureSay"
+    edges:
+      - target:
+          file: "src/creature.h"
+          qualified_name: "Creature::onCreatureSay"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushString"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setCreatureMetatable"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setMetatable"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 7
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onCreatureSay"
+        kind: static
+        confidence: static
+        order: 8
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::addFriend"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::addFriend"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::removeFriend"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::removeFriend"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::addTarget"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::addTarget"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::removeTarget"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::removeTarget"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::updateTargetList"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::updateTargetList"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::clearTargetList"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::clearTargetList"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::clearFriendList"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::clearFriendList"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::onCreatureFound"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onCreatureFound"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::onCreatureEnter"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onCreatureEnter"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::isFriend"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::isFriend"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::isOpponent"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::isOpponent"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::onCreatureLeave"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onCreatureLeave"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::searchTarget"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::searchTarget"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::goToFollowCreature"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::goToFollowCreature"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onFollowCreatureComplete"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::onFollowCreatureComplete"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onFollowCreatureComplete"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::blockHit"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::blockHit"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::blockHit"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::isTarget"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::isTarget"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::selectTarget"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::checkCreatureAttack"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::selectTarget"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::setIdle"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addCreatureCheck"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removeCreatureCheck"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::setIdle"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::updateIdleStatus"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::updateIdleStatus"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::onAddCondition"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onAddCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::onEndCondition"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onEndCondition"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::onThink"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onThink"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMagicEffect"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalTeleport"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::removeCreature"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setMetatable"
+        kind: static
+        confidence: static
+        order: 7
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 8
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onThink"
+        kind: static
+        confidence: static
+        order: 9
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::doAttacking"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::doAttacking"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::canUseAttack"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::isSightClear"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::canUseAttack"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::canUseSpell"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::canUseSpell"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::onThinkTarget"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onThinkTarget"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::onThinkDefense"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMagicEffect"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::placeCreature"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::createMonster"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onThinkDefense"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::onThinkYell"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalCreatureSay"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onThinkYell"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::walkToSpawn"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::walkToSpawn"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::onWalk"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::onWalk"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onWalk"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::onWalkComplete"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onWalkComplete"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::pushItem"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::canThrowObjectTo"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalMoveItem"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::pushItem"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::pushItems"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMagicEffect"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalRemoveItem"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::pushItem"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::pushItems"
+        kind: static
+        confidence: static
+        order: 4
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::pushCreature"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalMoveCreature"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::pushCreature"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::getCasterPosition"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::pushCreatures"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::addMagicEffect"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::pushCreature"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::pushCreatures"
+        kind: static
+        confidence: static
+        order: 3
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::getNextStep"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::getNextStep"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::getNextStep"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::pushCreatures"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::pushItems"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/spells.cpp"
+          qualified_name: "Spells::getCasterPosition"
+        kind: static
+        confidence: static
+        order: 5
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::getRandomStep"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::getRandomStep"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::getDanceStep"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::getDanceStep"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::getDistanceStep"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::isSightClear"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::getDistanceStep"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::canWalkTo"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::canWalkTo"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::death"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::death"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::getCorpse"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::getCorpse"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::getCorpse"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::isInSpawnRange"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::isInSpawnRange"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/spawn.cpp"
+          qualified_name: "Spawns::isInZone"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::getCombatValues"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::getCombatValues"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::updateLookDirection"
+    edges:
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalCreatureTurn"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::updateLookDirection"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::dropLoot"
+    edges:
+      - target:
+          file: "src/events.cpp"
+          qualified_name: "tfs::events::monster::onDropLoot"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::dropLoot"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::setNormalCreatureLight"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::setNormalCreatureLight"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::drainHealth"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::drainHealth"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::drainHealth"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::changeHealth"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::changeHealth"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::changeHealth"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::challengeCreature"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::challengeCreature"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::getPathSearchParams"
+    edges:
+      - target:
+          file: "src/creature.cpp"
+          qualified_name: "Creature::getPathSearchParams"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::getPathSearchParams"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/monster.cpp"
+    qualified_name: "Monster::canPushItems"
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::canPushItems"
+        kind: static
+        confidence: static
+        order: 1

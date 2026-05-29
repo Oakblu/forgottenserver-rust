@@ -1,0 +1,115 @@
+nodes:
+  - file: "src/fileloader.h"
+    qualified_name: OTB
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::MappedFile"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::ContentIt"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::Identifier"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::Node"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::Node::ChildrenVector"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::Node::children"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::Node::propsBegin"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::Node::propsEnd"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::Node::type"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::Node::NodeChar"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::Node::NodeChar::ESCAPE"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::Node::NodeChar::START"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::Node::NodeChar::END"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::LoadError"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::InvalidOTBFormat"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::Loader"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::Loader::fileContents"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::Loader::root"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::Loader::propBuffer"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::Loader::Loader"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::Loader::getProps"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "OTB::Loader::parseTree"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: PropStream
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "PropStream::init"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "PropStream::size"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "PropStream::read<T>"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "PropStream::readString"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "PropStream::skip"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "PropStream::p"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "PropStream::end"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: PropWriteStream
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "PropWriteStream::PropWriteStream"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "PropWriteStream::getStream"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "PropWriteStream::clear"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "PropWriteStream::write<T>"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "PropWriteStream::writeString"
+    edges: []
+  - file: "src/fileloader.h"
+    qualified_name: "PropWriteStream::buffer"
+    edges: []

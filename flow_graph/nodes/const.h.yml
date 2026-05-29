@@ -1,0 +1,1681 @@
+nodes:
+  - file: "src/const.h"
+    qualified_name: FS_CONST_H
+    edges: []
+  - file: "src/const.h"
+    qualified_name: MagicEffectsType_t
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectsType_t::MAGIC_EFFECTS_END_LOOP"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectsType_t::MAGIC_EFFECTS_DELTA"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectsType_t::MAGIC_EFFECTS_DELAY"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectsType_t::MAGIC_EFFECTS_CREATE_EFFECT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectsType_t::MAGIC_EFFECTS_CREATE_DISTANCEEFFECT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectsType_t::MAGIC_EFFECTS_CREATE_DISTANCEEFFECT_REVERSED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: MagicEffectClasses
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_NONE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_DRAWBLOOD"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_LOSEENERGY"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_POFF"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_BLOCKHIT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_EXPLOSIONAREA"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_EXPLOSIONHIT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_FIREAREA"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_YELLOW_RINGS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_GREEN_RINGS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_HITAREA"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_TELEPORT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_ENERGYHIT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_MAGIC_BLUE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_MAGIC_RED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_MAGIC_GREEN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_HITBYFIRE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_HITBYPOISON"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_MORTAREA"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_SOUND_GREEN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_SOUND_RED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_POISONAREA"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_SOUND_YELLOW"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_SOUND_PURPLE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_SOUND_BLUE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_SOUND_WHITE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_BUBBLES"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_CRAPS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_GIFT_WRAPS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_FIREWORK_YELLOW"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_FIREWORK_RED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_FIREWORK_BLUE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_STUN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_SLEEP"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_WATERCREATURE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_GROUNDSHAKER"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_HEARTS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_FIREATTACK"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_ENERGYAREA"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_SMALLCLOUDS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_HOLYDAMAGE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_BIGCLOUDS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_ICEAREA"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_ICETORNADO"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_ICEATTACK"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_STONES"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_SMALLPLANTS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_CARNIPHILA"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_PURPLEENERGY"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_YELLOWENERGY"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_HOLYAREA"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_BIGPLANTS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_CAKE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_GIANTICE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_WATERSPLASH"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_PLANTATTACK"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_TUTORIALARROW"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_TUTORIALSQUARE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_MIRRORHORIZONTAL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_MIRRORVERTICAL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_SKULLHORIZONTAL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_SKULLVERTICAL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_ASSASSIN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_STEPSHORIZONTAL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_BLOODYSTEPS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_STEPSVERTICAL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_YALAHARIGHOST"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_BATS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_SMOKE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_INSECTS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_DRAGONHEAD"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_ORCSHAMAN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_ORCSHAMAN_FIRE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_THUNDER"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_FERUMBRAS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_CONFETTI_HORIZONTAL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_CONFETTI_VERTICAL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_BLACKSMOKE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_REDSMOKE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_YELLOWSMOKE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_GREENSMOKE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_PURPLESMOKE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_EARLY_THUNDER"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_RAGIAZ_BONECAPSULE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_CRITICAL_DAMAGE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_PLUNGING_FISH"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_BLUECHAIN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_ORANGECHAIN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_GREENCHAIN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_PURPLECHAIN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_GREYCHAIN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_YELLOWCHAIN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_YELLOWSPARKLES"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_FAEEXPLOSION"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_FAECOMING"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_FAEGOING"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_BIGCLOUDSSINGLESPACE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_STONESSINGLESPACE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_BLUEGHOST"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_POINTOFINTEREST"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_MAPEFFECT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_PINKSPARK"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_FIREWORK_GREEN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_FIREWORK_ORANGE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_FIREWORK_PURPLE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_FIREWORK_TURQUOISE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_THECUBE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_DRAWINK"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_PRISMATICSPARKLES"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_THAIAN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_THAIANGHOST"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_GHOSTSMOKE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_FLOATINGBLOCK"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_BLOCK"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_ROOTING"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_GHOSTLYSCRATCH"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_GHOSTLYBITE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_BIGSCRATCHING"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_SLASH"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_BITE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_CHIVALRIOUSCHALLENGE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_DIVINEDAZZLE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_ELECTRICALSPARK"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_PURPLETELEPORT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_REDTELEPORT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_ORANGETELEPORT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_GREYTELEPORT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_LIGHTBLUETELEPORT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_FATAL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_DODGE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_HOURGLASS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_FIREWORKSSTAR"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_FIREWORKSCIRCLE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_FERUMBRAS_1"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_GAZHARAGOTH"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_MAD_MAGE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_HORESTIS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_DEVOVORGA"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_FERUMBRAS_2"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MagicEffectClasses::CONST_ME_FOAM"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: ShootType_t
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_NONE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_SPEAR"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_BOLT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_ARROW"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_FIRE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_ENERGY"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_POISONARROW"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_BURSTARROW"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_THROWINGSTAR"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_THROWINGKNIFE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_SMALLSTONE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_DEATH"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_LARGEROCK"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_SNOWBALL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_POWERBOLT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_POISON"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_INFERNALBOLT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_HUNTINGSPEAR"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_ENCHANTEDSPEAR"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_REDSTAR"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_GREENSTAR"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_ROYALSPEAR"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_SNIPERARROW"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_ONYXARROW"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_PIERCINGBOLT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_WHIRLWINDSWORD"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_WHIRLWINDAXE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_WHIRLWINDCLUB"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_ETHEREALSPEAR"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_ICE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_EARTH"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_HOLY"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_SUDDENDEATH"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_FLASHARROW"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_FLAMMINGARROW"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_SHIVERARROW"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_ENERGYBALL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_SMALLICE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_SMALLHOLY"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_SMALLEARTH"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_EARTHARROW"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_EXPLOSION"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_CAKE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_TARSALARROW"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_VORTEXBOLT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ShootType_t::CONST_ANI_PRISMATICBOLT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: SpeakClasses
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "SpeakClasses::TALKTYPE_SAY"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "SpeakClasses::TALKTYPE_WHISPER"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "SpeakClasses::TALKTYPE_YELL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "SpeakClasses::TALKTYPE_PRIVATE_FROM"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "SpeakClasses::TALKTYPE_PRIVATE_TO"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "SpeakClasses::TALKTYPE_CHANNEL_Y"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "SpeakClasses::TALKTYPE_CHANNEL_O"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "SpeakClasses::TALKTYPE_SPELL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "SpeakClasses::TALKTYPE_PRIVATE_NP"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "SpeakClasses::TALKTYPE_PRIVATE_NP_CONSOLE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "SpeakClasses::TALKTYPE_PRIVATE_PN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "SpeakClasses::TALKTYPE_BROADCAST"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "SpeakClasses::TALKTYPE_CHANNEL_R1"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "SpeakClasses::TALKTYPE_PRIVATE_RED_FROM"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "SpeakClasses::TALKTYPE_PRIVATE_RED_TO"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "SpeakClasses::TALKTYPE_MONSTER_SAY"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "SpeakClasses::TALKTYPE_MONSTER_YELL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "SpeakClasses::TALKTYPE_POTION"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: MessageClasses
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_STATUS_DEFAULT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_STATUS_WARNING"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_EVENT_ADVANCE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_STATUS_WARNING2"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_STATUS_SMALL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_INFO_DESCR"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_DAMAGE_DEALT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_DAMAGE_RECEIVED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_HEALED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_EXPERIENCE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_DAMAGE_OTHERS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_HEALED_OTHERS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_EXPERIENCE_OTHERS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_EVENT_DEFAULT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_LOOT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_TRADE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_GUILD"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_PARTY_MANAGEMENT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_PARTY"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_REPORT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_HOTKEY_PRESSED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_MARKET"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_BEYOND_LAST"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_TOURNAMENT_INFO"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_ATTENTION"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_BOOSTED_CREATURE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_OFFLINE_TRAINING"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MessageClasses::MESSAGE_TRANSACTION"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: FluidColors_t
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidColors_t::FLUID_EMPTY"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidColors_t::FLUID_BLUE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidColors_t::FLUID_RED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidColors_t::FLUID_BROWN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidColors_t::FLUID_GREEN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidColors_t::FLUID_YELLOW"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidColors_t::FLUID_WHITE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidColors_t::FLUID_PURPLE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidColors_t::FLUID_BLACK"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: FluidTypes_t
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidTypes_t::FLUID_NONE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidTypes_t::FLUID_WATER"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidTypes_t::FLUID_BLOOD"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidTypes_t::FLUID_BEER"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidTypes_t::FLUID_SLIME"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidTypes_t::FLUID_LEMONADE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidTypes_t::FLUID_MILK"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidTypes_t::FLUID_MANA"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidTypes_t::FLUID_INK"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidTypes_t::FLUID_LIFE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidTypes_t::FLUID_OIL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidTypes_t::FLUID_URINE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidTypes_t::FLUID_COCONUTMILK"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidTypes_t::FLUID_WINE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidTypes_t::FLUID_MUD"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidTypes_t::FLUID_FRUITJUICE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidTypes_t::FLUID_LAVA"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidTypes_t::FLUID_RUM"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidTypes_t::FLUID_SWAMP"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidTypes_t::FLUID_TEA"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "FluidTypes_t::FLUID_MEAD"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: ClientFluidTypes_t
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ClientFluidTypes_t::CLIENTFLUID_EMPTY"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ClientFluidTypes_t::CLIENTFLUID_BLUE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ClientFluidTypes_t::CLIENTFLUID_PURPLE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ClientFluidTypes_t::CLIENTFLUID_BROWN_1"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ClientFluidTypes_t::CLIENTFLUID_BROWN_2"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ClientFluidTypes_t::CLIENTFLUID_RED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ClientFluidTypes_t::CLIENTFLUID_GREEN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ClientFluidTypes_t::CLIENTFLUID_BROWN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ClientFluidTypes_t::CLIENTFLUID_YELLOW"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ClientFluidTypes_t::CLIENTFLUID_WHITE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ClientFluidTypes_t::CLIENTFLUID_BLACK"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: SquareColor_t
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "SquareColor_t::SQ_COLOR_BLACK"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: TextColor_t
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "TextColor_t::TEXTCOLOR_BLUE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "TextColor_t::TEXTCOLOR_LIGHTGREEN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "TextColor_t::TEXTCOLOR_LIGHTBLUE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "TextColor_t::TEXTCOLOR_DARKGREY"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "TextColor_t::TEXTCOLOR_MAYABLUE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "TextColor_t::TEXTCOLOR_DARKRED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "TextColor_t::TEXTCOLOR_LIGHTGREY"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "TextColor_t::TEXTCOLOR_SKYBLUE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "TextColor_t::TEXTCOLOR_PURPLE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "TextColor_t::TEXTCOLOR_ELECTRICPURPLE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "TextColor_t::TEXTCOLOR_RED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "TextColor_t::TEXTCOLOR_PASTELRED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "TextColor_t::TEXTCOLOR_ORANGE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "TextColor_t::TEXTCOLOR_YELLOW"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "TextColor_t::TEXTCOLOR_WHITE_EXP"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "TextColor_t::TEXTCOLOR_NONE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: Icons_t
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_POISON"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_BURN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_ENERGY"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_DRUNK"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_MANASHIELD"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_PARALYZE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_HASTE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_SWORDS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_DROWNING"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_FREEZING"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_DAZZLED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_CURSED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_PARTY_BUFF"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_REDSWORDS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_PIGEON"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_BLEEDING"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_LESSERHEX"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_INTENSEHEX"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_GREATERHEX"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_ROOT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_FEAR"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_GOSHNAR1"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_GOSHNAR2"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_GOSHNAR3"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_GOSHNAR4"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_GOSHNAR5"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Icons_t::ICON_MANASHIELD_BREAKABLE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: WeaponType_t
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "WeaponType_t::WEAPON_NONE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "WeaponType_t::WEAPON_SWORD"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "WeaponType_t::WEAPON_CLUB"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "WeaponType_t::WEAPON_AXE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "WeaponType_t::WEAPON_SHIELD"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "WeaponType_t::WEAPON_DISTANCE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "WeaponType_t::WEAPON_WAND"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "WeaponType_t::WEAPON_AMMO"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "WeaponType_t::WEAPON_QUIVER"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: Ammo_t
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Ammo_t::AMMO_NONE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Ammo_t::AMMO_BOLT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Ammo_t::AMMO_ARROW"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Ammo_t::AMMO_SPEAR"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Ammo_t::AMMO_THROWINGSTAR"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Ammo_t::AMMO_THROWINGKNIFE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Ammo_t::AMMO_STONE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Ammo_t::AMMO_SNOWBALL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: WeaponAction_t
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "WeaponAction_t::WEAPONACTION_NONE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "WeaponAction_t::WEAPONACTION_REMOVECOUNT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "WeaponAction_t::WEAPONACTION_REMOVECHARGE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "WeaponAction_t::WEAPONACTION_MOVE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: WieldInfo_t
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "WieldInfo_t::WIELDINFO_NONE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "WieldInfo_t::WIELDINFO_LEVEL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "WieldInfo_t::WIELDINFO_MAGLV"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "WieldInfo_t::WIELDINFO_VOCREQ"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "WieldInfo_t::WIELDINFO_PREMIUM"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: Skulls_t
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Skulls_t::SKULL_NONE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Skulls_t::SKULL_YELLOW"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Skulls_t::SKULL_GREEN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Skulls_t::SKULL_WHITE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Skulls_t::SKULL_RED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Skulls_t::SKULL_BLACK"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "Skulls_t::SKULL_ORANGE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: PartyShields_t
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PartyShields_t::SHIELD_NONE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PartyShields_t::SHIELD_WHITEYELLOW"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PartyShields_t::SHIELD_WHITEBLUE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PartyShields_t::SHIELD_BLUE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PartyShields_t::SHIELD_YELLOW"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PartyShields_t::SHIELD_BLUE_SHAREDEXP"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PartyShields_t::SHIELD_YELLOW_SHAREDEXP"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PartyShields_t::SHIELD_BLUE_NOSHAREDEXP_BLINK"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PartyShields_t::SHIELD_YELLOW_NOSHAREDEXP_BLINK"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PartyShields_t::SHIELD_BLUE_NOSHAREDEXP"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PartyShields_t::SHIELD_YELLOW_NOSHAREDEXP"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PartyShields_t::SHIELD_GRAY"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: GuildEmblems_t
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "GuildEmblems_t::GUILDEMBLEM_NONE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "GuildEmblems_t::GUILDEMBLEM_ALLY"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "GuildEmblems_t::GUILDEMBLEM_ENEMY"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "GuildEmblems_t::GUILDEMBLEM_NEUTRAL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "GuildEmblems_t::GUILDEMBLEM_MEMBER"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "GuildEmblems_t::GUILDEMBLEM_OTHER"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: item_t
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_BROWSEFIELD"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DECORATION_KIT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_FIREFIELD_PVP_FULL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_FIREFIELD_PVP_MEDIUM"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_FIREFIELD_PVP_SMALL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_FIREFIELD_PERSISTENT_FULL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_FIREFIELD_PERSISTENT_MEDIUM"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_FIREFIELD_PERSISTENT_SMALL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_FIREFIELD_NOPVP"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_FIREFIELD_NOPVP_MEDIUM"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_POISONFIELD_PVP"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_POISONFIELD_PERSISTENT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_POISONFIELD_NOPVP"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_ENERGYFIELD_PVP"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_ENERGYFIELD_PERSISTENT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_ENERGYFIELD_NOPVP"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_MAGICWALL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_MAGICWALL_PERSISTENT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_MAGICWALL_SAFE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_MAGICWALL_NOPVP"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_WILDGROWTH"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_WILDGROWTH_PERSISTENT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_WILDGROWTH_SAFE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_WILDGROWTH_NOPVP"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_BAG"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_SHOPPING_BAG"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_GOLD_COIN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_PLATINUM_COIN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_CRYSTAL_COIN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_STORE_COIN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DEPOT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_LOCKER"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_INBOX"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_MARKET"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_STORE_INBOX"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DEPOT_BOX_I"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DEPOT_BOX_II"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DEPOT_BOX_III"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DEPOT_BOX_IV"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DEPOT_BOX_V"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DEPOT_BOX_VI"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DEPOT_BOX_VII"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DEPOT_BOX_VIII"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DEPOT_BOX_IX"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DEPOT_BOX_X"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DEPOT_BOX_XI"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DEPOT_BOX_XII"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DEPOT_BOX_XIII"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DEPOT_BOX_XIV"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DEPOT_BOX_XV"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DEPOT_BOX_XVI"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DEPOT_BOX_XVII"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DEPOT_BOX_XVIII"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DEPOT_BOX_XIX"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DEPOT_BOX_XX"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_MALE_CORPSE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_FEMALE_CORPSE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_FULLSPLASH"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_SMALLSPLASH"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_PARCEL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_LETTER"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_LETTER_STAMPED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_LABEL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_AMULETOFLOSS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "item_t::ITEM_DOCUMENT_RO"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: ResourceTypes_t
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ResourceTypes_t::RESOURCE_BANK_BALANCE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ResourceTypes_t::RESOURCE_GOLD_EQUIPPED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ResourceTypes_t::RESOURCE_PREY_WILDCARDS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ResourceTypes_t::RESOURCE_DAILYREWARD_STREAK"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ResourceTypes_t::RESOURCE_DAILYREWARD_JOKERS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: PlayerFlags
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_CannotUseCombat"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_CannotAttackPlayer"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_CannotAttackMonster"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_CannotBeAttacked"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_CanConvinceAll"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_CanSummonAll"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_CanIllusionAll"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_CanSenseInvisibility"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_IgnoredByMonsters"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_NotGainInFight"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_HasInfiniteMana"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_HasInfiniteSoul"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_HasNoExhaustion"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_CannotUseSpells"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_CannotPickupItem"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_CanAlwaysLogin"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_CanBroadcast"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_CanEditHouses"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_CannotBeBanned"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_CannotBePushed"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_HasInfiniteCapacity"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_CanPushAllCreatures"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_CanTalkRedPrivate"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_CanTalkRedChannel"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_TalkOrangeHelpChannel"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_NotGainExperience"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_NotGainMana"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_NotGainHealth"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_NotGainSkill"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_SetMaxSpeed"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_SpecialVIP"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_NotGenerateLoot"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_IgnoreProtectionZone"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_IgnoreSpellCheck"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_IgnoreWeaponCheck"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_CannotBeMuted"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_IsAlwaysPremium"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_IgnoreYellCheck"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PlayerFlags::PlayerFlag_IgnoreSendPrivateCheck"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: PodiumFlags
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PodiumFlags::PODIUM_SHOW_PLATFORM"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PodiumFlags::PODIUM_SHOW_OUTFIT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "PodiumFlags::PODIUM_SHOW_MOUNT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: ReloadTypes_t
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ReloadTypes_t::RELOAD_TYPE_ALL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ReloadTypes_t::RELOAD_TYPE_ACTIONS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ReloadTypes_t::RELOAD_TYPE_CHAT"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ReloadTypes_t::RELOAD_TYPE_CONFIG"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ReloadTypes_t::RELOAD_TYPE_CREATURESCRIPTS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ReloadTypes_t::RELOAD_TYPE_EVENTS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ReloadTypes_t::RELOAD_TYPE_GLOBAL"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ReloadTypes_t::RELOAD_TYPE_GLOBALEVENTS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ReloadTypes_t::RELOAD_TYPE_ITEMS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ReloadTypes_t::RELOAD_TYPE_MONSTERS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ReloadTypes_t::RELOAD_TYPE_MOUNTS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ReloadTypes_t::RELOAD_TYPE_MOVEMENTS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ReloadTypes_t::RELOAD_TYPE_NPCS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ReloadTypes_t::RELOAD_TYPE_QUESTS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ReloadTypes_t::RELOAD_TYPE_SCRIPTS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ReloadTypes_t::RELOAD_TYPE_SPELLS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ReloadTypes_t::RELOAD_TYPE_TALKACTIONS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "ReloadTypes_t::RELOAD_TYPE_WEAPONS"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: MonsterIcon_t
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MonsterIcon_t::MONSTER_ICON_VULNERABLE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MonsterIcon_t::MONSTER_ICON_WEAKENED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MonsterIcon_t::MONSTER_ICON_MELEE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MonsterIcon_t::MONSTER_ICON_INFLUENCED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MonsterIcon_t::MONSTER_ICON_FIENDISH"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MonsterIcon_t::MONSTER_ICON_FIRST"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "MonsterIcon_t::MONSTER_ICON_LAST"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: CreatureIcon_t
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_CROSS_WHITE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_CROSS_WHITE_RED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_ORB_RED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_ORB_GREEN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_ORB_RED_GREEN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_GEM_GREEN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_GEM_YELLOW"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_GEM_BLUE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_GEM_PURPLE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_GEM_RED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_PIGEON"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_ENERGY"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_POISON"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_WATER"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_FIRE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_ICE"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_ARROW_UP"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_ARROW_DOWN"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_WARNING"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_QUESTION"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_CROSS_RED"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_FIRST"
+    edges: []
+  - file: "src/const.h"
+    qualified_name: "CreatureIcon_t::CREATURE_ICON_LAST"
+    edges: []

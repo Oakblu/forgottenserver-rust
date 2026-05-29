@@ -1,0 +1,478 @@
+nodes:
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::Chat"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "PrivateChatChannel::isInvited"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::addUserToChannel"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::createChannel"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::deleteChannel"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::getChannel"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::getChannelById"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::getChannelList"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::getGuildChannelById"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::getPrivateChannel"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::load"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::removeUserFromAllChannels"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::removeUserFromChannel"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::talkToChannel"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "ChatChannel::addUser"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "ChatChannel::executeCanJoinEvent"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "ChatChannel::executeOnJoinEvent"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "ChatChannel::executeOnLeaveEvent"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "ChatChannel::executeOnSpeakEvent"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "ChatChannel::hasUser"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "ChatChannel::removeUser"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "ChatChannel::sendToAll"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "ChatChannel::talk"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "PrivateChatChannel::closeChannel"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "PrivateChatChannel::excludePlayer"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "PrivateChatChannel::invitePlayer"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "PrivateChatChannel::isInvited"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "PrivateChatChannel::removeInvite"
+    edges: []
+  - file: "src/chat.cpp"
+    qualified_name: "PrivateChatChannel::isInvited"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "PrivateChatChannel::isInvited"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/chat.cpp"
+    qualified_name: "PrivateChatChannel::removeInvite"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "PrivateChatChannel::removeInvite"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/chat.cpp"
+    qualified_name: "PrivateChatChannel::invitePlayer"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "PrivateChatChannel::invitePlayer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/chat.cpp"
+    qualified_name: "PrivateChatChannel::excludePlayer"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "PrivateChatChannel::excludePlayer"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/chat.cpp"
+    qualified_name: "PrivateChatChannel::closeChannel"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "PrivateChatChannel::closeChannel"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/chat.cpp"
+    qualified_name: "ChatChannel::addUser"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "ChatChannel::addUser"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::sendGuildMotd"
+        kind: static
+        confidence: static
+        order: 2
+  - file: "src/chat.cpp"
+    qualified_name: "ChatChannel::removeUser"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "ChatChannel::removeUser"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/chat.cpp"
+    qualified_name: "ChatChannel::hasUser"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "ChatChannel::hasUser"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/chat.cpp"
+    qualified_name: "ChatChannel::sendToAll"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "ChatChannel::sendToAll"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/chat.cpp"
+    qualified_name: "ChatChannel::talk"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "ChatChannel::talk"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/chat.cpp"
+    qualified_name: "ChatChannel::executeCanJoinEvent"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "ChatChannel::executeCanJoinEvent"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/chat.h"
+          qualified_name: "Chat::getScriptInterface"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setMetatable"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 6
+  - file: "src/chat.cpp"
+    qualified_name: "ChatChannel::executeOnJoinEvent"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "ChatChannel::executeOnJoinEvent"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/chat.h"
+          qualified_name: "Chat::getScriptInterface"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setMetatable"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 6
+  - file: "src/chat.cpp"
+    qualified_name: "ChatChannel::executeOnLeaveEvent"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "ChatChannel::executeOnLeaveEvent"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/chat.h"
+          qualified_name: "Chat::getScriptInterface"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setMetatable"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 6
+  - file: "src/chat.cpp"
+    qualified_name: "ChatChannel::executeOnSpeakEvent"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "ChatChannel::executeOnSpeakEvent"
+        kind: static
+        confidence: static
+        order: 1
+      - target:
+          file: "src/chat.h"
+          qualified_name: "Chat::getScriptInterface"
+        kind: static
+        confidence: static
+        order: 2
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getBoolean"
+        kind: static
+        confidence: static
+        order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::getScriptEnv"
+        kind: static
+        confidence: static
+        order: 4
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::popString"
+        kind: static
+        confidence: static
+        order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::protectedCall"
+        kind: static
+        confidence: static
+        order: 6
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::pushString"
+        kind: static
+        confidence: static
+        order: 7
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::reserveScriptEnv"
+        kind: static
+        confidence: static
+        order: 8
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::resetScriptEnv"
+        kind: static
+        confidence: static
+        order: 9
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "tfs::lua::setMetatable"
+        kind: static
+        confidence: static
+        order: 10
+      - target:
+          file: "src/luascript.h"
+          qualified_name: "tfs::lua::pushUserdata"
+        kind: static
+        confidence: static
+        order: 11
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::load"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::load"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::createChannel"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::createChannel"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::deleteChannel"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::deleteChannel"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::addUserToChannel"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::addUserToChannel"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::removeUserFromChannel"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::removeUserFromChannel"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::removeUserFromAllChannels"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::removeUserFromAllChannels"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::talkToChannel"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::talkToChannel"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::getChannelList"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::getChannelList"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::getChannel"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::getChannel"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::getGuildChannelById"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::getGuildChannelById"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::getChannelById"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::getChannelById"
+        kind: static
+        confidence: static
+        order: 1
+  - file: "src/chat.cpp"
+    qualified_name: "Chat::getPrivateChannel"
+    edges:
+      - target:
+          file: "src/chat.cpp"
+          qualified_name: "Chat::getPrivateChannel"
+        kind: static
+        confidence: static
+        order: 1

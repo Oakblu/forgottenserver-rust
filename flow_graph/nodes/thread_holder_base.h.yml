@@ -1,0 +1,19 @@
+nodes:
+  - file: "src/thread_holder_base.h"
+    qualified_name: FS_THREAD_HOLDER_BASE_H
+    edges: []
+  - file: "src/thread_holder_base.h"
+    qualified_name: ThreadHolder
+    edges: []
+  - file: "src/thread_holder_base.h"
+    qualified_name: "ThreadHolder::ThreadHolder"
+    edges: []
+  - file: "src/thread_holder_base.h"
+    qualified_name: "ThreadHolder::setState"
+    edges: []
+  - file: "src/thread_holder_base.h"
+    qualified_name: "ThreadHolder::thread"
+    edges: []
+  - file: "src/thread_holder_base.h"
+    qualified_name: "ThreadHolder::join"
+    edges: []

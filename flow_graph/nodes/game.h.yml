@@ -1,0 +1,100 @@
+nodes:
+  - file: "src/game.h"
+    qualified_name: FS_GAME_H
+    edges: []
+  - file: "src/game.h"
+    qualified_name: stackPosType_t
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "stackPosType_t::STACKPOS_MOVE"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "stackPosType_t::STACKPOS_LOOK"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "stackPosType_t::STACKPOS_TOPDOWN_ITEM"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "stackPosType_t::STACKPOS_USEITEM"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "stackPosType_t::STACKPOS_USETARGET"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: WorldType_t
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "WorldType_t::WORLD_TYPE_NO_PVP"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "WorldType_t::WORLD_TYPE_PVP"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "WorldType_t::WORLD_TYPE_PVP_ENFORCED"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: GameState_t
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "GameState_t::GAME_STATE_STARTUP"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "GameState_t::GAME_STATE_INIT"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "GameState_t::GAME_STATE_NORMAL"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "GameState_t::GAME_STATE_CLOSED"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "GameState_t::GAME_STATE_SHUTDOWN"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "GameState_t::GAME_STATE_CLOSING"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "GameState_t::GAME_STATE_MAINTAIN"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: Game
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "Game::Game"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "Game::Game"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "Game::start"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "Game::forceAddCondition"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "Game::forceRemoveCondition"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "Game::loadMainMap"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "Game::loadMap"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "Game::setWorldType"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "Game::internalGetThing"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "Game::internalGetPosition"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "Game::getTradeErrorDescription"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "Game::getCreatureByID"
+    edges: []
+  - file: "src/game.h"
+    qualified_name: "Game::getMonsterByID"
+    edges: []

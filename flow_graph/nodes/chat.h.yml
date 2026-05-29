@@ -1,0 +1,196 @@
+nodes:
+  - file: "src/chat.h"
+    qualified_name: Chat
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: ChatChannel
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: PrivateChatChannel
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::ChatChannel (default)"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::ChatChannel (id, name)"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "PrivateChatChannel::PrivateChatChannel"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::~ChatChannel"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "Chat::dummyPrivate"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "Chat::guildChannels"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "Chat::normalChannels"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "Chat::partyChannels"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "Chat::privateChannels"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "Chat::scriptInterface"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::canJoinEvent"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::id"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::name"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::onJoinEvent"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::onLeaveEvent"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::onSpeakEvent"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::publicChannel"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::users"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "PrivateChatChannel::invites"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "PrivateChatChannel::owner"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "Chat::getScriptInterface"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::getId"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::getInvitedUsers"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::getName"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::getOwner"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::getUsers"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::isPublicChannel"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "PrivateChatChannel::getInvitedUsers"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "PrivateChatChannel::getOwner"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "PrivateChatChannel::setOwner"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: ChannelList
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: InvitedMap
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: UsersMap
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: FS_CHAT_H
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: ChatChannel
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::ChatChannel"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::ChatChannel"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::ChatChannel"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::addUser"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::removeUser"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::hasUser"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::talk"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::sendToAll"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::executeOnJoinEvent"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::executeCanJoinEvent"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::executeOnLeaveEvent"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "ChatChannel::executeOnSpeakEvent"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: Chat
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "Chat::Chat"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "Chat::Chat"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "Chat::load"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "Chat::createChannel"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "Chat::deleteChannel"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "Chat::addUserToChannel"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "Chat::removeUserFromChannel"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "Chat::removeUserFromAllChannels"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "Chat::talkToChannel"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "Chat::getChannelList"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "Chat::getChannel"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "Chat::getChannelById"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "Chat::getGuildChannelById"
+    edges: []
+  - file: "src/chat.h"
+    qualified_name: "Chat::getPrivateChannel"
+    edges: []
