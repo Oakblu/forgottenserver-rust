@@ -2042,4 +2042,43 @@ mod tests {
         assert_eq!(mt.look_type, 0);
         assert_eq!(mt.look_type_ex, 0);
     }
+
+    // ---------------------------------------------------------------------------
+    // Task 4.3 — Monsters::loadFromXml contract
+    //
+    // C++ `Monsters::loadFromXml` parses a monsters-manifest XML (name→file),
+    // then calls `loadMonster` for each entry which ultimately calls
+    // `addMonsterType`.  The Rust port splits this into two steps:
+    //   1. `Monsters::parse_monster_type_from_xml` — parses a single <monster>
+    //      element into a `MonsterType` value.
+    //   2. `Monsters::register` — inserts the type into the registry.
+    //
+    // The contract under test: after parsing and registering a known monster its
+    // `MonsterType` must be retrievable by (case-insensitive) name.
+    // ---------------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_and_register_monster_is_accessible_by_name() {
+        let mut registry = Monsters::new();
+        let mt = Monsters::parse_monster_type_from_xml(MINIMAL_XML)
+            .expect("RAT XML must parse without error");
+        // Confirm we parsed the right monster before registering.
+        assert_eq!(mt.name, "Rat");
+        registry.register(mt);
+        // The monster must now be accessible by exact, upper-cased, and
+        // mixed-case name — mirroring C++ `Monsters::getMonsterType`.
+        assert!(
+            registry.get_monster_type("Rat").is_some(),
+            "monster must be found by exact name after register"
+        );
+        assert!(
+            registry.get_monster_type("RAT").is_some(),
+            "lookup must be case-insensitive"
+        );
+        assert_eq!(
+            registry.get_monster_type("rat").unwrap().max_health,
+            30,
+            "max_health must match the parsed XML value"
+        );
+    }
 }

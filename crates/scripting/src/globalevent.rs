@@ -734,4 +734,143 @@ mod tests {
         let e = events.get_event("mut").unwrap();
         assert_eq!(e.interval_ms, Some(2500));
     }
+
+    // ── Task 8.1: GlobalEvents::startup ──────────────────────────────────────
+    //
+    // C++: `void GlobalEvents::startup() const { execute(GLOBALEVENT_STARTUP); }`
+    // where `execute` iterates `thinkMap` / equivalent filtered by type and calls
+    // `executeEvent()` on each.  In Rust, the equivalent is:
+    //   - `get_startup_events()` returns all Startup-type events
+    //   - `try_fire()` on each event fires it once
+    //
+    // These tests confirm that all registered STARTUP callbacks are reachable via
+    // `get_startup_events()` and that each fires exactly once (once-only semantics).
+
+    /// Task 8.1: All STARTUP-type events are returned by `get_startup_events()`.
+    /// Mirrors `GlobalEvents::startup()` iterating over every Startup handler.
+    #[test]
+    fn startup_all_registered_startup_callbacks_are_accessible() {
+        let mut events = GlobalEvents::new();
+        events.register(GlobalEvent::new("startup_a", GlobalEventType::Startup, "a.lua"));
+        events.register(GlobalEvent::new("startup_b", GlobalEventType::Startup, "b.lua"));
+        events.register(GlobalEvent::new("startup_c", GlobalEventType::Startup, "c.lua"));
+        // A non-startup event must NOT appear.
+        events.register(GlobalEvent::new("on_think", GlobalEventType::Think, "t.lua"));
+
+        let startup_events = events.get_startup_events();
+        assert_eq!(
+            startup_events.len(),
+            3,
+            "startup() must invoke all three STARTUP-type handlers"
+        );
+        // All returned events are Startup type.
+        assert!(startup_events
+            .iter()
+            .all(|e| e.event_type == GlobalEventType::Startup));
+    }
+
+    /// Task 8.1: Each STARTUP callback fires at most once (once-only semantics).
+    #[test]
+    fn startup_each_callback_fires_exactly_once() {
+        let mut events = GlobalEvents::new();
+        events.register(GlobalEvent::new("su1", GlobalEventType::Startup, "su1.lua"));
+        events.register(GlobalEvent::new("su2", GlobalEventType::Startup, "su2.lua"));
+
+        // Collect names first to avoid borrow checker conflicts.
+        let names: Vec<String> = events
+            .get_startup_events()
+            .iter()
+            .map(|e| e.name.clone())
+            .collect();
+
+        // First pass: all must fire.
+        for name in &names {
+            let fired = events.get_event_mut(name).unwrap().try_fire();
+            assert!(fired, "first try_fire() on {name} must return true");
+        }
+        // Second pass: all are already fired → must return false.
+        for name in &names {
+            let fired_again = events.get_event_mut(name).unwrap().try_fire();
+            assert!(
+                !fired_again,
+                "second try_fire() on {name} must return false (once-only)"
+            );
+        }
+    }
+
+    // ── Task 8.2: GlobalEvents::shutdown ─────────────────────────────────────
+    //
+    // C++: `void GlobalEvents::shutdown() const { execute(GLOBALEVENT_SHUTDOWN); }`
+
+    /// Task 8.2: All SHUTDOWN-type events are returned by `get_shutdown_events()`.
+    #[test]
+    fn shutdown_all_registered_shutdown_callbacks_are_accessible() {
+        let mut events = GlobalEvents::new();
+        events.register(GlobalEvent::new("sd1", GlobalEventType::Shutdown, "sd1.lua"));
+        events.register(GlobalEvent::new("sd2", GlobalEventType::Shutdown, "sd2.lua"));
+        // Non-shutdown events must not appear.
+        events.register(GlobalEvent::new("startup1", GlobalEventType::Startup, "s.lua"));
+
+        let shutdown_events = events.get_shutdown_events();
+        assert_eq!(
+            shutdown_events.len(),
+            2,
+            "shutdown() must invoke all two SHUTDOWN-type handlers"
+        );
+        assert!(shutdown_events
+            .iter()
+            .all(|e| e.event_type == GlobalEventType::Shutdown));
+    }
+
+    /// Task 8.2: Each SHUTDOWN callback fires at most once (once-only semantics).
+    #[test]
+    fn shutdown_each_callback_fires_exactly_once() {
+        let mut events = GlobalEvents::new();
+        events.register(GlobalEvent::new("sd", GlobalEventType::Shutdown, "sd.lua"));
+
+        let fired = events.get_event_mut("sd").unwrap().try_fire();
+        assert!(fired);
+        let fired_again = events.get_event_mut("sd").unwrap().try_fire();
+        assert!(!fired_again, "shutdown callback must be once-only");
+    }
+
+    // ── Task 8.3: GlobalEvents::save ─────────────────────────────────────────
+    //
+    // C++: `void GlobalEvents::save() const { execute(GLOBALEVENT_SAVE); }`
+
+    /// Task 8.3: All SAVE-type events are returned by `get_save_events()`.
+    #[test]
+    fn save_all_registered_save_callbacks_are_accessible() {
+        let mut events = GlobalEvents::new();
+        events.register(GlobalEvent::new("save1", GlobalEventType::Save, "save1.lua"));
+        events.register(GlobalEvent::new("save2", GlobalEventType::Save, "save2.lua"));
+        // Non-save events must not appear in save dispatch.
+        events.register(GlobalEvent::new("startup1", GlobalEventType::Startup, "s.lua"));
+
+        let save_events = events.get_save_events();
+        assert_eq!(
+            save_events.len(),
+            2,
+            "save() must invoke all two SAVE-type handlers"
+        );
+        assert!(save_events
+            .iter()
+            .all(|e| e.event_type == GlobalEventType::Save));
+    }
+
+    /// Task 8.3: SAVE events are repeating (not once-only), matching C++
+    /// `execute(GLOBALEVENT_SAVE)` which fires them repeatedly on server saves.
+    #[test]
+    fn save_callbacks_are_repeating_not_once_only() {
+        let mut events = GlobalEvents::new();
+        events.register(GlobalEvent::new("sv", GlobalEventType::Save, "sv.lua"));
+
+        // Save events must fire every time — not just once.
+        assert!(events.get_event_mut("sv").unwrap().try_fire());
+        assert!(
+            events.get_event_mut("sv").unwrap().try_fire(),
+            "save callback must be repeating, not once-only"
+        );
+        assert!(events.get_event_mut("sv").unwrap().try_fire());
+    }
 }

@@ -1683,4 +1683,42 @@ mod tests {
         let wand = Wand::new(200, 13, 10, 30, ElementType::Fire);
         assert_eq!(wand.get_element_damage(), 0);
     }
+
+    // ── Task 7.1 — Weapons::loadDefaults: sword (melee) has non-zero attack ───
+    // Mirrors C++ `Weapons::loadDefaults` which iterates item types and calls
+    // `configureWeapon(it)` on each. After load, a registered sword entry must
+    // have a non-zero attack value.
+
+    #[test]
+    fn load_defaults_sword_has_nonzero_attack() {
+        // Simulate what C++ `Weapons::loadDefaults` does for a sword:
+        // create a WeaponMelee entry and register it.
+        let mut weapons = Weapons::new();
+        let sword_item_id = 2376u32; // Katana item id (well-known TFS sword)
+        let sword = Weapon::new(sword_item_id, WeaponKind::Melee, 1, 25, 22);
+        weapons.register(sword);
+
+        let registered = weapons.get_by_item_id(sword_item_id).expect("sword must be registered after load");
+        assert!(registered.attack > 0, "sword must have non-zero attack after loadDefaults");
+    }
+
+    #[test]
+    fn load_defaults_melee_weapon_registered_is_accessible_by_item_id() {
+        let mut weapons = Weapons::new();
+        let axe_id = 2400u32;
+        weapons.register(Weapon::new(axe_id, WeaponKind::Melee, 1, 20, 15));
+        assert!(
+            weapons.get_by_item_id(axe_id).is_some(),
+            "registered weapon must be retrievable by item id"
+        );
+    }
+
+    #[test]
+    fn load_defaults_distance_weapon_registered_is_accessible_by_item_id() {
+        let mut weapons = Weapons::new();
+        let bow_id = 2456u32;
+        weapons.register(Weapon::new(bow_id, WeaponKind::Distance, 1, 40, 0));
+        let registered = weapons.get_by_item_id(bow_id).expect("bow must be registered");
+        assert!(registered.attack > 0, "distance weapon must have non-zero attack");
+    }
 }

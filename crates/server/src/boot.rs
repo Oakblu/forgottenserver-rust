@@ -392,7 +392,9 @@ impl GameLoginHandler {
                     "[game] entering game loop (os={} sequence_checksum={sequence_checksum})",
                     packet.os
                 );
-                let _ = stream.set_read_timeout(Some(Duration::from_secs(30)));
+                // 5s read timeout drives the periodic server-ping cadence
+                // inside run_game_loop (mirrors C++ Player::sendPing every 5s).
+                let _ = stream.set_read_timeout(Some(Duration::from_secs(5)));
                 run_game_loop(
                     &mut stream,
                     packet.xtea_key,
@@ -402,6 +404,9 @@ impl GameLoginHandler {
                     Arc::clone(&self.vocations),
                 );
                 eprintln!("[game] game loop exited");
+                // Explicitly shut down the TCP stream so OTClient gets a clean
+                // FIN/RST and doesn't end up stuck on the next reconnect.
+                let _ = stream.shutdown(std::net::Shutdown::Both);
             }
         }
     }
@@ -566,12 +571,50 @@ pub(crate) fn run_game_loop(
         )
     };
 
+    // Track consecutive read timeouts so we can send periodic server pings
+    // (mirrors C++ Player::sendPing every 5s, player.cpp:871) without sitting
+    // silent for 30 s. After ~30 s of no client activity we give up.
+    let mut consecutive_timeouts: u32 = 0;
+    const MAX_CONSECUTIVE_TIMEOUTS: u32 = 6;
+
     loop {
         // --- Step 1: read 2-byte outer length ---
         let mut len_buf = [0u8; 2];
-        if let Err(e) = stream.read_exact(&mut len_buf) {
-            eprintln!("[gameloop] exit: read outer_len failed: {e}");
-            break;
+        match stream.read_exact(&mut len_buf) {
+            Ok(()) => {
+                consecutive_timeouts = 0;
+            }
+            Err(e)
+                if e.kind() == std::io::ErrorKind::WouldBlock
+                    || e.kind() == std::io::ErrorKind::TimedOut =>
+            {
+                // No client activity within the read window. Send a server
+                // ping (opcode 0x1D) so the client knows the server is alive
+                // — without this OTClient eventually decides the server is
+                // dead and ends up in a stuck "connecting…" state on its
+                // next reconnect.
+                consecutive_timeouts += 1;
+                if consecutive_timeouts > MAX_CONSECUTIVE_TIMEOUTS {
+                    eprintln!(
+                        "[gameloop] exit: idle > {MAX_CONSECUTIVE_TIMEOUTS} timeouts, closing"
+                    );
+                    break;
+                }
+                let ping = frame_packet(&[0x1D], xtea_key);
+                if let Err(e) = stream.write_all(&ping) {
+                    eprintln!("[gameloop] exit: failed to send server ping: {e}");
+                    break;
+                }
+                eprintln!(
+                    "[gameloop] idle ({}/{MAX_CONSECUTIVE_TIMEOUTS}) -> sent server ping (0x1D)",
+                    consecutive_timeouts
+                );
+                continue;
+            }
+            Err(e) => {
+                eprintln!("[gameloop] exit: read outer_len failed: {e}");
+                break;
+            }
         }
         let outer_len = u16::from_le_bytes(len_buf) as usize;
         if outer_len == 0 {
@@ -1965,8 +2008,8 @@ mod tests {
         assert_eq!(bytes[0], 0xB4, "TextMessage opcode is 0xB4");
         assert_eq!(
             bytes[1],
-            pg::text_message_class::MESSAGE_STATUS_DEFAULT,
-            "MESSAGE_STATUS_DEFAULT = 17",
+            pg::text_message_class::MESSAGE_EVENT_ADVANCE,
+            "MESSAGE_EVENT_ADVANCE = 19 (white text over player + console)",
         );
         let resp_len = u16::from_le_bytes([bytes[2], bytes[3]]) as usize;
         let resp_text = std::str::from_utf8(&bytes[4..4 + resp_len]).unwrap();

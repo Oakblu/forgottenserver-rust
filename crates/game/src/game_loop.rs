@@ -121,6 +121,11 @@ pub struct CreatureCheckEntry {
     pub attacking_count: u32,
     /// Number of times `execute_conditions` has been called.
     pub conditions_count: u32,
+    /// Number of times `force_update_path` has been requested on this entry.
+    ///
+    /// Mirrors C++ `Creature::forceUpdatePath()` — incremented each time
+    /// `update_creatures_path` processes this creature.
+    pub path_update_count: u32,
 }
 
 impl CreatureCheckEntry {
@@ -132,8 +137,29 @@ impl CreatureCheckEntry {
             think_count: 0,
             attacking_count: 0,
             conditions_count: 0,
+            path_update_count: 0,
         }
     }
+}
+
+// ---------------------------------------------------------------------------
+// update_creatures_path — mirrors Game::updateCreaturesPath (one bucket)
+// ---------------------------------------------------------------------------
+
+/// Trigger a forced path update for every alive creature in `bucket`.
+///
+/// Mirrors C++ `Game::updateCreaturesPath(index)`:
+///   - For each creature where `alive == true`: call `creature->forceUpdatePath()`.
+///   - Dead creatures are skipped.
+///
+/// In this pure-memory model `forceUpdatePath` is represented by
+/// incrementing `path_update_count` on the entry.
+pub fn update_creatures_path(bucket: &[CreatureCheckEntry]) -> Vec<u32> {
+    bucket
+        .iter()
+        .filter(|c| c.alive)
+        .map(|c| c.id)
+        .collect()
 }
 
 // ---------------------------------------------------------------------------
@@ -490,6 +516,22 @@ impl GameLoop {
     /// Returns the new light level.
     pub fn tick_light(&mut self) -> u8 {
         tick_world_light(&mut self.world_light)
+    }
+
+    /// Trigger path updates for the current bucket (mirrors `updateCreaturesPath`).
+    ///
+    /// Increments `path_update_count` on every alive entry in the current
+    /// creature bucket and returns the IDs of creatures that received an update.
+    pub fn tick_path_update(&mut self) -> Vec<u32> {
+        let idx = self.creature_bucket_index % EVENT_CREATURECOUNT;
+        let ids = update_creatures_path(&self.creature_buckets[idx]);
+        // Apply the count increment (update_creatures_path only reads the slice).
+        for entry in &mut self.creature_buckets[idx] {
+            if entry.alive {
+                entry.path_update_count += 1;
+            }
+        }
+        ids
     }
 }
 
@@ -1032,5 +1074,87 @@ mod tests {
         let mut gl = GameLoop::new();
         let returned = gl.tick_light();
         assert_eq!(returned, gl.world_light.level);
+    }
+
+    // -----------------------------------------------------------------------
+    // Task 9.1 — check_creatures reschedules itself each tick
+    // -----------------------------------------------------------------------
+    // In the GameLoop model, `tick_creature_bucket` advances the bucket index
+    // so successive calls process different buckets — this is the analogue of
+    // C++ `checkCreatures` scheduling `checkCreatures((index+1) % N)`.
+
+    #[test]
+    fn tick_creature_bucket_advances_bucket_index() {
+        let mut gl = GameLoop::new();
+        let initial_idx = gl.creature_bucket_index;
+        gl.tick_creature_bucket();
+        assert_eq!(
+            gl.creature_bucket_index,
+            (initial_idx + 1) % EVENT_CREATURECOUNT,
+            "each tick must advance the bucket index by 1"
+        );
+    }
+
+    #[test]
+    fn tick_creature_bucket_wraps_around_after_full_cycle() {
+        let mut gl = GameLoop::new();
+        // Run a full cycle of 10 buckets.
+        for _ in 0..EVENT_CREATURECOUNT {
+            gl.tick_creature_bucket();
+        }
+        assert_eq!(
+            gl.creature_bucket_index, 0,
+            "bucket index must wrap back to 0 after a full cycle"
+        );
+    }
+
+    // -----------------------------------------------------------------------
+    // Task 9.3 — update_creatures_path marks alive creatures for path update
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn update_creatures_path_returns_alive_creature_ids() {
+        let alive = CreatureCheckEntry::new(1);
+        let mut dead = CreatureCheckEntry::new(2);
+        dead.alive = false;
+
+        let bucket = vec![alive, dead];
+        let ids = update_creatures_path(&bucket);
+        assert_eq!(ids, vec![1], "only alive creature must be in the returned list");
+    }
+
+    #[test]
+    fn update_creatures_path_empty_bucket_returns_empty() {
+        let bucket: Vec<CreatureCheckEntry> = vec![];
+        let ids = update_creatures_path(&bucket);
+        assert!(ids.is_empty());
+    }
+
+    #[test]
+    fn game_loop_tick_path_update_increments_alive_entries() {
+        let mut gl = GameLoop::new();
+        let entry = CreatureCheckEntry::new(3);
+        // Put it in bucket index 0.
+        gl.creature_buckets[0].push(entry);
+        gl.creature_bucket_index = 0;
+        gl.tick_path_update();
+        assert_eq!(
+            gl.creature_buckets[0][0].path_update_count, 1,
+            "alive creature must have path_update_count incremented"
+        );
+    }
+
+    #[test]
+    fn game_loop_tick_path_update_skips_dead_entries() {
+        let mut gl = GameLoop::new();
+        let mut dead = CreatureCheckEntry::new(4);
+        dead.alive = false;
+        gl.creature_buckets[0].push(dead);
+        gl.creature_bucket_index = 0;
+        gl.tick_path_update();
+        assert_eq!(
+            gl.creature_buckets[0][0].path_update_count, 0,
+            "dead creature must not have path_update_count incremented"
+        );
     }
 }

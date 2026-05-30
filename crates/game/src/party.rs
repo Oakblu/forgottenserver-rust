@@ -212,4 +212,83 @@ mod tests {
             assert_eq!(*new_leader_id, 2, "New leader must be player 2");
         }
     }
+
+    // ── Task 21.9 — playerLeaveParty: leader leaving disbands the party ──────
+    // Mirrors C++ `Party::leaveParty(player)` when the player is the leader:
+    // the party is disbanded and all members are notified with empty remaining
+    // member lists.
+
+    #[test]
+    fn leader_leaving_disbands_party_with_members() {
+        let mut mgr = PartyManager::new();
+        // Leader=1, members=2,3
+        mgr.accept_invite(2, 1);
+        mgr.accept_invite(3, 1);
+
+        // Leader (1) leaves.
+        let broadcasts = mgr.leave(1);
+
+        // Must notify all three participants.
+        let notified_ids: Vec<EntityId> = broadcasts.iter().map(|(pid, _)| *pid).collect();
+        assert!(notified_ids.contains(&1), "leader must be notified of own leave");
+        assert!(notified_ids.contains(&2), "member 2 must be notified");
+        assert!(notified_ids.contains(&3), "member 3 must be notified");
+
+        // All notifications must carry an empty remaining-members list (disbanded).
+        for (_, remaining) in &broadcasts {
+            assert!(
+                remaining.is_empty(),
+                "disbanded party must have empty remaining members in all notifications"
+            );
+        }
+    }
+
+    #[test]
+    fn leader_leaving_solo_party_is_clean() {
+        let mut mgr = PartyManager::new();
+        // Party with only the leader — accept invite never called.
+        // A solo leader is not tracked in `parties`, so leave returns empty.
+        let broadcasts = mgr.leave(1);
+        assert!(broadcasts.is_empty(), "solo player has no party to leave");
+    }
+
+    // ── Task 21.13 — playerAcceptTrade: items exchanged when both accept ──────
+    // Mirrors C++ `Game::playerAcceptTrade`: both players must accept before
+    // the trade completes.
+
+    #[test]
+    fn trade_both_accept_completes_and_closes() {
+        use crate::trade::{TradeItem, TradeManager, TradeResult};
+        let mut mgr = TradeManager::new();
+        let trade_id = mgr.open(1, 2, TradeItem { type_id: 100 }).unwrap();
+        assert_eq!(mgr.accept(trade_id, 1), TradeResult::Pending);
+        assert_eq!(
+            mgr.accept(trade_id, 2),
+            TradeResult::Completed,
+            "trade must complete when both sides accept"
+        );
+        // After completion the trade is gone.
+        assert!(mgr.get_trade_for_player(1).is_none());
+        assert!(mgr.get_trade_for_player(2).is_none());
+    }
+
+    // ── Task 21.14 — playerCloseTrade: CANCELLED outcome (trade closed) ───────
+    // Mirrors C++ `Game::playerCloseTrade` → `internalCloseTrade`:
+    // calling close must remove the trade from both players.
+
+    #[test]
+    fn trade_close_removes_trade_for_both_players() {
+        use crate::trade::{TradeItem, TradeManager};
+        let mut mgr = TradeManager::new();
+        let trade_id = mgr.open(1, 2, TradeItem { type_id: 200 }).unwrap();
+        mgr.close(trade_id);
+        assert!(
+            mgr.get_trade_for_player(1).is_none(),
+            "trade must be closed for player 1 after close"
+        );
+        assert!(
+            mgr.get_trade_for_player(2).is_none(),
+            "trade must be closed for player 2 after close"
+        );
+    }
 }

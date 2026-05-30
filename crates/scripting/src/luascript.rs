@@ -161,6 +161,49 @@ impl Default for LuaEngine {
     }
 }
 
+// ---------------------------------------------------------------------------
+// tfs::lua::getBoolean equivalents (Task 5.7)
+//
+// C++ originals (luascript.cpp:3549-3556):
+//   bool tfs::lua::getBoolean(lua_State* L, int32_t arg)
+//       { return lua_toboolean(L, arg) != 0; }
+//   bool tfs::lua::getBoolean(lua_State* L, int32_t arg, bool defaultValue)
+//       { return lua_isboolean(L, arg) == 0 ? defaultValue : lua_toboolean(L, arg) != 0; }
+//
+// In Rust/mlua the Lua stack is not directly accessible outside a Lua callback,
+// but the same semantics apply to `mlua::Value`:
+//   - `get_boolean(value)`: any non-nil/non-false value → true (mirrors lua_toboolean)
+//   - `get_boolean_default(value, default)`: strict type check — only Boolean
+//     variant uses the actual bool; all other types return `default`
+//     (mirrors lua_isboolean == 0 ? defaultValue : lua_toboolean).
+// ---------------------------------------------------------------------------
+
+/// Mirrors `tfs::lua::getBoolean(lua_State* L, int32_t arg)`.
+///
+/// Returns `false` for Lua `false` and `nil`; returns `true` for everything
+/// else — matching `lua_toboolean` semantics.
+#[cfg(feature = "lua-scripting")]
+pub fn get_boolean(value: &mlua::Value) -> bool {
+    match value {
+        mlua::Value::Nil => false,
+        mlua::Value::Boolean(b) => *b,
+        // All other types are truthy in Lua (numbers, strings, tables, etc.)
+        _ => true,
+    }
+}
+
+/// Mirrors `tfs::lua::getBoolean(lua_State* L, int32_t arg, bool defaultValue)`.
+///
+/// Returns `default_value` when `value` is not a Lua boolean (`lua_isboolean`
+/// check); returns the actual boolean otherwise.
+#[cfg(feature = "lua-scripting")]
+pub fn get_boolean_default(value: &mlua::Value, default_value: bool) -> bool {
+    match value {
+        mlua::Value::Boolean(b) => *b,
+        _ => default_value,
+    }
+}
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum LuaValue {
     Nil,
@@ -734,5 +777,111 @@ mod tests {
         let err = engine.set_script_base_dir(bogus).unwrap_err();
         // canonicalize() failure is mapped to RuntimeError.
         assert!(matches!(err, mlua::Error::RuntimeError(_)));
+    }
+
+    // -----------------------------------------------------------------------
+    // Task 5.7: tfs::lua::getBoolean — Lua boolean extraction helpers
+    //
+    // C++ spec (luascript.cpp:3549-3556):
+    //   bool getBoolean(lua_State* L, int32_t arg)
+    //       { return lua_toboolean(L, arg) != 0; }
+    //   bool getBoolean(lua_State* L, int32_t arg, bool defaultValue)
+    //       { return lua_isboolean(L,arg)==0 ? defaultValue : lua_toboolean(L,arg)!=0; }
+    //
+    // The Rust equivalents are `get_boolean(value)` and
+    // `get_boolean_default(value, default)` defined above the test module.
+    // -----------------------------------------------------------------------
+
+    /// Task 5.7: get_boolean returns `true` for a Lua true boolean.
+    #[cfg(feature = "lua-scripting")]
+    #[test]
+    fn get_boolean_returns_true_for_lua_true() {
+        let v = mlua::Value::Boolean(true);
+        assert!(
+            super::get_boolean(&v),
+            "get_boolean(true) must return true"
+        );
+    }
+
+    /// Task 5.7: get_boolean returns `false` for a Lua false boolean.
+    #[cfg(feature = "lua-scripting")]
+    #[test]
+    fn get_boolean_returns_false_for_lua_false() {
+        let v = mlua::Value::Boolean(false);
+        assert!(
+            !super::get_boolean(&v),
+            "get_boolean(false) must return false"
+        );
+    }
+
+    /// Task 5.7: get_boolean returns `false` for Lua nil (lua_toboolean semantics).
+    #[cfg(feature = "lua-scripting")]
+    #[test]
+    fn get_boolean_returns_false_for_nil() {
+        let v = mlua::Value::Nil;
+        assert!(
+            !super::get_boolean(&v),
+            "get_boolean(nil) must return false (lua_toboolean(nil) == 0)"
+        );
+    }
+
+    /// Task 5.7: get_boolean returns `true` for a non-boolean truthy Lua value
+    /// (e.g. an integer), mirroring `lua_toboolean` which returns non-zero for
+    /// any value that is neither nil nor false.
+    #[cfg(feature = "lua-scripting")]
+    #[test]
+    fn get_boolean_returns_true_for_truthy_non_boolean() {
+        // Integer, number, and string are all truthy in Lua.
+        let cases: &[mlua::Value] = &[
+            mlua::Value::Integer(0),  // even 0 is truthy in Lua!
+            mlua::Value::Integer(1),
+            mlua::Value::Number(0.0), // even 0.0 is truthy
+        ];
+        for v in cases {
+            assert!(
+                super::get_boolean(v),
+                "get_boolean({v:?}) must return true — all non-nil/non-false Lua values are truthy"
+            );
+        }
+    }
+
+    /// Task 5.7: get_boolean_default returns the actual bool when the value IS
+    /// a Lua boolean (strict lua_isboolean check).
+    #[cfg(feature = "lua-scripting")]
+    #[test]
+    fn get_boolean_default_returns_bool_when_value_is_boolean() {
+        assert!(
+            super::get_boolean_default(&mlua::Value::Boolean(true), false),
+            "must return actual true when value is boolean true"
+        );
+        assert!(
+            !super::get_boolean_default(&mlua::Value::Boolean(false), true),
+            "must return actual false when value is boolean false"
+        );
+    }
+
+    /// Task 5.7: get_boolean_default returns `default_value` when the value is
+    /// NOT a Lua boolean (lua_isboolean == 0 path).
+    #[cfg(feature = "lua-scripting")]
+    #[test]
+    fn get_boolean_default_returns_default_for_non_boolean_types() {
+        // nil → default_value
+        assert!(
+            super::get_boolean_default(&mlua::Value::Nil, true),
+            "nil with default=true must return true"
+        );
+        assert!(
+            !super::get_boolean_default(&mlua::Value::Nil, false),
+            "nil with default=false must return false"
+        );
+        // integer → default_value (regardless of integer content)
+        assert!(
+            !super::get_boolean_default(&mlua::Value::Integer(42), false),
+            "integer(42) with default=false must return false"
+        );
+        assert!(
+            super::get_boolean_default(&mlua::Value::Integer(0), true),
+            "integer(0) with default=true must return true"
+        );
     }
 }

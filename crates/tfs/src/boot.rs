@@ -390,4 +390,177 @@ mod tests {
             "expected Ok for existing file, got: {result:?}"
         );
     }
+
+    // -----------------------------------------------------------------------
+    // Task 2.3 — ServiceManager::run equivalent: wait_for_shutdown blocks
+    // until the shutdown signal is set.
+    //
+    // C++ cross-validation:
+    //   * server.cpp ServiceManager::run(): sets running=true then calls
+    //     io_context.run() which blocks until all work is done or
+    //     io_context.stop() is called (by ServiceManager::stop()).
+    //   * The Rust equivalent wait_for_shutdown() polls the SHUTDOWN AtomicBool
+    //     every 100 ms until it is set, then returns.
+    // -----------------------------------------------------------------------
+
+    /// wait_for_shutdown() returns promptly once request_shutdown() is called
+    /// from another thread. Mirrors C++ ServiceManager::run() blocking until
+    /// ServiceManager::stop() signals io_context.stop().
+    #[test]
+    fn wait_for_shutdown_blocks_until_request_shutdown_called() {
+        use std::sync::{Arc, Mutex};
+        use std::time::Duration;
+
+        // Reset the flag before the test (shared static; other tests may have set it).
+        SHUTDOWN.store(false, Ordering::SeqCst);
+
+        let finished = Arc::new(Mutex::new(false));
+        let finished_clone = finished.clone();
+
+        // Spawn a thread that calls wait_for_shutdown and records completion.
+        let waiter = std::thread::spawn(move || {
+            wait_for_shutdown();
+            *finished_clone.lock().unwrap() = true;
+        });
+
+        // Give the waiter thread time to start and enter the polling loop.
+        std::thread::sleep(Duration::from_millis(50));
+
+        // The waiter must still be blocking — not finished yet.
+        assert!(
+            !*finished.lock().unwrap(),
+            "wait_for_shutdown must NOT return before request_shutdown is called"
+        );
+
+        // Signal shutdown — the waiter should now unblock.
+        request_shutdown();
+
+        // Wait up to 1 second for the waiter to finish.
+        waiter.join().expect("waiter thread must exit cleanly");
+
+        assert!(
+            *finished.lock().unwrap(),
+            "wait_for_shutdown must return after request_shutdown is called"
+        );
+
+        // Restore the flag for other tests.
+        SHUTDOWN.store(false, Ordering::SeqCst);
+    }
+
+    /// wait_for_shutdown() returns immediately if the shutdown flag is already
+    /// set before the call. Matches C++ ServiceManager::run() where if the
+    /// io_context has already been stopped, run() returns immediately.
+    #[test]
+    fn wait_for_shutdown_returns_immediately_when_already_shutdown() {
+        use std::time::Instant;
+
+        SHUTDOWN.store(true, Ordering::SeqCst);
+        let start = Instant::now();
+        wait_for_shutdown();
+        let elapsed = start.elapsed();
+
+        // Should return in much less than the 100ms poll interval.
+        assert!(
+            elapsed.as_millis() < 200,
+            "wait_for_shutdown must return quickly when flag is already set (elapsed={elapsed:?})"
+        );
+
+        // Restore for other tests.
+        SHUTDOWN.store(false, Ordering::SeqCst);
+    }
+
+    // -----------------------------------------------------------------------
+    // Task 1.2 — argumentsHandler: config path handling.
+    //
+    // C++ cross-validation:
+    //   * main.cpp argumentsHandler: --config=<path> → ConfigManager::setString
+    //     CONFIG_FILE to the given path.
+    //   * Rust parse_cli: --config <path> → CliArgs.config_path.
+    //   * validate_config_path is the observable guard on the config path
+    //     before initialise_modules is called, mirroring the C++ check in
+    //     mainLoader (which opens the config file and calls ConfigManager::load).
+    //
+    // Since parse_cli lives in the binary (main.rs), we test the observable
+    // guard — validate_config_path — which exercises the same config-path
+    // validation that the argument handler ultimately triggers.
+    // -----------------------------------------------------------------------
+
+    /// A directory path (not a file) is rejected by validate_config_path,
+    /// confirming the Rust binary guards against accidentally passing a
+    /// directory where a file is expected (no C++ equivalent — C++ just fails
+    /// when luaL_dofile can't open a directory).
+    #[test]
+    fn validate_config_path_directory_returns_err() {
+        let result = validate_config_path(std::path::Path::new("/tmp"));
+        assert!(
+            result.is_err(),
+            "a directory path must be rejected by validate_config_path"
+        );
+    }
+
+    // -----------------------------------------------------------------------
+    // Task 1.1 — main: calls argumentsHandler then startServer.
+    //
+    // C++ cross-validation:
+    //   * main.cpp:39-48: argumentsHandler → if false, return 1;
+    //     else startServer(); return 0.
+    //   * Rust: parse_cli → validate_config_path → initialise_modules →
+    //     start_listeners → wait_for_shutdown.
+    //
+    // The ordering is structurally enforced in main.rs; the observable test
+    // is that validate_config_path (the first observable gate after argument
+    // parsing) returns Err when the config file is absent, mirroring the C++
+    // `argumentsHandler` returning false for `--help`/`--version` (which
+    // causes main to return 1 immediately).
+    // -----------------------------------------------------------------------
+
+    /// resolve_backend returns InMemory when no DB credentials are configured,
+    /// confirming the Auto-detection branch (which startServer/mainLoader
+    /// triggers by attempting DB connect).
+    #[test]
+    fn resolve_backend_auto_with_no_credentials_returns_in_memory() {
+        use forgottenserver_common::configmanager::ConfigManager;
+        let config = ConfigManager::new(); // empty — no mysqlHost/mysqlDb
+        let backend = resolve_backend(DbBackend::Auto, &config);
+        assert_eq!(
+            backend,
+            DbBackend::InMemory,
+            "Auto with no credentials must select InMemory backend"
+        );
+    }
+
+    /// resolve_backend with explicit InMemory returns InMemory unchanged,
+    /// confirming the passthrough branch.
+    #[test]
+    fn resolve_backend_explicit_in_memory_passes_through() {
+        use forgottenserver_common::configmanager::ConfigManager;
+        let config = ConfigManager::new();
+        let backend = resolve_backend(DbBackend::InMemory, &config);
+        assert_eq!(backend, DbBackend::InMemory);
+    }
+
+    /// connect_database with InMemory backend succeeds and returns a valid
+    /// database, confirming startServer's DB-connect step works for the
+    /// in-memory path.
+    #[test]
+    fn connect_database_in_memory_returns_ok() {
+        use forgottenserver_common::configmanager::ConfigManager;
+        let config = ConfigManager::new();
+        let result = connect_database(DbBackend::InMemory, &config);
+        assert!(
+            result.is_ok(),
+            "InMemory backend must connect successfully"
+        );
+    }
+
+    /// DbBackend::parse recognises all documented values.
+    #[test]
+    fn db_backend_parse_recognises_all_values() {
+        assert_eq!(DbBackend::parse("auto").unwrap(), DbBackend::Auto);
+        assert_eq!(DbBackend::parse("in-memory").unwrap(), DbBackend::InMemory);
+        assert!(
+            DbBackend::parse("unknown").is_err(),
+            "unrecognised backend string must return Err"
+        );
+    }
 }

@@ -653,6 +653,47 @@ mod tests {
         assert_eq!(db.rollback(), Ok(()));
     }
 
+    // ── Task 3.1: Database::getInstance — singleton contract ─────────────────
+    // C++ uses a function-local static (`static Database instance; return instance;`).
+    // Rust replaces the global singleton with explicit-reference passing.
+    // The observable contract is: all callers that share the same Database
+    // reference see the same state.  This test confirms that a single
+    // `InMemoryDb` passed as `&mut` maintains consistent state across two
+    // separate borrows, matching the C++ singleton observable behavior.
+
+    #[test]
+    fn singleton_contract_single_instance_state_shared_across_borrows() {
+        let mut db = InMemoryDb::new();
+        // First caller inserts a row
+        db.create_table("players");
+        db.insert_row(
+            "players",
+            Row::new(std::collections::HashMap::from([(
+                "id".to_string(),
+                DbValue::Integer(1),
+            )])),
+        );
+        // Second caller (using a re-borrow) sees the same state
+        let row_count = db.rows("players").len();
+        assert_eq!(
+            row_count, 1,
+            "all callers sharing the same DB reference see consistent state (singleton contract)"
+        );
+    }
+
+    #[test]
+    fn singleton_contract_no_separate_instance_has_different_state() {
+        // Two independent InMemoryDb instances do NOT share state —
+        // confirming that the singleton pattern (single shared reference)
+        // is required to observe consistent state.
+        let mut db1 = InMemoryDb::new();
+        let db2 = InMemoryDb::new();
+        db1.create_table("players");
+        // db2 does not have the "players" table
+        assert!(db1.table_exists("players"));
+        assert!(!db2.table_exists("players"));
+    }
+
     #[test]
     fn transaction_sequence_default_all_ok() {
         let mut db = InMemoryDb::new();

@@ -1971,6 +1971,53 @@ mod tests {
 
     /// A fully-populated joined row must parse every new progression, skill,
     /// outfit and premium field.
+    // ── Task 10.1: IOLoginData::loadPlayerById — player name matches DB record ──
+    // C++ contract: after `IOLoginData::loadPlayerById(player, id)` succeeds,
+    // `player->name` equals the `name` column in the `players` table row
+    // that has `id` == the supplied id.
+
+    #[test]
+    fn load_player_by_id_name_matches_db_record() {
+        // Mirrors: `IOLoginData::loadPlayerById(player, id)` → player->name == DB name
+        let mut db = LoginDb::new();
+        let io = IoLoginData::new();
+        let mut rec = alice_record();
+        rec.guid = 42;
+        rec.name = "Theodora".to_string();
+        io.save_player(&mut db, rec);
+
+        let loaded = io.load_player_by_id(&db, 42).expect("player with guid=42 must be found");
+        assert_eq!(
+            loaded.name, "Theodora",
+            "loadPlayerById: loaded player name must match the DB record name"
+        );
+    }
+
+    // ── Task 10.2: IOLoginData::preloadPlayer — player name is populated ─────
+    // C++ contract: after `IOLoginData::preloadPlayer(player)` returns true,
+    // `player->name` is populated from the DB result (non-empty).
+
+    #[test]
+    fn preload_player_name_is_populated_after_call() {
+        // Mirrors: after preloadPlayer(player) returns true, player->name is set.
+        let mut db = LoginDb::new();
+        let io = IoLoginData::new();
+        io.save_player(&mut db, alice_record()); // name="Alice", guid=1
+        io.save_account(&mut db, make_account(100, "alice_acc"));
+
+        let result = io.preload_player(&db, 1);
+        assert!(result.is_some(), "preloadPlayer must return Some for a known guid");
+        let (name, _group_id, _account_id, _account_type, _premium) = result.unwrap();
+        assert!(
+            !name.is_empty(),
+            "preloadPlayer: player name must be non-empty after successful preload"
+        );
+        assert_eq!(
+            name, "Alice",
+            "preloadPlayer: name must match the value stored in the DB"
+        );
+    }
+
     #[test]
     fn load_player_parses_all_new_fields() {
         use crate::database::DbValue;

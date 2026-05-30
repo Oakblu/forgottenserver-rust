@@ -1375,4 +1375,173 @@ mod tests {
             Some("monster.lua")
         );
     }
+
+    // ── Task 7.3: tfs::events::load ──────────────────────────────────────────
+    //
+    // C++: `bool load() { scriptInterface.initState(); return load_from_xml(); }`
+    // Rust: `EventsCallbacks::load_from_file(path)` which reads, parses, and
+    // registers all enabled events from an XML file without error.
+
+    /// Task 7.3: Confirm that loading a valid events XML file succeeds
+    /// (returns Ok) and registers all enabled events without errors.
+    /// Mirrors `tfs::events::load()` which initialises the script interface
+    /// then parses `events.xml`.
+    ///
+    /// Note: `onLogin`/`onLogout` are `CreatureEvents`, not `tfs::events::player`
+    /// events, so they are registered via `creatureevent.cpp`, not `events.xml`.
+    /// The `events.xml` Player class handles: onTurn, onTradeAccept, onTradeCompleted,
+    /// onLook, onBrowseField, etc.
+    #[test]
+    fn load_from_file_valid_events_xml_succeeds_with_no_warnings() {
+        use std::io::Write;
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("events.xml");
+        let mut f = std::fs::File::create(&path).unwrap();
+        writeln!(
+            f,
+            r#"<events>
+                <event class="Player"   method="onTurn"    enabled="1" />
+                <event class="Player"   method="onTradeAccept"    enabled="1" />
+                <event class="Player"   method="onTradeCompleted" enabled="1" />
+                <event class="Player"   method="onLook"    enabled="1" />
+                <event class="Creature" method="onHear"    enabled="1" />
+                <event class="Monster"  method="onSpawn"   enabled="1" />
+            </events>"#
+        )
+        .unwrap();
+
+        let mut cb = EventsCallbacks::new();
+        let result = cb.load_from_file(&path);
+        assert!(
+            result.is_ok(),
+            "load_from_file must return Ok for a valid events.xml: {:?}",
+            result
+        );
+        let warnings = result.unwrap();
+        assert!(
+            warnings.is_empty(),
+            "no unknown-class/method warnings expected: {warnings:?}"
+        );
+
+        // Verify each enabled event was registered.
+        assert!(cb.get_player_callback(&PlayerEvent::Turn).is_some());
+        assert!(cb.get_player_callback(&PlayerEvent::TradeAccept).is_some());
+        assert!(
+            cb.get_player_callback(&PlayerEvent::TradeCompleted).is_some()
+        );
+        assert!(cb.get_player_callback(&PlayerEvent::Look).is_some());
+        assert!(cb.get_creature_callback(&CreatureEvent::OnHear).is_some());
+        assert!(cb.get_monster_callback(&MonsterEvent::OnSpawn).is_some());
+    }
+
+    // ── Task 22.5: tfs::events::player::onTradeAccept ────────────────────────
+    //
+    // C++: invokes the Lua callback with (player, target, item, targetItem).
+    // Rust: EventsCallbacks::get_player_callback(&PlayerEvent::TradeAccept)
+    // returns the registered script name; the caller dispatches from there.
+    //
+    // The Rust layer does not yet have a direct Lua dispatch mechanism that
+    // mirrors C++, so we verify that (a) the TradeAccept event is parseable
+    // from XML, (b) the registered callback name is correct, and (c) the
+    // registry is queryable (prerequisite for the dispatcher to invoke it).
+
+    /// Task 22.5: Confirm that `onTradeAccept` is registered when enabled in
+    /// events.xml, making the Lua callback invokable.
+    #[test]
+    fn on_trade_accept_callback_is_registered_when_enabled_in_xml() {
+        let xml = r#"<events>
+            <event class="Player" method="onTradeAccept" enabled="1" />
+        </events>"#;
+        let mut cb = EventsCallbacks::new();
+        let warnings = cb.parse_events_xml(xml).unwrap();
+        assert!(warnings.is_empty());
+        // The script name follows the C++ convention: lowercase class + ".lua".
+        assert_eq!(
+            cb.get_player_callback(&PlayerEvent::TradeAccept),
+            Some("player.lua"),
+            "onTradeAccept must be registered to player.lua"
+        );
+    }
+
+    /// Task 22.5: Confirm that a disabled `onTradeAccept` event is NOT
+    /// registered (matching C++ which skips `enabled="0"` entries).
+    #[test]
+    fn on_trade_accept_callback_not_registered_when_disabled_in_xml() {
+        let xml = r#"<events>
+            <event class="Player" method="onTradeAccept" enabled="0" />
+        </events>"#;
+        let mut cb = EventsCallbacks::new();
+        cb.parse_events_xml(xml).unwrap();
+        assert!(
+            cb.get_player_callback(&PlayerEvent::TradeAccept).is_none(),
+            "disabled onTradeAccept must not be registered"
+        );
+    }
+
+    // ── Task 22.6: tfs::events::player::onTradeCompleted ─────────────────────
+
+    /// Task 22.6: Confirm that `onTradeCompleted` is registered when enabled
+    /// in events.xml, making the Lua callback invokable.
+    #[test]
+    fn on_trade_completed_callback_is_registered_when_enabled_in_xml() {
+        let xml = r#"<events>
+            <event class="Player" method="onTradeCompleted" enabled="1" />
+        </events>"#;
+        let mut cb = EventsCallbacks::new();
+        let warnings = cb.parse_events_xml(xml).unwrap();
+        assert!(warnings.is_empty());
+        assert_eq!(
+            cb.get_player_callback(&PlayerEvent::TradeCompleted),
+            Some("player.lua"),
+            "onTradeCompleted must be registered to player.lua"
+        );
+    }
+
+    /// Task 22.6: Confirm that a disabled `onTradeCompleted` is NOT registered.
+    #[test]
+    fn on_trade_completed_callback_not_registered_when_disabled_in_xml() {
+        let xml = r#"<events>
+            <event class="Player" method="onTradeCompleted" enabled="false" />
+        </events>"#;
+        let mut cb = EventsCallbacks::new();
+        cb.parse_events_xml(xml).unwrap();
+        assert!(
+            cb.get_player_callback(&PlayerEvent::TradeCompleted).is_none(),
+            "disabled onTradeCompleted must not be registered"
+        );
+    }
+
+    // ── Task 22.7: tfs::events::player::onTurn ───────────────────────────────
+
+    /// Task 22.7: Confirm that `onTurn` is registered when enabled in
+    /// events.xml (prerequisite for the Lua callback to be invoked with
+    /// the player and direction arguments).
+    #[test]
+    fn on_turn_callback_is_registered_when_enabled_in_xml() {
+        let xml = r#"<events>
+            <event class="Player" method="onTurn" enabled="1" />
+        </events>"#;
+        let mut cb = EventsCallbacks::new();
+        let warnings = cb.parse_events_xml(xml).unwrap();
+        assert!(warnings.is_empty());
+        assert_eq!(
+            cb.get_player_callback(&PlayerEvent::Turn),
+            Some("player.lua"),
+            "onTurn must be registered to player.lua"
+        );
+    }
+
+    /// Task 22.7: Confirm that a disabled `onTurn` is NOT registered.
+    #[test]
+    fn on_turn_callback_not_registered_when_disabled_in_xml() {
+        let xml = r#"<events>
+            <event class="Player" method="onTurn" enabled="0" />
+        </events>"#;
+        let mut cb = EventsCallbacks::new();
+        cb.parse_events_xml(xml).unwrap();
+        assert!(
+            cb.get_player_callback(&PlayerEvent::Turn).is_none(),
+            "disabled onTurn must not be registered"
+        );
+    }
 }

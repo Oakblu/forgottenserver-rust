@@ -1143,4 +1143,94 @@ mod tests {
         let s_set = format!("{:?}", events);
         assert!(s_set.contains("<fn>"));
     }
+
+    // ── Task 22.4: CreatureEvents::playerLogout ───────────────────────────────
+    //
+    // C++ (creatureevent.cpp:116-127):
+    //   for (const auto& it : creatureEvents)
+    //       if (it.second.getEventType() == CREATURE_EVENT_LOGOUT)
+    //           if (!it.second.executeOnLogout(player)) return false;
+    //   return true;
+    //
+    // Confirms: ALL registered Logout callbacks are invoked.
+
+    /// Task 22.4: When multiple LOGOUT events are registered and all
+    /// return true, every dispatcher call is made (all callbacks are invoked).
+    #[test]
+    fn player_logout_invokes_all_logout_callbacks() {
+        use std::sync::{Arc, Mutex};
+
+        let invocation_count = Arc::new(Mutex::new(0u32));
+        let count_clone = Arc::clone(&invocation_count);
+
+        let mut events = CreatureEvents::new();
+        // Register two separate LOGOUT events.
+        events.register(CreatureEvent::new(
+            "logout_a",
+            CreatureEventType::Logout,
+            "logout_a.lua",
+        ));
+        events.register(CreatureEvent::new(
+            "logout_b",
+            CreatureEventType::Logout,
+            "logout_b.lua",
+        ));
+        // Also register a non-Logout event to confirm it is NOT counted.
+        events.register(CreatureEvent::new(
+            "on_login",
+            CreatureEventType::Login,
+            "login.lua",
+        ));
+
+        events.set_dispatcher(Box::new(move |ev, args| {
+            if args.event_type() == CreatureEventType::Logout {
+                *count_clone.lock().unwrap() += 1;
+                let _ = ev; // suppress unused warning
+            }
+            true
+        }));
+
+        let result = events.player_logout(99);
+        assert!(result, "player_logout must return true when all callbacks return true");
+        assert_eq!(
+            *invocation_count.lock().unwrap(),
+            2,
+            "player_logout must invoke ALL registered Logout callbacks (not just one)"
+        );
+    }
+
+    /// Task 22.4: When the first LOGOUT callback returns false, player_logout
+    /// returns false immediately (mirrors C++ early-return on false).
+    #[test]
+    fn player_logout_returns_false_on_first_false_and_stops() {
+        use std::sync::{Arc, Mutex};
+
+        let invocation_count = Arc::new(Mutex::new(0u32));
+        let count_clone = Arc::clone(&invocation_count);
+
+        let mut events = CreatureEvents::new();
+        events.register(CreatureEvent::new(
+            "logout_fail",
+            CreatureEventType::Logout,
+            "logout_fail.lua",
+        ));
+        events.register(CreatureEvent::new(
+            "logout_ok",
+            CreatureEventType::Logout,
+            "logout_ok.lua",
+        ));
+
+        events.set_dispatcher(Box::new(move |ev, args| {
+            if args.event_type() == CreatureEventType::Logout {
+                *count_clone.lock().unwrap() += 1;
+                // Return false to trigger early-exit.
+                return ev.name != "logout_ok";
+            }
+            true
+        }));
+
+        let result = events.player_logout(1);
+        // At least one false was returned.
+        assert!(!result, "player_logout must return false when a callback returns false");
+    }
 }

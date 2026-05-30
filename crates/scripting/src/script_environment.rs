@@ -358,6 +358,111 @@ pub fn with_env_mut<R>(f: impl FnOnce(&mut ScriptEnvironment) -> R) -> R {
 }
 
 // ---------------------------------------------------------------------------
+// Script-environment stack
+//
+// Mirrors C++ `static std::array<ScriptEnvironment, 16> scriptEnv` and
+// `static int32_t scriptEnvIndex = -1` in luascript.cpp.
+//
+// `reserve_script_env()` increments the index and returns true while there
+// is still capacity (index < 16).  `reset_script_env()` resets the current
+// slot and decrements the index.  This mirrors:
+//
+//   bool tfs::lua::reserveScriptEnv() {
+//       return ++scriptEnvIndex < static_cast<int32_t>(scriptEnv.size());
+//   }
+//   void tfs::lua::resetScriptEnv() {
+//       assert(scriptEnvIndex >= 0);
+//       scriptEnv[scriptEnvIndex--].resetEnv();
+//   }
+// ---------------------------------------------------------------------------
+
+/// Maximum nesting depth of Lua callbacks.  Mirrors the C++ array size of 16.
+pub const SCRIPT_ENV_CAPACITY: i32 = 16;
+
+thread_local! {
+    /// Stack of per-callback ScriptEnvironment slots.  Mirrors C++
+    /// `static std::array<ScriptEnvironment, 16> scriptEnv`.
+    static SCRIPT_ENV_STACK: RefCell<Vec<ScriptEnvironment>> =
+        RefCell::new(Vec::with_capacity(SCRIPT_ENV_CAPACITY as usize));
+
+    /// Index of the currently-active slot, starting at -1 when idle.
+    /// Mirrors C++ `static int32_t scriptEnvIndex = -1`.
+    static SCRIPT_ENV_INDEX: RefCell<i32> = const { RefCell::new(-1) };
+}
+
+/// Reserve the next slot in the script-environment stack.
+///
+/// Mirrors `tfs::lua::reserveScriptEnv()`: increments the index and returns
+/// `true` while there is still capacity.  Returns `false` if the call stack
+/// would overflow the 16-slot limit (matches the C++ overflow check).
+pub fn reserve_script_env() -> bool {
+    SCRIPT_ENV_INDEX.with(|idx_cell| {
+        let mut idx = idx_cell.borrow_mut();
+        *idx += 1;
+        let new_idx = *idx;
+        if new_idx < SCRIPT_ENV_CAPACITY {
+            SCRIPT_ENV_STACK.with(|stack| {
+                let mut s = stack.borrow_mut();
+                if new_idx as usize >= s.len() {
+                    s.push(ScriptEnvironment::new());
+                }
+            });
+            true
+        } else {
+            false
+        }
+    })
+}
+
+/// Reset the current slot and pop the stack.
+///
+/// Mirrors `tfs::lua::resetScriptEnv()`: calls `resetEnv()` on the active
+/// slot, then decrements the index.  Panics (like the C++ `assert`) if
+/// called when the stack is already empty (index < 0).
+pub fn reset_script_env() {
+    SCRIPT_ENV_INDEX.with(|idx_cell| {
+        let mut idx = idx_cell.borrow_mut();
+        assert!(
+            *idx >= 0,
+            "reset_script_env called with empty stack (mirrors C++ assert(scriptEnvIndex >= 0))"
+        );
+        let cur_idx = *idx as usize;
+        SCRIPT_ENV_STACK.with(|stack| {
+            let mut s = stack.borrow_mut();
+            if let Some(env) = s.get_mut(cur_idx) {
+                env.reset_env();
+            }
+        });
+        *idx -= 1;
+    });
+}
+
+/// Return the active script-environment index.  Starts at -1 (idle).
+/// Mirrors C++ `scriptEnvIndex`.
+pub fn script_env_index() -> i32 {
+    SCRIPT_ENV_INDEX.with(|c| *c.borrow())
+}
+
+/// Get a copy of the active slot's script id.  Panics if called when
+/// the stack is empty (mirrors C++ assert in `getScriptEnv`).
+pub fn get_script_env_script_id() -> i32 {
+    SCRIPT_ENV_INDEX.with(|idx_cell| {
+        let idx = *idx_cell.borrow();
+        assert!(
+            idx >= 0,
+            "get_script_env_script_id called with empty stack"
+        );
+        SCRIPT_ENV_STACK.with(|stack| {
+            stack
+                .borrow()
+                .get(idx as usize)
+                .map(|e| e.get_script_id())
+                .unwrap_or(ScriptEnvironment::NO_SCRIPT)
+        })
+    })
+}
+
+// ---------------------------------------------------------------------------
 // Lua-callback bridge helpers
 //
 // These functions show how a Lua callback would resolve a UID supplied by
@@ -679,5 +784,107 @@ mod tests {
         // Now the script releases the handle.
         assert!(lua_release_uid(uid));
         assert!(!lua_has_thing(uid));
+    }
+
+    // --- reserve_script_env / reset_script_env (Tasks 5.5 and 5.6) ---
+    //
+    // C++: static std::array<ScriptEnvironment, 16> scriptEnv; int32_t scriptEnvIndex = -1;
+    //   reserveScriptEnv() { return ++scriptEnvIndex < 16; }
+    //   resetScriptEnv()   { assert(idx >= 0); scriptEnv[idx--].resetEnv(); }
+
+    /// Task 5.5: reserve_script_env() returns true (non-null equivalent) and
+    /// increments the env counter from its idle state (-1 → 0).
+    #[test]
+    fn test_reserve_script_env_returns_true_and_increments_counter() {
+        // Reset stack to a known idle state.
+        SCRIPT_ENV_INDEX.with(|c| *c.borrow_mut() = -1);
+        SCRIPT_ENV_STACK.with(|s| s.borrow_mut().clear());
+
+        let before = script_env_index();
+        assert_eq!(before, -1, "stack should be idle (-1) before reserve");
+
+        let ok = reserve_script_env();
+        assert!(ok, "reserve_script_env() must return true on first call");
+        assert_eq!(
+            script_env_index(),
+            0,
+            "index must advance to 0 after first reserve"
+        );
+
+        // Cleanup: reset to idle.
+        reset_script_env();
+        SCRIPT_ENV_INDEX.with(|c| *c.borrow_mut() = -1);
+    }
+
+    /// Task 5.5: reserve_script_env() returns false when all 16 slots are
+    /// exhausted (mirrors C++ `++scriptEnvIndex < 16` returning false).
+    #[test]
+    fn test_reserve_script_env_returns_false_at_capacity() {
+        // Reset to idle.
+        SCRIPT_ENV_INDEX.with(|c| *c.borrow_mut() = -1);
+        SCRIPT_ENV_STACK.with(|s| s.borrow_mut().clear());
+
+        // Reserve 16 slots (all should succeed).
+        for i in 0..SCRIPT_ENV_CAPACITY {
+            let ok = reserve_script_env();
+            assert!(ok, "reserve #{i} should return true");
+        }
+        // The 17th reserve should return false (overflow).
+        let overflow = reserve_script_env();
+        assert!(
+            !overflow,
+            "reserve_script_env() must return false when stack is full"
+        );
+
+        // Cleanup.
+        SCRIPT_ENV_INDEX.with(|c| *c.borrow_mut() = -1);
+        SCRIPT_ENV_STACK.with(|s| s.borrow_mut().clear());
+    }
+
+    /// Task 5.6: reset_script_env() decrements the env counter back to the
+    /// pre-reserve value, mirroring C++ `scriptEnv[scriptEnvIndex--].resetEnv()`.
+    #[test]
+    fn test_reset_script_env_decrements_counter_to_pre_reserve_value() {
+        // Reset to idle.
+        SCRIPT_ENV_INDEX.with(|c| *c.borrow_mut() = -1);
+        SCRIPT_ENV_STACK.with(|s| s.borrow_mut().clear());
+
+        assert_eq!(script_env_index(), -1);
+
+        // Reserve a slot.
+        assert!(reserve_script_env());
+        assert_eq!(script_env_index(), 0);
+
+        // Reset — index must return to -1.
+        reset_script_env();
+        assert_eq!(
+            script_env_index(),
+            -1,
+            "index must return to -1 after reset (mirrors C++ scriptEnvIndex--)"
+        );
+    }
+
+    /// Task 5.6: Two nested reserve/reset cycles work correctly (stack semantics).
+    #[test]
+    fn test_reserve_reset_nested_stack_semantics() {
+        // Reset to idle.
+        SCRIPT_ENV_INDEX.with(|c| *c.borrow_mut() = -1);
+        SCRIPT_ENV_STACK.with(|s| s.borrow_mut().clear());
+
+        // Outer callback.
+        assert!(reserve_script_env());
+        assert_eq!(script_env_index(), 0);
+
+        // Inner callback (nested Lua call).
+        assert!(reserve_script_env());
+        assert_eq!(script_env_index(), 1);
+
+        // Exit inner.
+        reset_script_env();
+        assert_eq!(script_env_index(), 0);
+
+        // Exit outer.
+        reset_script_env();
+        assert_eq!(script_env_index(), -1);
     }
 }

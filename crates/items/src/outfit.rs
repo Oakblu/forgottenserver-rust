@@ -592,4 +592,39 @@ mod tests {
             "error must mention missing root: got `{msg}`",
         );
     }
+
+    // ----- Task 4.5 — Outfits::getInstance contract --------------------------
+    //
+    // C++ exposes `static Outfits& Outfits::getInstance()` — a Meyer's
+    // singleton so that every caller can reach the same outfit registry without
+    // explicit injection.  The Rust port intentionally removes the singleton
+    // (recorded in `intentional_differences.yml` as `outfits-singleton-removed`).
+    //
+    // The contract that the singleton enforced is: all callers that hold a
+    // reference to the same `Outfits` value see identical data.  The test below
+    // models two separate consumers receiving an immutable reference to a shared
+    // `Outfits` value and confirms both retrieve the same outfit, satisfying the
+    // C++ contract through Rust's normal borrowing rules.
+    // -------------------------------------------------------------------------
+
+    #[test]
+    fn test_shared_outfits_reference_returns_identical_data_for_all_callers() {
+        let outfits = Outfits::load_from_xml(minimal_xml()).unwrap();
+
+        // Simulate two independent consumers that would have called
+        // `Outfits::getInstance()` in C++.
+        let consumer_a = &outfits;
+        let consumer_b = &outfits;
+
+        let outfit_a = consumer_a.get_outfit_by_look_type(PlayerSex::Female, 128);
+        let outfit_b = consumer_b.get_outfit_by_look_type(PlayerSex::Female, 128);
+
+        assert!(outfit_a.is_some(), "consumer A must find the outfit");
+        assert!(outfit_b.is_some(), "consumer B must find the outfit");
+        assert_eq!(
+            outfit_a.unwrap().name,
+            outfit_b.unwrap().name,
+            "both consumers must see the same outfit data"
+        );
+    }
 }

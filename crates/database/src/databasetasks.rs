@@ -408,6 +408,48 @@ mod tests {
         assert_eq!(err, Err(TaskError::Stopped));
     }
 
+    // ── Task 3.7: DatabaseTasks::start — tasks added after start are executed ─
+    // C++ contract: after `DatabaseTasks::start()` (which connects the DB
+    // and spawns the worker thread), tasks added via `addTask()` are
+    // eventually executed on the worker thread.
+    //
+    // Rust contract: `DatabaseTasks::new()` is the equivalent of `start()` —
+    // the queue is live immediately, and tasks added via `add_task()` are
+    // executed during the next `flush()` call.  The observable contract is:
+    // tasks are executed and their results are observable after flush.
+
+    #[test]
+    fn start_contract_tasks_added_after_new_are_executed_on_flush() {
+        // Mirrors C++: after start(), addTask() enqueues and the worker executes.
+        // Rust: after new() (≡ start()), add_task() enqueues, flush() executes.
+        let mut db = InMemoryDb::new();
+        let mut tasks = DatabaseTasks::new(); // ≡ DatabaseTasks::start()
+        tasks
+            .add_task("INSERT INTO log VALUES (1)")
+            .expect("task must be accepted when queue is running");
+        tasks
+            .add_task("INSERT INTO log VALUES (2)")
+            .expect("second task must be accepted");
+        tasks.flush(&mut db);
+        assert_eq!(
+            db.executed_statements,
+            vec!["INSERT INTO log VALUES (1)", "INSERT INTO log VALUES (2)"],
+            "tasks added after start (new) must be executed in FIFO order on flush"
+        );
+    }
+
+    #[test]
+    fn start_contract_queue_is_live_immediately_after_new() {
+        // Rust `DatabaseTasks::new()` puts the queue in a running (non-stopped)
+        // state immediately — equivalent to C++ `start()` marking the thread
+        // as THREAD_STATE_RUNNING before addTask() checks can succeed.
+        let tasks = DatabaseTasks::new();
+        assert!(
+            !tasks.is_stopped(),
+            "new() must produce a live queue (equivalent to C++ start() setting RUNNING state)"
+        );
+    }
+
     /// The legacy `add_task(sql)` path still works and matches the
     /// `add_task_with_callback(sql, None, false)` shape.
     #[test]

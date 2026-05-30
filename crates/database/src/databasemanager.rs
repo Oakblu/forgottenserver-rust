@@ -49,6 +49,25 @@ impl DatabaseManager {
     pub fn migrations_run(&self) -> &[String] {
         &self.migrations_run
     }
+
+    /// No-op for in-memory databases.
+    ///
+    /// Mirrors C++ `DatabaseManager::updateDatabase()` which opens a Lua
+    /// state, registers `db` and `result` tables, reads `db_version` from
+    /// the database, and runs consecutive migration scripts
+    /// `data/migrations/{version}.lua` until one returns `false` from its
+    /// `onUpdateDatabase()` callback.
+    ///
+    /// The real Lua migration runner is deferred to
+    /// `forgottenserver-rust-mariadb-adapter-prod` (intentional_differences:
+    /// `lua-dispatch-deferred-to-cross-crate-glue`).  The observable
+    /// contract tested here is: when the database is already at the latest
+    /// version no migrations are run, which for an in-memory database that
+    /// has no migration scripts is always the case.
+    pub fn update_database(&self, db: &InMemoryDb) -> i64 {
+        // Return the current version — no migrations to run in-memory.
+        db.get_config("db_version").unwrap_or(0)
+    }
 }
 
 impl Default for DatabaseManager {
@@ -255,6 +274,56 @@ mod tests {
         let db = InMemoryDb::new();
         let mgr = DatabaseManager::new();
         assert_eq!(mgr.get_database_version(&db), 0);
+    }
+
+    // ── Task 3.6: DatabaseManager::updateDatabase — up-to-date DB runs no migrations
+    // C++ contract: when the db_version matches the latest migration script
+    // index, the loop exits immediately (no scripts run, no SQL executed).
+    // For the in-memory backend there are no migration scripts, so the
+    // function always returns the current db_version unchanged.
+
+    #[test]
+    fn update_database_returns_current_version_when_up_to_date() {
+        let mut db = InMemoryDb::new();
+        let mgr = DatabaseManager::new();
+        // Simulate an already-updated database at version 5
+        db.set_config("db_version", 5);
+        let version = mgr.update_database(&db);
+        assert_eq!(
+            version, 5,
+            "update_database must return the current version when no migrations are pending"
+        );
+    }
+
+    #[test]
+    fn update_database_returns_zero_for_fresh_db() {
+        let db = InMemoryDb::new();
+        let mgr = DatabaseManager::new();
+        // Fresh DB has no db_version key — update_database returns 0 (no migrations to run)
+        let version = mgr.update_database(&db);
+        assert_eq!(
+            version, 0,
+            "update_database on a fresh db must return 0 (no migrations pending)"
+        );
+    }
+
+    #[test]
+    fn update_database_does_not_modify_db_state() {
+        let mut db = InMemoryDb::new();
+        db.set_config("db_version", 3);
+        let mgr = DatabaseManager::new();
+        let before_stmts = db.executed_statements.len();
+        mgr.update_database(&db);
+        assert_eq!(
+            db.executed_statements.len(),
+            before_stmts,
+            "update_database must not execute any SQL when no migrations are pending"
+        );
+        assert_eq!(
+            db.get_config("db_version"),
+            Some(3),
+            "update_database must not mutate db_version when already up-to-date"
+        );
     }
 
     // -----------------------------------------------------------------------

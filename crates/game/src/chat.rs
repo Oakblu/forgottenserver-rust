@@ -1953,4 +1953,56 @@ mod tests {
         *cell.borrow_mut() = 1;
         assert_eq!(*cell.borrow(), 1);
     }
+
+    // ── Task 7.2 — Chat::load: Help channel exists after load ───────────────
+    // Mirrors C++ `Chat::load`: after loading chatchannels.xml the Help
+    // channel (id=2) must be accessible from `available_channels()`.
+
+    #[test]
+    fn available_channels_includes_help_channel() {
+        let chat = ChatManager::new();
+        let channels = chat.available_channels();
+        assert!(
+            channels.iter().any(|c| c.id == CHANNEL_HELP),
+            "Help channel (id={CHANNEL_HELP}) must be in available_channels() after load"
+        );
+    }
+
+    #[test]
+    fn help_channel_is_public() {
+        let chat = ChatManager::new();
+        let channels = chat.available_channels();
+        let help = channels.iter().find(|c| c.id == CHANNEL_HELP).unwrap();
+        assert!(help.is_public, "Help channel must be public");
+    }
+
+    // ── Task 22.3 — Chat::createChannel owner is the creating player ─────────
+    // Mirrors C++ `Chat::createChannel(player, CHANNEL_PRIVATE)`:
+    // the new private channel's owner must be the player who created it.
+
+    #[test]
+    fn create_private_channel_owner_is_creating_player() {
+        let mut mgr = ChatManager::new();
+        let owner_id: EntityId = 42;
+        let channel_id = mgr
+            .create_private_channel(owner_id, "Alice's Channel")
+            .expect("must succeed when slots are free");
+        let ch = mgr.get_channel(channel_id).expect("channel must exist");
+        assert_eq!(
+            ch.get_owner(),
+            owner_id,
+            "new private channel owner must be the creating player"
+        );
+    }
+
+    #[test]
+    fn create_private_channel_second_player_gets_different_id() {
+        let mut mgr = ChatManager::new();
+        let id1 = mgr.create_private_channel(1, "Alice's Channel").unwrap();
+        let id2 = mgr.create_private_channel(2, "Bob's Channel").unwrap();
+        assert_ne!(
+            id1, id2,
+            "two players must get distinct private channel ids"
+        );
+    }
 }

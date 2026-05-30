@@ -83,6 +83,12 @@ pub struct WalkPacket {
 #[derive(Debug, PartialEq)]
 pub struct SayPacket {
     pub say_type: u8,
+    /// Set for private-message speak types (e.g. PrivateTo, PrivateRedTo,
+    /// PrivateNp, PrivateNpConsole); `None` for public/channel messages.
+    pub receiver: Option<String>,
+    /// Channel ID for channel speak types (ChannelY, ChannelO, ChannelR1);
+    /// `None` for non-channel messages.
+    pub channel_id: Option<u16>,
     pub text: String,
 }
 
@@ -291,12 +297,41 @@ pub fn parse_walk_packet(msg: &mut NetworkMessage) -> Result<WalkPacket, String>
 /// - `say_type` (u8)
 /// - `text`     (length-prefixed string)
 pub fn parse_say_packet(msg: &mut NetworkMessage) -> Result<SayPacket, String> {
+    // SpeakClass values that carry a receiver name (client → server).
+    // Mirrors the C++ ProtocolGame::parseSay switch/if chain.
+    const PRIVATE_TO: u8 = 5;       // TALKTYPE_PRIVATE_TO
+    const PRIVATE_RED_TO: u8 = 16;  // TALKTYPE_PRIVATE_RED_TO
+    const PRIVATE_NP: u8 = 10;      // TALKTYPE_PRIVATE_NP
+    const PRIVATE_NP_CONSOLE: u8 = 11; // TALKTYPE_PRIVATE_NP_CONSOLE
+    // SpeakClass values that carry a channel ID.
+    const CHANNEL_Y: u8 = 7;        // TALKTYPE_CHANNEL_Y
+    const CHANNEL_O: u8 = 8;        // TALKTYPE_CHANNEL_O
+    const CHANNEL_R1: u8 = 14;      // TALKTYPE_CHANNEL_R1
+
     let say_type = msg.get_u8();
+
+    let receiver = match say_type {
+        PRIVATE_TO | PRIVATE_RED_TO | PRIVATE_NP | PRIVATE_NP_CONSOLE => {
+            Some(msg.get_string(0))
+        }
+        _ => None,
+    };
+
+    let channel_id = match say_type {
+        CHANNEL_Y | CHANNEL_O | CHANNEL_R1 => Some(msg.get_u16()),
+        _ => None,
+    };
+
     let text = msg.get_string(0);
     if msg.is_overrun() {
         return Err("say packet overrun".into());
     }
-    Ok(SayPacket { say_type, text })
+    Ok(SayPacket {
+        say_type,
+        receiver,
+        channel_id,
+        text,
+    })
 }
 
 /// Parse a use-item packet.
@@ -1470,6 +1505,542 @@ pub fn parse_open_private_channel(
         return Err("open private channel packet overrun".into());
     }
     Ok(OpenPrivateChannelPacket { receiver })
+}
+
+// ---------------------------------------------------------------------------
+// Additional packet structs (missing parse functions)
+// ---------------------------------------------------------------------------
+
+/// From-position / sprite / stackpos / to-position for `parseUseItemEx`.
+#[derive(Debug, PartialEq)]
+pub struct UseItemExPacket {
+    pub from_x: u16,
+    pub from_y: u16,
+    pub from_z: u8,
+    pub sprite_id: u16,
+    pub from_stackpos: u8,
+    pub to_x: u16,
+    pub to_y: u16,
+    pub to_z: u8,
+}
+
+/// Position / sprite / stackpos / creature ID for `parseUseWithCreature`.
+#[derive(Debug, PartialEq)]
+pub struct UseWithCreaturePacket {
+    pub pos_x: u16,
+    pub pos_y: u16,
+    pub pos_z: u8,
+    pub sprite_id: u16,
+    pub stackpos: u8,
+    pub creature_id: u32,
+}
+
+/// Position / sprite / stackpos for `parseWrapItem`.
+#[derive(Debug, PartialEq)]
+pub struct WrapItemPacket {
+    pub pos_x: u16,
+    pub pos_y: u16,
+    pub pos_z: u8,
+    pub sprite_id: u16,
+    pub stackpos: u8,
+}
+
+/// Container ID for `parseUpdateContainer`.
+#[derive(Debug, PartialEq)]
+pub struct UpdateContainerPacket {
+    pub container_id: u8,
+}
+
+/// Outfit colors/mount from `parseSetOutfit`.
+#[derive(Debug, PartialEq)]
+pub struct SetOutfitPacket {
+    pub look_type: u16,
+    pub look_head: u8,
+    pub look_body: u8,
+    pub look_legs: u8,
+    pub look_feet: u8,
+    pub look_addons: u8,
+    pub look_mount: u16,
+    pub look_mount_head: u8,
+    pub look_mount_body: u8,
+    pub look_mount_legs: u8,
+    pub look_mount_feet: u8,
+}
+
+/// Podium edit request from `parseEditPodiumRequest`.
+#[derive(Debug, PartialEq)]
+pub struct EditPodiumRequestPacket {
+    pub pos_x: u16,
+    pub pos_y: u16,
+    pub pos_z: u8,
+    pub sprite_id: u16,
+    pub stackpos: u8,
+    pub outfit: SetOutfitPacket,
+    pub direction: u8,
+}
+
+/// Extended opcode channel + payload from `parseExtendedOpcode`.
+#[derive(Debug, PartialEq)]
+pub struct ExtendedOpcodePacket {
+    pub channel: u8,
+    pub payload: String,
+}
+
+/// Debug assert fields from `parseDebugAssert`.
+#[derive(Debug, PartialEq)]
+pub struct DebugAssertPacket {
+    pub assert_line: String,
+    pub date: String,
+    pub description: String,
+    pub comment: String,
+}
+
+/// Rule violation report fields from `parseRuleViolationReport`.
+#[derive(Debug, PartialEq)]
+pub struct RuleViolationReportPacket {
+    pub report_type: u8,
+    pub reason: u8,
+    pub comment: String,
+    pub translation: String,
+}
+
+/// Shop look request fields from `parseLookInShop`.
+#[derive(Debug, PartialEq)]
+pub struct LookInShopPacket {
+    pub item_id: u16,
+    pub count: u8,
+}
+
+/// Shop purchase fields from `parsePlayerPurchase`.
+#[derive(Debug, PartialEq)]
+pub struct PlayerPurchasePacket {
+    pub item_id: u16,
+    pub sub_type: u8,
+    pub count: u8,
+    pub ignore_capacity: bool,
+    pub buy_with_backpack: bool,
+}
+
+/// Shop sale fields from `parsePlayerSale`.
+#[derive(Debug, PartialEq)]
+pub struct PlayerSalePacket {
+    pub item_id: u16,
+    pub sub_type: u8,
+    pub count: u8,
+    pub ignore_equipped: bool,
+}
+
+/// Market create offer fields from `parseMarketCreateOffer`.
+#[derive(Debug, PartialEq)]
+pub struct MarketCreateOfferPacket {
+    pub offer_type: u8,
+    pub item_id: u16,
+    pub amount: u16,
+    pub price: u32,
+    pub anonymous: bool,
+}
+
+/// Trade request fields from `parseRequestTrade`.
+#[derive(Debug, PartialEq)]
+pub struct RequestTradePacket {
+    pub pos_x: u16,
+    pub pos_y: u16,
+    pub pos_z: u8,
+    pub sprite_id: u16,
+    pub stackpos: u8,
+    pub player_id: u32,
+}
+
+/// Look-in-trade fields from `parseLookInTrade`.
+#[derive(Debug, PartialEq)]
+pub struct LookInTradePacket {
+    pub counter_offer: bool,
+    pub index: u8,
+}
+
+/// Edit VIP fields from `parseEditVip`.
+#[derive(Debug, PartialEq)]
+pub struct EditVipPacket {
+    pub guid: u32,
+    pub description: String,
+    pub icon: u32,
+    pub notify: bool,
+}
+
+// ---------------------------------------------------------------------------
+// Additional parse functions (missing from initial migration)
+// ---------------------------------------------------------------------------
+
+/// Parse a use-item-ex packet (`parseUseItemEx`).
+///
+/// Wire format: from_x (u16), from_y (u16), from_z (u8),
+/// sprite_id (u16), from_stackpos (u8), to_x (u16), to_y (u16), to_z (u8)
+pub fn parse_use_item_ex(msg: &mut NetworkMessage) -> Result<UseItemExPacket, String> {
+    let from_x = msg.get_u16();
+    let from_y = msg.get_u16();
+    let from_z = msg.get_u8();
+    let sprite_id = msg.get_u16();
+    let from_stackpos = msg.get_u8();
+    let to_x = msg.get_u16();
+    let to_y = msg.get_u16();
+    let to_z = msg.get_u8();
+    if msg.is_overrun() {
+        return Err("use item ex packet overrun".into());
+    }
+    Ok(UseItemExPacket {
+        from_x,
+        from_y,
+        from_z,
+        sprite_id,
+        from_stackpos,
+        to_x,
+        to_y,
+        to_z,
+    })
+}
+
+/// Parse a use-with-creature packet (`parseUseWithCreature`).
+///
+/// Wire format: pos_x (u16), pos_y (u16), pos_z (u8), sprite_id (u16),
+/// stackpos (u8), creature_id (u32)
+pub fn parse_use_with_creature(
+    msg: &mut NetworkMessage,
+) -> Result<UseWithCreaturePacket, String> {
+    let pos_x = msg.get_u16();
+    let pos_y = msg.get_u16();
+    let pos_z = msg.get_u8();
+    let sprite_id = msg.get_u16();
+    let stackpos = msg.get_u8();
+    let creature_id = msg.get_u32();
+    if msg.is_overrun() {
+        return Err("use with creature packet overrun".into());
+    }
+    Ok(UseWithCreaturePacket {
+        pos_x,
+        pos_y,
+        pos_z,
+        sprite_id,
+        stackpos,
+        creature_id,
+    })
+}
+
+/// Parse a wrap-item packet (`parseWrapItem`).
+///
+/// Wire format: pos_x (u16), pos_y (u16), pos_z (u8), sprite_id (u16), stackpos (u8)
+pub fn parse_wrap_item(msg: &mut NetworkMessage) -> Result<WrapItemPacket, String> {
+    let pos_x = msg.get_u16();
+    let pos_y = msg.get_u16();
+    let pos_z = msg.get_u8();
+    let sprite_id = msg.get_u16();
+    let stackpos = msg.get_u8();
+    if msg.is_overrun() {
+        return Err("wrap item packet overrun".into());
+    }
+    Ok(WrapItemPacket {
+        pos_x,
+        pos_y,
+        pos_z,
+        sprite_id,
+        stackpos,
+    })
+}
+
+/// Parse an update-container packet (`parseUpdateContainer`).
+///
+/// Wire format: container_id (u8)
+pub fn parse_update_container(
+    msg: &mut NetworkMessage,
+) -> Result<UpdateContainerPacket, String> {
+    let container_id = msg.get_u8();
+    if msg.is_overrun() {
+        return Err("update container packet overrun".into());
+    }
+    Ok(UpdateContainerPacket { container_id })
+}
+
+/// Read outfit fields from the message (shared by `parse_set_outfit` and
+/// `parse_edit_podium_request`).
+///
+/// Wire format:
+/// - look_type (u16)
+/// - if look_type != 0: head, body, legs, feet, addons (5 × u8), else: look_type_ex (u16, unused)
+/// - look_mount (u16)
+/// - if look_mount != 0: mount_head, mount_body, mount_legs, mount_feet (4 × u8)
+fn read_outfit(msg: &mut NetworkMessage) -> SetOutfitPacket {
+    let look_type = msg.get_u16();
+    let (look_head, look_body, look_legs, look_feet, look_addons) = if look_type != 0 {
+        (
+            msg.get_u8(),
+            msg.get_u8(),
+            msg.get_u8(),
+            msg.get_u8(),
+            msg.get_u8(),
+        )
+    } else {
+        msg.get_u16(); // lookTypeEx — consume but not stored
+        (0, 0, 0, 0, 0)
+    };
+    let look_mount = msg.get_u16();
+    let (look_mount_head, look_mount_body, look_mount_legs, look_mount_feet) = if look_mount != 0 {
+        (
+            msg.get_u8(),
+            msg.get_u8(),
+            msg.get_u8(),
+            msg.get_u8(),
+        )
+    } else {
+        (0, 0, 0, 0)
+    };
+    SetOutfitPacket {
+        look_type,
+        look_head,
+        look_body,
+        look_legs,
+        look_feet,
+        look_addons,
+        look_mount,
+        look_mount_head,
+        look_mount_body,
+        look_mount_legs,
+        look_mount_feet,
+    }
+}
+
+/// Parse a set-outfit packet (`parseSetOutfit`).
+///
+/// Wire format: outfit block (see `read_outfit`)
+pub fn parse_set_outfit(msg: &mut NetworkMessage) -> Result<SetOutfitPacket, String> {
+    let outfit = read_outfit(msg);
+    if msg.is_overrun() {
+        return Err("set outfit packet overrun".into());
+    }
+    Ok(outfit)
+}
+
+/// Parse an edit-podium-request packet (`parseEditPodiumRequest`).
+///
+/// Wire format: pos_x (u16), pos_y (u16), pos_z (u8), sprite_id (u16),
+/// stackpos (u8), outfit block, direction (u8)
+pub fn parse_edit_podium_request(
+    msg: &mut NetworkMessage,
+) -> Result<EditPodiumRequestPacket, String> {
+    let pos_x = msg.get_u16();
+    let pos_y = msg.get_u16();
+    let pos_z = msg.get_u8();
+    let sprite_id = msg.get_u16();
+    let stackpos = msg.get_u8();
+    let outfit = read_outfit(msg);
+    let direction = msg.get_u8();
+    if msg.is_overrun() {
+        return Err("edit podium request packet overrun".into());
+    }
+    Ok(EditPodiumRequestPacket {
+        pos_x,
+        pos_y,
+        pos_z,
+        sprite_id,
+        stackpos,
+        outfit,
+        direction,
+    })
+}
+
+/// Parse an extended-opcode packet (`parseExtendedOpcode`).
+///
+/// Wire format: channel (u8), payload (length-prefixed string)
+pub fn parse_extended_opcode(msg: &mut NetworkMessage) -> Result<ExtendedOpcodePacket, String> {
+    let channel = msg.get_u8();
+    let payload = msg.get_string(0);
+    if msg.is_overrun() {
+        return Err("extended opcode packet overrun".into());
+    }
+    Ok(ExtendedOpcodePacket { channel, payload })
+}
+
+/// Parse a debug-assert packet (`parseDebugAssert`).
+///
+/// Wire format: assert_line (string), date (string), description (string),
+/// comment (string)
+pub fn parse_debug_assert(msg: &mut NetworkMessage) -> Result<DebugAssertPacket, String> {
+    let assert_line = msg.get_string(0);
+    let date = msg.get_string(0);
+    let description = msg.get_string(0);
+    let comment = msg.get_string(0);
+    if msg.is_overrun() {
+        return Err("debug assert packet overrun".into());
+    }
+    Ok(DebugAssertPacket {
+        assert_line,
+        date,
+        description,
+        comment,
+    })
+}
+
+/// Parse a rule-violation-report packet (`parseRuleViolationReport`).
+///
+/// Wire format: report_type (u8), reason (u8), comment (string),
+/// translation (string)
+pub fn parse_rule_violation_report(
+    msg: &mut NetworkMessage,
+) -> Result<RuleViolationReportPacket, String> {
+    let report_type = msg.get_u8();
+    let reason = msg.get_u8();
+    let comment = msg.get_string(0);
+    let translation = msg.get_string(0);
+    if msg.is_overrun() {
+        return Err("rule violation report packet overrun".into());
+    }
+    Ok(RuleViolationReportPacket {
+        report_type,
+        reason,
+        comment,
+        translation,
+    })
+}
+
+/// Parse a look-in-shop packet (`parseLookInShop`).
+///
+/// Wire format: item_id (u16), count (u8)
+pub fn parse_look_in_shop(msg: &mut NetworkMessage) -> Result<LookInShopPacket, String> {
+    let item_id = msg.get_u16();
+    let count = msg.get_u8();
+    if msg.is_overrun() {
+        return Err("look in shop packet overrun".into());
+    }
+    Ok(LookInShopPacket { item_id, count })
+}
+
+/// Parse a player-purchase packet (`parsePlayerPurchase`).
+///
+/// Wire format: item_id (u16), sub_type (u8), count (u8),
+/// ignore_capacity (u8 bool), buy_with_backpack (u8 bool)
+pub fn parse_player_purchase(msg: &mut NetworkMessage) -> Result<PlayerPurchasePacket, String> {
+    let item_id = msg.get_u16();
+    let sub_type = msg.get_u8();
+    let count = msg.get_u8();
+    let ignore_capacity = msg.get_u8() != 0;
+    let buy_with_backpack = msg.get_u8() != 0;
+    if msg.is_overrun() {
+        return Err("player purchase packet overrun".into());
+    }
+    Ok(PlayerPurchasePacket {
+        item_id,
+        sub_type,
+        count,
+        ignore_capacity,
+        buy_with_backpack,
+    })
+}
+
+/// Parse a player-sale packet (`parsePlayerSale`).
+///
+/// Wire format: item_id (u16), sub_type (u8), count (u8),
+/// ignore_equipped (u8 bool)
+pub fn parse_player_sale(msg: &mut NetworkMessage) -> Result<PlayerSalePacket, String> {
+    let item_id = msg.get_u16();
+    let sub_type = msg.get_u8();
+    let count = msg.get_u8();
+    let ignore_equipped = msg.get_u8() != 0;
+    if msg.is_overrun() {
+        return Err("player sale packet overrun".into());
+    }
+    Ok(PlayerSalePacket {
+        item_id,
+        sub_type,
+        count,
+        ignore_equipped,
+    })
+}
+
+/// Parse a market-create-offer packet (`parseMarketCreateOffer`).
+///
+/// Wire format: offer_type (u8), item_id (u16), amount (u16), price (u32),
+/// anonymous (u8 bool)
+pub fn parse_market_create_offer(
+    msg: &mut NetworkMessage,
+) -> Result<MarketCreateOfferPacket, String> {
+    let offer_type = msg.get_u8();
+    let item_id = msg.get_u16();
+    let amount = msg.get_u16();
+    let price = msg.get_u32();
+    let anonymous = msg.get_u8() != 0;
+    if msg.is_overrun() {
+        return Err("market create offer packet overrun".into());
+    }
+    Ok(MarketCreateOfferPacket {
+        offer_type,
+        item_id,
+        amount,
+        price,
+        anonymous,
+    })
+}
+
+/// Parse a market-leave packet (`parseMarketLeave`).
+///
+/// Wire format: no payload; packet type alone conveys the action.
+pub fn parse_market_leave(_msg: &mut NetworkMessage) -> Result<(), String> {
+    Ok(())
+}
+
+/// Parse a request-trade packet (`parseRequestTrade`).
+///
+/// Wire format: pos_x (u16), pos_y (u16), pos_z (u8), sprite_id (u16),
+/// stackpos (u8), player_id (u32)
+pub fn parse_request_trade(msg: &mut NetworkMessage) -> Result<RequestTradePacket, String> {
+    let pos_x = msg.get_u16();
+    let pos_y = msg.get_u16();
+    let pos_z = msg.get_u8();
+    let sprite_id = msg.get_u16();
+    let stackpos = msg.get_u8();
+    let player_id = msg.get_u32();
+    if msg.is_overrun() {
+        return Err("request trade packet overrun".into());
+    }
+    Ok(RequestTradePacket {
+        pos_x,
+        pos_y,
+        pos_z,
+        sprite_id,
+        stackpos,
+        player_id,
+    })
+}
+
+/// Parse a look-in-trade packet (`parseLookInTrade`).
+///
+/// Wire format: counter_offer (u8 bool), index (u8)
+pub fn parse_look_in_trade(msg: &mut NetworkMessage) -> Result<LookInTradePacket, String> {
+    let counter_offer = msg.get_u8() != 0;
+    let index = msg.get_u8();
+    if msg.is_overrun() {
+        return Err("look in trade packet overrun".into());
+    }
+    Ok(LookInTradePacket {
+        counter_offer,
+        index,
+    })
+}
+
+/// Parse an edit-vip packet (`parseEditVip`).
+///
+/// Wire format: guid (u32), description (string), icon (u32), notify (u8 bool)
+pub fn parse_edit_vip(msg: &mut NetworkMessage) -> Result<EditVipPacket, String> {
+    let guid = msg.get_u32();
+    let description = msg.get_string(0);
+    let icon = msg.get_u32();
+    let notify = msg.get_u8() != 0;
+    if msg.is_overrun() {
+        return Err("edit vip packet overrun".into());
+    }
+    Ok(EditVipPacket {
+        guid,
+        description,
+        icon,
+        notify,
+    })
 }
 
 // ---------------------------------------------------------------------------
@@ -4505,13 +5076,45 @@ mod tests {
     #[test]
     fn test_parse_say_packet() {
         let mut msg = NetworkMessage::new();
-        msg.add_u8(1); // say_type = 1 (say)
+        msg.add_u8(1); // say_type = 1 (TALKTYPE_SAY — public, no receiver)
         msg.add_string("Hello!");
         msg.set_buffer_position(0);
 
         let pkt = parse_say_packet(&mut msg).expect("parse should succeed");
         assert_eq!(pkt.say_type, 1);
+        assert_eq!(pkt.receiver, None);
+        assert_eq!(pkt.channel_id, None);
         assert_eq!(pkt.text, "Hello!");
+    }
+
+    #[test]
+    fn test_parse_say_packet_private_message() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u8(5); // say_type = 5 (TALKTYPE_PRIVATE_TO)
+        msg.add_string("Bob"); // receiver
+        msg.add_string("hi");  // text
+        msg.set_buffer_position(0);
+
+        let pkt = parse_say_packet(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.say_type, 5);
+        assert_eq!(pkt.receiver, Some("Bob".to_string()));
+        assert_eq!(pkt.channel_id, None);
+        assert_eq!(pkt.text, "hi");
+    }
+
+    #[test]
+    fn test_parse_say_packet_channel_message() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u8(7); // say_type = 7 (TALKTYPE_CHANNEL_Y)
+        msg.add_u16(3); // channel_id
+        msg.add_string("Hello channel!");
+        msg.set_buffer_position(0);
+
+        let pkt = parse_say_packet(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.say_type, 7);
+        assert_eq!(pkt.receiver, None);
+        assert_eq!(pkt.channel_id, Some(3));
+        assert_eq!(pkt.text, "Hello channel!");
     }
 
     // -----------------------------------------------------------------------
@@ -6381,5 +6984,562 @@ mod tests {
         let payload = &bytes[6..];
         let expected: [u8; 10] = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 235, 0xFF];
         assert_eq!(payload, &expected, "underground skip sequence mismatch");
+    }
+
+    // -----------------------------------------------------------------------
+    // parse_use_item_ex
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_use_item_ex() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u16(1); // from_x
+        msg.add_u16(1); // from_y
+        msg.add_u8(7);  // from_z
+        msg.add_u16(2160); // sprite_id
+        msg.add_u8(0);  // from_stackpos
+        msg.add_u16(2); // to_x
+        msg.add_u16(2); // to_y
+        msg.add_u8(7);  // to_z
+        msg.set_buffer_position(0);
+
+        let pkt = parse_use_item_ex(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.from_x, 1);
+        assert_eq!(pkt.from_y, 1);
+        assert_eq!(pkt.from_z, 7);
+        assert_eq!(pkt.sprite_id, 2160);
+        assert_eq!(pkt.from_stackpos, 0);
+        assert_eq!(pkt.to_x, 2);
+        assert_eq!(pkt.to_y, 2);
+        assert_eq!(pkt.to_z, 7);
+    }
+
+    #[test]
+    fn test_parse_use_item_ex_overrun() {
+        let mut msg = NetworkMessage::new();
+        let err = parse_use_item_ex(&mut msg).expect_err("empty buffer should overrun");
+        assert_eq!(err, "use item ex packet overrun");
+    }
+
+    // -----------------------------------------------------------------------
+    // parse_use_with_creature
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_use_with_creature() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u16(1);    // pos_x
+        msg.add_u16(1);    // pos_y
+        msg.add_u8(7);     // pos_z
+        msg.add_u16(2160); // sprite_id
+        msg.add_u8(0);     // stackpos
+        msg.add_u32(999);  // creature_id
+        msg.set_buffer_position(0);
+
+        let pkt = parse_use_with_creature(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.pos_x, 1);
+        assert_eq!(pkt.pos_y, 1);
+        assert_eq!(pkt.pos_z, 7);
+        assert_eq!(pkt.sprite_id, 2160);
+        assert_eq!(pkt.stackpos, 0);
+        assert_eq!(pkt.creature_id, 999);
+    }
+
+    #[test]
+    fn test_parse_use_with_creature_overrun() {
+        let mut msg = NetworkMessage::new();
+        let err = parse_use_with_creature(&mut msg).expect_err("empty buffer should overrun");
+        assert_eq!(err, "use with creature packet overrun");
+    }
+
+    // -----------------------------------------------------------------------
+    // parse_wrap_item
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_wrap_item() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u16(1);   // pos_x
+        msg.add_u16(2);   // pos_y
+        msg.add_u8(7);    // pos_z
+        msg.add_u16(100); // sprite_id
+        msg.add_u8(0);    // stackpos
+        msg.set_buffer_position(0);
+
+        let pkt = parse_wrap_item(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.pos_x, 1);
+        assert_eq!(pkt.pos_y, 2);
+        assert_eq!(pkt.pos_z, 7);
+        assert_eq!(pkt.sprite_id, 100);
+        assert_eq!(pkt.stackpos, 0);
+    }
+
+    #[test]
+    fn test_parse_wrap_item_overrun() {
+        let mut msg = NetworkMessage::new();
+        let err = parse_wrap_item(&mut msg).expect_err("empty buffer should overrun");
+        assert_eq!(err, "wrap item packet overrun");
+    }
+
+    // -----------------------------------------------------------------------
+    // parse_update_container
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_update_container() {
+        let mut msg = build_msg(&[2]); // container_id = 2
+        let pkt = parse_update_container(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.container_id, 2);
+    }
+
+    #[test]
+    fn test_parse_update_container_overrun() {
+        let mut msg = NetworkMessage::new();
+        let err = parse_update_container(&mut msg).expect_err("empty buffer should overrun");
+        assert_eq!(err, "update container packet overrun");
+    }
+
+    // -----------------------------------------------------------------------
+    // parse_set_outfit
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_set_outfit_with_look_type() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u16(128); // look_type
+        msg.add_u8(10);   // look_head
+        msg.add_u8(20);   // look_body
+        msg.add_u8(30);   // look_legs
+        msg.add_u8(40);   // look_feet
+        msg.add_u8(3);    // look_addons
+        msg.add_u16(0);   // look_mount (0 = no mount)
+        msg.set_buffer_position(0);
+
+        let pkt = parse_set_outfit(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.look_type, 128);
+        assert_eq!(pkt.look_head, 10);
+        assert_eq!(pkt.look_body, 20);
+        assert_eq!(pkt.look_legs, 30);
+        assert_eq!(pkt.look_feet, 40);
+        assert_eq!(pkt.look_addons, 3);
+        assert_eq!(pkt.look_mount, 0);
+    }
+
+    #[test]
+    fn test_parse_set_outfit_with_mount() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u16(128); // look_type
+        msg.add_u8(10);   // look_head
+        msg.add_u8(20);   // look_body
+        msg.add_u8(30);   // look_legs
+        msg.add_u8(40);   // look_feet
+        msg.add_u8(0);    // look_addons
+        msg.add_u16(50);  // look_mount
+        msg.add_u8(1);    // look_mount_head
+        msg.add_u8(2);    // look_mount_body
+        msg.add_u8(3);    // look_mount_legs
+        msg.add_u8(4);    // look_mount_feet
+        msg.set_buffer_position(0);
+
+        let pkt = parse_set_outfit(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.look_mount, 50);
+        assert_eq!(pkt.look_mount_head, 1);
+        assert_eq!(pkt.look_mount_body, 2);
+        assert_eq!(pkt.look_mount_legs, 3);
+        assert_eq!(pkt.look_mount_feet, 4);
+    }
+
+    #[test]
+    fn test_parse_set_outfit_overrun() {
+        let mut msg = NetworkMessage::new();
+        let err = parse_set_outfit(&mut msg).expect_err("empty buffer should overrun");
+        assert_eq!(err, "set outfit packet overrun");
+    }
+
+    // -----------------------------------------------------------------------
+    // parse_edit_podium_request
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_edit_podium_request() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u16(3);   // pos_x
+        msg.add_u16(3);   // pos_y
+        msg.add_u8(7);    // pos_z
+        msg.add_u16(1234); // sprite_id
+        msg.add_u8(0);    // stackpos
+        // outfit block: look_type=128, head=1, body=2, legs=3, feet=4, addons=0
+        msg.add_u16(128);
+        msg.add_u8(1);
+        msg.add_u8(2);
+        msg.add_u8(3);
+        msg.add_u8(4);
+        msg.add_u8(0);
+        msg.add_u16(0); // look_mount = 0
+        msg.add_u8(2);  // direction = east
+        msg.set_buffer_position(0);
+
+        let pkt = parse_edit_podium_request(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.pos_x, 3);
+        assert_eq!(pkt.pos_y, 3);
+        assert_eq!(pkt.pos_z, 7);
+        assert_eq!(pkt.sprite_id, 1234);
+        assert_eq!(pkt.stackpos, 0);
+        assert_eq!(pkt.outfit.look_type, 128);
+        assert_eq!(pkt.direction, 2);
+    }
+
+    #[test]
+    fn test_parse_edit_podium_request_overrun() {
+        let mut msg = NetworkMessage::new();
+        let err = parse_edit_podium_request(&mut msg).expect_err("empty buffer should overrun");
+        assert_eq!(err, "edit podium request packet overrun");
+    }
+
+    // -----------------------------------------------------------------------
+    // parse_extended_opcode
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_extended_opcode() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u8(0); // channel
+        msg.add_string("test");
+        msg.set_buffer_position(0);
+
+        let pkt = parse_extended_opcode(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.channel, 0);
+        assert_eq!(pkt.payload, "test");
+    }
+
+    #[test]
+    fn test_parse_extended_opcode_overrun() {
+        let mut msg = NetworkMessage::new();
+        let err = parse_extended_opcode(&mut msg).expect_err("empty buffer should overrun");
+        assert_eq!(err, "extended opcode packet overrun");
+    }
+
+    // -----------------------------------------------------------------------
+    // parse_debug_assert
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_debug_assert() {
+        let mut msg = NetworkMessage::new();
+        msg.add_string("assert line");
+        msg.add_string("2024-01-01");
+        msg.add_string("null pointer");
+        msg.add_string("please fix");
+        msg.set_buffer_position(0);
+
+        let pkt = parse_debug_assert(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.assert_line, "assert line");
+        assert_eq!(pkt.date, "2024-01-01");
+        assert_eq!(pkt.description, "null pointer");
+        assert_eq!(pkt.comment, "please fix");
+    }
+
+    #[test]
+    fn test_parse_debug_assert_overrun() {
+        let mut msg = NetworkMessage::new();
+        let err = parse_debug_assert(&mut msg).expect_err("empty buffer should overrun");
+        assert_eq!(err, "debug assert packet overrun");
+    }
+
+    // -----------------------------------------------------------------------
+    // parse_rule_violation_report
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_rule_violation_report() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u8(1);            // report_type
+        msg.add_u8(2);            // reason
+        msg.add_string("bad behavior");
+        msg.add_string("translated reason");
+        msg.set_buffer_position(0);
+
+        let pkt = parse_rule_violation_report(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.report_type, 1);
+        assert_eq!(pkt.reason, 2);
+        assert_eq!(pkt.comment, "bad behavior");
+        assert_eq!(pkt.translation, "translated reason");
+    }
+
+    #[test]
+    fn test_parse_rule_violation_report_overrun() {
+        let mut msg = NetworkMessage::new();
+        let err =
+            parse_rule_violation_report(&mut msg).expect_err("empty buffer should overrun");
+        assert_eq!(err, "rule violation report packet overrun");
+    }
+
+    // -----------------------------------------------------------------------
+    // parse_look_in_shop
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_look_in_shop() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u16(100); // item_id
+        msg.add_u8(5);    // count
+        msg.set_buffer_position(0);
+
+        let pkt = parse_look_in_shop(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.item_id, 100);
+        assert_eq!(pkt.count, 5);
+    }
+
+    #[test]
+    fn test_parse_look_in_shop_overrun() {
+        let mut msg = NetworkMessage::new();
+        let err = parse_look_in_shop(&mut msg).expect_err("empty buffer should overrun");
+        assert_eq!(err, "look in shop packet overrun");
+    }
+
+    // -----------------------------------------------------------------------
+    // parse_player_purchase
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_player_purchase() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u16(2160); // item_id
+        msg.add_u8(0);     // sub_type
+        msg.add_u8(1);     // count
+        msg.add_u8(0);     // ignore_capacity = false
+        msg.add_u8(0);     // buy_with_backpack = false
+        msg.set_buffer_position(0);
+
+        let pkt = parse_player_purchase(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.item_id, 2160);
+        assert_eq!(pkt.sub_type, 0);
+        assert_eq!(pkt.count, 1);
+        assert!(!pkt.ignore_capacity);
+        assert!(!pkt.buy_with_backpack);
+    }
+
+    #[test]
+    fn test_parse_player_purchase_with_backpack() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u16(1000);
+        msg.add_u8(0);
+        msg.add_u8(5);
+        msg.add_u8(1); // ignore_capacity = true
+        msg.add_u8(1); // buy_with_backpack = true
+        msg.set_buffer_position(0);
+
+        let pkt = parse_player_purchase(&mut msg).expect("parse should succeed");
+        assert!(pkt.ignore_capacity);
+        assert!(pkt.buy_with_backpack);
+    }
+
+    #[test]
+    fn test_parse_player_purchase_overrun() {
+        let mut msg = NetworkMessage::new();
+        let err = parse_player_purchase(&mut msg).expect_err("empty buffer should overrun");
+        assert_eq!(err, "player purchase packet overrun");
+    }
+
+    // -----------------------------------------------------------------------
+    // parse_player_sale
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_player_sale() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u16(2160); // item_id
+        msg.add_u8(0);     // sub_type
+        msg.add_u8(1);     // count
+        msg.add_u8(0);     // ignore_equipped = false
+        msg.set_buffer_position(0);
+
+        let pkt = parse_player_sale(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.item_id, 2160);
+        assert_eq!(pkt.sub_type, 0);
+        assert_eq!(pkt.count, 1);
+        assert!(!pkt.ignore_equipped);
+    }
+
+    #[test]
+    fn test_parse_player_sale_ignore_equipped() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u16(100);
+        msg.add_u8(0);
+        msg.add_u8(3);
+        msg.add_u8(1); // ignore_equipped = true
+        msg.set_buffer_position(0);
+
+        let pkt = parse_player_sale(&mut msg).expect("parse should succeed");
+        assert!(pkt.ignore_equipped);
+    }
+
+    #[test]
+    fn test_parse_player_sale_overrun() {
+        let mut msg = NetworkMessage::new();
+        let err = parse_player_sale(&mut msg).expect_err("empty buffer should overrun");
+        assert_eq!(err, "player sale packet overrun");
+    }
+
+    // -----------------------------------------------------------------------
+    // parse_market_create_offer
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_market_create_offer() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u8(1);     // offer_type = sell
+        msg.add_u16(2148); // item_id
+        msg.add_u16(1);    // amount
+        msg.add_u32(1000); // price
+        msg.add_u8(0);     // anonymous = false
+        msg.set_buffer_position(0);
+
+        let pkt = parse_market_create_offer(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.offer_type, 1);
+        assert_eq!(pkt.item_id, 2148);
+        assert_eq!(pkt.amount, 1);
+        assert_eq!(pkt.price, 1000);
+        assert!(!pkt.anonymous);
+    }
+
+    #[test]
+    fn test_parse_market_create_offer_anonymous() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u8(0);    // offer_type = buy
+        msg.add_u16(500);
+        msg.add_u16(10);
+        msg.add_u32(5000);
+        msg.add_u8(1); // anonymous = true
+        msg.set_buffer_position(0);
+
+        let pkt = parse_market_create_offer(&mut msg).expect("parse should succeed");
+        assert!(pkt.anonymous);
+    }
+
+    #[test]
+    fn test_parse_market_create_offer_overrun() {
+        let mut msg = NetworkMessage::new();
+        let err = parse_market_create_offer(&mut msg).expect_err("empty buffer should overrun");
+        assert_eq!(err, "market create offer packet overrun");
+    }
+
+    // -----------------------------------------------------------------------
+    // parse_market_leave
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_market_leave_succeeds() {
+        let mut msg = NetworkMessage::new();
+        parse_market_leave(&mut msg).expect("market leave should always succeed");
+    }
+
+    // -----------------------------------------------------------------------
+    // parse_request_trade
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_request_trade() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u16(1);   // pos_x
+        msg.add_u16(2);   // pos_y
+        msg.add_u8(7);    // pos_z
+        msg.add_u16(100); // sprite_id
+        msg.add_u8(0);    // stackpos
+        msg.add_u32(42);  // player_id
+        msg.set_buffer_position(0);
+
+        let pkt = parse_request_trade(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.pos_x, 1);
+        assert_eq!(pkt.pos_y, 2);
+        assert_eq!(pkt.pos_z, 7);
+        assert_eq!(pkt.sprite_id, 100);
+        assert_eq!(pkt.stackpos, 0);
+        assert_eq!(pkt.player_id, 42);
+    }
+
+    #[test]
+    fn test_parse_request_trade_overrun() {
+        let mut msg = NetworkMessage::new();
+        let err = parse_request_trade(&mut msg).expect_err("empty buffer should overrun");
+        assert_eq!(err, "request trade packet overrun");
+    }
+
+    // -----------------------------------------------------------------------
+    // parse_look_in_trade
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_look_in_trade() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u8(1); // counter_offer = true
+        msg.add_u8(2); // index
+        msg.set_buffer_position(0);
+
+        let pkt = parse_look_in_trade(&mut msg).expect("parse should succeed");
+        assert!(pkt.counter_offer);
+        assert_eq!(pkt.index, 2);
+    }
+
+    #[test]
+    fn test_parse_look_in_trade_own_offer() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u8(0); // counter_offer = false (own offer)
+        msg.add_u8(0); // index
+        msg.set_buffer_position(0);
+
+        let pkt = parse_look_in_trade(&mut msg).expect("parse should succeed");
+        assert!(!pkt.counter_offer);
+        assert_eq!(pkt.index, 0);
+    }
+
+    #[test]
+    fn test_parse_look_in_trade_overrun() {
+        let mut msg = NetworkMessage::new();
+        let err = parse_look_in_trade(&mut msg).expect_err("empty buffer should overrun");
+        assert_eq!(err, "look in trade packet overrun");
+    }
+
+    // -----------------------------------------------------------------------
+    // parse_edit_vip
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_edit_vip() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u32(1);           // guid
+        msg.add_string("friend"); // description
+        msg.add_u32(0);           // icon
+        msg.add_u8(0);            // notify = false
+        msg.set_buffer_position(0);
+
+        let pkt = parse_edit_vip(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.guid, 1);
+        assert_eq!(pkt.description, "friend");
+        assert_eq!(pkt.icon, 0);
+        assert!(!pkt.notify);
+    }
+
+    #[test]
+    fn test_parse_edit_vip_with_notify() {
+        let mut msg = NetworkMessage::new();
+        msg.add_u32(99);
+        msg.add_string("best friend");
+        msg.add_u32(3);
+        msg.add_u8(1); // notify = true
+        msg.set_buffer_position(0);
+
+        let pkt = parse_edit_vip(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.guid, 99);
+        assert_eq!(pkt.description, "best friend");
+        assert_eq!(pkt.icon, 3);
+        assert!(pkt.notify);
+    }
+
+    #[test]
+    fn test_parse_edit_vip_overrun() {
+        let mut msg = NetworkMessage::new();
+        let err = parse_edit_vip(&mut msg).expect_err("empty buffer should overrun");
+        assert_eq!(err, "edit vip packet overrun");
     }
 }
