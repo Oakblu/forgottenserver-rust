@@ -197,25 +197,75 @@ pub struct PlayerLoginData {
     pub posx: u16,
     pub posy: u16,
     pub posz: u8,
+
+    // ── Progression / vocation ─────────────────────────────────────────────
+    pub experience: u64,
+    pub vocation_id: u16,
+    pub magic_level: u32,
+    pub mana_spent: u64,
+    pub soul: u8,
+    pub capacity: u32,
+
+    /// Skill levels in C++ `SKILL_*` order:
+    /// `[fist, club, sword, axe, dist, shielding, fishing]`.
+    pub skill_levels: [u16; 7],
+    /// Skill tries in the same order as `skill_levels`.
+    pub skill_tries: [u64; 7],
+
+    // ── Outfit ─────────────────────────────────────────────────────────────
+    pub look_type: u16,
+    pub look_head: u8,
+    pub look_body: u8,
+    pub look_legs: u8,
+    pub look_feet: u8,
+    pub look_addons: u8,
+    pub look_mount: u16,
+
+    pub direction: u8,
+
+    /// Unix timestamp when premium expires; `0` = no premium (from the
+    /// joined `accounts.premium_ends_at` column).
+    pub premium_ends_at: u32,
 }
 
 /// Load the minimal player data needed for the enter-world burst.
 ///
-/// Issues:
+/// Issues a join over `players` and `accounts` (for the premium timestamp):
 /// ```sql
-/// SELECT name, level, health, healthmax, mana, manamax, stamina, posx, posy, posz
-/// FROM players
-/// WHERE id = {character_id}
+/// SELECT p.name, p.level, p.health, p.healthmax, p.mana, p.manamax, p.stamina,
+///        p.posx, p.posy, p.posz, p.experience, p.vocation, p.maglevel,
+///        p.manaspent, p.soul, p.cap, p.looktype, p.lookhead, p.lookbody,
+///        p.looklegs, p.lookfeet, p.lookaddons, p.lookmount, p.direction,
+///        p.skill_fist, p.skill_fist_tries, p.skill_club, p.skill_club_tries,
+///        p.skill_sword, p.skill_sword_tries, p.skill_axe, p.skill_axe_tries,
+///        p.skill_dist, p.skill_dist_tries, p.skill_shielding,
+///        p.skill_shielding_tries, p.skill_fishing, p.skill_fishing_tries,
+///        a.premium_ends_at
+/// FROM players p
+/// JOIN accounts a ON p.account_id = a.id
+/// WHERE p.id = {character_id}
 /// ```
 ///
 /// Returns `None` if no row is found.  If the returned position is `(0, 0, 0)`
 /// the player has no saved position and the default temple coordinates
 /// `(100, 100, 7)` are substituted.
+///
+/// Per-column defaults mirror the schema `DEFAULT` values so a partial mock
+/// row (or a real row with NULLs) degrades gracefully.
 pub fn load_player_for_login(db: &dyn Database, character_id: i64) -> Option<PlayerLoginData> {
     let sql = format!(
-        "SELECT name, level, health, healthmax, mana, manamax, stamina, posx, posy, posz \
-         FROM players \
-         WHERE id = {character_id}"
+        "SELECT p.name, p.level, p.health, p.healthmax, p.mana, p.manamax, p.stamina, \
+                p.posx, p.posy, p.posz, p.experience, p.vocation, p.maglevel, \
+                p.manaspent, p.soul, p.cap, p.looktype, p.lookhead, p.lookbody, \
+                p.looklegs, p.lookfeet, p.lookaddons, p.lookmount, p.direction, \
+                p.skill_fist, p.skill_fist_tries, p.skill_club, p.skill_club_tries, \
+                p.skill_sword, p.skill_sword_tries, p.skill_axe, p.skill_axe_tries, \
+                p.skill_dist, p.skill_dist_tries, p.skill_shielding, \
+                p.skill_shielding_tries, p.skill_fishing, p.skill_fishing_tries, \
+                a.premium_ends_at \
+         FROM players p \
+         JOIN accounts a ON p.account_id = a.id \
+         WHERE p.id = {character_id}"
     );
 
     let rows = db.query(&sql).ok()?;
@@ -231,17 +281,57 @@ pub fn load_player_for_login(db: &dyn Database, character_id: i64) -> Option<Pla
         posz = 7;
     }
 
+    // `soul` is stored as `int unsigned` but the wire field is a single byte;
+    // clamp to `u8` exactly as C++ `getSoul()` (uint8_t) does.
+    let soul: u8 = row.get::<u32>("soul").unwrap_or(0).min(u8::MAX as u32) as u8;
+
+    let skill_levels: [u16; 7] = [
+        row.get("skill_fist").unwrap_or(10),
+        row.get("skill_club").unwrap_or(10),
+        row.get("skill_sword").unwrap_or(10),
+        row.get("skill_axe").unwrap_or(10),
+        row.get("skill_dist").unwrap_or(10),
+        row.get("skill_shielding").unwrap_or(10),
+        row.get("skill_fishing").unwrap_or(10),
+    ];
+    let skill_tries: [u64; 7] = [
+        row.get("skill_fist_tries").unwrap_or(0),
+        row.get("skill_club_tries").unwrap_or(0),
+        row.get("skill_sword_tries").unwrap_or(0),
+        row.get("skill_axe_tries").unwrap_or(0),
+        row.get("skill_dist_tries").unwrap_or(0),
+        row.get("skill_shielding_tries").unwrap_or(0),
+        row.get("skill_fishing_tries").unwrap_or(0),
+    ];
+
     Some(PlayerLoginData {
         name: row.get("name").unwrap_or_default(),
         level: row.get("level").unwrap_or(1),
-        health: row.get("health").unwrap_or(100),
-        healthmax: row.get("healthmax").unwrap_or(100),
+        health: row.get("health").unwrap_or(150),
+        healthmax: row.get("healthmax").unwrap_or(150),
         mana: row.get("mana").unwrap_or(0),
         manamax: row.get("manamax").unwrap_or(0),
         stamina: row.get("stamina").unwrap_or(2520),
         posx,
         posy,
         posz,
+        experience: row.get("experience").unwrap_or(0),
+        vocation_id: row.get("vocation").unwrap_or(0),
+        magic_level: row.get("maglevel").unwrap_or(0),
+        mana_spent: row.get("manaspent").unwrap_or(0),
+        soul,
+        capacity: row.get("cap").unwrap_or(400),
+        skill_levels,
+        skill_tries,
+        look_type: row.get("looktype").unwrap_or(136),
+        look_head: row.get::<u32>("lookhead").unwrap_or(0).min(u8::MAX as u32) as u8,
+        look_body: row.get::<u32>("lookbody").unwrap_or(0).min(u8::MAX as u32) as u8,
+        look_legs: row.get::<u32>("looklegs").unwrap_or(0).min(u8::MAX as u32) as u8,
+        look_feet: row.get::<u32>("lookfeet").unwrap_or(0).min(u8::MAX as u32) as u8,
+        look_addons: row.get::<u32>("lookaddons").unwrap_or(0).min(u8::MAX as u32) as u8,
+        look_mount: row.get("lookmount").unwrap_or(0),
+        direction: row.get("direction").unwrap_or(2),
+        premium_ends_at: row.get("premium_ends_at").unwrap_or(0),
     })
 }
 
@@ -1707,23 +1797,16 @@ mod tests {
 
     // ── load_player_for_login tests ───────────────────────────────────────────
 
-    /// Backing row for `LoginTestDb`.
+    /// Backing row for `LoginTestDb` — mirrors every column read by
+    /// `load_player_for_login` (the `players`/`accounts` join).
+    #[derive(Clone)]
     struct LoginTestRow {
         id: i64,
-        name: String,
-        level: i64,
-        health: i64,
-        healthmax: i64,
-        mana: i64,
-        manamax: i64,
-        stamina: i64,
-        posx: i64,
-        posy: i64,
-        posz: i64,
+        cols: std::collections::HashMap<String, crate::database::DbValue>,
     }
 
-    /// A test-only `Database` that holds `players` rows in memory and answers
-    /// the `SELECT ... FROM players WHERE id = {id}` query issued by
+    /// A test-only `Database` that holds joined `players`+`accounts` rows in
+    /// memory and answers the `SELECT ... WHERE p.id = {id}` query issued by
     /// `load_player_for_login`.
     struct LoginTestDb {
         players: Vec<LoginTestRow>,
@@ -1736,6 +1819,9 @@ mod tests {
             }
         }
 
+        /// Insert a minimal player row covering the legacy stat columns. New
+        /// progression/outfit columns are left absent so the loader's per-column
+        /// defaults are exercised (matching a row that only has the basics set).
         #[allow(clippy::too_many_arguments)]
         fn add_player(
             &mut self,
@@ -1751,27 +1837,37 @@ mod tests {
             posy: i64,
             posz: i64,
         ) {
-            self.players.push(LoginTestRow {
-                id,
-                name: name.to_string(),
-                level,
-                health,
-                healthmax,
-                mana,
-                manamax,
-                stamina,
-                posx,
-                posy,
-                posz,
-            });
+            use crate::database::DbValue;
+            let mut cols = std::collections::HashMap::new();
+            cols.insert("name".to_string(), DbValue::Text(name.to_string()));
+            cols.insert("level".to_string(), DbValue::Integer(level));
+            cols.insert("health".to_string(), DbValue::Integer(health));
+            cols.insert("healthmax".to_string(), DbValue::Integer(healthmax));
+            cols.insert("mana".to_string(), DbValue::Integer(mana));
+            cols.insert("manamax".to_string(), DbValue::Integer(manamax));
+            cols.insert("stamina".to_string(), DbValue::Integer(stamina));
+            cols.insert("posx".to_string(), DbValue::Integer(posx));
+            cols.insert("posy".to_string(), DbValue::Integer(posy));
+            cols.insert("posz".to_string(), DbValue::Integer(posz));
+            self.players.push(LoginTestRow { id, cols });
+        }
+
+        /// Insert a fully-populated row directly from a column map so tests can
+        /// assert the new progression/skill/outfit fields.
+        fn add_player_row(
+            &mut self,
+            id: i64,
+            cols: std::collections::HashMap<String, crate::database::DbValue>,
+        ) {
+            self.players.push(LoginTestRow { id, cols });
         }
     }
 
     impl crate::database::Database for LoginTestDb {
         fn query(&self, sql: &str) -> Result<Vec<crate::database::Row>, crate::database::DbError> {
-            // Extract the id from: WHERE id = {id}
+            // Extract the id from: WHERE p.id = {id}
             let id_value: i64 = {
-                let marker = "WHERE id = ";
+                let marker = "WHERE p.id = ";
                 match sql.find(marker) {
                     Some(pos) => {
                         let rest = sql[pos + marker.len()..].trim();
@@ -1789,48 +1885,7 @@ mod tests {
                 if row.id != id_value {
                     continue;
                 }
-                let mut cols = std::collections::HashMap::new();
-                cols.insert(
-                    "name".to_string(),
-                    crate::database::DbValue::Text(row.name.clone()),
-                );
-                cols.insert(
-                    "level".to_string(),
-                    crate::database::DbValue::Integer(row.level),
-                );
-                cols.insert(
-                    "health".to_string(),
-                    crate::database::DbValue::Integer(row.health),
-                );
-                cols.insert(
-                    "healthmax".to_string(),
-                    crate::database::DbValue::Integer(row.healthmax),
-                );
-                cols.insert(
-                    "mana".to_string(),
-                    crate::database::DbValue::Integer(row.mana),
-                );
-                cols.insert(
-                    "manamax".to_string(),
-                    crate::database::DbValue::Integer(row.manamax),
-                );
-                cols.insert(
-                    "stamina".to_string(),
-                    crate::database::DbValue::Integer(row.stamina),
-                );
-                cols.insert(
-                    "posx".to_string(),
-                    crate::database::DbValue::Integer(row.posx),
-                );
-                cols.insert(
-                    "posy".to_string(),
-                    crate::database::DbValue::Integer(row.posy),
-                );
-                cols.insert(
-                    "posz".to_string(),
-                    crate::database::DbValue::Integer(row.posz),
-                );
-                result_rows.push(crate::database::Row::new(cols));
+                result_rows.push(crate::database::Row::new(row.cols.clone()));
             }
 
             Ok(result_rows)
@@ -1883,5 +1938,97 @@ mod tests {
         assert_eq!(data.posx, 100);
         assert_eq!(data.posy, 100);
         assert_eq!(data.posz, 7);
+    }
+
+    /// A row missing the new progression/outfit columns must fall back to the
+    /// schema defaults (skills 10/0, soul 0, cap 400, looktype 136, dir 2, etc.).
+    #[test]
+    fn load_player_missing_new_columns_uses_schema_defaults() {
+        let mut db = LoginTestDb::new();
+        db.add_player(1, "Hero", 5, 200, 300, 50, 100, 2000, 150, 200, 7);
+
+        let data = super::load_player_for_login(&db, 1).unwrap();
+        assert_eq!(data.experience, 0);
+        assert_eq!(data.vocation_id, 0);
+        assert_eq!(data.magic_level, 0);
+        assert_eq!(data.mana_spent, 0);
+        assert_eq!(data.soul, 0);
+        assert_eq!(data.capacity, 400);
+        assert_eq!(data.skill_levels, [10, 10, 10, 10, 10, 10, 10]);
+        assert_eq!(data.skill_tries, [0, 0, 0, 0, 0, 0, 0]);
+        assert_eq!(data.look_type, 136);
+        assert_eq!(data.direction, 2);
+        assert_eq!(data.premium_ends_at, 0);
+    }
+
+    /// A fully-populated joined row must parse every new progression, skill,
+    /// outfit and premium field.
+    #[test]
+    fn load_player_parses_all_new_fields() {
+        use crate::database::DbValue;
+        let mut cols = std::collections::HashMap::new();
+        cols.insert("name".to_string(), DbValue::Text("Mage".to_string()));
+        cols.insert("level".to_string(), DbValue::Integer(20));
+        cols.insert("health".to_string(), DbValue::Integer(300));
+        cols.insert("healthmax".to_string(), DbValue::Integer(400));
+        cols.insert("mana".to_string(), DbValue::Integer(250));
+        cols.insert("manamax".to_string(), DbValue::Integer(500));
+        cols.insert("stamina".to_string(), DbValue::Integer(2400));
+        cols.insert("posx".to_string(), DbValue::Integer(95));
+        cols.insert("posy".to_string(), DbValue::Integer(117));
+        cols.insert("posz".to_string(), DbValue::Integer(7));
+        cols.insert("experience".to_string(), DbValue::Integer(123_456));
+        cols.insert("vocation".to_string(), DbValue::Integer(2));
+        cols.insert("maglevel".to_string(), DbValue::Integer(15));
+        cols.insert("manaspent".to_string(), DbValue::Integer(98_765));
+        cols.insert("soul".to_string(), DbValue::Integer(88));
+        cols.insert("cap".to_string(), DbValue::Integer(123_400));
+        cols.insert("looktype".to_string(), DbValue::Integer(130));
+        cols.insert("lookhead".to_string(), DbValue::Integer(10));
+        cols.insert("lookbody".to_string(), DbValue::Integer(20));
+        cols.insert("looklegs".to_string(), DbValue::Integer(30));
+        cols.insert("lookfeet".to_string(), DbValue::Integer(40));
+        cols.insert("lookaddons".to_string(), DbValue::Integer(3));
+        cols.insert("lookmount".to_string(), DbValue::Integer(42));
+        cols.insert("direction".to_string(), DbValue::Integer(1));
+        cols.insert("skill_fist".to_string(), DbValue::Integer(11));
+        cols.insert("skill_fist_tries".to_string(), DbValue::Integer(5));
+        cols.insert("skill_club".to_string(), DbValue::Integer(12));
+        cols.insert("skill_club_tries".to_string(), DbValue::Integer(15));
+        cols.insert("skill_sword".to_string(), DbValue::Integer(13));
+        cols.insert("skill_sword_tries".to_string(), DbValue::Integer(25));
+        cols.insert("skill_axe".to_string(), DbValue::Integer(14));
+        cols.insert("skill_axe_tries".to_string(), DbValue::Integer(35));
+        cols.insert("skill_dist".to_string(), DbValue::Integer(15));
+        cols.insert("skill_dist_tries".to_string(), DbValue::Integer(45));
+        cols.insert("skill_shielding".to_string(), DbValue::Integer(16));
+        cols.insert("skill_shielding_tries".to_string(), DbValue::Integer(55));
+        cols.insert("skill_fishing".to_string(), DbValue::Integer(17));
+        cols.insert("skill_fishing_tries".to_string(), DbValue::Integer(65));
+        cols.insert("premium_ends_at".to_string(), DbValue::Integer(1_900_000_000));
+
+        let mut db = LoginTestDb::new();
+        db.add_player_row(7, cols);
+
+        let data = super::load_player_for_login(&db, 7).unwrap();
+        assert_eq!(data.name, "Mage");
+        assert_eq!(data.experience, 123_456);
+        assert_eq!(data.vocation_id, 2);
+        assert_eq!(data.magic_level, 15);
+        assert_eq!(data.mana_spent, 98_765);
+        assert_eq!(data.soul, 88);
+        assert_eq!(data.capacity, 123_400);
+        // SKILL order: fist, club, sword, axe, dist, shielding, fishing.
+        assert_eq!(data.skill_levels, [11, 12, 13, 14, 15, 16, 17]);
+        assert_eq!(data.skill_tries, [5, 15, 25, 35, 45, 55, 65]);
+        assert_eq!(data.look_type, 130);
+        assert_eq!(data.look_head, 10);
+        assert_eq!(data.look_body, 20);
+        assert_eq!(data.look_legs, 30);
+        assert_eq!(data.look_feet, 40);
+        assert_eq!(data.look_addons, 3);
+        assert_eq!(data.look_mount, 42);
+        assert_eq!(data.direction, 1);
+        assert_eq!(data.premium_ends_at, 1_900_000_000);
     }
 }

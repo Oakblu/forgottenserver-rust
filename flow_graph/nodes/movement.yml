@@ -329,6 +329,13 @@ nodes:
         kind: static
         confidence: static
         order: 7
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::callFunction"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "Lua boundary — scriptInterface->callFunction (MoveEvent step)"
   - file: "src/movement.cpp"
     qualified_name: "MoveEvent::fireEquip"
     edges:
@@ -383,6 +390,13 @@ nodes:
         kind: static
         confidence: static
         order: 7
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::callFunction"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "Lua boundary — scriptInterface->callFunction (MoveEvent equip)"
   - file: "src/movement.cpp"
     qualified_name: "MoveEvent::fireAddRemItem"
     edges:
@@ -425,3 +439,10 @@ nodes:
         kind: static
         confidence: static
         order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::callFunction"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "Lua boundary — scriptInterface->callFunction (MoveEvent add/rem item)"

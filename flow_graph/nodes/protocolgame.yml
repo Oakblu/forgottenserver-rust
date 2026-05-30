@@ -161,6 +161,13 @@ nodes:
         kind: static
         confidence: static
         order: 4
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::login"
+        kind: dynamic
+        confidence: curated
+        order: 5
+        condition: "dispatched via g_dispatcher.addTask on successful session auth"
   - file: "src/protocolgame.cpp"
     qualified_name: "ProtocolGame::onConnect"
     edges:
@@ -209,6 +216,591 @@ nodes:
         kind: static
         confidence: static
         order: 1
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::logout"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x14 (dispatched via g_dispatcher.addTask)"
+        order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerReceivePingBack"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x1D (dispatched via g_dispatcher.addTask)"
+        order: 2
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerReceivePing"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x1E (dispatched via g_dispatcher.addTask)"
+        order: 3
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseExtendedOpcode"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x32"
+        order: 4
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseAutoWalk"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x64"
+        order: 5
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerMove"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x65 (dispatched via g_dispatcher.addTask)"
+        order: 6
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerMove"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x66 (dispatched via g_dispatcher.addTask)"
+        order: 7
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerMove"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x67 (dispatched via g_dispatcher.addTask)"
+        order: 8
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerMove"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x68 (dispatched via g_dispatcher.addTask)"
+        order: 9
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerStopAutoWalk"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x69 (dispatched via g_dispatcher.addTask)"
+        order: 10
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerMove"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x6A (dispatched via g_dispatcher.addTask)"
+        order: 11
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerMove"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x6B (dispatched via g_dispatcher.addTask)"
+        order: 12
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerMove"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x6C (dispatched via g_dispatcher.addTask)"
+        order: 13
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerMove"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x6D (dispatched via g_dispatcher.addTask)"
+        order: 14
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerTurn"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x6F (dispatched via g_dispatcher.addTask)"
+        order: 15
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerTurn"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x70 (dispatched via g_dispatcher.addTask)"
+        order: 16
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerTurn"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x71 (dispatched via g_dispatcher.addTask)"
+        order: 17
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerTurn"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x72 (dispatched via g_dispatcher.addTask)"
+        order: 18
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseEquipObject"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x77"
+        order: 19
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseThrow"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x78"
+        order: 20
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseLookInShop"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x79"
+        order: 21
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parsePlayerPurchase"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x7A"
+        order: 22
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parsePlayerSale"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x7B"
+        order: 23
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerCloseShop"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x7C (dispatched via g_dispatcher.addTask)"
+        order: 24
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseRequestTrade"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x7D"
+        order: 25
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseLookInTrade"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x7E"
+        order: 26
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerAcceptTrade"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x7F (dispatched via g_dispatcher.addTask)"
+        order: 27
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerCloseTrade"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x80 (dispatched via g_dispatcher.addTask)"
+        order: 28
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseUseItem"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x82"
+        order: 29
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseUseItemEx"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x83"
+        order: 30
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseUseWithCreature"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x84"
+        order: 31
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseRotateItem"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x85"
+        order: 32
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseEditPodiumRequest"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x86"
+        order: 33
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseCloseContainer"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x87"
+        order: 34
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseUpArrowContainer"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x88"
+        order: 35
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseTextWindow"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x89"
+        order: 36
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseHouseWindow"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x8A"
+        order: 37
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseWrapItem"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x8B"
+        order: 38
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseLookAt"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x8C"
+        order: 39
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseLookInBattleList"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x8D"
+        order: 40
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseSay"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x96"
+        order: 41
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerRequestChannels"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x97 (dispatched via g_dispatcher.addTask)"
+        order: 42
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseOpenChannel"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x98"
+        order: 43
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseCloseChannel"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x99"
+        order: 44
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseOpenPrivateChannel"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x9A"
+        order: 45
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerCloseNpcChannel"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0x9E (dispatched via g_dispatcher.addTask)"
+        order: 46
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseFightModes"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xA0"
+        order: 47
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseAttack"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xA1"
+        order: 48
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseFollow"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xA2"
+        order: 49
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseInviteToParty"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xA3"
+        order: 50
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseJoinParty"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xA4"
+        order: 51
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseRevokePartyInvite"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xA5"
+        order: 52
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parsePassPartyLeadership"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xA6"
+        order: 53
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerLeaveParty"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xA7 (dispatched via g_dispatcher.addTask)"
+        order: 54
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseEnableSharedPartyExperience"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xA8"
+        order: 55
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerCreatePrivateChannel"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xAA (dispatched via g_dispatcher.addTask)"
+        order: 56
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseChannelInvite"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xAB"
+        order: 57
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseChannelExclude"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xAC"
+        order: 58
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerCancelAttackAndFollow"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xBE (dispatched via g_dispatcher.addTask)"
+        order: 59
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseUpdateContainer"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xCA"
+        order: 60
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseBrowseField"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xCB"
+        order: 61
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseSeekInContainer"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xCC"
+        order: 62
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::playerRequestOutfit"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xD2 (dispatched via g_dispatcher.addTask)"
+        order: 63
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseSetOutfit"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xD3"
+        order: 64
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseAddVip"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xDC"
+        order: 65
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseRemoveVip"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xDD"
+        order: 66
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseEditVip"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xDE"
+        order: 67
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseDebugAssert"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xE8"
+        order: 68
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseRuleViolationReport"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xF2"
+        order: 69
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseMarketLeave"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xF4"
+        order: 70
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseMarketBrowse"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xF5"
+        order: 71
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseMarketCreateOffer"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xF6"
+        order: 72
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseMarketCancelOffer"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xF7"
+        order: 73
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseMarketAcceptOffer"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xF8"
+        order: 74
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parseModalWindowAnswer"
+        kind: dynamic
+        confidence: curated
+        condition: "recvbyte == 0xF9"
+        order: 75
+    disabled_opcodes:
+      - opcode: "0x28"
+        comment: "stash withdraw"
+      - opcode: "0x2A"
+        comment: "bestiary tracker"
+      - opcode: "0x2C"
+        comment: "team finder (leader)"
+      - opcode: "0x2D"
+        comment: "team finder (member)"
+      - opcode: "0x8F"
+        comment: "quick loot"
+      - opcode: "0x90"
+        comment: "loot container"
+      - opcode: "0x91"
+        comment: "update loot whitelist"
+      - opcode: "0x92"
+        comment: "request locker items"
+      - opcode: "0xB1"
+        comment: "request highscores"
+      - opcode: "0xC7"
+        comment: "request tournament leaderboard"
+      - opcode: "0xCD"
+        comment: "request inspect window"
+      - opcode: "0xD5"
+        comment: "apply imbuement"
+      - opcode: "0xD6"
+        comment: "clear imbuement"
+      - opcode: "0xD7"
+        comment: "close imbuing window"
+      - opcode: "0xDF"
+        comment: "premium shop"
+      - opcode: "0xE0"
+        comment: "premium shop"
+      - opcode: "0xE4"
+        comment: "buy charm rune"
+      - opcode: "0xE5"
+        comment: "request character info (cyclopedia)"
+      - opcode: "0xE6"
+        comment: "parse bug report"
+      - opcode: "0xEF"
+        comment: "request store coins transfer"
+      - opcode: "0xFA"
+        comment: "store window open"
+      - opcode: "0xFB"
+        comment: "store window click"
+      - opcode: "0xFC"
+        comment: "store window buy"
+      - opcode: "0xFD"
+        comment: "store window history 1"
+      - opcode: "0xFE"
+        comment: "store window history 2"
+    noop_opcodes:
+      - opcode: "0x8E"
+        comment: "join aggression — acknowledged, no action"
+      - opcode: "0xC9"
+        comment: "update tile — acknowledged, no action"
+      - opcode: "0xE7"
+        comment: "thank you — acknowledged, no action"
+      - opcode: "0xF3"
+        comment: "get object info — acknowledged, no action"
   - file: "src/protocolgame.cpp"
     qualified_name: "ClientPacket::0x0F_QuitInLoading"
     edges: []

@@ -41,6 +41,13 @@ nodes:
         kind: static
         confidence: static
         order: 1
+      - target:
+          file: "src/connection.cpp"
+          qualified_name: "Connection::parsePacket"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "io_context async accept loop — boost::asio schedules Connection::parsePacket per inbound packet"
   - file: "src/server.cpp"
     qualified_name: "ServiceManager::stop"
     edges:

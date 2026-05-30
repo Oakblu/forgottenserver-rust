@@ -167,6 +167,13 @@ nodes:
         kind: static
         confidence: static
         order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::callFunction"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "Lua boundary — scriptInterface->callFunction (CREATURE_EVENT_LOGIN)"
   - file: "src/creatureevent.cpp"
     qualified_name: "CreatureEvent::executeOnLogout"
     edges:
@@ -200,6 +207,13 @@ nodes:
         kind: static
         confidence: static
         order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::callFunction"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "Lua boundary — scriptInterface->callFunction (CREATURE_EVENT_LOGOUT)"
   - file: "src/creatureevent.cpp"
     qualified_name: "CreatureEvent::executeOnReconnect"
     edges:
@@ -233,6 +247,13 @@ nodes:
         kind: static
         confidence: static
         order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::callFunction"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "Lua boundary — scriptInterface->callFunction (CREATURE_EVENT_RECONNECT)"
   - file: "src/creatureevent.cpp"
     qualified_name: "CreatureEvent::executeOnThink"
     edges:
@@ -266,6 +287,13 @@ nodes:
         kind: static
         confidence: static
         order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::callFunction"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "Lua boundary — scriptInterface->callFunction (CREATURE_EVENT_THINK)"
   - file: "src/creatureevent.cpp"
     qualified_name: "CreatureEvent::executeOnPrepareDeath"
     edges:
@@ -299,6 +327,13 @@ nodes:
         kind: static
         confidence: static
         order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::callFunction"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "Lua boundary — scriptInterface->callFunction (CREATURE_EVENT_PREPAREDEATH)"
   - file: "src/creatureevent.cpp"
     qualified_name: "CreatureEvent::executeOnDeath"
     edges:
@@ -344,6 +379,13 @@ nodes:
         kind: static
         confidence: static
         order: 7
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::callFunction"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "Lua boundary — scriptInterface->callFunction (CREATURE_EVENT_DEATH)"
   - file: "src/creatureevent.cpp"
     qualified_name: "CreatureEvent::executeAdvance"
     edges:
@@ -377,6 +419,13 @@ nodes:
         kind: static
         confidence: static
         order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::callFunction"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "Lua boundary — scriptInterface->callFunction (CREATURE_EVENT_ADVANCE)"
   - file: "src/creatureevent.cpp"
     qualified_name: "CreatureEvent::executeOnKill"
     edges:
@@ -410,6 +459,13 @@ nodes:
         kind: static
         confidence: static
         order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::callFunction"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "Lua boundary — scriptInterface->callFunction (CREATURE_EVENT_KILL)"
   - file: "src/creatureevent.cpp"
     qualified_name: "CreatureEvent::executeModalWindow"
     edges:
@@ -443,6 +499,13 @@ nodes:
         kind: static
         confidence: static
         order: 5
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::callFunction"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "Lua boundary — scriptInterface->callFunction (CREATURE_EVENT_MODALWINDOW)"
   - file: "src/creatureevent.cpp"
     qualified_name: "CreatureEvent::executeTextEdit"
     edges:
@@ -488,6 +551,13 @@ nodes:
         kind: static
         confidence: static
         order: 7
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::callFunction"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "Lua boundary — scriptInterface->callFunction (CREATURE_EVENT_TEXTEDIT)"
   - file: "src/creatureevent.cpp"
     qualified_name: pushCombatDamage
     edges: []
@@ -542,6 +612,13 @@ nodes:
         kind: static
         confidence: static
         order: 8
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::callFunction"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "Lua boundary — scriptInterface->callFunction (CREATURE_EVENT_HEALTHCHANGE)"
   - file: "src/creatureevent.cpp"
     qualified_name: "CreatureEvent::executeManaChange"
     edges:
@@ -593,6 +670,13 @@ nodes:
         kind: static
         confidence: static
         order: 8
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::callFunction"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "Lua boundary — scriptInterface->callFunction (CREATURE_EVENT_MANACHANGE)"
   - file: "src/creatureevent.cpp"
     qualified_name: "CreatureEvent::executeExtendedOpcode"
     edges:
@@ -632,3 +716,10 @@ nodes:
         kind: static
         confidence: static
         order: 6
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::callFunction"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "Lua boundary — scriptInterface->callFunction (CREATURE_EVENT_EXTENDED_OPCODE)"

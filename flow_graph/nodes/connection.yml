@@ -104,6 +104,27 @@ nodes:
         kind: static
         confidence: static
         order: 2
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::onRecvFirstMessage"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "first message on game world port — virtual dispatch protocol->onRecvFirstMessage"
+      - target:
+          file: "src/protocolstatus.cpp"
+          qualified_name: "ProtocolStatus::onRecvFirstMessage"
+        kind: dynamic
+        confidence: curated
+        order: 2
+        condition: "first message on status port — virtual dispatch protocol->onRecvFirstMessage"
+      - target:
+          file: "src/protocolgame.cpp"
+          qualified_name: "ProtocolGame::parsePacket"
+        kind: dynamic
+        confidence: curated
+        order: 3
+        condition: "subsequent messages — virtual dispatch protocol->parsePacket"
   - file: "src/connection.cpp"
     qualified_name: "Connection::send"
     edges:

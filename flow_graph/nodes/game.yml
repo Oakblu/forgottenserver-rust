@@ -8,6 +8,27 @@ nodes:
         kind: static
         confidence: static
         order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::checkCreatures"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "scheduled every EVENT_CREATURE_THINK_INTERVAL ms via g_scheduler.addEvent"
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::updateCreaturesPath"
+        kind: dynamic
+        confidence: curated
+        order: 2
+        condition: "scheduled every PATHFINDING_INTERVAL ms via g_scheduler.addEvent"
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::checkDecay"
+        kind: dynamic
+        confidence: curated
+        order: 3
+        condition: "scheduled every EVENT_DECAYINTERVAL ms via g_scheduler.addEvent"
   - file: "src/game.cpp"
     qualified_name: "Game::getGameState"
     edges:
@@ -65,6 +86,13 @@ nodes:
         kind: static
         confidence: static
         order: 6
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::shutdown"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "deferred via g_dispatcher.addTask when newState == GAME_STATE_SHUTDOWN"
   - file: "src/game.cpp"
     qualified_name: "Game::saveGameState"
     edges:
@@ -602,6 +630,13 @@ nodes:
         kind: static
         confidence: static
         order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::internalMoveCreature"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "deferred via g_scheduler.addEvent(RANGE_MOVE_CREATURE_INTERVAL)"
   - file: "src/game.cpp"
     qualified_name: "Game::playerStopAutoWalk"
     edges:
@@ -1271,6 +1306,13 @@ nodes:
         kind: static
         confidence: static
         order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::checkCreatures"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "periodic: re-arms via g_scheduler.addEvent(EVENT_CREATURE_THINK_INTERVAL)"
   - file: "src/game.cpp"
     qualified_name: "Game::updateCreaturesPath"
     edges:
@@ -1280,6 +1322,13 @@ nodes:
         kind: static
         confidence: static
         order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::updateCreaturesPath"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "periodic: re-arms via g_scheduler.addEvent(PATHFINDING_INTERVAL)"
   - file: "src/game.cpp"
     qualified_name: "Game::changeSpeed"
     edges:
@@ -1427,6 +1476,13 @@ nodes:
         kind: static
         confidence: static
         order: 1
+      - target:
+          file: "src/game.cpp"
+          qualified_name: "Game::checkDecay"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "periodic: re-arms via g_scheduler.addEvent(EVENT_DECAYINTERVAL)"
   - file: "src/game.cpp"
     qualified_name: "Game::shutdown"
     edges:

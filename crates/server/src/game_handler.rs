@@ -2,6 +2,8 @@ use forgottenserver_common::networkmessage::ItemTypeMeta;
 use forgottenserver_common::outputmessage::OutputMessage;
 use forgottenserver_common::position::Position;
 use forgottenserver_database::iologindata::{IoLoginData, LoginDb, PlayerLoginData};
+use forgottenserver_entity::player::{base_speed, xp_for_level};
+use forgottenserver_items::vocation::{Vocation, Vocations};
 use forgottenserver_game::{
     action_registry::ActionRegistry,
     chat::{ChannelId, ChatManager, EntityId, SpeakType},
@@ -53,6 +55,35 @@ fn body<F: FnOnce(&mut OutputMessage)>(f: F) -> Vec<u8> {
     out.get_output_buffer()[2..].to_vec()
 }
 
+/// Port of C++ `Player::getBasisPointLevel` (`player.cpp` ~1908):
+///
+/// ```cpp
+/// uint16_t Player::getBasisPointLevel(uint64_t count, uint64_t nextLevelCount)
+/// {
+///     if (nextLevelCount == 0) { return 0; }
+///     uint16_t result = ((count * 10000.) / nextLevelCount);
+///     if (result > 10000) { return 0; }
+///     return result;
+/// }
+/// ```
+///
+/// Returns the progress towards the next level in basis points (0..=10000).
+/// The C++ computation uses floating-point division before truncating to a
+/// `uint16_t`; we mirror that exactly (the `as u16` wrap matches the C++
+/// implicit narrowing for the >10000 path, which is then mapped to 0).
+fn get_basis_point_level(count: u64, next_level_count: u64) -> u16 {
+    if next_level_count == 0 {
+        return 0;
+    }
+    let result = (count as f64 * 10000.0) / next_level_count as f64;
+    // C++ narrows the double to uint16_t (modulo 2^16) before the >10000 check.
+    let result = result as u16;
+    if result > 10000 {
+        return 0;
+    }
+    result
+}
+
 /// Assemble the full Tibia 13.10 enter-world burst sent to a player on login.
 ///
 /// Mirrors C++ `Player::login` (`forgottenserver/src/player.cpp` lines
@@ -81,19 +112,43 @@ fn body<F: FnOnce(&mut OutputMessage)>(f: F) -> Vec<u8> {
 /// `0x8D` creature-light packet and for the player creature injected into the
 /// `0x64` map description.
 ///
-/// NOTE (placeholders): several stat/skill fields are not yet present in
-/// `PlayerLoginData` and are emitted with byte-exact placeholder values
-/// (free capacity 0, experience 0, level/skill percents 0, soul 0, base
-/// magic level 0, regular skills 10/base 10, special skills 0, capacity 0,
-/// vocation client id 0, non-premium, no spells active, default outfit
-/// look_type 128). The wire *structure* matches C++ exactly; populating the
-/// real values is a follow-up.
+/// Real player stats are now populated from the loaded `PlayerLoginData` and
+/// the player's `Vocation` (looked up via `vocations`): experience, level
+/// percent, soul, free capacity, base speed, skill levels/percents, magic
+/// level/percent, vocation client id, premium flag, magic-shield byte, and the
+/// player's outfit + direction in the injected map tile.
 pub fn build_enter_world_burst(
     player: &PlayerLoginData,
     world: &World,
     player_creature_id: u32,
+    vocations: &Vocations,
 ) -> Vec<u8> {
     let mut burst = Vec::new();
+
+    // Resolve the player's vocation. C++ always has a vocation pointer (default
+    // vocation id 0); if the registry lacks the id we fall back to the C++
+    // default-constructed `Vocation` (id-preserving) so reqs are still defined.
+    let voc: Vocation = vocations
+        .get_vocation(player.vocation_id)
+        .cloned()
+        .unwrap_or_else(|| Vocation::new(player.vocation_id));
+
+    // base speed is level-scaled (C++ getBaseSpeed → 220 + (level-1)*2); the
+    // wire fields carry baseSpeed / 2.
+    let base_speed_half = (base_speed(player.level) / 2) as u16;
+
+    // levelPercent: C++ getBasisPointLevel(exp-currExp, nextExp-currExp) / 100
+    // (a 0..=100 byte). See iologindata.cpp loadPlayer.
+    let curr_level_exp = xp_for_level(player.level);
+    let next_level_exp = xp_for_level(player.level + 1);
+    let level_percent: u8 = if next_level_exp > curr_level_exp {
+        (get_basis_point_level(
+            player.experience.saturating_sub(curr_level_exp),
+            next_level_exp - curr_level_exp,
+        ) / 100) as u8
+    } else {
+        0
+    };
 
     // 1. 0xA0 stats (AddPlayerStats).
     burst.extend_from_slice(&body(|out| {
@@ -101,19 +156,19 @@ pub fn build_enter_world_burst(
             out,
             player.health,    // health
             player.healthmax, // max health
-            0,                // free capacity
-            0,                // experience
+            player.capacity,  // free capacity
+            player.experience,
             player.level as u16,
-            0,                     // level percent
+            level_percent,
             0,                     // exp_display (clientExpDisplay)
             0,                     // low_level_bonus
             0,                     // store_exp_bonus
             0,                     // stamina_bonus
             player.mana,           // mana
             player.manamax,        // max mana
-            0,                     // soul
+            player.soul,           // soul
             player.stamina as u16, // stamina minutes
-            110,                   // base speed / 2 (baseSpeed 220)
+            base_speed_half,       // base speed / 2
             0,                     // regen seconds
             0,                     // offline training minutes
             0,                     // mana shield
@@ -123,12 +178,28 @@ pub fn build_enter_world_burst(
 
     // 2. 0xA1 skills (AddPlayerSkills).
     burst.extend_from_slice(&body(|out| {
-        let magic: pg::SkillRow = (0, 0, 0, 0);
-        // 7 regular skills (FIST..FISHING): level 10, base 10, base 10, pct 0.
-        let skills: [pg::SkillRow; 7] = [(10, 10, 10, 0); 7];
+        // magic block: (magicLevel, baseMagicLevel, base+loyalty, percent).
+        // magLevelPercent = getBasisPointLevel(manaSpent, reqMana(magLevel+1)).
+        let mag_level = player.magic_level as u16;
+        let mag_percent =
+            get_basis_point_level(player.mana_spent, voc.required_mana(player.magic_level + 1));
+        let magic: pg::SkillRow = (mag_level, mag_level, mag_level, mag_percent);
+
+        // 7 regular skills (FIST..FISHING). percent =
+        // getBasisPointLevel(tries, reqSkillTries(skill, level+1)).
+        let mut skills: [pg::SkillRow; 7] = [(0, 0, 0, 0); 7];
+        for (i, row) in skills.iter_mut().enumerate() {
+            let level = player.skill_levels[i];
+            let percent = get_basis_point_level(
+                player.skill_tries[i],
+                voc.required_skill_tries(i as u8, level + 1),
+            );
+            *row = (level, level, level, percent);
+        }
+
         // 6 special skills (SPECIALSKILL_FIRST..=SPECIALSKILL_LAST): all 0.
         let special: [pg::SpecialSkillRow; 6] = [(0, 0); 6];
-        pg::serialize_skills(out, magic, &skills, &special, 0);
+        pg::serialize_skills(out, magic, &skills, &special, player.capacity);
     }));
 
     // 3. 0xA2 icons (sendIcons) — empty bitmask.
@@ -148,9 +219,28 @@ pub fn build_enter_world_burst(
     }));
 
     // 8. 0x9F basic data — 255 spell ids (0x00..=0xFE).
+    // is_premium mirrors C++ Player::isPremium(): premiumEndsAt > now. The
+    // premium-end field carries premiumEndsAt (FREE_PREMIUM would zero it, but
+    // that's a config that defaults off). magic_shield = vocation->getMagicShield()
+    // which, with the default-on MANASHIELD_BREAKABLE config, is the per-vocation
+    // magic_shield flag.
+    let now_secs: u32 = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_secs())
+        .unwrap_or(0)
+        .min(u32::MAX as u64) as u32;
+    let is_premium = player.premium_ends_at > now_secs;
     let spell_ids: Vec<u16> = (0u16..0xFF).collect();
     burst.extend_from_slice(&body(|out| {
-        pg::serialize_basic_data(out, false, 0, 0, false, &spell_ids, false);
+        pg::serialize_basic_data(
+            out,
+            is_premium,
+            if is_premium { player.premium_ends_at } else { 0 },
+            voc.client_id,
+            false,
+            &spell_ids,
+            voc.magic_shield,
+        );
     }));
 
     // 9. 0xF5 items — no carried items.
@@ -172,19 +262,25 @@ pub fn build_enter_world_burst(
         master_id: 0,
         health_hidden: false,
         health_percent: 100,
-        direction: 2, // south
+        direction: player.direction,
         ghost_or_invisible: false,
         outfit: pg::OutfitDescriptor {
-            look_type: 128,
+            look_type: player.look_type,
+            look_head: player.look_head,
+            look_body: player.look_body,
+            look_legs: player.look_legs,
+            look_feet: player.look_feet,
+            look_addons: player.look_addons,
+            look_mount: player.look_mount,
             ..pg::OutfitDescriptor::default()
         },
         light_level: 0,
         light_color: 0,
-        step_speed_half: 110, // speed 220 / 2
+        step_speed_half: base_speed_half,
         skull: 0,
         party_shield: 0,
         guild_emblem: 0,
-        player_vocation_client_id: 0,
+        player_vocation_client_id: voc.client_id,
         speech_bubble: 0,
         can_walkthrough: false,
     };
@@ -1470,12 +1566,32 @@ mod tests {
     // Task 6.3 — enter-world burst
     // -----------------------------------------------------------------------
 
-    #[test]
-    fn enter_world_burst_emits_full_login_bundle_in_player_cpp_order() {
-        use forgottenserver_database::iologindata::PlayerLoginData;
+    use forgottenserver_database::iologindata::PlayerLoginData;
 
-        let world = World::new();
-        let player = PlayerLoginData {
+    /// A `Vocations` registry with a single vocation id 1 (clientid 7) used so
+    /// the enter-world tests resolve a real vocation (client id, skill/mana
+    /// req formulas, magic-shield flag).
+    fn test_vocations() -> Vocations {
+        Vocations::load_from_xml(
+            r#"<vocations>
+                 <vocation id="1" name="Knight" clientid="7" manamultiplier="1.1" magicshield="1">
+                   <skill id="0" multiplier="1.5"/>
+                   <skill id="1" multiplier="1.1"/>
+                   <skill id="2" multiplier="1.1"/>
+                   <skill id="3" multiplier="1.1"/>
+                   <skill id="4" multiplier="1.4"/>
+                   <skill id="5" multiplier="1.1"/>
+                   <skill id="6" multiplier="1.1"/>
+                 </vocation>
+               </vocations>"#,
+        )
+        .unwrap()
+    }
+
+    /// A representative login row with non-default progression/outfit values so
+    /// tests can assert the real bytes land in the burst.
+    fn sample_login_data() -> PlayerLoginData {
+        PlayerLoginData {
             name: "Hero".to_string(),
             level: 10,
             health: 200,
@@ -1486,9 +1602,33 @@ mod tests {
             posx: 100,
             posy: 100,
             posz: 7,
-        };
+            experience: 4200,
+            vocation_id: 1,
+            magic_level: 3,
+            mana_spent: 200,
+            soul: 100,
+            capacity: 40500,
+            skill_levels: [11, 12, 13, 14, 15, 16, 17],
+            skill_tries: [0, 0, 0, 0, 0, 0, 0],
+            look_type: 130,
+            look_head: 10,
+            look_body: 20,
+            look_legs: 30,
+            look_feet: 40,
+            look_addons: 3,
+            look_mount: 0,
+            direction: 1,
+            premium_ends_at: 0,
+        }
+    }
+
+    #[test]
+    fn enter_world_burst_emits_full_login_bundle_in_player_cpp_order() {
+        let world = World::new();
+        let player = sample_login_data();
+        let vocations = test_vocations();
         let creature_id = 0x1000_0001u32;
-        let burst = build_enter_world_burst(&player, &world, creature_id);
+        let burst = build_enter_world_burst(&player, &world, creature_id, &vocations);
 
         // Mirrors Player::login order (player.cpp:1188-1205):
         // 0xA0 stats first (no VIP packets — empty list).
@@ -1528,22 +1668,16 @@ mod tests {
 
     #[test]
     fn enter_world_burst_ends_with_eleven_empty_inventory_slots() {
-        use forgottenserver_database::iologindata::PlayerLoginData;
-
         let world = World::new();
         let player = PlayerLoginData {
-            name: "Hero".to_string(),
             level: 1,
             health: 150,
             healthmax: 150,
             mana: 0,
             manamax: 0,
-            stamina: 2520,
-            posx: 100,
-            posy: 100,
-            posz: 7,
+            ..sample_login_data()
         };
-        let burst = build_enter_world_burst(&player, &world, 0x1000_0001);
+        let burst = build_enter_world_burst(&player, &world, 0x1000_0001, &test_vocations());
 
         // The final 22 bytes must be 11 empty-inventory packets: [0x79][slot]
         // for slots 1..=11.
@@ -1552,6 +1686,121 @@ mod tests {
             assert_eq!(tail[i * 2], 0x79, "slot {slot} must be empty (0x79)");
             assert_eq!(tail[i * 2 + 1], slot, "slot id must be {slot}");
         }
+    }
+
+    /// The 0xA0 stats packet must now carry the real free-capacity, experience,
+    /// level + levelPercent, soul, and base-speed/2 (level-scaled), matching the
+    /// C++ AddPlayerStats field order.
+    #[test]
+    fn enter_world_burst_stats_packet_carries_real_values() {
+        let world = World::new();
+        let player = sample_login_data();
+        let burst = build_enter_world_burst(&player, &world, 0x1000_0001, &test_vocations());
+
+        // 0xA0 body layout: [0xA0][hp u32][hpmax u32][freecap u32][exp u64]
+        //   [level u16][levelpct u8][exp_display u16][low u16][store u16]
+        //   [stamina_bonus u16][mana u32][manamax u32][soul u8]
+        //   [stamina u16][basespeed/2 u16]...
+        let s0 = burst
+            .iter()
+            .position(|&b| b == 0xA0)
+            .expect("stats packet present");
+        let b = &burst[s0..];
+        assert_eq!(b[0], 0xA0);
+        // hp(4) hpmax(4) at [1..9]; free capacity (u32) at [9..13].
+        assert_eq!(
+            u32::from_le_bytes([b[9], b[10], b[11], b[12]]),
+            40500,
+            "free capacity must be the player's cap"
+        );
+        // experience (u64) at [13..21].
+        assert_eq!(
+            u64::from_le_bytes([b[13], b[14], b[15], b[16], b[17], b[18], b[19], b[20]]),
+            4200,
+            "experience must be 4200"
+        );
+        // level (u16) at [21..23], levelPercent (u8) at [23].
+        assert_eq!(
+            u16::from_le_bytes([b[21], b[22]]),
+            10,
+            "level must be 10"
+        );
+        // level 10: currExp = xp_for_level(10), nextExp = xp_for_level(11).
+        let curr = xp_for_level(10);
+        let next = xp_for_level(11);
+        let expected_pct =
+            (get_basis_point_level(4200u64.saturating_sub(curr), next - curr) / 100) as u8;
+        assert_eq!(b[23], expected_pct, "level percent must match C++ formula");
+        // exp_display(2) low(2) store(2) stamina_bonus(2) at [24..32];
+        // mana u32 [32..36]; manamax u32 [36..40]; soul u8 [40].
+        assert_eq!(b[40], 100, "soul must be 100");
+        // stamina u16 [41..43]; base speed/2 u16 [43..45].
+        assert_eq!(
+            u16::from_le_bytes([b[43], b[44]]),
+            (base_speed(10) / 2) as u16,
+            "base speed/2 must be level-scaled"
+        );
+    }
+
+    /// The 0xA1 skills packet must carry the real magic level and per-skill
+    /// levels (FIST..FISHING order), each repeated as level/base/base_loyalty.
+    #[test]
+    fn enter_world_burst_skills_packet_carries_real_skill_levels() {
+        let world = World::new();
+        let player = sample_login_data();
+        let burst = build_enter_world_burst(&player, &world, 0x1000_0001, &test_vocations());
+
+        // 0xA1 body: [0xA1][mag level u16][mag base u16][mag base_loyalty u16]
+        //   [mag pct u16] then 7 skill rows of (level u16, base u16,
+        //   base_loyalty u16, percent u16).
+        let s0 = burst
+            .iter()
+            .position(|&b| b == 0xA1)
+            .expect("skills packet present");
+        let b = &burst[s0..];
+        assert_eq!(b[0], 0xA1);
+        // magic level u16 at [1..3].
+        assert_eq!(u16::from_le_bytes([b[1], b[2]]), 3, "magic level must be 3");
+        // First skill row (FIST) begins at byte offset 9 (1 + 8 magic bytes).
+        // level is the first u16 of the row.
+        let fist_level = u16::from_le_bytes([b[9], b[10]]);
+        assert_eq!(fist_level, 11, "FIST skill level must be 11");
+        // 7th skill (FISHING) row: 9 + 6*8 = 57.
+        let fishing_level = u16::from_le_bytes([b[57], b[58]]);
+        assert_eq!(fishing_level, 17, "FISHING skill level must be 17");
+    }
+
+    /// The 0x9F basic-data packet must carry the vocation client id and the
+    /// vocation magic-shield byte; a player with premiumEndsAt=0 is non-premium.
+    #[test]
+    fn enter_world_burst_basic_data_carries_vocation_and_premium() {
+        let world = World::new();
+        let player = sample_login_data();
+        let burst = build_enter_world_burst(&player, &world, 0x1000_0001, &test_vocations());
+
+        // 0x9F layout: [0x9F][isPremium u8][premiumEnd u32][vocClientId u8]
+        //   [prey u8][spellCount u16=0xFF][255 * u16 spell ids][magicShield u8]
+        let s0 = burst
+            .iter()
+            .position(|&b| b == 0x9F)
+            .expect("basic data present");
+        let b = &burst[s0..];
+        assert_eq!(b[0], 0x9F);
+        assert_eq!(b[1], 0, "premiumEndsAt=0 → not premium");
+        assert_eq!(
+            u32::from_le_bytes([b[2], b[3], b[4], b[5]]),
+            0,
+            "premium-end field is 0 for non-premium"
+        );
+        assert_eq!(b[6], 7, "vocation client id must be 7");
+        // prey byte [7], spell count u16 [8..10] = 0xFF, then 255 spell ids
+        // (255 * 2 = 510 bytes) → magic shield byte at 10 + 510 = 520.
+        assert_eq!(
+            u16::from_le_bytes([b[8], b[9]]),
+            0xFF,
+            "spell id count must be 255"
+        );
+        assert_eq!(b[520], 1, "magic shield byte must reflect vocation flag");
     }
 
     #[test]

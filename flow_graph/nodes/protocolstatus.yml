@@ -41,6 +41,20 @@ nodes:
         kind: static
         confidence: static
         order: 1
+      - target:
+          file: "src/protocolstatus.cpp"
+          qualified_name: "ProtocolStatus::sendStatusString"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "recvbyte == 0xFF (XML info protocol, dispatched via g_dispatcher.addTask)"
+      - target:
+          file: "src/protocolstatus.cpp"
+          qualified_name: "ProtocolStatus::sendInfo"
+        kind: dynamic
+        confidence: curated
+        order: 2
+        condition: "recvbyte == 0x01 (server info protocol, dispatched via g_dispatcher.addTask)"
   - file: "src/protocolstatus.cpp"
     qualified_name: "ProtocolStatus::sendStatusString"
     edges:

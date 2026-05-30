@@ -163,6 +163,7 @@ pub fn start_listeners(modules: &Modules) -> Result<()> {
         modules.config.clone(),
         modules.game_state.clone(),
         modules.db.clone(),
+        modules.game_data.vocations.clone(),
     )
     .map_err(|e| anyhow!("Failed to start game listener: {e}"))?;
     srv_boot::start_http_listener(

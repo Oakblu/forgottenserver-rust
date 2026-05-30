@@ -101,3 +101,10 @@ nodes:
         kind: static
         confidence: static
         order: 6
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::callFunction"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "Lua boundary — scriptInterface->callFunction (TalkAction)"

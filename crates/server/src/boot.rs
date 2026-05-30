@@ -129,11 +129,12 @@ impl ConnectionHandler for StatusHandler {
 /// Handles a single game-protocol TCP connection.
 pub struct GameLoginHandler {
     db: Arc<Mutex<Box<dyn Database + Send>>>,
+    vocations: Arc<Vocations>,
 }
 
 impl GameLoginHandler {
-    pub fn new(db: Arc<Mutex<Box<dyn Database + Send>>>) -> Self {
-        Self { db }
+    pub fn new(db: Arc<Mutex<Box<dyn Database + Send>>>, vocations: Arc<Vocations>) -> Self {
+        Self { db, vocations }
     }
 
     /// Handle a single accepted TCP stream: send challenge, read first packet,
@@ -341,7 +342,12 @@ impl GameLoginHandler {
                 // Deterministic creature id for the player avatar
                 // (mirrors C++ player ids: 0x10000000 | guid).
                 let player_creature_id = 0x1000_0000u32 | (character_id as u32);
-                let burst = build_enter_world_burst(&player_data, &world, player_creature_id);
+                let burst = build_enter_world_burst(
+                    &player_data,
+                    &world,
+                    player_creature_id,
+                    &self.vocations,
+                );
                 eprintln!("[game] enter-world burst built: {} bytes", burst.len());
                 let framed_burst = frame_packet(&burst, packet.xtea_key);
                 eprintln!("[game] framed burst: {} bytes", framed_burst.len());
@@ -560,11 +566,12 @@ pub fn start_game_listener(
     config: Arc<ConfigManager>,
     _game_state: Arc<Mutex<GameState>>,
     db: Arc<Mutex<Box<dyn Database + Send>>>,
+    vocations: Arc<Vocations>,
 ) -> Result<(), String> {
     let game_port = config.get_integer(IntegerKey::GamePort) as u16;
     let listener = TcpListener::bind(format!("0.0.0.0:{game_port}"))
         .map_err(|e| format!("Cannot bind game port {game_port}: {e}"))?;
-    let handler = Arc::new(GameLoginHandler::new(db));
+    let handler = Arc::new(GameLoginHandler::new(db, vocations));
     std::thread::spawn(move || {
         accept_loop(listener, handler);
     });
@@ -1000,7 +1007,7 @@ mod tests {
         let config = Arc::new(config_manager);
         let game_state = Arc::new(Mutex::new(GameState::new()));
 
-        let res = start_game_listener(config, game_state, empty_db());
+        let res = start_game_listener(config, game_state, empty_db(), empty_vocations());
         assert!(
             res.is_ok(),
             "start_game_listener must bind successfully: {:?}",
@@ -1032,7 +1039,7 @@ mod tests {
         let config = Arc::new(config_manager);
         let game_state = Arc::new(Mutex::new(GameState::new()));
 
-        let res = start_game_listener(config, game_state, empty_db());
+        let res = start_game_listener(config, game_state, empty_db(), empty_vocations());
         assert!(res.is_err(), "must error when port is already bound");
         let err = res.unwrap_err();
         assert!(err.contains("Cannot bind game port"), "error: {err}");
@@ -1135,7 +1142,7 @@ mod tests {
         // Spawn the server handler in a background thread.
         std::thread::spawn(move || {
             if let Ok((stream, _)) = listener.accept() {
-                GameLoginHandler::new(empty_db()).handle_connection(stream);
+                GameLoginHandler::new(empty_db(), empty_vocations()).handle_connection(stream);
             }
         });
 
@@ -1560,7 +1567,7 @@ mod tests {
         forgottenserver_common::rsa::load_pem(forgottenserver_common::rsa::DEFAULT_KEY_PEM).ok();
 
         let db: Arc<Mutex<Box<dyn Database + Send>>> = Arc::new(Mutex::new(Box::new(RoundTripDb)));
-        let handler = GameLoginHandler::new(db);
+        let handler = GameLoginHandler::new(db, empty_vocations());
 
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let port = listener.local_addr().unwrap().port();
@@ -1705,7 +1712,7 @@ mod tests {
 
         let db: Arc<Mutex<Box<dyn Database + Send>>> =
             Arc::new(Mutex::new(Box::new(InMemoryDb::new())));
-        let handler = GameLoginHandler::new(db);
+        let handler = GameLoginHandler::new(db, empty_vocations());
 
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let port = listener.local_addr().unwrap().port();

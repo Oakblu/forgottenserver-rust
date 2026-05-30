@@ -3,7 +3,7 @@
 # Top-level targets for developers and the harness. Real builds use
 # cargo / docker compose directly; these targets are convenience wrappers.
 
-.PHONY: help harness harness-up harness-down test clippy fmt ledger ledger-test ledger-build ledger-rollup ledger-cross e2e flow flow-test flow-build
+.PHONY: help harness harness-up harness-down test clippy fmt ledger ledger-test ledger-build ledger-rollup ledger-cross e2e flow flow-test flow-build flow-curate flow-check-network flow-curate-events flow-check-events
 
 help:
 	@echo "Available targets:"
@@ -20,6 +20,10 @@ help:
 	@echo "  make ledger-cross   — phase-2 cross-validation (roundtrip + coverage + orphans)"
 	@echo "  make flow           — validate flow graph (node keys, dangling edges, orphans)"
 	@echo "  make flow-build     — bootstrap nodes + extract static edges from C++ source"
+	@echo "  make flow-curate    — apply curated network edges (opcode dispatch table)"
+	@echo "  make flow-check-network — verify every active opcode has a curated edge"
+	@echo "  make flow-curate-events — apply curated event/scheduler edges"
+	@echo "  make flow-check-events  — verify event type and scheduler tick coverage"
 	@echo "  make flow-test      — run scripts/flow/ unit tests"
 	@echo ""
 	@echo "Harness lane subset:"
@@ -65,10 +69,24 @@ ledger-cross:
 
 flow:
 	@python3 scripts/flow/validate.py
+	@python3 scripts/flow/check_network_coverage.py
+	@python3 scripts/flow/check_event_coverage.py
 
 flow-build:
 	@python3 scripts/flow/bootstrap_nodes.py
 	@python3 scripts/flow/build_edges.py
+
+flow-curate:
+	@python3 scripts/flow/curate_network.py
+
+flow-check-network:
+	@python3 scripts/flow/check_network_coverage.py
+
+flow-curate-events:
+	@python3 scripts/flow/curate_events.py
+
+flow-check-events:
+	@python3 scripts/flow/check_event_coverage.py
 
 flow-test:
 	@python3 -m unittest discover -s scripts/flow/tests -v

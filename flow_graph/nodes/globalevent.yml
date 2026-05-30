@@ -146,6 +146,13 @@ nodes:
         kind: static
         confidence: static
         order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::callFunction"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "Lua boundary — scriptInterface->callFunction (GlobalEvent record)"
   - file: "src/globalevent.cpp"
     qualified_name: "GlobalEvent::executeEvent"
     edges:
@@ -167,3 +174,10 @@ nodes:
         kind: static
         confidence: static
         order: 3
+      - target:
+          file: "src/luascript.cpp"
+          qualified_name: "LuaScriptInterface::callFunction"
+        kind: dynamic
+        confidence: curated
+        order: 1
+        condition: "Lua boundary — scriptInterface->callFunction (GlobalEvent)"

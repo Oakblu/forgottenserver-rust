@@ -49,6 +49,13 @@ nodes:
         kind: static
         confidence: static
         order: 6
+      - target:
+          file: "src/server.cpp"
+          qualified_name: "ServiceManager::run"
+        kind: static
+        confidence: curated
+        order: 7
+        condition: "serviceManager.is_running() check passes after mainLoader completes"
   - file: "src/otserv.cpp"
     qualified_name: mainLoader
     edges:
