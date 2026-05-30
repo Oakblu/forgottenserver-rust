@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """Curate dynamic virtual-dispatch edges in the flow graph.
 
-For every in-scope Creature virtual (pure-virtuals + behavioral non-trivials),
-adds a curated edge from Creature::<method> to each concrete override in
-Player, Monster, and Npc, condition: "dyntype == <Subclass>".
+For every in-scope Creature virtual method (all_virtuals minus trivial
+accessors), adds a curated edge from Creature::<method> to each concrete
+override in Player, Monster, and Npc, condition: "dyntype == <Subclass>".
+
+Nodes are looked up in creature.yml first (src/creature.cpp implementations),
+then in creature.h.yml (pure-virtual / inline declarations).
 
 Trivial type-accessor helpers (getPlayer/getMonster/getNpc/getReceiver) are
 excluded — they have no behavioral significance beyond type testing.
@@ -26,6 +29,14 @@ import ledger_io  # noqa: E402
 
 _ROOT = _HERE.parent.parent
 
+
+def _load_manifest(root: Path) -> frozenset[str]:
+    """Return the set of qualified_names in cpp_symbol_manifest.json."""
+    import json
+    data = json.loads((root / "cpp_symbol_manifest.json").read_text())
+    return frozenset(s["qualified_name"] for s in data)
+
+
 # Methods that merely cast/return `this` or `nullptr` — no behavioral dispatch.
 TRIVIAL_ACCESSOR_ALLOWLIST: frozenset[str] = frozenset({
     "getPlayer",
@@ -41,9 +52,11 @@ _SUBCLASSES: list[tuple[str, str, str]] = [
     ("Npc",     "src/npc.cpp",     "src/npc.h"),
 ]
 
-_VIRTUAL_RE = re.compile(r"\bvirtual\b")
 _NAME_RE = re.compile(r"virtual\s+(?:.*?\s+)?(\w+)\s*\(")
-_OVERRIDE_RE = re.compile(r"\b(\w+)\s*\([^)]*\)\s*(?:const\s*)?(?:override|final|override\s+final|final\s+override)\b")
+_OVERRIDE_RE = re.compile(
+    r"\b(\w+)\s*\([^)]*\)\s*(?:const\s*)?"
+    r"(?:override|final|override\s+final|final\s+override)\b"
+)
 
 # ---------------------------------------------------------------------------
 # Parsing helpers
@@ -98,19 +111,29 @@ def _edge_key(edge: dict) -> EdgeKey:
 
 
 def _make_edge(file: str, qname: str, condition: str, order: int) -> dict:
-    e: dict[str, Any] = {
+    return {
         "target": {"file": file, "qualified_name": qname},
         "kind": "dynamic",
         "confidence": "curated",
         "condition": condition,
         "order": order,
     }
-    return e
+
+
+def _is_virtual_dispatch_edge(edge: dict) -> bool:
+    """True if this edge was added by curate_virtual (dyntype == condition)."""
+    return (
+        edge.get("confidence") == "curated"
+        and edge.get("kind") == "dynamic"
+        and str(edge.get("condition", "")).startswith("dyntype == ")
+    )
 
 
 def _merge(existing: list[dict], new_curated: list[dict]) -> list[dict]:
+    # Drop all stale virtual-dispatch edges first, then add the new set.
+    kept = [e for e in existing if not _is_virtual_dispatch_edge(e)]
     keys = {_edge_key(e) for e in new_curated}
-    kept = [e for e in existing if _edge_key(e) not in keys]
+    kept = [e for e in kept if _edge_key(e) not in keys]
     return kept + new_curated
 
 
@@ -127,14 +150,29 @@ def _write(path: Path, nodes: list[dict]) -> bool:
     return True
 
 
-def _update(nodes: list[dict], file: str, qname: str,
-            new_edges: list[dict]) -> bool:
+def _strip_virtual_dispatch_edges(nodes: list[dict]) -> bool:
+    """Remove all virtual-dispatch curated edges from every node. Return True if changed."""
     changed = False
     for n in nodes:
-        if n.get("file") == file and n.get("qualified_name") == qname:
-            old_edges = list(n.get("edges") or [])
-            n["edges"] = _merge(old_edges, new_edges)
-            if n["edges"] != old_edges:
+        old = list(n.get("edges") or [])
+        new = [e for e in old if not _is_virtual_dispatch_edge(e)]
+        if new != old:
+            n["edges"] = new
+            changed = True
+    return changed
+
+
+def _update_nodes(nodes: list[dict], qname: str,
+                  new_edges: list[dict]) -> bool:
+    """Append new_edges to all nodes matching qname (handles overloads)."""
+    changed = False
+    for n in nodes:
+        if n.get("qualified_name") == qname:
+            existing = list(n.get("edges") or [])
+            keys = {_edge_key(e) for e in existing}
+            added = [e for e in new_edges if _edge_key(e) not in keys]
+            if added:
+                n["edges"] = existing + added
                 changed = True
     return changed
 
@@ -146,38 +184,69 @@ def _update(nodes: list[dict], file: str, qname: str,
 def build_dispatch_table(
     root: Path,
     scope: set[str],
-) -> dict[str, list[tuple[str, str, str]]]:
-    """Return {method_name: [(subclass, cpp_file, header_file), ...]}."""
-    table: dict[str, list[tuple[str, str, str]]] = {m: [] for m in scope}
+    manifest: frozenset[str],
+) -> dict[str, list[tuple[str, str]]]:
+    """Return {method_name: [(class_prefix, cpp_file), ...]} for manifest-present overrides.
+
+    Inline-only overrides (declared in header, not in .cpp, absent from manifest)
+    are skipped so edge targets always resolve in the validator.
+    """
+    table: dict[str, list[tuple[str, str]]] = {m: [] for m in scope}
     for class_prefix, cpp_file, header_file in _SUBCLASSES:
         hdr = (root / "forgottenserver-upstream" / header_file).read_text()
         overrides = parse_overrides(hdr, class_prefix)
         for method in scope:
             if method in overrides:
-                table[method].append((class_prefix, cpp_file, header_file))
+                qname = f"{class_prefix}::{method}"
+                if qname in manifest:
+                    table[method].append((class_prefix, cpp_file))
     return table
 
 
 # ---------------------------------------------------------------------------
-# Curate creature.yml
+# Curate creature.yml + creature.h.yml
 # ---------------------------------------------------------------------------
 
-def _update_creature(nodes_dir: Path, dispatch: dict[str, list[tuple[str, str, str]]]) -> bool:
-    path = nodes_dir / "creature.yml"
-    nodes = _load(path)
-    changed = False
+def curate_shards(nodes_dir: Path,
+                  dispatch: dict[str, list[tuple[str, str]]]) -> int:
+    """Apply dispatch edges to creature.yml and creature.h.yml; return count written.
+
+    Clears ALL existing virtual-dispatch edges first (full replace), ensuring
+    no stale edges from a previous wider dispatch set survive.
+    """
+    cpp_path = nodes_dir / "creature.yml"
+    hdr_path = nodes_dir / "creature.h.yml"
+    cpp_nodes = _load(cpp_path)
+    hdr_nodes = _load(hdr_path)
+
+    # Phase 1: strip all stale virtual-dispatch edges from both shards.
+    _strip_virtual_dispatch_edges(cpp_nodes)
+    _strip_virtual_dispatch_edges(hdr_nodes)
+
+    cpp_qnames = {n["qualified_name"] for n in cpp_nodes}
+    hdr_qnames = {n["qualified_name"] for n in hdr_nodes}
+
+    # Phase 2: add fresh dispatch edges.
     for method, targets in dispatch.items():
         if not targets:
             continue
-        new_edges = []
-        for order, (class_prefix, cpp_file, _) in enumerate(targets, 1):
-            qname = f"{class_prefix}::{method}"
-            new_edges.append(_make_edge(
-                cpp_file, qname,
-                f"dyntype == {class_prefix}", order,
-            ))
-        changed |= _update(nodes, "src/creature.cpp", f"Creature::{method}", new_edges)
-    return _write(path, nodes) or changed
+        new_edges = [
+            _make_edge(cpp_file, f"{cls}::{method}", f"dyntype == {cls}", i + 1)
+            for i, (cls, cpp_file) in enumerate(targets)
+        ]
+        base_qname = f"Creature::{method}"
+        if base_qname in cpp_qnames:
+            _update_nodes(cpp_nodes, base_qname, new_edges)
+        elif base_qname in hdr_qnames:
+            _update_nodes(hdr_nodes, base_qname, new_edges)
+        # if neither exists, skip silently (will surface in check)
+
+    written = 0
+    if _write(cpp_path, cpp_nodes):
+        written += 1
+    if _write(hdr_path, hdr_nodes):
+        written += 1
+    return written
 
 
 # ---------------------------------------------------------------------------
@@ -191,14 +260,15 @@ def curate(root: Path = _ROOT) -> None:
     all_virtuals, _pure = parse_creature_virtuals(creature_h)
     scope = in_scope_virtuals(all_virtuals)
 
-    dispatch = build_dispatch_table(root, scope)
+    manifest = _load_manifest(root)
+    dispatch = build_dispatch_table(root, scope, manifest)
     total_edges = sum(len(v) for v in dispatch.values())
 
-    written = _update_creature(nodes_dir, dispatch)
+    written = curate_shards(nodes_dir, dispatch)
     print(
         f"Virtual curation: {len(scope)} in-scope virtuals, "
         f"{total_edges} dispatch edges across Player/Monster/Npc — "
-        f"{'1 shard written' if written else '0 shards written (already up-to-date)'}"
+        f"{written} shard(s) written"
     )
 
 

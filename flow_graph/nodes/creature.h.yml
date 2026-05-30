@@ -160,19 +160,54 @@ nodes:
     edges: []
   - file: "src/creature.h"
     qualified_name: "Creature::getName"
-    edges: []
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::getName"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Monster"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::getNameDescription"
-    edges: []
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::getNameDescription"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Monster"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::getDescription"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::getDescription"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::getDescription"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Npc"
+        order: 2
   - file: "src/creature.h"
     qualified_name: "Creature::getType"
     edges: []
   - file: "src/creature.h"
     qualified_name: "Creature::setID"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::setID"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::setRemoved"
     edges: []
@@ -181,10 +216,52 @@ nodes:
     edges: []
   - file: "src/creature.h"
     qualified_name: "Creature::removeList"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::removeList"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::removeList"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Monster"
+        order: 2
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::removeList"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Npc"
+        order: 3
   - file: "src/creature.h"
     qualified_name: "Creature::addList"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::addList"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::addList"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Monster"
+        order: 2
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::addList"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Npc"
+        order: 3
   - file: "src/creature.h"
     qualified_name: "Creature::canSee_pos"
     edges: []
@@ -196,10 +273,24 @@ nodes:
     edges: []
   - file: "src/creature.h"
     qualified_name: "Creature::getSkull"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::getSkull"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::getSkullClient"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::getSkullClient"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::setSkull"
     edges: []
@@ -232,7 +323,14 @@ nodes:
     edges: []
   - file: "src/creature.h"
     qualified_name: "Creature::canSeeGhostMode"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::canSeeGhostMode"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::getWalkDelay_dir"
     edges: []
@@ -322,7 +420,28 @@ nodes:
     edges: []
   - file: "src/creature.h"
     qualified_name: "Creature::goToFollowCreature"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::goToFollowCreature"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::goToFollowCreature"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Monster"
+        order: 2
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::goToFollowCreature"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Npc"
+        order: 3
   - file: "src/creature.h"
     qualified_name: "Creature::updateFollowCreaturePath"
     edges: []
@@ -331,10 +450,31 @@ nodes:
     edges: []
   - file: "src/creature.h"
     qualified_name: "Creature::onWalkAborted"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::onWalkAborted"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::onWalkComplete"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::onWalkComplete"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onWalkComplete"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Monster"
+        order: 2
   - file: "src/creature.h"
     qualified_name: "Creature::getFollowCreature"
     edges: []
@@ -409,16 +549,44 @@ nodes:
     edges: []
   - file: "src/creature.h"
     qualified_name: "Creature::getArmor"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::getArmor"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::getDefense"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::getDefense"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::getAttackFactor"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::getAttackFactor"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::getDefenseFactor"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::getDefenseFactor"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::addCondition"
     edges: []
@@ -469,7 +637,14 @@ nodes:
     edges: []
   - file: "src/creature.h"
     qualified_name: "Creature::isAttackable"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::isAttackable"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::changeHealth"
     edges: []
@@ -481,7 +656,14 @@ nodes:
     edges: []
   - file: "src/creature.h"
     qualified_name: "Creature::challengeCreature"
-    edges: []
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::challengeCreature"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Monster"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::getKillers"
     edges: []
@@ -514,7 +696,14 @@ nodes:
     edges: []
   - file: "src/creature.h"
     qualified_name: "Creature::onAttackedCreature"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::onAttackedCreature"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::onAttacked"
     edges: []
@@ -523,7 +712,14 @@ nodes:
     edges: []
   - file: "src/creature.h"
     qualified_name: "Creature::onTargetCreatureGainHealth"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::onTargetCreatureGainHealth"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::onKilledCreature"
     edges: []
@@ -532,10 +728,24 @@ nodes:
     edges: []
   - file: "src/creature.h"
     qualified_name: "Creature::onAttackedCreatureBlockHit"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::onAttackedCreatureBlockHit"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::onBlockHit"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::onBlockHit"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::onChangeZone"
     edges: []
@@ -571,13 +781,48 @@ nodes:
     edges: []
   - file: "src/creature.h"
     qualified_name: "Creature::onUpdateTileItem"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::onUpdateTileItem"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::onRemoveTileItem"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::onRemoveTileItem"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::onCreatureAppear"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::onCreatureAppear"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onCreatureAppear"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Monster"
+        order: 2
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::onCreatureAppear"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Npc"
+        order: 3
   - file: "src/creature.h"
     qualified_name: "Creature::onRemoveCreature"
     edges: []
@@ -586,16 +831,58 @@ nodes:
     edges: []
   - file: "src/creature.h"
     qualified_name: "Creature::onAttackedCreatureDisappear"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::onAttackedCreatureDisappear"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onAttackedCreatureDisappear"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Monster"
+        order: 2
   - file: "src/creature.h"
     qualified_name: "Creature::onFollowCreatureDisappear"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::onFollowCreatureDisappear"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::onCreatureSay"
-    edges: []
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::onCreatureSay"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Monster"
+        order: 1
+      - target:
+          file: "src/npc.cpp"
+          qualified_name: "Npc::onCreatureSay"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Npc"
+        order: 2
   - file: "src/creature.h"
     qualified_name: "Creature::getCombatValues"
-    edges: []
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::getCombatValues"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Monster"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::getSummonCount"
     edges: []
@@ -826,7 +1113,21 @@ nodes:
     edges: []
   - file: "src/creature.h"
     qualified_name: "Creature::doAttacking"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::doAttacking"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::doAttacking"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Monster"
+        order: 2
   - file: "src/creature.h"
     qualified_name: "Creature::hasExtraSwing"
     edges: []
@@ -835,16 +1136,44 @@ nodes:
     edges: []
   - file: "src/creature.h"
     qualified_name: "Creature::dropLoot"
-    edges: []
+    edges:
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::dropLoot"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Monster"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::getLookCorpse"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::getLookCorpse"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
   - file: "src/creature.h"
     qualified_name: "Creature::getPathSearchParams"
     edges: []
   - file: "src/creature.h"
     qualified_name: "Creature::death"
-    edges: []
+    edges:
+      - target:
+          file: "src/player.cpp"
+          qualified_name: "Player::death"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Player"
+        order: 1
+      - target:
+          file: "src/monster.cpp"
+          qualified_name: "Monster::death"
+        kind: dynamic
+        confidence: curated
+        condition: "dyntype == Monster"
+        order: 2
   - file: "src/creature.h"
     qualified_name: "Creature::dropCorpse"
     edges: []

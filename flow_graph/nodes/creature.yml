@@ -1101,13 +1101,6 @@ nodes:
         confidence: curated
         condition: "dyntype == Player"
         order: 1
-      - target:
-          file: "src/npc.cpp"
-          qualified_name: "Npc::isImmune"
-        kind: dynamic
-        confidence: curated
-        condition: "dyntype == Npc"
-        order: 2
   - file: "src/creature.cpp"
     qualified_name: "Creature::isImmune"
     edges:
@@ -1124,13 +1117,6 @@ nodes:
         confidence: curated
         condition: "dyntype == Player"
         order: 1
-      - target:
-          file: "src/npc.cpp"
-          qualified_name: "Npc::isImmune"
-        kind: dynamic
-        confidence: curated
-        condition: "dyntype == Npc"
-        order: 2
   - file: "src/creature.cpp"
     qualified_name: "Creature::isSuppress"
     edges:
