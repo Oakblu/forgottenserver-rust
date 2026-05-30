@@ -3,7 +3,7 @@
 # Top-level targets for developers and the harness. Real builds use
 # cargo / docker compose directly; these targets are convenience wrappers.
 
-.PHONY: help harness harness-up harness-down test clippy fmt ledger ledger-test ledger-build ledger-rollup ledger-cross e2e flow flow-test flow-build flow-curate flow-check-network flow-curate-events flow-check-events flow-curate-virtual flow-check-virtual
+.PHONY: help harness harness-up harness-down test clippy fmt ledger ledger-test ledger-build ledger-rollup ledger-cross e2e flow flow-test flow-build flow-curate flow-check-network flow-curate-events flow-check-events flow-curate-virtual flow-check-virtual flow-gap flow-render
 
 help:
 	@echo "Available targets:"
@@ -26,6 +26,8 @@ help:
 	@echo "  make flow-check-events  — verify event type and scheduler tick coverage"
 	@echo "  make flow-curate-virtual — apply curated virtual-dispatch edges"
 	@echo "  make flow-check-virtual  — verify every in-scope Creature virtual has dispatch edges"
+	@echo "  make flow-gap       — run gap analysis + regenerate flow_graph/GAP_REPORT.md"
+	@echo "  make flow-render    — regenerate flow_graph/FLOW_GRAPH.md from YAML shards"
 	@echo "  make flow-test      — run scripts/flow/ unit tests"
 	@echo ""
 	@echo "Harness lane subset:"
@@ -96,6 +98,12 @@ flow-curate-virtual:
 
 flow-check-virtual:
 	@python3 scripts/flow/check_virtual_coverage.py
+
+flow-gap:
+	@python3 scripts/flow/generate_report.py
+
+flow-render:
+	@python3 scripts/flow/render_markdown.py
 
 flow-test:
 	@python3 -m unittest discover -s scripts/flow/tests -v

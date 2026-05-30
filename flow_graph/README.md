@@ -88,10 +88,25 @@ The graph YAML follows the same canonical-subset rules as `MIGRATION_LEDGER.yml`
 - Integers are bare: `1`, `42`.
 - Empty lists are `[]`.
 
-## Generated view
+## Generated reports (phase 6)
 
-`flow_graph/FLOW_GRAPH.md` is produced by `scripts/flow/render_markdown.py` (phase 6).
-**Do not hand-edit it.**
+`flow_graph/FLOW_GRAPH.md` is produced by `scripts/flow/render_markdown.py`.
+`flow_graph/GAP_REPORT.md` is produced by `scripts/flow/generate_report.py`.
+**Do not hand-edit either file.**
+
+Run `make flow-gap` to regenerate the gap report and `make flow-render` for the graph view.
+
+### Gap report categories
+
+| Badge | Category | Meaning |
+|---|---|---|
+| 🔴 | `MISSING_FLOW` | Reachable C++ path with no verified Rust implementation |
+| 🟠 | `DYNAMIC_GAP` | Dynamic dispatch target (opcode/event/virtual) is unimplemented |
+| 🟡 | `BRANCH_GAP` | Conditional branch target chain is unimplemented |
+| 🔵 | `ORDER_MISMATCH` | Boot-init ordering not reflected Rust-side (low-confidence) |
+
+Findings are suppressed if the symbol appears in `intentional_differences.yml`.
+Priority = `0.4 × (1/(1+depth)) + 0.4 × status_weight + 0.2 × criticality`.
 
 ## Static extractor — O1 decision
 
@@ -115,12 +130,14 @@ available on this host (PEP-668 externally-managed Python prevents pip installs)
 Edges extracted by the heuristic carry `confidence: static`.
 Hand-authored edges carry `confidence: curated` and are never overwritten.
 
-## Validator
+## Validator and CI
 
-`make flow` runs `scripts/flow/validate.py`, which checks:
+`make flow` runs the full consistency suite:
 
-1. Every node `{file, qualified_name}` key resolves in `cpp_symbol_manifest.json`.
-2. No edge targets a missing manifest key (dangling edge).
-3. Every node is reachable from the root via out-edges, or explicitly listed in `unreached`.
+1. `scripts/flow/validate.py` — every node key in manifest, no dangling edges, orphan check.
+2. `scripts/flow/check_network_coverage.py` — every active opcode has a curated dispatch edge.
+3. `scripts/flow/check_event_coverage.py` — every creature event type + scheduler tick covered.
+4. `scripts/flow/check_virtual_coverage.py` — every in-scope Creature virtual has override edges.
 
-Exit non-zero with the offending item named on any violation.
+The CI workflow (`.github/workflows/rust.yml`, job `flow-graph`) runs `make flow` and
+`make flow-test` on every push and pull request so the graph cannot drift from the manifests.

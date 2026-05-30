@@ -333,7 +333,10 @@ pub fn load_player_for_login(db: &dyn Database, character_id: i64) -> Option<Pla
         look_body: row.get::<u32>("lookbody").unwrap_or(0).min(u8::MAX as u32) as u8,
         look_legs: row.get::<u32>("looklegs").unwrap_or(0).min(u8::MAX as u32) as u8,
         look_feet: row.get::<u32>("lookfeet").unwrap_or(0).min(u8::MAX as u32) as u8,
-        look_addons: row.get::<u32>("lookaddons").unwrap_or(0).min(u8::MAX as u32) as u8,
+        look_addons: row
+            .get::<u32>("lookaddons")
+            .unwrap_or(0)
+            .min(u8::MAX as u32) as u8,
         look_mount: row.get("lookmount").unwrap_or(0),
         direction: row.get("direction").unwrap_or(2),
         premium_ends_at: row.get("premium_ends_at").unwrap_or(0),
@@ -2010,7 +2013,10 @@ mod tests {
         cols.insert("skill_shielding_tries".to_string(), DbValue::Integer(55));
         cols.insert("skill_fishing".to_string(), DbValue::Integer(17));
         cols.insert("skill_fishing_tries".to_string(), DbValue::Integer(65));
-        cols.insert("premium_ends_at".to_string(), DbValue::Integer(1_900_000_000));
+        cols.insert(
+            "premium_ends_at".to_string(),
+            DbValue::Integer(1_900_000_000),
+        );
 
         let mut db = LoginTestDb::new();
         db.add_player_row(7, cols);

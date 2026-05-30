@@ -10,6 +10,19 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  flow-graph:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+    - name: Validate flow graph
+      run: make flow
+    - name: Run flow graph unit tests
+      run: make flow-test
+
   build:
     runs-on: ubuntu-latest
     steps:

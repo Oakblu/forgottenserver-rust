@@ -12,7 +12,9 @@ use forgottenserver_common::position::Position;
 use forgottenserver_common::tools::adler_checksum;
 use forgottenserver_common::xtea;
 use forgottenserver_database::database::Database;
-use forgottenserver_database::iologindata::{load_player_for_login, lookup_session, PlayerLoginData};
+use forgottenserver_database::iologindata::{
+    load_player_for_login, lookup_session, PlayerLoginData,
+};
 use forgottenserver_entity::player::{base_speed, Player};
 use forgottenserver_game::{
     action_registry::ActionRegistry,
@@ -360,6 +362,18 @@ impl GameLoginHandler {
                     &self.vocations,
                 );
                 eprintln!("[game] enter-world burst built: {} bytes", burst.len());
+                {
+                    let n = burst.len().min(64);
+                    let bhex: String = burst[..n].iter().map(|b| format!("{b:02x} ")).collect();
+                    eprintln!("[game] burst[0..{n}]: {bhex}");
+                    eprintln!(
+                        "[game] player_data: pos=({},{},{}) look_type={} vocation_id={} health={}/{} mana={}/{}",
+                        player_data.posx, player_data.posy, player_data.posz,
+                        player_data.look_type, player_data.vocation_id,
+                        player_data.health, player_data.healthmax,
+                        player_data.mana, player_data.manamax
+                    );
+                }
                 let framed_burst = frame_packet(&burst, packet.xtea_key);
                 eprintln!("[game] framed burst: {} bytes", framed_burst.len());
                 match stream.write_all(&framed_burst) {
@@ -497,8 +511,11 @@ pub(crate) fn run_game_loop(
     const DIR_WEST: u8 = 3;
 
     {
-        let mut player =
-            Player::new(player_creature_id, &player_data.name, player_data.vocation_id);
+        let mut player = Player::new(
+            player_creature_id,
+            &player_data.name,
+            player_data.vocation_id,
+        );
         player.set_max_health(player_data.healthmax as i32);
         player.set_health(player_data.health as i32);
         player.set_max_mana(player_data.manamax as i32);
@@ -617,7 +634,10 @@ pub(crate) fn run_game_loop(
         }
         let opcode = body[6];
         let dump_n = inner_len.min(8);
-        let phex: String = body[6..6 + dump_n].iter().map(|b| format!("{b:02x} ")).collect();
+        let phex: String = body[6..6 + dump_n]
+            .iter()
+            .map(|b| format!("{b:02x} "))
+            .collect();
         eprintln!("[gameloop] recv opcode=0x{opcode:02x} inner_len={inner_len} bytes: {phex}");
 
         // The opcode-specific payload bytes live at body[7..6+inner_len].
@@ -655,7 +675,9 @@ pub(crate) fn run_game_loop(
             DispatchResult::Response(bytes) => {
                 let frame = frame_packet(&bytes, xtea_key);
                 if let Err(e) = stream.write_all(&frame) {
-                    eprintln!("[gameloop] exit: failed to send response opcode=0x{opcode:02x}: {e}");
+                    eprintln!(
+                        "[gameloop] exit: failed to send response opcode=0x{opcode:02x}: {e}"
+                    );
                     break;
                 }
             }
@@ -728,7 +750,10 @@ where
         }
         // --- OtClient extended opcode: payload exists but we don't consume it ---
         0x32 => {
-            eprintln!("[gameloop] extended opcode (0x32): {} bytes", payload_slice.len());
+            eprintln!(
+                "[gameloop] extended opcode (0x32): {} bytes",
+                payload_slice.len()
+            );
             DispatchResult::NoResponse
         }
         // --- Walk N/E/S/W (single-byte opcode; no payload) ---
@@ -737,7 +762,7 @@ where
         // new position so the client camera follows.  This is a deliberate
         // simplification: C++ sends 0x6D move + edge row/col updates
         // (0x65–0x68 server→client) for an incremental redraw.
-        0x65 | 0x66 | 0x67 | 0x68 => {
+        0x65..=0x68 => {
             let (dx, dy, dir) = match opcode {
                 0x65 => (0i32, -1i32, dir_north),
                 0x66 => (1, 0, dir_east),
@@ -767,7 +792,7 @@ where
         // Pragmatic response: re-emit the full map at the same position so
         // the new facing direction is visible.  A more faithful response
         // would send the per-creature direction packet only.
-        0x6F | 0x70 | 0x71 | 0x72 => {
+        0x6F..=0x72 => {
             let dir = match opcode {
                 0x6F => dir_north,
                 0x70 => dir_east,
@@ -786,23 +811,17 @@ where
         0x96 => {
             match pg::parse_say_packet(&mut msg) {
                 Ok(say) => {
-                    eprintln!(
-                        "[gameloop] say type={} text={:?}",
-                        say.say_type, say.text
-                    );
+                    eprintln!("[gameloop] say type={} text={:?}", say.say_type, say.text);
                     let text = if say.text.starts_with("/pos") {
-                        format!(
-                            "x={}, y={}, z={}",
-                            player_pos.x, player_pos.y, player_pos.z
-                        )
+                        format!("x={}, y={}, z={}", player_pos.x, player_pos.y, player_pos.z)
                     } else {
                         say.text.clone()
                     };
-                    // MESSAGE_STATUS_DEFAULT (17 = 0x11) is the white
-                    // bottom-of-screen + console line; matches C++
-                    // const.h:270 for in-game status text.
+                    // Use MESSAGE_EVENT_ADVANCE (19) — white text rendered
+                    // OVER the player + in the console, much more visible
+                    // than MESSAGE_STATUS_DEFAULT (17 = small bottom status).
                     let body = pg::serialize_text_message(
-                        pg::text_message_class::MESSAGE_STATUS_DEFAULT,
+                        pg::text_message_class::MESSAGE_EVENT_ADVANCE,
                         &text,
                         None,
                         None,
@@ -811,6 +830,9 @@ where
                         None,
                         None,
                     );
+                    let phex: String = body[..body.len().min(16)]
+                        .iter().map(|b| format!("{b:02x} ")).collect();
+                    eprintln!("[gameloop] text-msg response ({} bytes): {phex}", body.len());
                     DispatchResult::Response(body)
                 }
                 Err(e) => {
@@ -823,51 +845,43 @@ where
         // C++ parseFightModes reads fight/chase/secure (and the unused pvp
         // byte was removed in 10.0).  We mirror the 3-byte form; no
         // response packet is sent.
-        0xA0 => {
-            match pg::parse_fight_modes(&mut msg) {
-                Ok(fm) => {
-                    handle_fight_modes(
-                        player_creature_id,
-                        fm.fight_mode,
-                        fm.chase_mode,
-                        fm.secure_mode != 0,
-                        state,
-                    );
-                    eprintln!(
-                        "[gameloop] fight modes fight={} chase={} secure={}",
-                        fm.fight_mode, fm.chase_mode, fm.secure_mode
-                    );
-                    DispatchResult::NoResponse
-                }
-                Err(e) => {
-                    eprintln!("[gameloop] fight modes parse error: {e}");
-                    DispatchResult::NoResponse
-                }
+        0xA0 => match pg::parse_fight_modes(&mut msg) {
+            Ok(fm) => {
+                handle_fight_modes(
+                    player_creature_id,
+                    fm.fight_mode,
+                    fm.chase_mode,
+                    fm.secure_mode != 0,
+                    state,
+                );
+                eprintln!(
+                    "[gameloop] fight modes fight={} chase={} secure={}",
+                    fm.fight_mode, fm.chase_mode, fm.secure_mode
+                );
+                DispatchResult::NoResponse
             }
-        }
+            Err(e) => {
+                eprintln!("[gameloop] fight modes parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
         // --- Use item (0x82) ---
         // Empty ActionRegistry → handle_use_item returns the
         // "Sorry, not possible." TextMessage body.
-        0x82 => {
-            match pg::parse_use_item_packet(&mut msg) {
-                Ok(use_pkt) => {
-                    eprintln!(
-                        "[gameloop] use item id={} at ({},{},{}) idx={}",
-                        use_pkt.item_id,
-                        use_pkt.pos_x,
-                        use_pkt.pos_y,
-                        use_pkt.pos_z,
-                        use_pkt.index
-                    );
-                    let bytes = handle_use_item(&ActionRegistry::new(), use_pkt.item_id);
-                    DispatchResult::Response(bytes)
-                }
-                Err(e) => {
-                    eprintln!("[gameloop] use item parse error: {e}");
-                    DispatchResult::NoResponse
-                }
+        0x82 => match pg::parse_use_item_packet(&mut msg) {
+            Ok(use_pkt) => {
+                eprintln!(
+                    "[gameloop] use item id={} at ({},{},{}) idx={}",
+                    use_pkt.item_id, use_pkt.pos_x, use_pkt.pos_y, use_pkt.pos_z, use_pkt.index
+                );
+                let bytes = handle_use_item(&ActionRegistry::new(), use_pkt.item_id);
+                DispatchResult::Response(bytes)
             }
-        }
+            Err(e) => {
+                eprintln!("[gameloop] use item parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
         _ => {
             eprintln!("[gameloop] unknown opcode: 0x{:02x}", opcode);
             DispatchResult::NoResponse
@@ -1841,6 +1855,214 @@ mod tests {
         let recovered = &xtea_region[2..2 + inner_len];
         assert_eq!(recovered, &payload, "decoded payload must match original");
         assert_eq!(recovered[0], 0x96, "opcode must be 0x96 (say)");
+    }
+
+    // -----------------------------------------------------------------------
+    // dispatch_opcode — per-opcode behavior
+    // -----------------------------------------------------------------------
+
+    /// Helper that wires `dispatch_opcode` with a no-op render closure so the
+    /// per-opcode unit tests don't need to construct the full render context.
+    fn dispatch(
+        opcode: u8,
+        payload: &[u8],
+        pos: &mut Position,
+        dir: &mut u8,
+        state: &mut GameState,
+    ) -> DispatchResult {
+        let world = World::new();
+        dispatch_opcode(
+            opcode,
+            payload,
+            &world,
+            state,
+            0,
+            pos,
+            dir,
+            0,
+            1,
+            2,
+            3,
+            &|_d, _p| vec![0x64], // sentinel map body
+        )
+    }
+
+    #[test]
+    fn dispatch_logout_breaks() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 2u8;
+        let mut state = GameState::new();
+        let r = dispatch(0x14, &[], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::Break));
+    }
+
+    #[test]
+    fn dispatch_walk_north_decrements_y_and_returns_map_body() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 2u8;
+        let mut state = GameState::new();
+        let r = dispatch(0x65, &[], &mut pos, &mut dir, &mut state);
+        match r {
+            DispatchResult::Response(bytes) => {
+                assert_eq!(bytes[0], 0x64, "walk response must be a map body");
+            }
+            _ => panic!("walk must produce a Response"),
+        }
+        assert_eq!(pos, Position::new(100, 99, 7), "north decrements y by 1");
+        assert_eq!(dir, 0, "direction must be NORTH (0)");
+    }
+
+    #[test]
+    fn dispatch_walk_east_south_west_update_coords() {
+        let mut state = GameState::new();
+        // East
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let _ = dispatch(0x66, &[], &mut pos, &mut dir, &mut state);
+        assert_eq!(pos, Position::new(101, 100, 7));
+        assert_eq!(dir, 1);
+        // South
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let _ = dispatch(0x67, &[], &mut pos, &mut dir, &mut state);
+        assert_eq!(pos, Position::new(100, 101, 7));
+        assert_eq!(dir, 2);
+        // West
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let _ = dispatch(0x68, &[], &mut pos, &mut dir, &mut state);
+        assert_eq!(pos, Position::new(99, 100, 7));
+        assert_eq!(dir, 3);
+    }
+
+    #[test]
+    fn dispatch_turn_updates_direction_without_moving() {
+        let mut state = GameState::new();
+        let mut pos = Position::new(50, 60, 7);
+        let mut dir = 0u8;
+        let _ = dispatch(0x70, &[], &mut pos, &mut dir, &mut state); // turn east
+        assert_eq!(pos, Position::new(50, 60, 7), "turn must NOT move");
+        assert_eq!(dir, 1, "turn east -> direction 1");
+    }
+
+    #[test]
+    fn dispatch_say_pos_command_emits_coordinates_text_message() {
+        // Wire format for parse_say_packet: [say_type:u8][text:u16 len][bytes]
+        let mut payload = vec![1u8]; // say_type
+        let text = "/pos";
+        payload.extend_from_slice(&(text.len() as u16).to_le_bytes());
+        payload.extend_from_slice(text.as_bytes());
+
+        let mut pos = Position::new(42, 7, 8);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0x96, &payload, &mut pos, &mut dir, &mut state);
+        let bytes = match r {
+            DispatchResult::Response(b) => b,
+            _ => panic!("say must produce a Response"),
+        };
+
+        assert_eq!(bytes[0], 0xB4, "TextMessage opcode is 0xB4");
+        assert_eq!(
+            bytes[1],
+            pg::text_message_class::MESSAGE_STATUS_DEFAULT,
+            "MESSAGE_STATUS_DEFAULT = 17",
+        );
+        let resp_len = u16::from_le_bytes([bytes[2], bytes[3]]) as usize;
+        let resp_text = std::str::from_utf8(&bytes[4..4 + resp_len]).unwrap();
+        assert_eq!(resp_text, "x=42, y=7, z=8");
+    }
+
+    #[test]
+    fn dispatch_say_arbitrary_text_echoes_it_back() {
+        let mut payload = vec![1u8];
+        let text = "hello world";
+        payload.extend_from_slice(&(text.len() as u16).to_le_bytes());
+        payload.extend_from_slice(text.as_bytes());
+
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0x96, &payload, &mut pos, &mut dir, &mut state);
+        let bytes = match r {
+            DispatchResult::Response(b) => b,
+            _ => panic!("say must produce a Response"),
+        };
+        let resp_len = u16::from_le_bytes([bytes[2], bytes[3]]) as usize;
+        let resp_text = std::str::from_utf8(&bytes[4..4 + resp_len]).unwrap();
+        assert_eq!(resp_text, "hello world");
+    }
+
+    #[test]
+    fn dispatch_fight_modes_updates_state_and_returns_no_response() {
+        // Wire format: [fight:u8][chase:u8][secure:u8]
+        let payload = [2u8, 1u8, 1u8];
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0xA0, &payload, &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+        let (fight, chase, secure) = state.get_fight_mode(0).expect("fight mode stored");
+        assert_eq!(fight, 2);
+        assert_eq!(chase, 1);
+        assert!(secure);
+    }
+
+    #[test]
+    fn dispatch_use_item_returns_default_text_message() {
+        // parse_use_item_packet expects: pos_x(u16), pos_y(u16), pos_z(u8),
+        // item_id(u16), index(u8) = 8 bytes.
+        let mut payload = Vec::new();
+        payload.extend_from_slice(&100u16.to_le_bytes()); // pos_x
+        payload.extend_from_slice(&100u16.to_le_bytes()); // pos_y
+        payload.push(7u8); // pos_z
+        payload.extend_from_slice(&500u16.to_le_bytes()); // item_id
+        payload.push(0u8); // index
+
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0x82, &payload, &mut pos, &mut dir, &mut state);
+        let bytes = match r {
+            DispatchResult::Response(b) => b,
+            _ => panic!("use item must produce a Response"),
+        };
+        assert_eq!(bytes[0], 0xB4, "fallback TextMessage opcode");
+    }
+
+    #[test]
+    fn dispatch_unknown_opcode_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0xEF, &[], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_noop_opcodes_return_no_response() {
+        let mut state = GameState::new();
+        for op in [0x0Fu8, 0x60, 0xD0, 0x91, 0x32] {
+            let mut pos = Position::new(100, 100, 7);
+            let mut dir = 0u8;
+            let r = dispatch(op, &[], &mut pos, &mut dir, &mut state);
+            assert!(
+                matches!(r, DispatchResult::NoResponse),
+                "opcode 0x{op:02x} must be NoResponse"
+            );
+        }
+    }
+
+    #[test]
+    fn dispatch_ping_returns_pong() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0x1D, &[], &mut pos, &mut dir, &mut state);
+        match r {
+            DispatchResult::Response(bytes) => assert_eq!(bytes, vec![0x1E]),
+            _ => panic!("ping must produce a pong response"),
+        }
     }
 
     // -----------------------------------------------------------------------

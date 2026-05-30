@@ -3,7 +3,6 @@ use forgottenserver_common::outputmessage::OutputMessage;
 use forgottenserver_common::position::Position;
 use forgottenserver_database::iologindata::{IoLoginData, LoginDb, PlayerLoginData};
 use forgottenserver_entity::player::{base_speed, xp_for_level};
-use forgottenserver_items::vocation::{Vocation, Vocations};
 use forgottenserver_game::{
     action_registry::ActionRegistry,
     chat::{ChannelId, ChatManager, EntityId, SpeakType},
@@ -13,6 +12,7 @@ use forgottenserver_game::{
     trade::{TradeId, TradeItem, TradeManager, TradeResult},
     weapon_registry::CombatResolver,
 };
+use forgottenserver_items::vocation::{Vocation, Vocations};
 use forgottenserver_map::pathfinder::Pathfinder;
 use forgottenserver_network::protocolgame as pg;
 use forgottenserver_world::World;
@@ -297,7 +297,11 @@ pub fn build_enter_world_burst(
         pg::serialize_basic_data(
             out,
             is_premium,
-            if is_premium { player.premium_ends_at } else { 0 },
+            if is_premium {
+                player.premium_ends_at
+            } else {
+                0
+            },
             voc.client_id,
             false,
             &spell_ids,
@@ -395,6 +399,7 @@ pub const ANCHOR_RADIUS: i32 = 4;
 ///
 /// This is the single source of truth for the synthetic ground patch — used by
 /// both the login burst and the walk/turn map redraws in the server crate.
+#[allow(clippy::too_many_arguments)]
 pub fn build_anchor_tile(
     world: &World,
     x: i32,
@@ -426,14 +431,13 @@ pub fn build_anchor_tile(
         }
     }
 
-    // 9x9 ground patch around the player on the same floor.
-    if z == pz && (x - px).abs() <= ANCHOR_RADIUS && (y - py).abs() <= ANCHOR_RADIUS {
-        return Some(pg::MapTile {
-            ground: Some((1, ground_meta)),
-            ..pg::MapTile::default()
-        });
-    }
-
+    // NOTE: a 9×9 ground patch around the player was tried as a visual anchor,
+    // but a real OTClient 13.10 rejects the resulting larger bundle (1586 vs
+    // 1266 bytes) and never enters the game. Until we either (a) load the real
+    // .otbm map or (b) figure out the structural issue with many synthetic
+    // same-id ground tiles, we keep just the single player tile and leave the
+    // rest to the empty world.
+    let _ = ground_meta; // silence unused on non-player paths
     world_tile_lookup(world, x, y, z)
 }
 
@@ -1835,11 +1839,7 @@ mod tests {
             "experience must be 4200"
         );
         // level (u16) at [21..23], levelPercent (u8) at [23].
-        assert_eq!(
-            u16::from_le_bytes([b[21], b[22]]),
-            10,
-            "level must be 10"
-        );
+        assert_eq!(u16::from_le_bytes([b[21], b[22]]), 10, "level must be 10");
         // level 10: currExp = xp_for_level(10), nextExp = xp_for_level(11).
         let curr = xp_for_level(10);
         let next = xp_for_level(11);
