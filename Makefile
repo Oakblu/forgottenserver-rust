@@ -3,7 +3,7 @@
 # Top-level targets for developers and the harness. Real builds use
 # cargo / docker compose directly; these targets are convenience wrappers.
 
-.PHONY: help harness harness-up harness-down test clippy fmt ledger ledger-test ledger-build ledger-rollup ledger-cross e2e flow flow-test flow-build flow-curate flow-check-network flow-curate-events flow-check-events
+.PHONY: help harness harness-up harness-down test clippy fmt ledger ledger-test ledger-build ledger-rollup ledger-cross e2e flow flow-test flow-build flow-curate flow-check-network flow-curate-events flow-check-events flow-curate-virtual flow-check-virtual
 
 help:
 	@echo "Available targets:"
@@ -24,6 +24,8 @@ help:
 	@echo "  make flow-check-network — verify every active opcode has a curated edge"
 	@echo "  make flow-curate-events — apply curated event/scheduler edges"
 	@echo "  make flow-check-events  — verify event type and scheduler tick coverage"
+	@echo "  make flow-curate-virtual — apply curated virtual-dispatch edges"
+	@echo "  make flow-check-virtual  — verify every in-scope Creature virtual has dispatch edges"
 	@echo "  make flow-test      — run scripts/flow/ unit tests"
 	@echo ""
 	@echo "Harness lane subset:"
@@ -71,6 +73,7 @@ flow:
 	@python3 scripts/flow/validate.py
 	@python3 scripts/flow/check_network_coverage.py
 	@python3 scripts/flow/check_event_coverage.py
+	@python3 scripts/flow/check_virtual_coverage.py
 
 flow-build:
 	@python3 scripts/flow/bootstrap_nodes.py
@@ -87,6 +90,12 @@ flow-curate-events:
 
 flow-check-events:
 	@python3 scripts/flow/check_event_coverage.py
+
+flow-curate-virtual:
+	@python3 scripts/flow/curate_virtual.py
+
+flow-check-virtual:
+	@python3 scripts/flow/check_virtual_coverage.py
 
 flow-test:
 	@python3 -m unittest discover -s scripts/flow/tests -v

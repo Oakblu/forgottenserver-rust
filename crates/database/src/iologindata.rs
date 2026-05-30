@@ -275,7 +275,12 @@ pub fn load_player_for_login(db: &dyn Database, character_id: i64) -> Option<Pla
     let mut posy: u16 = row.get("posy").unwrap_or(0);
     let mut posz: u8 = row.get("posz").unwrap_or(0);
 
-    if posx == 0 && posy == 0 && posz == 0 {
+    // Position (0,0,*) is invalid in the Tibia client — the map boundary —
+    // and the client rejects an `0x64` header carrying it, hanging on
+    // "connecting to game server...". Any time `posx == 0` or `posy == 0`
+    // (i.e. no real saved position) we fall back to the default temple
+    // coordinates rather than only the all-zero case.
+    if posx == 0 || posy == 0 {
         posx = 100;
         posy = 100;
         posz = 7;

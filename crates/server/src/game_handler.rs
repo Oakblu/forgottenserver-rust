@@ -41,6 +41,68 @@ pub fn on_walk(world: &World, new_pos: Position) -> Vec<u8> {
     })
 }
 
+/// Build a fresh `0x64` full map description body centered on `player_pos`
+/// that re-emits the same synthetic 9x9 ground patch and player creature used
+/// by the login burst.
+///
+/// This is the pragmatic response we send back for every walk and turn while
+/// the real C++ incremental move/edge-row packets (0x6D + 0x65–0x68) are not
+/// yet implemented.  A full redraw is byte-correct (just larger) and lets the
+/// client camera follow the avatar.
+#[allow(clippy::too_many_arguments)]
+pub fn build_map_around_player(
+    world: &World,
+    player_pos: Position,
+    player_creature_id: u32,
+    player_name: &str,
+    player_direction: u8,
+    player_vocation_client_id: u8,
+    player_base_speed_half: u16,
+    look_type: u16,
+    look_head: u8,
+    look_body: u8,
+    look_legs: u8,
+    look_feet: u8,
+    look_addons: u8,
+    look_mount: u16,
+) -> Vec<u8> {
+    let px = player_pos.x as i32;
+    let py = player_pos.y as i32;
+    let pz = player_pos.z as i32;
+    let player_meta = pg::AddCreatureMeta {
+        creature_id: player_creature_id,
+        creature_type: 0,
+        master_id: 0,
+        health_hidden: false,
+        health_percent: 100,
+        direction: player_direction,
+        ghost_or_invisible: false,
+        outfit: pg::OutfitDescriptor {
+            look_type,
+            look_head,
+            look_body,
+            look_legs,
+            look_feet,
+            look_addons,
+            look_mount,
+            ..pg::OutfitDescriptor::default()
+        },
+        light_level: 0,
+        light_color: 0,
+        step_speed_half: player_base_speed_half,
+        skull: 0,
+        party_shield: 0,
+        guild_emblem: 0,
+        player_vocation_client_id,
+        speech_bubble: 0,
+        can_walkthrough: false,
+    };
+    let name_owned = player_name.to_string();
+    pg::serialize_map_description(player_pos.x, player_pos.y, player_pos.z, |x, y, z| {
+        build_anchor_tile(world, x, y, z, px, py, pz, Some((&name_owned, player_meta)))
+    })
+}
+
 /// Run a serializer that writes into a caller-supplied `OutputMessage`, then
 /// extract the `[opcode][fields]` body (stripping the 2-byte length header).
 ///
@@ -290,27 +352,21 @@ pub fn build_enter_world_burst(
         player.posy,
         player.posz,
         |x, y, z| {
-            // Inject the player's own tile (ground id 106 + the player) so the
-            // client has a creature to render. Every other tile is empty in
-            // this World (none are populated yet).
-            if x == px && y == py && z == pz {
-                let ground_meta = ItemTypeMeta {
-                    client_id: 106,
-                    ..ItemTypeMeta::default()
-                };
-                Some(pg::MapTile {
-                    ground: Some((1, ground_meta)),
-                    creatures: vec![pg::MapCreature {
-                        known: false,
-                        removed_known: 0,
-                        name: player_name.clone(),
-                        meta: player_meta,
-                    }],
-                    ..pg::MapTile::default()
-                })
-            } else {
-                world_tile_lookup(world, x, y, z)
-            }
+            // Inject a 9x9 patch of ground (client id 106) around the player so
+            // the avatar has visible ground to stand on; the world has no real
+            // tiles loaded yet. The exact center tile additionally carries the
+            // player creature so the client has something to render at the
+            // player's coordinates.
+            build_anchor_tile(
+                world,
+                x,
+                y,
+                z,
+                px,
+                py,
+                pz,
+                Some((&player_name, player_meta)),
+            )
         },
     ));
 
@@ -320,6 +376,65 @@ pub fn build_enter_world_burst(
     }
 
     burst
+}
+
+/// Half-edge (in tiles) of the synthetic ground patch injected around the player
+/// for the login burst and post-walk/turn map redraws.  A radius of 4 yields a
+/// 9x9 area, fully covering the 18x14 client viewport's central walking band
+/// so the avatar always has visible ground when the world data is empty.
+pub const ANCHOR_RADIUS: i32 = 4;
+
+/// Produce a `MapTile` for the lookup closure used by `serialize_map_description`.
+///
+/// * For the exact player tile `(px, py, pz)` and when `player` is `Some`, the
+///   returned tile carries the player creature and ground id 106.
+/// * For tiles within the `ANCHOR_RADIUS` square around the player on the same
+///   floor, only ground id 106 is returned (no creatures).
+/// * For every other coordinate, the function delegates to the real `World`
+///   via [`world_tile_lookup`], so loaded tiles still render normally.
+///
+/// This is the single source of truth for the synthetic ground patch — used by
+/// both the login burst and the walk/turn map redraws in the server crate.
+pub fn build_anchor_tile(
+    world: &World,
+    x: i32,
+    y: i32,
+    z: i32,
+    px: i32,
+    py: i32,
+    pz: i32,
+    player: Option<(&str, pg::AddCreatureMeta)>,
+) -> Option<pg::MapTile> {
+    let ground_meta = ItemTypeMeta {
+        client_id: 106,
+        ..ItemTypeMeta::default()
+    };
+
+    // Exact player tile: ground + player creature.
+    if x == px && y == py && z == pz {
+        if let Some((name, meta)) = player {
+            return Some(pg::MapTile {
+                ground: Some((1, ground_meta)),
+                creatures: vec![pg::MapCreature {
+                    known: false,
+                    removed_known: 0,
+                    name: name.to_string(),
+                    meta,
+                }],
+                ..pg::MapTile::default()
+            });
+        }
+    }
+
+    // 9x9 ground patch around the player on the same floor.
+    if z == pz && (x - px).abs() <= ANCHOR_RADIUS && (y - py).abs() <= ANCHOR_RADIUS {
+        return Some(pg::MapTile {
+            ground: Some((1, ground_meta)),
+            ..pg::MapTile::default()
+        });
+    }
+
+    world_tile_lookup(world, x, y, z)
 }
 
 /// Look up a real `World` tile at an absolute coordinate and convert it into a

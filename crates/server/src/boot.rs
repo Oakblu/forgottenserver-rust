@@ -8,23 +8,34 @@ use std::{
 
 use forgottenserver_common::configmanager::{ConfigManager, IntegerKey, StringKey};
 use forgottenserver_common::networkmessage::NetworkMessage;
+use forgottenserver_common::position::Position;
 use forgottenserver_common::tools::adler_checksum;
 use forgottenserver_common::xtea;
 use forgottenserver_database::database::Database;
-use forgottenserver_database::iologindata::{load_player_for_login, lookup_session};
+use forgottenserver_database::iologindata::{load_player_for_login, lookup_session, PlayerLoginData};
+use forgottenserver_entity::player::{base_speed, Player};
 use forgottenserver_game::{
+    action_registry::ActionRegistry,
     npc_registry::{load_npcs_xml, NpcRegistry},
     spell_registry::{load_spells_xml, SpellRegistry},
     weapon_registry::{load_weapons_xml, WeaponRegistry},
 };
-use forgottenserver_items::{registry::ItemsRegistry, vocation::Vocations};
+use forgottenserver_items::{
+    registry::ItemsRegistry,
+    vocation::{Vocation, Vocations},
+};
 use forgottenserver_map::items_loader::load_items_otb;
-use forgottenserver_network::protocolgame::{parse_first_packet, serialize_disconnect};
+use forgottenserver_network::protocolgame::{self as pg, parse_first_packet, serialize_disconnect};
 use forgottenserver_world::World;
 
 use crate::{
-    admin_handler::AdminHandler, game_handler::build_enter_world_burst, game_state::GameState,
-    http_connection_session::HttpConnectionSession, http_login::LoginConfig,
+    admin_handler::AdminHandler,
+    game_handler::{
+        build_enter_world_burst, build_map_around_player, handle_fight_modes, handle_use_item,
+    },
+    game_state::GameState,
+    http_connection_session::HttpConnectionSession,
+    http_login::LoginConfig,
     status_handler::StatusHandler,
 };
 
@@ -368,7 +379,14 @@ impl GameLoginHandler {
                     packet.os
                 );
                 let _ = stream.set_read_timeout(Some(Duration::from_secs(30)));
-                run_game_loop(&mut stream, packet.xtea_key, sequence_checksum);
+                run_game_loop(
+                    &mut stream,
+                    packet.xtea_key,
+                    sequence_checksum,
+                    player_data,
+                    player_creature_id,
+                    Arc::clone(&self.vocations),
+                );
                 eprintln!("[game] game loop exited");
             }
         }
@@ -452,9 +470,84 @@ pub(crate) fn run_game_loop(
     stream: &mut std::net::TcpStream,
     xtea_key: [u32; 4],
     sequence_checksum: bool,
+    player_data: PlayerLoginData,
+    player_creature_id: u32,
+    vocations: Arc<Vocations>,
 ) {
     let key = xtea::Key(xtea_key);
     let round_keys = xtea::expand_key(&key);
+
+    // ------------------------------------------------------------------
+    // Per-connection mutable state
+    // ------------------------------------------------------------------
+    let world = World::new();
+    let mut state = GameState::new();
+    let voc: Vocation = vocations
+        .get_vocation(player_data.vocation_id)
+        .cloned()
+        .unwrap_or_else(|| Vocation::new(player_data.vocation_id));
+    let base_speed_half = (base_speed(player_data.level) / 2) as u16;
+
+    let mut player_pos = Position::new(player_data.posx, player_data.posy, player_data.posz);
+    let mut player_dir = player_data.direction;
+    // C++ Direction_t: NORTH=0, EAST=1, SOUTH=2, WEST=3 (position.h:9-12).
+    const DIR_NORTH: u8 = 0;
+    const DIR_EAST: u8 = 1;
+    const DIR_SOUTH: u8 = 2;
+    const DIR_WEST: u8 = 3;
+
+    {
+        let mut player =
+            Player::new(player_creature_id, &player_data.name, player_data.vocation_id);
+        player.set_max_health(player_data.healthmax as i32);
+        player.set_health(player_data.health as i32);
+        player.set_max_mana(player_data.manamax as i32);
+        player.set_mana(player_data.mana as i32);
+        state.add_player_entity(player);
+        state.set_player_position(player_creature_id, player_pos);
+    }
+
+    // Capture outfit fields so we can re-emit the player creature on walk/turn.
+    let player_name = player_data.name.clone();
+    let look_type = player_data.look_type;
+    let look_head = player_data.look_head;
+    let look_body = player_data.look_body;
+    let look_legs = player_data.look_legs;
+    let look_feet = player_data.look_feet;
+    let look_addons = player_data.look_addons;
+    let look_mount = player_data.look_mount;
+    let voc_client_id = voc.client_id;
+
+    // ------------------------------------------------------------------
+    // Helper closures
+    // ------------------------------------------------------------------
+    // Pragmatic walk/turn response: re-emit a full 0x64 map description
+    // centered on the new player position with the 9x9 synthetic ground
+    // patch and the player creature on the center tile.
+    //
+    // This is intentionally simpler than C++ (which sends 0x6D for an
+    // intra-floor move plus incremental edge-row/column updates via
+    // 0x65–0x68 server→client opcodes).  A full redraw is byte-correct
+    // and keeps the camera in sync until the incremental responses are
+    // implemented.
+    let render_map = |dir: u8, pos: Position| -> Vec<u8> {
+        build_map_around_player(
+            &world,
+            pos,
+            player_creature_id,
+            &player_name,
+            dir,
+            voc_client_id,
+            base_speed_half,
+            look_type,
+            look_head,
+            look_body,
+            look_legs,
+            look_feet,
+            look_addons,
+            look_mount,
+        )
+    };
 
     loop {
         // --- Step 1: read 2-byte outer length ---
@@ -527,27 +620,257 @@ pub(crate) fn run_game_loop(
         let phex: String = body[6..6 + dump_n].iter().map(|b| format!("{b:02x} ")).collect();
         eprintln!("[gameloop] recv opcode=0x{opcode:02x} inner_len={inner_len} bytes: {phex}");
 
+        // The opcode-specific payload bytes live at body[7..6+inner_len].
+        // We wrap them in a NetworkMessage so the existing pg::parse_* helpers
+        // can consume them directly.
+        let payload_start = 7usize;
+        let payload_end = 6 + inner_len;
+        let payload_slice: &[u8] = if payload_end > payload_start && payload_end <= body.len() {
+            &body[payload_start..payload_end]
+        } else {
+            &[]
+        };
+
         // --- Step 6: dispatch ---
-        match opcode {
-            0x1D => {
-                // Client ping → respond with pong (0x1E). Mirrors C++
-                // Game::playerReceivePingBack → Player::sendPingBack (opcode
-                // 0x1E). Without this the client times out and disconnects.
-                let pong = frame_packet(&[0x1E], xtea_key);
-                if stream.write_all(&pong).is_err() {
-                    eprintln!("[gameloop] exit: failed to send pong");
+        let response = dispatch_opcode(
+            opcode,
+            payload_slice,
+            &world,
+            &mut state,
+            player_creature_id,
+            &mut player_pos,
+            &mut player_dir,
+            DIR_NORTH,
+            DIR_EAST,
+            DIR_SOUTH,
+            DIR_WEST,
+            &render_map,
+        );
+
+        match response {
+            DispatchResult::Break => {
+                eprintln!("[gameloop] exit: logout");
+                break;
+            }
+            DispatchResult::Response(bytes) => {
+                let frame = frame_packet(&bytes, xtea_key);
+                if let Err(e) = stream.write_all(&frame) {
+                    eprintln!("[gameloop] exit: failed to send response opcode=0x{opcode:02x}: {e}");
                     break;
                 }
-                eprintln!("[gameloop] ping (0x1D) -> sent pong (0x1E)");
             }
-            0x1E => {
-                // Client pong (response to a server ping). No reply needed.
-                eprintln!("[gameloop] pong (0x1E) received");
+            DispatchResult::NoResponse => {}
+        }
+    }
+}
+
+/// Result of dispatching a single client opcode in the game loop.
+pub(crate) enum DispatchResult {
+    /// No response packet; continue reading.
+    NoResponse,
+    /// Send these bytes (already in `[opcode][fields]` form) framed via XTEA.
+    Response(Vec<u8>),
+    /// Exit the game loop cleanly (logout).
+    Break,
+}
+
+/// Dispatch a single client opcode and produce a response action.
+///
+/// `payload_slice` is the bytes AFTER the opcode byte (the parse_* helpers
+/// expect to read from that point).  Mutable state — position, direction,
+/// game state — is updated in place.
+///
+/// Mirrors C++ `ProtocolGame::parsePacket` (`protocolgame.cpp` 503-1100), but
+/// only the opcodes wired into the Rust port so far are handled; everything
+/// else falls into the catch-all "unknown opcode" branch.
+#[allow(clippy::too_many_arguments)]
+pub(crate) fn dispatch_opcode<F>(
+    opcode: u8,
+    payload_slice: &[u8],
+    _world: &World,
+    state: &mut GameState,
+    player_creature_id: u32,
+    player_pos: &mut Position,
+    player_dir: &mut u8,
+    dir_north: u8,
+    dir_east: u8,
+    dir_south: u8,
+    dir_west: u8,
+    render_map: &F,
+) -> DispatchResult
+where
+    F: Fn(u8, Position) -> Vec<u8>,
+{
+    let mut msg = NetworkMessage::new();
+    msg.add_bytes(payload_slice);
+    msg.set_buffer_position(0);
+
+    match opcode {
+        // --- Logout (C++ protocolgame.cpp:532 logout(true, false)) ---
+        0x14 => {
+            eprintln!("[gameloop] logout (0x14)");
+            DispatchResult::Break
+        }
+        // --- Ignored opcodes when a player exists; C++ default = no-op. ---
+        // 0x0F (enter game ready) and 0x60 (server ready) are produced
+        // server→client; the client never sends them here but some clients
+        // echo / poke variants — silently ignore.
+        0x0F | 0x60 | 0xD0 | 0x91 => {
+            eprintln!("[gameloop] no-op opcode=0x{opcode:02x}");
+            DispatchResult::NoResponse
+        }
+        // --- Client ping → pong ---
+        0x1D => DispatchResult::Response(vec![0x1E]),
+        // --- Server-ping reply, just log ---
+        0x1E => {
+            eprintln!("[gameloop] pong (0x1E) received");
+            DispatchResult::NoResponse
+        }
+        // --- OtClient extended opcode: payload exists but we don't consume it ---
+        0x32 => {
+            eprintln!("[gameloop] extended opcode (0x32): {} bytes", payload_slice.len());
+            DispatchResult::NoResponse
+        }
+        // --- Walk N/E/S/W (single-byte opcode; no payload) ---
+        // C++ protocolgame.cpp:551-562 dispatches Game::playerMove.  Our
+        // pragmatic response is a fresh full 0x64 map description at the
+        // new position so the client camera follows.  This is a deliberate
+        // simplification: C++ sends 0x6D move + edge row/col updates
+        // (0x65–0x68 server→client) for an incremental redraw.
+        0x65 | 0x66 | 0x67 | 0x68 => {
+            let (dx, dy, dir) = match opcode {
+                0x65 => (0i32, -1i32, dir_north),
+                0x66 => (1, 0, dir_east),
+                0x67 => (0, 1, dir_south),
+                0x68 => (-1, 0, dir_west),
+                _ => unreachable!(),
+            };
+            let new_x = player_pos.x as i32 + dx;
+            let new_y = player_pos.y as i32 + dy;
+            // Clamp to u16 range so we never panic on a wrap; C++ similarly
+            // bounds-checks via tile lookup.
+            if !(0..=u16::MAX as i32).contains(&new_x) || !(0..=u16::MAX as i32).contains(&new_y) {
+                eprintln!("[gameloop] walk out of range: ({new_x},{new_y})");
+                return DispatchResult::NoResponse;
             }
-            0x65 => eprintln!("[game] walk packet received"),
-            0x96 => eprintln!("[game] say packet received"),
-            0xBE => eprintln!("[game] use item packet received"),
-            _ => eprintln!("[game] unknown opcode: {:#04x}", opcode),
+            let new_pos = Position::new(new_x as u16, new_y as u16, player_pos.z);
+            *player_pos = new_pos;
+            *player_dir = dir;
+            state.set_player_position(player_creature_id, new_pos);
+            eprintln!(
+                "[gameloop] walk dir={dir} -> ({}, {}, {})",
+                new_pos.x, new_pos.y, new_pos.z
+            );
+            DispatchResult::Response(render_map(dir, new_pos))
+        }
+        // --- Turn N/E/S/W (single-byte opcode; no payload). ---
+        // Pragmatic response: re-emit the full map at the same position so
+        // the new facing direction is visible.  A more faithful response
+        // would send the per-creature direction packet only.
+        0x6F | 0x70 | 0x71 | 0x72 => {
+            let dir = match opcode {
+                0x6F => dir_north,
+                0x70 => dir_east,
+                0x71 => dir_south,
+                0x72 => dir_west,
+                _ => unreachable!(),
+            };
+            *player_dir = dir;
+            eprintln!("[gameloop] turn -> dir={dir}");
+            DispatchResult::Response(render_map(dir, *player_pos))
+        }
+        // --- Say (0x96) ---
+        // Wire format (simplified C++ parseSay): [say_type:u8][text:string].
+        // The builtin "/pos" command echoes the player's coordinates; any
+        // other text is echoed back so the user sees their words.
+        0x96 => {
+            match pg::parse_say_packet(&mut msg) {
+                Ok(say) => {
+                    eprintln!(
+                        "[gameloop] say type={} text={:?}",
+                        say.say_type, say.text
+                    );
+                    let text = if say.text.starts_with("/pos") {
+                        format!(
+                            "x={}, y={}, z={}",
+                            player_pos.x, player_pos.y, player_pos.z
+                        )
+                    } else {
+                        say.text.clone()
+                    };
+                    // MESSAGE_STATUS_DEFAULT (17 = 0x11) is the white
+                    // bottom-of-screen + console line; matches C++
+                    // const.h:270 for in-game status text.
+                    let body = pg::serialize_text_message(
+                        pg::text_message_class::MESSAGE_STATUS_DEFAULT,
+                        &text,
+                        None,
+                        None,
+                        None,
+                        None,
+                        None,
+                        None,
+                    );
+                    DispatchResult::Response(body)
+                }
+                Err(e) => {
+                    eprintln!("[gameloop] say parse error: {e}");
+                    DispatchResult::NoResponse
+                }
+            }
+        }
+        // --- Fight modes (0xA0) ---
+        // C++ parseFightModes reads fight/chase/secure (and the unused pvp
+        // byte was removed in 10.0).  We mirror the 3-byte form; no
+        // response packet is sent.
+        0xA0 => {
+            match pg::parse_fight_modes(&mut msg) {
+                Ok(fm) => {
+                    handle_fight_modes(
+                        player_creature_id,
+                        fm.fight_mode,
+                        fm.chase_mode,
+                        fm.secure_mode != 0,
+                        state,
+                    );
+                    eprintln!(
+                        "[gameloop] fight modes fight={} chase={} secure={}",
+                        fm.fight_mode, fm.chase_mode, fm.secure_mode
+                    );
+                    DispatchResult::NoResponse
+                }
+                Err(e) => {
+                    eprintln!("[gameloop] fight modes parse error: {e}");
+                    DispatchResult::NoResponse
+                }
+            }
+        }
+        // --- Use item (0x82) ---
+        // Empty ActionRegistry → handle_use_item returns the
+        // "Sorry, not possible." TextMessage body.
+        0x82 => {
+            match pg::parse_use_item_packet(&mut msg) {
+                Ok(use_pkt) => {
+                    eprintln!(
+                        "[gameloop] use item id={} at ({},{},{}) idx={}",
+                        use_pkt.item_id,
+                        use_pkt.pos_x,
+                        use_pkt.pos_y,
+                        use_pkt.pos_z,
+                        use_pkt.index
+                    );
+                    let bytes = handle_use_item(&ActionRegistry::new(), use_pkt.item_id);
+                    DispatchResult::Response(bytes)
+                }
+                Err(e) => {
+                    eprintln!("[gameloop] use item parse error: {e}");
+                    DispatchResult::NoResponse
+                }
+            }
+        }
+        _ => {
+            eprintln!("[gameloop] unknown opcode: 0x{:02x}", opcode);
+            DispatchResult::NoResponse
         }
     }
 }
@@ -1316,6 +1639,41 @@ mod tests {
     //     cycle and breaks cleanly on any I/O error.
     // -----------------------------------------------------------------------
 
+    /// Default `PlayerLoginData` for tests that drive the game loop directly.
+    /// Coordinates `(100, 100, 7)` mirror the temple default in
+    /// `load_player_for_login`.
+    fn test_player_data() -> PlayerLoginData {
+        PlayerLoginData {
+            name: "Tester".to_string(),
+            level: 1,
+            health: 100,
+            healthmax: 100,
+            mana: 0,
+            manamax: 0,
+            stamina: 2520,
+            posx: 100,
+            posy: 100,
+            posz: 7,
+            experience: 0,
+            vocation_id: 0,
+            magic_level: 0,
+            mana_spent: 0,
+            soul: 100,
+            capacity: 0,
+            skill_levels: [10; 7],
+            skill_tries: [0; 7],
+            look_type: 128,
+            look_head: 0,
+            look_body: 0,
+            look_legs: 0,
+            look_feet: 0,
+            look_addons: 0,
+            look_mount: 0,
+            direction: 2, // SOUTH
+            premium_ends_at: 0,
+        }
+    }
+
     /// Build a fully-framed XTEA-encrypted game packet for testing.
     ///
     /// Wire layout produced:
@@ -1382,7 +1740,14 @@ mod tests {
             server_stream
                 .set_read_timeout(Some(std::time::Duration::from_secs(5)))
                 .unwrap();
-            run_game_loop(&mut server_stream, xtea_key, false);
+            run_game_loop(
+                &mut server_stream,
+                xtea_key,
+                false,
+                test_player_data(),
+                0,
+                empty_vocations(),
+            );
         });
 
         // Client side: send one encrypted packet then close
@@ -1411,7 +1776,14 @@ mod tests {
             server_stream
                 .set_read_timeout(Some(std::time::Duration::from_secs(5)))
                 .unwrap();
-            run_game_loop(&mut server_stream, xtea_key, false);
+            run_game_loop(
+                &mut server_stream,
+                xtea_key,
+                false,
+                test_player_data(),
+                0,
+                empty_vocations(),
+            );
         });
 
         // Connect then immediately close without sending anything

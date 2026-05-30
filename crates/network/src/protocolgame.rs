@@ -3692,6 +3692,12 @@ pub fn serialize_private_message(
 /// uses these constants.  Source: `forgottenserver/src/const.h` lines
 /// 278–293.
 pub mod text_message_class {
+    /// `MESSAGE_STATUS_DEFAULT` — white, bottom + console (C++ const.h:270).
+    pub const MESSAGE_STATUS_DEFAULT: u8 = 17;
+    /// `MESSAGE_STATUS_WARNING` — red, over player + console (C++ const.h:271).
+    pub const MESSAGE_STATUS_WARNING: u8 = 18;
+    /// `MESSAGE_EVENT_ADVANCE` — white, over player + console (C++ const.h:272).
+    pub const MESSAGE_EVENT_ADVANCE: u8 = 19;
     pub const MESSAGE_DAMAGE_DEALT: u8 = 23;
     pub const MESSAGE_DAMAGE_RECEIVED: u8 = 24;
     pub const MESSAGE_HEALED: u8 = 25;
