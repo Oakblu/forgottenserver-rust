@@ -622,6 +622,7 @@ pub fn handle_say(
         .map(|(pid, msg)| {
             let packet = ServerPacket::Talk {
                 speaker: msg.speaker,
+                speaker_level: 0,
                 speak_type: msg.speak_type,
                 channel_id,
                 text: msg.text,
@@ -648,6 +649,7 @@ pub fn handle_say_private(
     let (pid, msg) = chat.send_private(sender_name, receiver_id, text);
     let packet = ServerPacket::Talk {
         speaker: msg.speaker,
+        speaker_level: 0,
         speak_type: msg.speak_type,
         channel_id: None,
         text: msg.text,

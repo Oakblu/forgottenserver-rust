@@ -13,7 +13,7 @@ use forgottenserver_common::tools::adler_checksum;
 use forgottenserver_common::xtea;
 use forgottenserver_database::database::Database;
 use forgottenserver_database::iologindata::{
-    load_player_for_login, lookup_session, PlayerLoginData,
+    load_player_for_login, lookup_session, save_player_logout, PlayerLoginData, PlayerLogoutData,
 };
 use forgottenserver_entity::player::{base_speed, Player};
 use forgottenserver_game::{
@@ -34,6 +34,7 @@ use forgottenserver_world::World;
 
 use crate::{
     admin_handler::AdminHandler,
+    codec::{encode, ServerPacket},
     game_handler::{
         build_enter_world_burst, build_map_around_player, handle_fight_modes, handle_use_item,
     },
@@ -424,7 +425,7 @@ impl GameLoginHandler {
                 // 5s read timeout drives the periodic server-ping cadence
                 // inside run_game_loop (mirrors C++ Player::sendPing every 5s).
                 let _ = stream.set_read_timeout(Some(Duration::from_secs(5)));
-                run_game_loop(
+                let logout = run_game_loop(
                     &mut stream,
                     packet.xtea_key,
                     sequence_checksum,
@@ -438,6 +439,27 @@ impl GameLoginHandler {
                 // Explicitly shut down the TCP stream so OTClient gets a clean
                 // FIN/RST and doesn't end up stuck on the next reconnect.
                 let _ = stream.shutdown(std::net::Shutdown::Both);
+                // Persist the player's logout position and current HP/mana.
+                let _ = {
+                    let mut db_guard = self.db.lock().unwrap();
+                    save_player_logout(
+                        &mut **db_guard,
+                        character_id,
+                        &PlayerLogoutData {
+                            pos_x: logout.pos.x,
+                            pos_y: logout.pos.y,
+                            pos_z: logout.pos.z,
+                            health: logout.health,
+                            mana: logout.mana,
+                            direction: logout.direction,
+                        },
+                    )
+                };
+                eprintln!(
+                    "[game] player {} saved at ({},{},{}) hp={} mp={}",
+                    character_id, logout.pos.x, logout.pos.y, logout.pos.z,
+                    logout.health, logout.mana,
+                );
             }
         }
     }
@@ -542,7 +564,7 @@ pub(crate) fn run_game_loop(
     player_creature_id: u32,
     vocations: Arc<Vocations>,
     map: Arc<Map>,
-) {
+) -> LogoutSave {
     let key = xtea::Key(xtea_key);
     let round_keys = xtea::expand_key(&key);
 
@@ -630,6 +652,8 @@ pub(crate) fn run_game_loop(
     // silent for 30 s. After ~30 s of no client activity we give up.
     let mut consecutive_timeouts: u32 = 0;
     const MAX_CONSECUTIVE_TIMEOUTS: u32 = 6;
+    // Accumulated seconds since last mana regen tick (each 5-second timeout = 5s).
+    let mut mana_regen_secs: u32 = 0;
 
     loop {
         // --- Step 1: read 2-byte outer length ---
@@ -654,6 +678,46 @@ pub(crate) fn run_game_loop(
                     );
                     break;
                 }
+                // --- Mana regen tick: each 5-second idle window = 5 seconds elapsed ---
+                mana_regen_secs = mana_regen_secs.saturating_add(5);
+                if voc.gain_mana_ticks > 0 && mana_regen_secs >= voc.gain_mana_ticks {
+                    let ticks = mana_regen_secs / voc.gain_mana_ticks;
+                    mana_regen_secs %= voc.gain_mana_ticks;
+                    let regen = ticks.saturating_mul(voc.gain_mana_amount);
+                    let stats_packet =
+                        if let Some(player) = state.get_player_entity_mut(player_creature_id) {
+                            let old_mana = player.get_mana();
+                            player.add_mp_regen(regen as i32);
+                            if player.get_mana() != old_mana {
+                                Some(encode(&ServerPacket::PlayerStats {
+                                    health: player.get_health(),
+                                    max_health: player.get_max_health(),
+                                    mana: player.get_mana(),
+                                    max_mana: player.get_max_mana(),
+                                    level: player_data.level,
+                                    stamina: player_data.stamina as u16,
+                                }))
+                            } else {
+                                None
+                            }
+                        } else {
+                            None
+                        };
+                    if let Some(stats_bytes) = stats_packet {
+                        let seq = server_seq;
+                        server_seq = server_seq.wrapping_add(1);
+                        let frame = if sequence_checksum {
+                            frame_packet_seq(&stats_bytes, xtea_key, seq)
+                        } else {
+                            frame_packet(&stats_bytes, xtea_key)
+                        };
+                        if let Err(e) = stream.write_all(&frame) {
+                            eprintln!("[gameloop] exit: failed to send mana regen stats: {e}");
+                            break;
+                        }
+                    }
+                }
+                // --- Server ping ---
                 let seq = server_seq;
                 server_seq = server_seq.wrapping_add(1);
                 let ping = if sequence_checksum {
@@ -793,6 +857,24 @@ pub(crate) fn run_game_loop(
             DispatchResult::NoResponse => {}
         }
     }
+
+    let health = state
+        .get_player_entity(player_creature_id)
+        .map(|p| p.get_health())
+        .unwrap_or(player_data.health as i32);
+    let mana = state
+        .get_player_entity(player_creature_id)
+        .map(|p| p.get_mana())
+        .unwrap_or(player_data.mana as i32);
+    LogoutSave { pos: player_pos, health, mana, direction: player_dir }
+}
+
+/// State captured at logout that must be written back to the database.
+pub(crate) struct LogoutSave {
+    pub pos: Position,
+    pub health: i32,
+    pub mana: i32,
+    pub direction: u8,
 }
 
 /// Result of dispatching a single client opcode in the game loop.

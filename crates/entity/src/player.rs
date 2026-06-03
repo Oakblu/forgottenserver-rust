@@ -589,6 +589,11 @@ impl Player {
         self.mana = mp;
     }
 
+    /// Change mana by `delta`, clamped to `[0, max_mana]`.  Mirrors C++ `Player::changeMana`.
+    pub fn change_mana(&mut self, delta: i32) {
+        self.mana = (self.mana + delta).clamp(0, self.max_mana);
+    }
+
     pub fn set_max_health(&mut self, hp: i32) {
         self.max_health = hp;
     }
@@ -4399,6 +4404,42 @@ mod tests {
         p.set_mana(90);
         p.add_mp_regen(999);
         assert_eq!(p.get_mana(), 100);
+    }
+
+    #[test]
+    fn change_mana_adds_positive_delta() {
+        let mut p = Player::new(1, "T", 1);
+        p.set_max_mana(200);
+        p.set_mana(100);
+        p.change_mana(50);
+        assert_eq!(p.get_mana(), 150);
+    }
+
+    #[test]
+    fn change_mana_clamps_to_max() {
+        let mut p = Player::new(1, "T", 1);
+        p.set_max_mana(100);
+        p.set_mana(90);
+        p.change_mana(999);
+        assert_eq!(p.get_mana(), 100);
+    }
+
+    #[test]
+    fn change_mana_clamps_to_zero() {
+        let mut p = Player::new(1, "T", 1);
+        p.set_max_mana(100);
+        p.set_mana(30);
+        p.change_mana(-500);
+        assert_eq!(p.get_mana(), 0);
+    }
+
+    #[test]
+    fn change_mana_subtracts_negative_delta() {
+        let mut p = Player::new(1, "T", 1);
+        p.set_max_mana(200);
+        p.set_mana(100);
+        p.change_mana(-40);
+        assert_eq!(p.get_mana(), 60);
     }
 
     // -----------------------------------------------------------------------

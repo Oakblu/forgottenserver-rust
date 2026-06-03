@@ -344,6 +344,45 @@ pub fn load_player_for_login(db: &dyn Database, character_id: i64) -> Option<Pla
     })
 }
 
+/// Session-scoped player fields written back to the database on logout.
+#[derive(Debug, Clone, PartialEq)]
+pub struct PlayerLogoutData {
+    pub pos_x: u16,
+    pub pos_y: u16,
+    pub pos_z: u8,
+    pub health: i32,
+    pub mana: i32,
+    pub direction: u8,
+}
+
+/// Persist the player's logout state to the real database.
+///
+/// Saves the fields that change during a session: position, health, mana, and
+/// direction.  Mirrors the relevant subset of C++ `IOLoginData::savePlayer`
+/// (`forgottenserver/src/iologindata.cpp`).
+///
+/// Returns `true` if the UPDATE succeeded.
+pub fn save_player_logout(
+    db: &mut dyn Database,
+    character_id: i64,
+    data: &PlayerLogoutData,
+) -> bool {
+    let sql = format!(
+        "UPDATE players SET \
+         posx = {pos_x}, posy = {pos_y}, posz = {pos_z}, \
+         health = {health}, mana = {mana}, \
+         direction = {direction} \
+         WHERE id = {character_id}",
+        pos_x = data.pos_x,
+        pos_y = data.pos_y,
+        pos_z = data.pos_z,
+        health = data.health,
+        mana = data.mana,
+        direction = data.direction,
+    );
+    db.execute(&sql).is_ok()
+}
+
 // ── Session lookup ────────────────────────────────────────────────────────────
 
 /// Look up the `account_id` and `character_id` for a valid, non-expired session
@@ -1637,6 +1676,34 @@ mod tests {
         // A freshly-defaulted instance should behave identically to ::new().
         assert!(io.load_player(&db, "anyone").is_none());
         assert_eq!(io.get_guid_by_name(&db, "anyone"), 0);
+    }
+
+    // ── save_player_logout tests ──────────────────────────────────────────────
+
+    #[test]
+    fn save_player_logout_executes_update_with_correct_fields() {
+        use crate::database::InMemoryDb;
+        let mut db = InMemoryDb::new();
+        let data = PlayerLogoutData {
+            pos_x: 100,
+            pos_y: 200,
+            pos_z: 7,
+            health: 150,
+            mana: 80,
+            direction: 2,
+        };
+        let result = save_player_logout(&mut db, 7, &data);
+        assert!(result, "save_player_logout should return true on success");
+        assert_eq!(db.executed_statements.len(), 1);
+        let sql = &db.executed_statements[0];
+        assert!(sql.contains("UPDATE players"), "must UPDATE players");
+        assert!(sql.contains("posx = 100"), "must set posx");
+        assert!(sql.contains("posy = 200"), "must set posy");
+        assert!(sql.contains("posz = 7"), "must set posz");
+        assert!(sql.contains("health = 150"), "must set health");
+        assert!(sql.contains("mana = 80"), "must set mana");
+        assert!(sql.contains("direction = 2"), "must set direction");
+        assert!(sql.contains("WHERE id = 7"), "must target correct character id");
     }
 
     // ── lookup_session tests ──────────────────────────────────────────────────

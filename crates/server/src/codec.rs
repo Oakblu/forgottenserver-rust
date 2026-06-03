@@ -1,5 +1,9 @@
+use std::sync::atomic::{AtomicU32, Ordering};
+
 use forgottenserver_common::position::Position;
 use forgottenserver_game::chat::{ChannelId, ChannelInfo, SpeakType};
+
+static TALK_STATEMENT_ID: AtomicU32 = AtomicU32::new(0);
 
 use crate::map_description::TileDescription;
 
@@ -15,6 +19,7 @@ pub enum ServerPacket {
     /// 0xAA — chat message delivered to receivers
     Talk {
         speaker: String,
+        speaker_level: u16,
         speak_type: SpeakType,
         channel_id: Option<ChannelId>,
         text: String,
@@ -203,10 +208,11 @@ pub fn encode(packet: &ServerPacket) -> Vec<u8> {
         ServerPacket::OpenChannel { channel_id, name } => encode_open_channel(*channel_id, name),
         ServerPacket::Talk {
             speaker,
+            speaker_level,
             speak_type,
             channel_id,
             text,
-        } => encode_talk(speaker, speak_type, *channel_id, text),
+        } => encode_talk(speaker, *speaker_level, speak_type, *channel_id, text),
         ServerPacket::OpenPrivateChannel { receiver } => encode_open_private_channel(receiver),
         ServerPacket::DamageEffect {
             creature_id,
@@ -300,13 +306,21 @@ fn encode_open_channel(channel_id: ChannelId, name: &str) -> Vec<u8> {
 
 fn encode_talk(
     speaker: &str,
+    speaker_level: u16,
     speak_type: &SpeakType,
     channel_id: Option<ChannelId>,
     text: &str,
 ) -> Vec<u8> {
+    // Wire format (TFS 13.x / OTClient 1310):
+    // [0xAA][stmt_id: u32][name: string][traded: u8 = 0x00][level: u16][speak_type: u8]
+    // [(channel_id: u16)?][text: string]
+    let stmt_id = TALK_STATEMENT_ID.fetch_add(1, Ordering::Relaxed).wrapping_add(1);
     let mut out = Vec::new();
     out.push(0xAA);
+    out.extend_from_slice(&stmt_id.to_le_bytes());
     write_string(&mut out, speaker);
+    out.push(0x00); // "(Traded)" suffix — always 0x00 in normal play
+    out.extend_from_slice(&speaker_level.to_le_bytes());
     out.push(speak_type.to_byte());
     if let Some(cid) = channel_id {
         out.extend_from_slice(&cid.to_le_bytes());
@@ -643,5 +657,32 @@ mod tests {
             missions: vec![("M1".to_string(), "desc".to_string())],
         });
         assert_eq!(encoded[0], 0xF1);
+    }
+
+    #[test]
+    fn talk_wire_format_has_stmt_id_and_level_before_speak_type() {
+        let encoded = encode(&ServerPacket::Talk {
+            speaker: "Alice".to_string(),
+            speaker_level: 42,
+            speak_type: SpeakType::Say,
+            channel_id: None,
+            text: "hi".to_string(),
+        });
+        // [0] = 0xAA opcode
+        assert_eq!(encoded[0], 0xAA);
+        // [1..5] = stmt_id u32 LE (non-zero after first call)
+        let _stmt_id = u32::from_le_bytes([encoded[1], encoded[2], encoded[3], encoded[4]]);
+        // [5..6] = name length u16 LE = 5 ("Alice")
+        let name_len = u16::from_le_bytes([encoded[5], encoded[6]]) as usize;
+        assert_eq!(name_len, 5);
+        // [7..12] = "Alice"
+        assert_eq!(&encoded[7..12], b"Alice");
+        // [12] = traded byte = 0x00
+        assert_eq!(encoded[12], 0x00);
+        // [13..15] = level u16 LE = 42
+        let level = u16::from_le_bytes([encoded[13], encoded[14]]);
+        assert_eq!(level, 42);
+        // [15] = speak_type byte
+        assert_eq!(encoded[15], SpeakType::Say.to_byte());
     }
 }
