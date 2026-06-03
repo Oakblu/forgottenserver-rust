@@ -463,21 +463,28 @@ impl NetworkMessage {
     pub fn add_item_payload(&mut self, count: u8, meta: ItemTypeMeta) {
         self.add_u16(meta.client_id);
 
+        // Group 1: mutually exclusive sub-type byte (mirrors C++ else-if chain)
         if meta.stackable {
             self.add_u8(count);
         } else if meta.is_splash || meta.is_fluid_container {
             self.add_u8(FLUID_MAP[(count & 7) as usize]);
-        } else if meta.is_container {
-            self.add_u8(0x00); // assigned loot container icon
-            self.add_u8(0x00); // quiver ammo count
         } else if meta.classification > 0 {
             self.add_u8(0x00); // item tier (0-10)
-        } else if meta.show_client_charges {
+        }
+
+        // Group 2: charges/duration — independent of group 1 (mirrors C++ separate if)
+        if meta.show_client_charges {
             self.add_u32(meta.charges);
             self.add_u8(0x00); // boolean (is brand new)
         } else if meta.show_client_duration {
             self.add_u32(meta.decay_time_min);
             self.add_u8(0x00); // boolean (is brand new)
+        }
+
+        // Group 3: container — independent of groups 1 and 2 (mirrors C++ separate if)
+        if meta.is_container {
+            self.add_u8(0x00); // assigned loot container icon
+            self.add_u8(0x00); // quiver ammo count
         }
 
         if meta.is_podium {
@@ -1609,6 +1616,20 @@ mod tests {
     }
 
     #[test]
+    fn test_add_item_payload_container_and_classification_writes_tier_then_container_bytes() {
+        let mut m = msg();
+        let meta = ItemTypeMeta {
+            client_id: 50,
+            is_container: true,
+            classification: 3,
+            ..Default::default()
+        };
+        m.add_item_payload(0, meta);
+        // client_id (50 LE) + 0x00 (tier, from classification=3) + 0x00 (loot icon) + 0x00 (quiver)
+        assert_eq!(body(&m), &[50, 0, 0x00, 0x00, 0x00]);
+    }
+
+    #[test]
     fn test_add_item_payload_show_client_charges_writes_u32_charges_plus_zero() {
         let mut m = msg();
         let meta = ItemTypeMeta {
@@ -1951,9 +1972,10 @@ mod tests {
     }
 
     #[test]
-    fn test_cpp_parity_classification_takes_precedence_over_show_charges() {
-        // In C++ the else-if chain skips show_client_charges when
-        // classification > 0.  Verify that here.
+    fn test_cpp_parity_classification_and_show_charges_both_written() {
+        // In C++ the stackable/splash/classification group is a separate if/else-if
+        // chain from showClientCharges, so BOTH the tier byte AND the charges+brand-new
+        // bytes are written when classification > 0 AND show_client_charges is set.
         let mut m = msg();
         let meta = ItemTypeMeta {
             client_id: 1,
@@ -1963,7 +1985,10 @@ mod tests {
             ..Default::default()
         };
         m.add_item_payload(0, meta);
-        // Only the tier byte (0x00) — NOT the charges + brand-new bytes.
-        assert_eq!(body(&m), &[1, 0, 0x00]);
+        // client_id (1 LE) + tier 0x00 + charges 0xDEAD LE + brand-new 0x00
+        assert_eq!(
+            body(&m),
+            &[0x01, 0x00, 0x00, 0xAD, 0xDE, 0x00, 0x00, 0x00]
+        );
     }
 }

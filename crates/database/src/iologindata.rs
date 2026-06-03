@@ -248,7 +248,7 @@ pub struct PlayerLoginData {
 ///
 /// Returns `None` if no row is found.  If the returned position is `(0, 0, 0)`
 /// the player has no saved position and the default temple coordinates
-/// `(100, 100, 7)` are substituted.
+/// `(95, 117, 7)` (Trekolt temple from forgotten.otbm) are substituted.
 ///
 /// Per-column defaults mirror the schema `DEFAULT` values so a partial mock
 /// row (or a real row with NULLs) degrades gracefully.
@@ -281,8 +281,9 @@ pub fn load_player_for_login(db: &dyn Database, character_id: i64) -> Option<Pla
     // (i.e. no real saved position) we fall back to the default temple
     // coordinates rather than only the all-zero case.
     if posx == 0 || posy == 0 {
-        posx = 100;
-        posy = 100;
+        // Default town 1 (Trekolt) temple position from forgotten.otbm.
+        posx = 95;
+        posy = 117;
         posz = 7;
     }
 
@@ -1943,8 +1944,8 @@ mod tests {
         let result = super::load_player_for_login(&db, 1);
         assert!(result.is_some());
         let data = result.unwrap();
-        assert_eq!(data.posx, 100);
-        assert_eq!(data.posy, 100);
+        assert_eq!(data.posx, 95);
+        assert_eq!(data.posy, 117);
         assert_eq!(data.posz, 7);
     }
 

@@ -187,3 +187,18 @@ These rules are enforced across the entire project and must not be violated:
 - `intentional_differences.yml` — recorded, justified divergences from C++
 - `schema.sql` — MariaDB schema (auto-applied on first DB start via Docker)
 - `data/` — game data: items.otb, world map, Lua scripts, XML configs (user content, read-only)
+
+## OTClient Asset Files (.dat / .spr)
+
+The OTClient requires `Tibia.dat` and `Tibia.spr` for the target client version. Place them at:
+
+```
+otclient/data/things/<version>/Tibia.dat
+otclient/data/things/<version>/Tibia.spr
+```
+
+This server targets client **1310–1311**, so the folder should be `otclient/data/things/1310/`.
+
+These files are copyrighted by CipSoft and cannot be committed to the repo. Download them from:
+
+- https://downloads.ots.me/?dir=data/tibia-clients/dat_and_spr

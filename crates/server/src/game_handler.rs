@@ -15,6 +15,7 @@ use forgottenserver_game::{
 use forgottenserver_items::vocation::{Vocation, Vocations};
 use forgottenserver_map::pathfinder::Pathfinder;
 use forgottenserver_network::protocolgame as pg;
+use forgottenserver_world::map::Map;
 use forgottenserver_world::World;
 
 use crate::{
@@ -52,6 +53,7 @@ pub fn on_walk(world: &World, new_pos: Position) -> Vec<u8> {
 #[allow(clippy::too_many_arguments)]
 pub fn build_map_around_player(
     world: &World,
+    map: &Map,
     player_pos: Position,
     player_creature_id: u32,
     player_name: &str,
@@ -99,7 +101,17 @@ pub fn build_map_around_player(
     };
     let name_owned = player_name.to_string();
     pg::serialize_map_description(player_pos.x, player_pos.y, player_pos.z, |x, y, z| {
-        build_anchor_tile(world, x, y, z, px, py, pz, Some((&name_owned, player_meta)))
+        build_anchor_tile(
+            world,
+            map,
+            x,
+            y,
+            z,
+            px,
+            py,
+            pz,
+            Some((&name_owned, player_meta)),
+        )
     })
 }
 
@@ -154,16 +166,17 @@ fn get_basis_point_level(count: u64, next_level_count: u64) -> u16 {
 /// 1. `0xA0` stats — `AddPlayerStats`
 /// 2. `0xA1` skills — `AddPlayerSkills`
 /// 3. `0xA2` icons — `sendIcons`
-/// 4. `0x8D` creature light — `sendCreatureLight` (the player)
-/// 5. `0xD2` VIP entries — skipped (player has no VIP list)
-/// 6. `0x86` item classes — `sendItemClasses`
-/// 7. `0x17` client features — `sendClientFeatures`
-/// 8. `0x9F` basic data — `sendBasicData`
-/// 9. `0xF5` items — `sendItems`
-/// 10. `0x0A` pending-state-entered — `sendPendingStateEntered`
-/// 11. `0x0F` enter-world — `sendEnterWorld`
-/// 12. `0x64` map description — `sendMapDescription` (player tile injected)
-/// 13. `0x78`/`0x79` inventory for slots `1..=11` (`sendInventoryItem`)
+/// 4. `0x82` world light — `sendWorldLight` (ambient brightness)
+/// 5. `0x8D` creature light — `sendCreatureLight` (the player)
+/// 6. `0xD2` VIP entries — skipped (player has no VIP list)
+/// 7. `0x86` item classes — `sendItemClasses`
+/// 8. `0x17` client features — `sendClientFeatures`
+/// 9. `0x9F` basic data — `sendBasicData`
+/// 10. `0xF5` items — `sendItems`
+/// 11. `0x0A` pending-state-entered — `sendPendingStateEntered`
+/// 12. `0x0F` enter-world — `sendEnterWorld`
+/// 13. `0x64` map description — `sendMapDescription` (player tile injected)
+/// 14. `0x78`/`0x79` inventory for slots `1..=11` (`sendInventoryItem`)
 ///
 /// The caller (`boot.rs::frame_packet`) wraps this entire concatenation in a
 /// single outer frame + XTEA, so each step here is a raw `[opcode][fields]`
@@ -184,6 +197,7 @@ pub fn build_enter_world_burst(
     world: &World,
     player_creature_id: u32,
     vocations: &Vocations,
+    map: &Map,
 ) -> Vec<u8> {
     let mut burst = Vec::new();
 
@@ -267,12 +281,15 @@ pub fn build_enter_world_burst(
     // 3. 0xA2 icons (sendIcons) — empty bitmask.
     burst.extend_from_slice(&body(|out| pg::serialize_icons(out, 0)));
 
-    // 4. 0x8D creature light for the player.
-    burst.extend_from_slice(&pg::serialize_creature_light(player_creature_id, 0, 0));
+    // 4. 0x82 world (ambient) light — full brightness so underground tiles are visible.
+    burst.extend_from_slice(&pg::serialize_world_light(255, 215));
 
-    // 5. 0xD2 VIP entries — skipped (empty VIP list, zero packets).
+    // 5. 0x8D creature light for the player (level 9 matches C++ player default).
+    burst.extend_from_slice(&pg::serialize_creature_light(player_creature_id, 9, 215));
 
-    // 6. 0x86 item classes.
+    // 6. 0xD2 VIP entries — skipped (empty VIP list, zero packets).
+
+    // 7. 0x86 item classes.
     burst.extend_from_slice(&pg::serialize_item_classes());
 
     // 7. 0x17 client features.
@@ -322,6 +339,7 @@ pub fn build_enter_world_burst(
     let px = player.posx as i32;
     let py = player.posy as i32;
     let pz = player.posz as i32;
+    log_tile_area(map, px, py, pz);
     let player_meta = pg::AddCreatureMeta {
         creature_id: player_creature_id,
         creature_type: 0, // CREATURETYPE_PLAYER
@@ -340,8 +358,8 @@ pub fn build_enter_world_burst(
             look_mount: player.look_mount,
             ..pg::OutfitDescriptor::default()
         },
-        light_level: 0,
-        light_color: 0,
+        light_level: 9,
+        light_color: 215,
         step_speed_half: base_speed_half,
         skull: 0,
         party_shield: 0,
@@ -356,13 +374,11 @@ pub fn build_enter_world_burst(
         player.posy,
         player.posz,
         |x, y, z| {
-            // Inject a 9x9 patch of ground (client id 106) around the player so
-            // the avatar has visible ground to stand on; the world has no real
-            // tiles loaded yet. The exact center tile additionally carries the
-            // player creature so the client has something to render at the
-            // player's coordinates.
+            // Look up the real loaded OTBM map for surrounding tiles; the player's
+            // own coordinate gets the player creature spliced into the ground tile.
             build_anchor_tile(
                 world,
+                map,
                 x,
                 y,
                 z,
@@ -374,7 +390,19 @@ pub fn build_enter_world_burst(
         },
     ));
 
-    // 13. 0x78/0x79 inventory for slots 1..=11 (player has no items → 0x79).
+    // 13. Welcome message.
+    burst.extend_from_slice(&pg::serialize_text_message(
+        pg::text_message_class::MESSAGE_EVENT_ADVANCE,
+        "The Forgotten Server (Rust port) - type /pos for your position.",
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+    ));
+
+    // 14. 0x78/0x79 inventory for slots 1..=11 (player has no items → 0x79).
     for slot in 1u8..=11 {
         burst.extend_from_slice(&pg::serialize_inventory_item(slot, None));
     }
@@ -391,17 +419,21 @@ pub const ANCHOR_RADIUS: i32 = 4;
 /// Produce a `MapTile` for the lookup closure used by `serialize_map_description`.
 ///
 /// * For the exact player tile `(px, py, pz)` and when `player` is `Some`, the
-///   returned tile carries the player creature and ground id 106.
-/// * For tiles within the `ANCHOR_RADIUS` square around the player on the same
-///   floor, only ground id 106 is returned (no creatures).
-/// * For every other coordinate, the function delegates to the real `World`
-///   via [`world_tile_lookup`], so loaded tiles still render normally.
+///   tile from the loaded `Map` is returned with the player creature appended;
+///   if the map has no tile at that coordinate we fall back to a synthetic
+///   ground id 106 so the avatar still has something to stand on.
+/// * For every other coordinate, the function looks up the real `Map`
+///   (loaded from the OTBM file) via [`world_tile_lookup`], so the actual
+///   Tibia terrain renders. Tiles outside the loaded area produce `None`
+///   (skip marker), matching C++ `g_game.map.getTile`.
 ///
-/// This is the single source of truth for the synthetic ground patch — used by
-/// both the login burst and the walk/turn map redraws in the server crate.
+/// `world` is kept in the signature for legacy reasons (test callers that
+/// pre-date the `Map` plumbing) — it is currently unused inside the lookup,
+/// since the loaded `Map` is the authoritative source of tile geometry.
 #[allow(clippy::too_many_arguments)]
 pub fn build_anchor_tile(
     world: &World,
+    map: &Map,
     x: i32,
     y: i32,
     z: i32,
@@ -410,80 +442,131 @@ pub fn build_anchor_tile(
     pz: i32,
     player: Option<(&str, pg::AddCreatureMeta)>,
 ) -> Option<pg::MapTile> {
+    let _ = world; // legacy parameter; real terrain comes from `map`
     let ground_meta = ItemTypeMeta {
         client_id: 106,
         ..ItemTypeMeta::default()
     };
 
-    // Exact player tile: ground + player creature.
+    // Exact player tile: ground (from map if available, else synthetic) +
+    // player creature.
     if x == px && y == py && z == pz {
         if let Some((name, meta)) = player {
-            return Some(pg::MapTile {
+            let base = world_tile_lookup(map, x, y, z).unwrap_or(pg::MapTile {
                 ground: Some((1, ground_meta)),
+                ..pg::MapTile::default()
+            });
+            return Some(pg::MapTile {
+                ground: base.ground.or(Some((1, ground_meta))),
+                top_items: base.top_items,
                 creatures: vec![pg::MapCreature {
                     known: false,
                     removed_known: 0,
                     name: name.to_string(),
                     meta,
                 }],
-                ..pg::MapTile::default()
+                down_items: base.down_items,
             });
         }
     }
 
-    // NOTE: a 9×9 ground patch around the player was tried as a visual anchor,
-    // but a real OTClient 13.10 rejects the resulting larger bundle (1586 vs
-    // 1266 bytes) and never enters the game. Until we either (a) load the real
-    // .otbm map or (b) figure out the structural issue with many synthetic
-    // same-id ground tiles, we keep just the single player tile and leave the
-    // rest to the empty world.
-    let _ = ground_meta; // silence unused on non-player paths
-    world_tile_lookup(world, x, y, z)
+    world_tile_lookup(map, x, y, z)
 }
 
-/// Look up a real `World` tile at an absolute coordinate and convert it into a
-/// `MapTile` for the `0x64` stream.  Returns `None` when there is no tile
-/// (which produces a skip marker), matching C++ `g_game.map.getTile`.
+/// Look up a tile in the real loaded `Map` at an absolute coordinate and
+/// convert it into a `MapTile` for the `0x64` stream.  Returns `None` when
+/// there is no tile (which produces a skip marker), matching C++
+/// `g_game.map.getTile`.
 ///
-/// The current `World` carries only ground item ids and creature ids (no
-/// per-item metadata or per-creature outfit), so ground items are rendered
-/// with their raw id as the client id and creatures are skipped here — the
-/// player's own tile (the only creature that must render at login) is injected
-/// separately by [`build_enter_world_burst`].
-fn world_tile_lookup(world: &World, x: i32, y: i32, z: i32) -> Option<pg::MapTile> {
+/// Items are split into top items (those with `Item::always_on_top()`) and
+/// down items, mirroring C++ `TileItemVector::getBeginTopItem` /
+/// `getEndTopItem` / `getBeginDownItem` / `getEndDownItem`. Each item is
+/// emitted with `count = 1` and the item's client id; richer per-item
+/// metadata (subtype, fluid, etc.) is not yet wired through.
+///
+/// Creatures are intentionally left empty here. The player's own creature is
+/// spliced in by [`build_anchor_tile`]; NPCs and monsters require a separate
+/// creature registry that isn't yet plumbed into this layer.
+/// Build an `ItemTypeMeta` from a loaded `Item`, carrying all protocol-relevant
+/// flags from the item's type data so the network layer sends the correct bytes.
+fn item_to_meta(item: &forgottenserver_items::item::Item) -> ItemTypeMeta {
+    let t = &item.item_type;
+    ItemTypeMeta {
+        client_id: item.get_client_id(),
+        stackable: t.stackable,
+        is_splash: t.is_splash(),
+        is_fluid_container: t.is_fluid_container(),
+        is_container: t.is_container(),
+        classification: t.classification,
+        show_client_charges: t.show_client_charges,
+        show_client_duration: t.show_client_duration,
+        is_podium: t.is_podium(),
+        charges: t.charges,
+        decay_time_min: t.decay_time_min,
+        ..ItemTypeMeta::default()
+    }
+}
+
+pub(crate) fn world_tile_lookup(map: &Map, x: i32, y: i32, z: i32) -> Option<pg::MapTile> {
     if !(0..=u16::MAX as i32).contains(&x) || !(0..=u16::MAX as i32).contains(&y) {
         return None;
     }
-    let pos = Position::new(x as u16, y as u16, z as u8);
-    let tile = world.get_tile(pos)?;
-    let ground = tile.ground_item_id.map(|id| {
-        (
-            1u8,
-            ItemTypeMeta {
-                client_id: id,
-                ..ItemTypeMeta::default()
-            },
-        )
-    });
-    let top_items = tile
-        .top_item_ids
-        .iter()
-        .map(|&id| {
-            (
-                1u8,
-                ItemTypeMeta {
-                    client_id: id,
-                    ..ItemTypeMeta::default()
-                },
-            )
-        })
-        .collect();
+    if !(0..=15).contains(&z) {
+        return None;
+    }
+    let tile = map.get_tile(x as u16, y as u16, z as u8)?;
+    let ground = tile.get_ground().map(|item| (1u8, item_to_meta(item)));
+    let mut top_items: Vec<(u8, ItemTypeMeta)> = Vec::new();
+    let mut down_items: Vec<(u8, ItemTypeMeta)> = Vec::new();
+    for item in tile.items() {
+        let entry = (1u8, item_to_meta(item));
+        if item.always_on_top() {
+            top_items.push(entry);
+        } else {
+            down_items.push(entry);
+        }
+    }
+    // C++ getTile() returns NULL for OTBM tile records that contain no items
+    // (no ground, no stacked items). Sending such a tile as "present-but-empty"
+    // rather than a skip marker would shift the client's viewport tile counters
+    // and corrupt every tile position that follows. Match C++ by returning None
+    // when there is nothing renderable on the tile.
+    if ground.is_none() && top_items.is_empty() && down_items.is_empty() {
+        return None;
+    }
     Some(pg::MapTile {
         ground,
         top_items,
         creatures: Vec::new(),
-        down_items: Vec::new(),
+        down_items,
     })
+}
+
+/// Log tiles in a small area around the player for diagnostic purposes.
+pub fn log_tile_area(map: &Map, px: i32, py: i32, pz: i32) {
+    eprintln!("[tile_diag] scanning 5x5 around player ({px},{py},{pz})");
+    for dy in -2i32..=2 {
+        for dx in -2i32..=2 {
+            let x = px + dx;
+            let y = py + dy;
+            if let Some(tile) = world_tile_lookup(map, x, y, pz) {
+                let gid = tile.ground.map(|(_, m)| m.client_id).unwrap_or(0);
+                let items: Vec<u16> = tile
+                    .top_items
+                    .iter()
+                    .chain(tile.down_items.iter())
+                    .map(|(_, m)| m.client_id)
+                    .collect();
+                eprintln!(
+                    "[tile_diag]   ({x},{y},{pz}) ground_cid={gid} items={items:?}"
+                );
+            } else {
+                eprintln!("[tile_diag]   ({x},{y},{pz}) <no tile>");
+            }
+        }
+    }
+    // Also log how many tiles total exist in the map
+    eprintln!("[tile_diag] total tiles in map: {}", map.get_tile_count());
 }
 
 // ---------------------------------------------------------------------------
@@ -1744,10 +1827,11 @@ mod tests {
     #[test]
     fn enter_world_burst_emits_full_login_bundle_in_player_cpp_order() {
         let world = World::new();
+        let map = Map::new();
         let player = sample_login_data();
         let vocations = test_vocations();
         let creature_id = 0x1000_0001u32;
-        let burst = build_enter_world_burst(&player, &world, creature_id, &vocations);
+        let burst = build_enter_world_burst(&player, &world, creature_id, &vocations, &map);
 
         // Mirrors Player::login order (player.cpp:1188-1205):
         // 0xA0 stats first (no VIP packets — empty list).
@@ -1788,6 +1872,7 @@ mod tests {
     #[test]
     fn enter_world_burst_ends_with_eleven_empty_inventory_slots() {
         let world = World::new();
+        let map = Map::new();
         let player = PlayerLoginData {
             level: 1,
             health: 150,
@@ -1796,7 +1881,7 @@ mod tests {
             manamax: 0,
             ..sample_login_data()
         };
-        let burst = build_enter_world_burst(&player, &world, 0x1000_0001, &test_vocations());
+        let burst = build_enter_world_burst(&player, &world, 0x1000_0001, &test_vocations(), &map);
 
         // The final 22 bytes must be 11 empty-inventory packets: [0x79][slot]
         // for slots 1..=11.
@@ -1813,8 +1898,9 @@ mod tests {
     #[test]
     fn enter_world_burst_stats_packet_carries_real_values() {
         let world = World::new();
+        let map = Map::new();
         let player = sample_login_data();
-        let burst = build_enter_world_burst(&player, &world, 0x1000_0001, &test_vocations());
+        let burst = build_enter_world_burst(&player, &world, 0x1000_0001, &test_vocations(), &map);
 
         // 0xA0 body layout: [0xA0][hp u32][hpmax u32][freecap u32][exp u64]
         //   [level u16][levelpct u8][exp_display u16][low u16][store u16]
@@ -1862,8 +1948,9 @@ mod tests {
     #[test]
     fn enter_world_burst_skills_packet_carries_real_skill_levels() {
         let world = World::new();
+        let map = Map::new();
         let player = sample_login_data();
-        let burst = build_enter_world_burst(&player, &world, 0x1000_0001, &test_vocations());
+        let burst = build_enter_world_burst(&player, &world, 0x1000_0001, &test_vocations(), &map);
 
         // 0xA1 body: [0xA1][mag level u16][mag base u16][mag base_loyalty u16]
         //   [mag pct u16] then 7 skill rows of (level u16, base u16,
@@ -1890,8 +1977,9 @@ mod tests {
     #[test]
     fn enter_world_burst_basic_data_carries_vocation_and_premium() {
         let world = World::new();
+        let map = Map::new();
         let player = sample_login_data();
-        let burst = build_enter_world_burst(&player, &world, 0x1000_0001, &test_vocations());
+        let burst = build_enter_world_burst(&player, &world, 0x1000_0001, &test_vocations(), &map);
 
         // 0x9F layout: [0x9F][isPremium u8][premiumEnd u32][vocClientId u8]
         //   [prey u8][spellCount u16=0xFF][255 * u16 spell ids][magicShield u8]
@@ -1916,6 +2004,77 @@ mod tests {
             "spell id count must be 255"
         );
         assert_eq!(b[520], 1, "magic shield byte must reflect vocation flag");
+    }
+
+    /// When the player's tile in the loaded `Map` carries a real ground item,
+    /// the burst's `0x64` map description must emit that item's client_id at
+    /// the player tile — not the synthetic fallback id 106. This is the
+    /// regression bar that protects against silently dropping the loaded
+    /// OTBM terrain back to a void.
+    #[test]
+    fn enter_world_burst_uses_real_map_ground_when_present() {
+        use forgottenserver_items::item::Item;
+        use forgottenserver_items::items_registry::ItemTypeData;
+        use forgottenserver_map::tile::Tile;
+        use std::sync::Arc;
+
+        // Build a 1-tile map with a ground item carrying client_id = 4321
+        // exactly at the player's spawn coordinate (100, 100, 7).
+        let mut map = Map::new();
+        let mut tile = Tile::new_dynamic(100, 100, 7);
+        let ground_blueprint = Arc::new(ItemTypeData {
+            id: 919,
+            client_id: 4321,
+            ..ItemTypeData::default()
+        });
+        tile.set_ground(Item::new(ground_blueprint, 1));
+        map.set_tile(100, 100, 7, tile);
+
+        let world = World::new();
+        let player = sample_login_data(); // posx=100, posy=100, posz=7
+        let burst = build_enter_world_burst(&player, &world, 0x1000_0001, &test_vocations(), &map);
+
+        // 0x64 layout: [0x64][posX u16][posY u16][posZ u8][... map payload].
+        // Search for the exact signature so we don't mistake a stray 0x64
+        // payload byte from a previous packet for the map opcode.
+        let signature = {
+            let mut s = vec![0x64u8];
+            s.extend_from_slice(&100u16.to_le_bytes());
+            s.extend_from_slice(&100u16.to_le_bytes());
+            s.push(7u8);
+            s
+        };
+        let s0 = burst
+            .windows(signature.len())
+            .position(|w| w == signature.as_slice())
+            .expect("map description 0x64 + player-pos signature present");
+        let payload = &burst[s0..];
+        assert_eq!(payload[0], 0x64);
+        // pos sanity check
+        assert_eq!(u16::from_le_bytes([payload[1], payload[2]]), 100);
+        assert_eq!(u16::from_le_bytes([payload[3], payload[4]]), 100);
+        assert_eq!(payload[5], 7);
+
+        // The ground item's client_id (4321 = 0xE1 0x10 LE) must appear
+        // somewhere in the map payload AFTER the position header. Skip the
+        // 6-byte header and search the first 32 bytes (the player tile
+        // bytes; the per-floor skip algorithm hasn't gotten past the first
+        // tile yet at this offset).
+        let expected = 4321u16.to_le_bytes();
+        let window = &payload[6..6 + 32.min(payload.len() - 6)];
+        assert!(
+            window.windows(2).any(|w| w == expected),
+            "ground client_id 4321 must appear in the player-tile map bytes; window={window:02X?}"
+        );
+        // And the synthetic-fallback id 106 (0x6A 0x00 LE) must NOT appear
+        // in the first 4 bytes (where ground would land), confirming that
+        // the real map tile took precedence over the synthetic fallback.
+        let fallback = 106u16.to_le_bytes();
+        assert_ne!(
+            &payload[6..8],
+            &fallback,
+            "the player-tile ground must be the loaded map's item, not the synthetic 106 fallback"
+        );
     }
 
     #[test]
@@ -1949,5 +2108,67 @@ mod tests {
             text.contains("complete"),
             "Completion message must say 'complete'"
         );
+    }
+
+    #[test]
+    fn world_tile_lookup_container_item_sets_is_container_true() {
+        use forgottenserver_items::item::Item;
+        use forgottenserver_common::itemloader::ItemGroup;
+        use forgottenserver_items::items_registry::ItemTypeData;
+        use forgottenserver_map::tile::Tile;
+        use std::sync::Arc;
+
+        let mut map = Map::new();
+        let mut tile = Tile::new_dynamic(10, 10, 7);
+        let ground = Arc::new(ItemTypeData {
+            id: 100,
+            client_id: 500,
+            group: ItemGroup::Ground,
+            ..ItemTypeData::default()
+        });
+        tile.set_ground(Item::new(ground, 1));
+        let container_type = Arc::new(ItemTypeData {
+            id: 200,
+            client_id: 1987,
+            group: ItemGroup::Container,
+            ..ItemTypeData::default()
+        });
+        tile.add_item(Item::new(container_type, 1));
+        map.set_tile(10, 10, 7, tile);
+
+        let result = world_tile_lookup(&map, 10, 10, 7).expect("tile must exist");
+        let (_, meta) = result.down_items[0];
+        assert!(meta.is_container, "container item must have is_container=true in ItemTypeMeta");
+    }
+
+    #[test]
+    fn world_tile_lookup_stackable_item_sets_stackable_true() {
+        use forgottenserver_items::item::Item;
+        use forgottenserver_common::itemloader::ItemGroup;
+        use forgottenserver_items::items_registry::ItemTypeData;
+        use forgottenserver_map::tile::Tile;
+        use std::sync::Arc;
+
+        let mut map = Map::new();
+        let mut tile = Tile::new_dynamic(10, 10, 7);
+        let ground = Arc::new(ItemTypeData {
+            id: 100,
+            client_id: 500,
+            group: ItemGroup::Ground,
+            ..ItemTypeData::default()
+        });
+        tile.set_ground(Item::new(ground, 1));
+        let stackable_type = Arc::new(ItemTypeData {
+            id: 300,
+            client_id: 2160,
+            stackable: true,
+            ..ItemTypeData::default()
+        });
+        tile.add_item(Item::new(stackable_type, 5));
+        map.set_tile(10, 10, 7, tile);
+
+        let result = world_tile_lookup(&map, 10, 10, 7).expect("tile must exist");
+        let (_, meta) = result.down_items[0];
+        assert!(meta.stackable, "stackable item must have stackable=true in ItemTypeMeta");
     }
 }

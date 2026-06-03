@@ -2746,6 +2746,24 @@ pub fn serialize_creature_light(creature_id: u32, level: u8, color: u8) -> Vec<u
     out.get_output_buffer()[2..].to_vec()
 }
 
+/// Serialize `sendWorldLight` (opcode `0x82`).
+///
+/// Mirrors `GameServerAmbient = 130 (0x82)` parsed by OTClient in
+/// `src/client/protocolgameparse.cpp` `parseWorldLight`.
+///
+/// Wire layout:
+/// * opcode `0x82` (u8)
+/// * `intensity` (u8 — 0 = dark, 255 = full daylight)
+/// * `color` (u8 — 215 = white/yellow)
+pub fn serialize_world_light(intensity: u8, color: u8) -> Vec<u8> {
+    let mut out = OutputMessage::new();
+    out.add_u8(0x82);
+    out.add_u8(intensity);
+    out.add_u8(color);
+    out.write_message_length();
+    out.get_output_buffer()[2..].to_vec()
+}
+
 /// Serialize `sendCreatureSkull` (opcode `0x90`).
 ///
 /// Mirrors C++ `ProtocolGame::sendCreatureSkull` in
@@ -6052,6 +6070,21 @@ mod tests {
         assert_eq!(msg.get_u8(), 0x8D);
         assert_eq!(msg.get_u32(), 42);
         assert_eq!(msg.get_u8(), 7);
+        assert_eq!(msg.get_u8(), 215);
+    }
+
+    // -----------------------------------------------------------------------
+    // serialize_world_light
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_serialize_world_light() {
+        let bytes = serialize_world_light(250, 215);
+        let mut msg = NetworkMessage::new();
+        msg.add_bytes(&bytes);
+        msg.set_buffer_position(0);
+        assert_eq!(msg.get_u8(), 0x82);
+        assert_eq!(msg.get_u8(), 250);
         assert_eq!(msg.get_u8(), 215);
     }
 

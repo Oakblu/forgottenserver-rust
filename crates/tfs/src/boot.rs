@@ -164,6 +164,7 @@ pub fn start_listeners(modules: &Modules) -> Result<()> {
         modules.game_state.clone(),
         modules.db.clone(),
         modules.game_data.vocations.clone(),
+        modules.game_data.map.clone(),
     )
     .map_err(|e| anyhow!("Failed to start game listener: {e}"))?;
     srv_boot::start_http_listener(
@@ -547,10 +548,7 @@ mod tests {
         use forgottenserver_common::configmanager::ConfigManager;
         let config = ConfigManager::new();
         let result = connect_database(DbBackend::InMemory, &config);
-        assert!(
-            result.is_ok(),
-            "InMemory backend must connect successfully"
-        );
+        assert!(result.is_ok(), "InMemory backend must connect successfully");
     }
 
     /// DbBackend::parse recognises all documented values.

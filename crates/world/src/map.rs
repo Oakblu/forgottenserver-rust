@@ -5,6 +5,7 @@
 
 use std::cmp::Reverse;
 use std::collections::{BinaryHeap, HashMap, HashSet};
+use std::sync::Mutex;
 
 use forgottenserver_common::position::Position;
 use forgottenserver_map::tile::Tile;
@@ -219,16 +220,18 @@ pub struct Map {
     /// and dropped when `clear_spectator_cache` runs (which the game
     /// loop calls whenever anything moves on the map).
     ///
-    /// `RefCell` keeps the cache populatable through a `&self` query —
-    /// the C++ method is also `const` despite mutating the cache.
-    spectator_cache: std::cell::RefCell<HashMap<SpectatorKey, Vec<Position>>>,
+    /// `Mutex` keeps the cache populatable through a `&self` query
+    /// (mirroring the C++ `const`-with-mutable-cache pattern) while
+    /// keeping `Map` `Sync` so it can be shared as `Arc<Map>` across
+    /// listener threads.
+    spectator_cache: Mutex<HashMap<SpectatorKey, Vec<Position>>>,
     /// Players-only spectator cache — separate slot mirroring C++
     /// `playersSpectatorCache`. The Rust port doesn't yet split by
     /// creature kind (no Creature dispatch in `world`), so this cache
     /// remains empty until a downstream layer wires it. The
     /// `clear_players_spectator_cache` hook is in place so callers that
     /// move players have a deterministic invalidation point.
-    players_spectator_cache: std::cell::RefCell<HashMap<SpectatorKey, Vec<Position>>>,
+    players_spectator_cache: Mutex<HashMap<SpectatorKey, Vec<Position>>>,
 }
 
 impl Map {
@@ -243,8 +246,8 @@ impl Map {
             declared_width: 0,
             declared_height: 0,
             waypoints: HashMap::new(),
-            spectator_cache: std::cell::RefCell::new(HashMap::new()),
-            players_spectator_cache: std::cell::RefCell::new(HashMap::new()),
+            spectator_cache: Mutex::new(HashMap::new()),
+            players_spectator_cache: Mutex::new(HashMap::new()),
         }
     }
 
@@ -586,7 +589,7 @@ impl Map {
             range_y,
             include_floor_change,
         };
-        if let Some(cached) = self.spectator_cache.borrow().get(&key) {
+        if let Some(cached) = self.spectator_cache.lock().unwrap().get(&key) {
             return cached.clone();
         }
 
@@ -606,7 +609,8 @@ impl Map {
         }
 
         self.spectator_cache
-            .borrow_mut()
+            .lock()
+            .unwrap()
             .insert(key, result.clone());
         result
     }
@@ -616,7 +620,7 @@ impl Map {
     /// whenever a tile's contents change, so stale entries don't leak
     /// into subsequent queries.
     pub fn clear_spectator_cache(&self) {
-        self.spectator_cache.borrow_mut().clear();
+        self.spectator_cache.lock().unwrap().clear();
     }
 
     /// Same as `clear_spectator_cache`, scoped to the players-only slot.
@@ -625,7 +629,7 @@ impl Map {
     /// split exists in the API so future Creature dispatch layers don't
     /// have to retrofit the interface.
     pub fn clear_players_spectator_cache(&self) {
-        self.players_spectator_cache.borrow_mut().clear();
+        self.players_spectator_cache.lock().unwrap().clear();
     }
 
     // -----------------------------------------------------------------------

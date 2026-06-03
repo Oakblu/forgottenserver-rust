@@ -28,6 +28,8 @@ use forgottenserver_items::{
 };
 use forgottenserver_map::items_loader::load_items_otb;
 use forgottenserver_network::protocolgame::{self as pg, parse_first_packet, serialize_disconnect};
+use forgottenserver_world::iomap::IoMap;
+use forgottenserver_world::map::Map;
 use forgottenserver_world::World;
 
 use crate::{
@@ -47,6 +49,9 @@ pub struct GameData {
     pub weapons: WeaponRegistry,
     pub npcs: NpcRegistry,
     pub vocations: Arc<Vocations>,
+    /// The loaded world map parsed from `<data_dir>/world/<mapName>.otbm`.
+    /// Shared by all game listener connections via `Arc`.
+    pub map: Arc<Map>,
 }
 
 /// Load all four game data registries from `data_dir` before entering the game loop.
@@ -68,12 +73,29 @@ pub fn boot(data_dir: &Path) -> Result<GameData, String> {
         Vocations::load_from_xml("<vocations/>").unwrap()
     });
 
+    // TODO: read mapName from config.lua (StringKey::MapName). For now we
+    // hardcode "forgotten" — the only shipped map and the default in
+    // `data/config.lua`.
+    let map_name = "forgotten";
+    let map_path = data_dir.join("world").join(format!("{map_name}.otbm"));
+    let map_bytes = std::fs::read(&map_path)
+        .map_err(|e| format!("Cannot read map file {}: {e}", map_path.display()))?;
+    let map = IoMap::load_from_bytes(&map_bytes, &items)?;
+    eprintln!(
+        ">> Loaded map: {} tiles, {}x{}",
+        map.get_tile_count(),
+        map.get_declared_width(),
+        map.get_declared_height()
+    );
+    let map = Arc::new(map);
+
     Ok(GameData {
         items,
         spells,
         weapons,
         npcs,
         vocations,
+        map,
     })
 }
 
@@ -143,11 +165,16 @@ impl ConnectionHandler for StatusHandler {
 pub struct GameLoginHandler {
     db: Arc<Mutex<Box<dyn Database + Send>>>,
     vocations: Arc<Vocations>,
+    map: Arc<Map>,
 }
 
 impl GameLoginHandler {
-    pub fn new(db: Arc<Mutex<Box<dyn Database + Send>>>, vocations: Arc<Vocations>) -> Self {
-        Self { db, vocations }
+    pub fn new(
+        db: Arc<Mutex<Box<dyn Database + Send>>>,
+        vocations: Arc<Vocations>,
+        map: Arc<Map>,
+    ) -> Self {
+        Self { db, vocations, map }
     }
 
     /// Handle a single accepted TCP stream: send challenge, read first packet,
@@ -360,22 +387,27 @@ impl GameLoginHandler {
                     &world,
                     player_creature_id,
                     &self.vocations,
+                    &self.map,
                 );
                 eprintln!("[game] enter-world burst built: {} bytes", burst.len());
                 {
-                    let n = burst.len().min(64);
-                    let bhex: String = burst[..n].iter().map(|b| format!("{b:02x} ")).collect();
-                    eprintln!("[game] burst[0..{n}]: {bhex}");
-                    eprintln!(
-                        "[game] player_data: pos=({},{},{}) look_type={} vocation_id={} health={}/{} mana={}/{}",
-                        player_data.posx, player_data.posy, player_data.posz,
-                        player_data.look_type, player_data.vocation_id,
-                        player_data.health, player_data.healthmax,
-                        player_data.mana, player_data.manamax
-                    );
                 }
-                let framed_burst = frame_packet(&burst, packet.xtea_key);
-                eprintln!("[game] framed burst: {} bytes", framed_burst.len());
+
+                // OTClient (os 4..=12, version >= 1111) uses CHECKSUM_SEQUENCE:
+                // the 4-byte frame prefix is a sequence number, not Adler-32.
+                // Must be computed before framing the burst so the burst uses
+                // the correct format; sending Adler-32 when OTClient expects a
+                // sequence number risks bit 31 being set, causing OTClient to
+                // attempt (and fail) zlib decompression and silently drop the
+                // enter-world burst → black canvas.
+                let sequence_checksum = (4..=12).contains(&packet.os);
+                // Sequence counter: burst is seq=1 (C++ starts at 1 with ++m_serverSequence).
+                let framed_burst = if sequence_checksum {
+                    frame_packet_seq(&burst, packet.xtea_key, 1)
+                } else {
+                    frame_packet(&burst, packet.xtea_key)
+                };
+                eprintln!("[game] framed burst: {} bytes (sequence_checksum={sequence_checksum})", framed_burst.len());
                 match stream.write_all(&framed_burst) {
                     Ok(()) => eprintln!("[game] enter-world burst sent"),
                     Err(e) => {
@@ -385,9 +417,6 @@ impl GameLoginHandler {
                 }
 
                 // --- Set 30-second read timeout, then enter XTEA game loop ---
-                // OTClient (os 4..=12, version >= 1111) uses CHECKSUM_SEQUENCE:
-                // the 4-byte frame prefix is a sequence number, not Adler-32.
-                let sequence_checksum = (4..=12).contains(&packet.os);
                 eprintln!(
                     "[game] entering game loop (os={} sequence_checksum={sequence_checksum})",
                     packet.os
@@ -399,9 +428,11 @@ impl GameLoginHandler {
                     &mut stream,
                     packet.xtea_key,
                     sequence_checksum,
+                    2, // server_sequence starts at 2 (burst used 1)
                     player_data,
                     player_creature_id,
                     Arc::clone(&self.vocations),
+                    Arc::clone(&self.map),
                 );
                 eprintln!("[game] game loop exited");
                 // Explicitly shut down the TCP stream so OTClient gets a clean
@@ -436,8 +467,24 @@ fn frame_plaintext_packet(payload: &[u8]) -> Vec<u8> {
 /// Wire layout: `[outerLen:2][adler32:4][xtea_region]`
 /// where `xtea_region` = XTEA-encrypt(`[innerLen:2][payload]` padded to a
 /// multiple of 8 bytes).  This matches C++ `Protocol::onSendMessage` with
-/// XTEA encryption enabled.
+/// XTEA encryption enabled (non-sequenced mode).
 fn frame_packet(payload: &[u8], xtea_key: [u32; 4]) -> Vec<u8> {
+    frame_packet_inner(payload, xtea_key, None)
+}
+
+/// Frame a server→client payload using a sequence number instead of Adler-32.
+///
+/// Used when `sequence_checksum=true` (OTClient, os 4..=12, version >= 1111).
+/// OTClient reads the 4-byte header field as a sequence number and treats
+/// bit 31 as a decompression flag; sending Adler-32 here risks bit 31 being
+/// set and causing OTClient to attempt (and fail) zlib decompression,
+/// silently dropping the packet.  Using a monotonically increasing counter
+/// (bit 31 never set for the first ~2 billion packets) avoids this.
+fn frame_packet_seq(payload: &[u8], xtea_key: [u32; 4], seq: u32) -> Vec<u8> {
+    frame_packet_inner(payload, xtea_key, Some(seq))
+}
+
+fn frame_packet_inner(payload: &[u8], xtea_key: [u32; 4], seq_override: Option<u32>) -> Vec<u8> {
     let inner_len = payload.len() as u16;
     let content_len = 2 + payload.len();
     let xtea_region_len = if content_len.is_multiple_of(8) {
@@ -453,12 +500,12 @@ fn frame_packet(payload: &[u8], xtea_key: [u32; 4]) -> Vec<u8> {
     let round_keys = xtea::expand_key(&key);
     xtea::encrypt(&mut xtea_region, &round_keys);
 
-    let adler = adler_checksum(&xtea_region);
+    let header = seq_override.unwrap_or_else(|| adler_checksum(&xtea_region));
     let outer_len = (4 + xtea_region_len) as u16;
 
     let mut frame = Vec::with_capacity(2 + 4 + xtea_region_len);
     frame.extend_from_slice(&outer_len.to_le_bytes());
-    frame.extend_from_slice(&adler.to_le_bytes());
+    frame.extend_from_slice(&header.to_le_bytes());
     frame.extend_from_slice(&xtea_region);
     frame
 }
@@ -485,16 +532,22 @@ fn frame_packet(payload: &[u8], xtea_key: [u32; 4]) -> Vec<u8> {
 /// [2..)  opcode     u8    — packet type
 /// [3..)  data             — opcode-specific bytes
 /// ```
+#[allow(clippy::too_many_arguments)]
 pub(crate) fn run_game_loop(
     stream: &mut std::net::TcpStream,
     xtea_key: [u32; 4],
     sequence_checksum: bool,
+    server_sequence_start: u32,
     player_data: PlayerLoginData,
     player_creature_id: u32,
     vocations: Arc<Vocations>,
+    map: Arc<Map>,
 ) {
     let key = xtea::Key(xtea_key);
     let round_keys = xtea::expand_key(&key);
+
+    // Sequence counter for server→client packets (OTClient sequenced mode).
+    let mut server_seq = server_sequence_start;
 
     // ------------------------------------------------------------------
     // Per-connection mutable state
@@ -555,6 +608,7 @@ pub(crate) fn run_game_loop(
     let render_map = |dir: u8, pos: Position| -> Vec<u8> {
         build_map_around_player(
             &world,
+            &map,
             pos,
             player_creature_id,
             &player_name,
@@ -600,7 +654,13 @@ pub(crate) fn run_game_loop(
                     );
                     break;
                 }
-                let ping = frame_packet(&[0x1D], xtea_key);
+                let seq = server_seq;
+                server_seq = server_seq.wrapping_add(1);
+                let ping = if sequence_checksum {
+                    frame_packet_seq(&[0x1D], xtea_key, seq)
+                } else {
+                    frame_packet(&[0x1D], xtea_key)
+                };
                 if let Err(e) = stream.write_all(&ping) {
                     eprintln!("[gameloop] exit: failed to send server ping: {e}");
                     break;
@@ -716,7 +776,13 @@ pub(crate) fn run_game_loop(
                 break;
             }
             DispatchResult::Response(bytes) => {
-                let frame = frame_packet(&bytes, xtea_key);
+                let seq = server_seq;
+                server_seq = server_seq.wrapping_add(1);
+                let frame = if sequence_checksum {
+                    frame_packet_seq(&bytes, xtea_key, seq)
+                } else {
+                    frame_packet(&bytes, xtea_key)
+                };
                 if let Err(e) = stream.write_all(&frame) {
                     eprintln!(
                         "[gameloop] exit: failed to send response opcode=0x{opcode:02x}: {e}"
@@ -874,8 +940,13 @@ where
                         None,
                     );
                     let phex: String = body[..body.len().min(16)]
-                        .iter().map(|b| format!("{b:02x} ")).collect();
-                    eprintln!("[gameloop] text-msg response ({} bytes): {phex}", body.len());
+                        .iter()
+                        .map(|b| format!("{b:02x} "))
+                        .collect();
+                    eprintln!(
+                        "[gameloop] text-msg response ({} bytes): {phex}",
+                        body.len()
+                    );
                     DispatchResult::Response(body)
                 }
                 Err(e) => {
@@ -947,11 +1018,12 @@ pub fn start_game_listener(
     _game_state: Arc<Mutex<GameState>>,
     db: Arc<Mutex<Box<dyn Database + Send>>>,
     vocations: Arc<Vocations>,
+    map: Arc<Map>,
 ) -> Result<(), String> {
     let game_port = config.get_integer(IntegerKey::GamePort) as u16;
     let listener = TcpListener::bind(format!("0.0.0.0:{game_port}"))
         .map_err(|e| format!("Cannot bind game port {game_port}: {e}"))?;
-    let handler = Arc::new(GameLoginHandler::new(db, vocations));
+    let handler = Arc::new(GameLoginHandler::new(db, vocations, map));
     std::thread::spawn(move || {
         accept_loop(listener, handler);
     });
@@ -1387,7 +1459,13 @@ mod tests {
         let config = Arc::new(config_manager);
         let game_state = Arc::new(Mutex::new(GameState::new()));
 
-        let res = start_game_listener(config, game_state, empty_db(), empty_vocations());
+        let res = start_game_listener(
+            config,
+            game_state,
+            empty_db(),
+            empty_vocations(),
+            empty_map(),
+        );
         assert!(
             res.is_ok(),
             "start_game_listener must bind successfully: {:?}",
@@ -1419,7 +1497,13 @@ mod tests {
         let config = Arc::new(config_manager);
         let game_state = Arc::new(Mutex::new(GameState::new()));
 
-        let res = start_game_listener(config, game_state, empty_db(), empty_vocations());
+        let res = start_game_listener(
+            config,
+            game_state,
+            empty_db(),
+            empty_vocations(),
+            empty_map(),
+        );
         assert!(res.is_err(), "must error when port is already bound");
         let err = res.unwrap_err();
         assert!(err.contains("Cannot bind game port"), "error: {err}");
@@ -1436,6 +1520,10 @@ mod tests {
 
     fn empty_vocations() -> Arc<Vocations> {
         Arc::new(Vocations::load_from_xml("<vocations/>").unwrap())
+    }
+
+    fn empty_map() -> Arc<Map> {
+        Arc::new(Map::new())
     }
 
     fn http_config(http_port: u16) -> Arc<ConfigManager> {
@@ -1522,7 +1610,8 @@ mod tests {
         // Spawn the server handler in a background thread.
         std::thread::spawn(move || {
             if let Ok((stream, _)) = listener.accept() {
-                GameLoginHandler::new(empty_db(), empty_vocations()).handle_connection(stream);
+                GameLoginHandler::new(empty_db(), empty_vocations(), empty_map())
+                    .handle_connection(stream);
             }
         });
 
@@ -1801,9 +1890,11 @@ mod tests {
                 &mut server_stream,
                 xtea_key,
                 false,
+                2,
                 test_player_data(),
                 0,
                 empty_vocations(),
+                empty_map(),
             );
         });
 
@@ -1837,9 +1928,11 @@ mod tests {
                 &mut server_stream,
                 xtea_key,
                 false,
+                2,
                 test_player_data(),
                 0,
                 empty_vocations(),
+                empty_map(),
             );
         });
 
@@ -2204,7 +2297,7 @@ mod tests {
         forgottenserver_common::rsa::load_pem(forgottenserver_common::rsa::DEFAULT_KEY_PEM).ok();
 
         let db: Arc<Mutex<Box<dyn Database + Send>>> = Arc::new(Mutex::new(Box::new(RoundTripDb)));
-        let handler = GameLoginHandler::new(db, empty_vocations());
+        let handler = GameLoginHandler::new(db, empty_vocations(), empty_map());
 
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let port = listener.local_addr().unwrap().port();
@@ -2349,7 +2442,7 @@ mod tests {
 
         let db: Arc<Mutex<Box<dyn Database + Send>>> =
             Arc::new(Mutex::new(Box::new(InMemoryDb::new())));
-        let handler = GameLoginHandler::new(db, empty_vocations());
+        let handler = GameLoginHandler::new(db, empty_vocations(), empty_map());
 
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let port = listener.local_addr().unwrap().port();
@@ -2381,4 +2474,27 @@ mod tests {
             .join()
             .expect("handle_connection must not panic on implausible outer_len");
     }
+
+    /// `frame_packet_seq` with small sequence numbers (0, 1, 2, ...) must
+    /// never set bit 31 in the 4-byte header field.  OTClient in sequenced
+    /// mode interprets bit 31 as a zlib-decompress flag; if it is set the
+    /// packet is decompressed (fails) and silently dropped, causing a black
+    /// map canvas.
+    #[test]
+    fn frame_packet_seq_header_bit31_never_set_for_small_sequences() {
+        let xtea_key: [u32; 4] = [0x01, 0x02, 0x03, 0x04];
+        let payload = [0xA0u8, 0x01, 0x02, 0x03]; // arbitrary payload
+        for seq in 0u32..=255 {
+            let frame = frame_packet_seq(&payload, xtea_key, seq);
+            // frame = [outer_len:2][header:4][xtea_region]
+            let header = u32::from_le_bytes([frame[2], frame[3], frame[4], frame[5]]);
+            assert_eq!(
+                header & (1 << 31),
+                0,
+                "frame_packet_seq(seq={seq}) has bit 31 set in header 0x{header:08X}"
+            );
+            assert_eq!(header, seq, "header must equal the sequence number");
+        }
+    }
+
 }
