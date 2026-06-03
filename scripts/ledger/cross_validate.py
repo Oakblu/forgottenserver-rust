@@ -97,6 +97,14 @@ def _load_rust_internal(path: str) -> set[tuple[str, str, str]]:
     return exempt
 
 
+TRACKING_ONLY_KINDS: frozenset[str] = frozenset({
+    "protocol_opcode_arm",  # match arm inside dispatch_opcode — not a standalone symbol
+    "scheduler_event",      # scheduler callback reference — not a standalone symbol
+    "caller_site",          # call-site annotation — not a standalone symbol
+    "dispatch_arm",         # dispatch function reference — not a standalone symbol
+})
+
+
 def check_reverse_coverage(ledger_path: str, rust_path: str, internal_path: str) -> int:
     banner("2.1  Reverse coverage (rust manifest ↔ ledger)")
     with open(ledger_path, "r", encoding="utf-8") as f:
@@ -108,7 +116,8 @@ def check_reverse_coverage(ledger_path: str, rust_path: str, internal_path: str)
     referenced: set[tuple[str, str, str]] = set()
     for r in ledger.get("symbols", []):
         for rs in r.get("rust") or []:
-            referenced.add((rs["file"], rs["symbol"], rs["kind"]))
+            if rs["kind"] not in TRACKING_ONLY_KINDS:
+                referenced.add((rs["file"], rs["symbol"], rs["kind"]))
 
     manifest_keys: set[tuple[str, str, str]] = set()
     for s in rust_symbols:

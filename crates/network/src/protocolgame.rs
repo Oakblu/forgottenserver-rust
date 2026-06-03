@@ -930,6 +930,12 @@ pub struct FollowPacket {
 }
 
 #[derive(Debug, PartialEq)]
+pub struct AutoWalkPacket {
+    /// Direction_t values (0=N,1=E,2=S,3=W,4=SW,5=SE,6=NW,7=NE), ordered first-step first.
+    pub directions: Vec<u8>,
+}
+
+#[derive(Debug, PartialEq)]
 pub struct CloseContainerPacket {
     pub container_id: u8,
 }
@@ -1124,6 +1130,40 @@ pub fn parse_follow(msg: &mut NetworkMessage) -> Result<FollowPacket, String> {
         return Err("follow packet overrun".into());
     }
     Ok(FollowPacket { creature_id })
+}
+
+/// Parse an auto-walk packet (opcode 0x64).
+///
+/// Wire format: numdirs (u8), then numdirs direction bytes.
+/// Bytes are read in reverse order (last wire byte = first movement step).
+/// Wire-to-Direction_t map: 1→E(1), 2→NE(7), 3→N(0), 4→NW(6), 5→W(3), 6→SW(4), 7→S(2), 8→SE(5).
+/// Returns Err if numdirs==0, length mismatch, or all bytes are invalid.
+pub fn parse_auto_walk(msg: &mut NetworkMessage) -> Result<AutoWalkPacket, String> {
+    let numdirs = msg.get_u8();
+    if numdirs == 0 || msg.get_remaining_buffer_length() != numdirs as u16 {
+        return Err("auto walk packet invalid length".into());
+    }
+    msg.skip_bytes(numdirs as i16);
+    let mut directions = Vec::with_capacity(numdirs as usize);
+    for _ in 0..numdirs {
+        let raw = msg.get_previous_u8();
+        let dir = match raw {
+            1 => 1, // DIRECTION_EAST
+            2 => 7, // DIRECTION_NORTHEAST
+            3 => 0, // DIRECTION_NORTH
+            4 => 6, // DIRECTION_NORTHWEST
+            5 => 3, // DIRECTION_WEST
+            6 => 4, // DIRECTION_SOUTHWEST
+            7 => 2, // DIRECTION_SOUTH
+            8 => 5, // DIRECTION_SOUTHEAST
+            _ => continue,
+        };
+        directions.push(dir);
+    }
+    if directions.is_empty() {
+        return Err("auto walk packet: no valid directions".into());
+    }
+    Ok(AutoWalkPacket { directions })
 }
 
 /// Parse a close-container packet.
@@ -1600,7 +1640,9 @@ pub struct DebugAssertPacket {
 pub struct RuleViolationReportPacket {
     pub report_type: u8,
     pub reason: u8,
+    pub target_name: String,
     pub comment: String,
+    /// Non-empty only for REPORT_TYPE_NAME (0) and REPORT_TYPE_STATEMENT (1).
     pub translation: String,
 }
 
@@ -1880,21 +1922,32 @@ pub fn parse_debug_assert(msg: &mut NetworkMessage) -> Result<DebugAssertPacket,
 
 /// Parse a rule-violation-report packet (`parseRuleViolationReport`).
 ///
-/// Wire format: report_type (u8), reason (u8), comment (string),
-/// translation (string)
+/// Wire format: report_type (u8), reason (u8), target_name (string),
+/// comment (string), [if type 0 or 1: translation (string)],
+/// [if type 1: statement_id (u32, discarded)].
 pub fn parse_rule_violation_report(
     msg: &mut NetworkMessage,
 ) -> Result<RuleViolationReportPacket, String> {
     let report_type = msg.get_u8();
     let reason = msg.get_u8();
+    let target_name = msg.get_string(0);
     let comment = msg.get_string(0);
-    let translation = msg.get_string(0);
+    let translation = if report_type == 0 || report_type == 1 {
+        let t = msg.get_string(0);
+        if report_type == 1 {
+            msg.get_u32(); // statement_id: read and discard
+        }
+        t
+    } else {
+        String::new()
+    };
     if msg.is_overrun() {
         return Err("rule violation report packet overrun".into());
     }
     Ok(RuleViolationReportPacket {
         report_type,
         reason,
+        target_name,
         comment,
         translation,
     })
@@ -5273,6 +5326,56 @@ mod tests {
     }
 
     // -----------------------------------------------------------------------
+    // parse_auto_walk
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_parse_auto_walk_single_north() {
+        // wire byte 3 → DIRECTION_NORTH (0); single direction, no reversal effect
+        let mut msg = build_msg(&[1, 3]);
+        let pkt = parse_auto_walk(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.directions, vec![0u8]);
+    }
+
+    #[test]
+    fn test_parse_auto_walk_reverses_wire_order() {
+        // Wire: numdirs=2, bytes=[3(NORTH),1(EAST)]
+        // C++ reads backward → path = [EAST, NORTH] = [1, 0]
+        let mut msg = build_msg(&[2, 3, 1]);
+        let pkt = parse_auto_walk(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.directions, vec![1u8, 0u8]);
+    }
+
+    #[test]
+    fn test_parse_auto_walk_all_eight_wire_bytes() {
+        // Verify mapping: 1→1(E), 2→7(NE), 3→0(N), 4→6(NW), 5→3(W), 6→4(SW), 7→2(S), 8→5(SE)
+        // Wire sends 8 bytes; C++ reads in reverse so wire=[1..8] → path=[8..1 mapped]
+        let mut msg = build_msg(&[8, 1, 2, 3, 4, 5, 6, 7, 8]);
+        let pkt = parse_auto_walk(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.directions, vec![5u8, 2, 4, 3, 6, 0, 7, 1]);
+    }
+
+    #[test]
+    fn test_parse_auto_walk_zero_dirs_returns_err() {
+        let mut msg = build_msg(&[0]);
+        assert!(parse_auto_walk(&mut msg).is_err());
+    }
+
+    #[test]
+    fn test_parse_auto_walk_length_mismatch_returns_err() {
+        // numdirs=3 but only 2 direction bytes follow
+        let mut msg = build_msg(&[3, 1, 2]);
+        assert!(parse_auto_walk(&mut msg).is_err());
+    }
+
+    #[test]
+    fn test_parse_auto_walk_all_invalid_dirs_returns_err() {
+        // wire bytes 0 and 9 are both outside the valid range 1-8
+        let mut msg = build_msg(&[2, 0, 9]);
+        assert!(parse_auto_walk(&mut msg).is_err());
+    }
+
+    // -----------------------------------------------------------------------
     // parse_close_container
     // -----------------------------------------------------------------------
 
@@ -7284,19 +7387,57 @@ mod tests {
     // -----------------------------------------------------------------------
 
     #[test]
-    fn test_parse_rule_violation_report() {
+    fn test_parse_rule_violation_report_bot_type() {
+        // BOT (type 2): reads target_name, comment; no translation
         let mut msg = NetworkMessage::new();
-        msg.add_u8(1);            // report_type
-        msg.add_u8(2);            // reason
-        msg.add_string("bad behavior");
-        msg.add_string("translated reason");
+        msg.add_u8(2); // REPORT_TYPE_BOT
+        msg.add_u8(5); // reason
+        msg.add_string("TargetPlayer");
+        msg.add_string("was botting");
         msg.set_buffer_position(0);
+        let pkt = parse_rule_violation_report(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.report_type, 2);
+        assert_eq!(pkt.reason, 5);
+        assert_eq!(pkt.target_name, "TargetPlayer");
+        assert_eq!(pkt.comment, "was botting");
+        assert!(pkt.translation.is_empty(), "no translation for BOT type");
+    }
 
+    #[test]
+    fn test_parse_rule_violation_report_name_type() {
+        // NAME (type 0): reads target_name, comment, translation
+        let mut msg = NetworkMessage::new();
+        msg.add_u8(0); // REPORT_TYPE_NAME
+        msg.add_u8(3); // reason
+        msg.add_string("BadName");
+        msg.add_string("offensive name");
+        msg.add_string("translated");
+        msg.set_buffer_position(0);
+        let pkt = parse_rule_violation_report(&mut msg).expect("parse should succeed");
+        assert_eq!(pkt.report_type, 0);
+        assert_eq!(pkt.reason, 3);
+        assert_eq!(pkt.target_name, "BadName");
+        assert_eq!(pkt.comment, "offensive name");
+        assert_eq!(pkt.translation, "translated");
+    }
+
+    #[test]
+    fn test_parse_rule_violation_report_statement_type() {
+        // STATEMENT (type 1): reads target_name, comment, translation, statement_id (discarded)
+        let mut msg = NetworkMessage::new();
+        msg.add_u8(1); // REPORT_TYPE_STATEMENT
+        msg.add_u8(1); // reason
+        msg.add_string("SpeakerName");
+        msg.add_string("said something bad");
+        msg.add_string("translation here");
+        msg.add_u32(9999); // statement_id discarded
+        msg.set_buffer_position(0);
         let pkt = parse_rule_violation_report(&mut msg).expect("parse should succeed");
         assert_eq!(pkt.report_type, 1);
-        assert_eq!(pkt.reason, 2);
-        assert_eq!(pkt.comment, "bad behavior");
-        assert_eq!(pkt.translation, "translated reason");
+        assert_eq!(pkt.reason, 1);
+        assert_eq!(pkt.target_name, "SpeakerName");
+        assert_eq!(pkt.comment, "said something bad");
+        assert_eq!(pkt.translation, "translation here");
     }
 
     #[test]

@@ -608,12 +608,17 @@ pub fn handle_close_channel(
 }
 
 /// Route a Say/Yell/Whisper or channel message. Returns (recipient_id, encoded_bytes) pairs.
+///
+/// `sender_pos` is the speaker's world position; required for proximity speak
+/// types (Say/Whisper/Yell) to satisfy the C++ `sendCreatureSay` wire format.
 pub fn handle_say(
     chat: &ChatManager,
     sender_name: &str,
+    speaker_level: u16,
     speak_type: SpeakType,
     text: &str,
     channel_id: Option<ChannelId>,
+    sender_pos: Option<Position>,
 ) -> Vec<(EntityId, Vec<u8>)> {
     use forgottenserver_game::chat::CHANNEL_WORLD;
     let broadcast_channel = channel_id.unwrap_or(CHANNEL_WORLD);
@@ -622,9 +627,10 @@ pub fn handle_say(
         .map(|(pid, msg)| {
             let packet = ServerPacket::Talk {
                 speaker: msg.speaker,
-                speaker_level: 0,
+                speaker_level,
                 speak_type: msg.speak_type,
                 channel_id,
+                pos: sender_pos,
                 text: msg.text,
             };
             (pid, encode(&packet))
@@ -643,15 +649,17 @@ pub fn handle_open_private_channel(receiver_name: &str) -> Vec<u8> {
 pub fn handle_say_private(
     chat: &ChatManager,
     sender_name: &str,
+    speaker_level: u16,
     receiver_id: EntityId,
     text: &str,
 ) -> (EntityId, Vec<u8>) {
     let (pid, msg) = chat.send_private(sender_name, receiver_id, text);
     let packet = ServerPacket::Talk {
         speaker: msg.speaker,
-        speaker_level: 0,
+        speaker_level,
         speak_type: msg.speak_type,
         channel_id: None,
+        pos: None,
         text: msg.text,
     };
     (pid, encode(&packet))
@@ -1164,22 +1172,81 @@ mod tests {
     }
 
     // -----------------------------------------------------------------------
+    // handle_say — wire format verification
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn handle_say_proximity_packet_includes_speaker_level_and_position() {
+        // C++ sendCreatureSay wire layout for Say type:
+        // [0xAA][stmt_id:4][name_len:2][name:N][traded:1][level:2][speak_type:1]
+        // [pos_x:2][pos_y:2][pos_z:1][text_len:2][text:M]
+        let mut chat = ChatManager::new();
+        // Subscribe a player so broadcast has someone to send to.
+        chat.subscribe(forgottenserver_game::chat::CHANNEL_WORLD, 7);
+
+        let pos = Position::new(50, 60, 7);
+        let results = handle_say(
+            &chat,
+            "Bob",
+            99, // speaker_level
+            SpeakType::Say,
+            "hey there",
+            None,
+            Some(pos),
+        );
+        assert_eq!(results.len(), 1, "one subscriber should receive the message");
+        let (recipient_id, bytes) = &results[0];
+        assert_eq!(*recipient_id, 7);
+        assert_eq!(bytes[0], 0xAA, "opcode must be 0xAA (Talk)");
+
+        // Parse name length and locate level + speak_type bytes.
+        let name_len = u16::from_le_bytes([bytes[5], bytes[6]]) as usize;
+        let name_start = 7usize;
+        let traded_idx = name_start + name_len;
+        let level_idx = traded_idx + 1;
+        let speak_type_idx = level_idx + 2;
+        let level = u16::from_le_bytes([bytes[level_idx], bytes[level_idx + 1]]);
+        assert_eq!(level, 99, "speaker_level must be encoded correctly");
+        assert_eq!(bytes[speak_type_idx], 0x01, "speak_type must be 0x01 (Say)");
+
+        // For Say, position must follow the speak_type byte.
+        let pos_x = u16::from_le_bytes([bytes[speak_type_idx + 1], bytes[speak_type_idx + 2]]);
+        let pos_y = u16::from_le_bytes([bytes[speak_type_idx + 3], bytes[speak_type_idx + 4]]);
+        let pos_z = bytes[speak_type_idx + 5];
+        assert_eq!(pos_x, 50, "pos.x must be encoded");
+        assert_eq!(pos_y, 60, "pos.y must be encoded");
+        assert_eq!(pos_z, 7, "pos.z must be encoded");
+    }
+
+    // -----------------------------------------------------------------------
     // Phase 4 — private channel
     // -----------------------------------------------------------------------
 
     #[test]
     fn say_private_routes_to_single_player() {
+        // Wire layout (TFS 13.x):
+        // [0]=0xAA [1..5]=stmt_id [5..7]=name_len [7..7+N]=name
+        // [7+N]=traded=0 [7+N+1..+3]=level [7+N+3]=speak_type(Private=0x05)
         let chat = ChatManager::new();
-        let (receiver_id, bytes) = handle_say_private(&chat, "Alice", 99, "Hello privately");
+        let (receiver_id, bytes) =
+            handle_say_private(&chat, "Alice", 42, 99, "Hello privately");
 
         assert_eq!(receiver_id, 99);
         assert_eq!(bytes[0], 0xAA, "talk opcode must be 0xAA");
-        let speaker_len = u16::from_le_bytes([bytes[1], bytes[2]]) as usize;
-        let speak_type_idx = 3 + speaker_len;
+        // stmt_id occupies bytes[1..5]; name length is at bytes[5..7]
+        let name_len = u16::from_le_bytes([bytes[5], bytes[6]]) as usize;
+        // speak_type follows: name(N) + traded(1) + level(2) = name_len + 3 bytes after name start
+        let speak_type_idx = 7 + name_len + 1 + 2;
         assert_eq!(
             bytes[speak_type_idx], 0x05,
             "speak_type byte must be 0x05 (Private)"
         );
+        // Private messages carry no position and no channel_id
+        let text_len_idx = speak_type_idx + 1;
+        let text_len = u16::from_le_bytes([bytes[text_len_idx], bytes[text_len_idx + 1]]) as usize;
+        let text = std::str::from_utf8(&bytes[text_len_idx + 2..text_len_idx + 2 + text_len])
+            .expect("utf8 text");
+        assert_eq!(text, "Hello privately");
     }
 
     // -----------------------------------------------------------------------

@@ -16,8 +16,10 @@ use forgottenserver_database::iologindata::{
     load_player_for_login, lookup_session, save_player_logout, PlayerLoginData, PlayerLogoutData,
 };
 use forgottenserver_entity::player::{base_speed, Player};
+use forgottenserver_entity::monsters::Monsters;
 use forgottenserver_game::{
     action_registry::ActionRegistry,
+    monster_registry::load_monsters_xml,
     npc_registry::{load_npcs_xml, NpcRegistry},
     spell_registry::{load_spells_xml, SpellRegistry},
     weapon_registry::{load_weapons_xml, WeaponRegistry},
@@ -34,15 +36,19 @@ use forgottenserver_world::World;
 
 use crate::{
     admin_handler::AdminHandler,
+    channel_session::ChannelSession,
     codec::{encode, ServerPacket},
     game_handler::{
-        build_enter_world_burst, build_map_around_player, handle_fight_modes, handle_use_item,
+        build_enter_world_burst, build_map_around_player, handle_auto_walk, handle_close_channel,
+        handle_fight_modes, handle_follow, handle_get_channels, handle_open_channel,
+        handle_open_private_channel, handle_set_outfit, handle_use_item, handle_vip_remove,
     },
-    game_state::GameState,
+    game_state::{GameState, OutfitAppearance},
     http_connection_session::HttpConnectionSession,
     http_login::LoginConfig,
     status_handler::StatusHandler,
 };
+use forgottenserver_game::chat::ChatManager;
 
 pub struct GameData {
     pub items: ItemsRegistry,
@@ -50,6 +56,8 @@ pub struct GameData {
     pub weapons: WeaponRegistry,
     pub npcs: NpcRegistry,
     pub vocations: Arc<Vocations>,
+    /// Monster types loaded from `<data_dir>/monster/monsters.xml`.
+    pub monsters: Monsters,
     /// The loaded world map parsed from `<data_dir>/world/<mapName>.otbm`.
     /// Shared by all game listener connections via `Arc`.
     pub map: Arc<Map>,
@@ -59,7 +67,7 @@ pub struct GameData {
 ///
 /// Returns `Err` if a critical file (e.g. `items.otb`) cannot be read.
 /// Missing individual records within each file are warnings, not errors.
-pub fn boot(data_dir: &Path) -> Result<GameData, String> {
+pub fn boot(data_dir: &Path, map_name: &str) -> Result<GameData, String> {
     let items = load_items_otb(&data_dir.join("items/items.otb"))?;
     let spells = load_spells_xml(&data_dir.join("spells/spells.xml"))?;
     let weapons = load_weapons_xml(&data_dir.join("weapons/weapons.xml"))?;
@@ -74,10 +82,22 @@ pub fn boot(data_dir: &Path) -> Result<GameData, String> {
         Vocations::load_from_xml("<vocations/>").unwrap()
     });
 
-    // TODO: read mapName from config.lua (StringKey::MapName). For now we
-    // hardcode "forgotten" — the only shipped map and the default in
-    // `data/config.lua`.
-    let map_name = "forgotten";
+    let monster_dir = data_dir.join("monster");
+    let monsters = if monster_dir.exists() {
+        match load_monsters_xml(&monster_dir) {
+            Ok(m) => {
+                eprintln!(">> Loaded {} monster types", m.get_monster_count());
+                m
+            }
+            Err(e) => {
+                eprintln!("[Warning] Failed to load monsters: {e}");
+                Monsters::new()
+            }
+        }
+    } else {
+        Monsters::new()
+    };
+
     let map_path = data_dir.join("world").join(format!("{map_name}.otbm"));
     let map_bytes = std::fs::read(&map_path)
         .map_err(|e| format!("Cannot read map file {}: {e}", map_path.display()))?;
@@ -96,6 +116,7 @@ pub fn boot(data_dir: &Path) -> Result<GameData, String> {
         weapons,
         npcs,
         vocations,
+        monsters,
         map,
     })
 }
@@ -647,13 +668,18 @@ pub(crate) fn run_game_loop(
         )
     };
 
+    // Per-connection chat and channel session state.
+    let mut chat = ChatManager::new();
+    let mut channel_session = ChannelSession::new(player_creature_id);
+
     // Track consecutive read timeouts so we can send periodic server pings
     // (mirrors C++ Player::sendPing every 5s, player.cpp:871) without sitting
     // silent for 30 s. After ~30 s of no client activity we give up.
     let mut consecutive_timeouts: u32 = 0;
     const MAX_CONSECUTIVE_TIMEOUTS: u32 = 6;
-    // Accumulated seconds since last mana regen tick (each 5-second timeout = 5s).
+    // Accumulated seconds since last mana/HP regen tick (each 5-second timeout = 5s).
     let mut mana_regen_secs: u32 = 0;
+    let mut hp_regen_secs: u32 = 0;
 
     loop {
         // --- Step 1: read 2-byte outer length ---
@@ -679,16 +705,26 @@ pub(crate) fn run_game_loop(
                     break;
                 }
                 // --- Mana regen tick: each 5-second idle window = 5 seconds elapsed ---
-                mana_regen_secs = mana_regen_secs.saturating_add(5);
-                if voc.gain_mana_ticks > 0 && mana_regen_secs >= voc.gain_mana_ticks {
-                    let ticks = mana_regen_secs / voc.gain_mana_ticks;
-                    mana_regen_secs %= voc.gain_mana_ticks;
-                    let regen = ticks.saturating_mul(voc.gain_mana_amount);
+                let (mana_regen, new_mana_acc) =
+                    apply_regen_tick(5, mana_regen_secs, voc.gain_mana_ticks, voc.gain_mana_amount);
+                mana_regen_secs = new_mana_acc;
+                // --- HP regen tick ---
+                let (hp_regen, new_hp_acc) =
+                    apply_regen_tick(5, hp_regen_secs, voc.gain_health_ticks, voc.gain_health_amount);
+                hp_regen_secs = new_hp_acc;
+
+                if mana_regen > 0 || hp_regen > 0 {
                     let stats_packet =
                         if let Some(player) = state.get_player_entity_mut(player_creature_id) {
+                            let old_health = player.get_health();
                             let old_mana = player.get_mana();
-                            player.add_mp_regen(regen as i32);
-                            if player.get_mana() != old_mana {
+                            if hp_regen > 0 {
+                                player.add_hp_regen(hp_regen as i32);
+                            }
+                            if mana_regen > 0 {
+                                player.add_mp_regen(mana_regen as i32);
+                            }
+                            if player.get_health() != old_health || player.get_mana() != old_mana {
                                 Some(encode(&ServerPacket::PlayerStats {
                                     health: player.get_health(),
                                     max_health: player.get_max_health(),
@@ -712,7 +748,7 @@ pub(crate) fn run_game_loop(
                             frame_packet(&stats_bytes, xtea_key)
                         };
                         if let Err(e) = stream.write_all(&frame) {
-                            eprintln!("[gameloop] exit: failed to send mana regen stats: {e}");
+                            eprintln!("[gameloop] exit: failed to send regen stats: {e}");
                             break;
                         }
                     }
@@ -832,6 +868,10 @@ pub(crate) fn run_game_loop(
             DIR_SOUTH,
             DIR_WEST,
             &render_map,
+            &player_name,
+            player_data.level as u16,
+            &mut chat,
+            &mut channel_session,
         );
 
         match response {
@@ -910,6 +950,10 @@ pub(crate) fn dispatch_opcode<F>(
     dir_south: u8,
     dir_west: u8,
     render_map: &F,
+    player_name: &str,
+    player_level: u16,
+    chat: &mut ChatManager,
+    session: &mut ChannelSession,
 ) -> DispatchResult
 where
     F: Fn(u8, Position) -> Vec<u8>,
@@ -947,18 +991,40 @@ where
             );
             DispatchResult::NoResponse
         }
+        // --- AutoWalk (0x64) — queued multi-step path ---
+        // C++ protocolgame.cpp:549 → parseAutoWalk → g_game.playerAutoWalk.
+        // We store the mapped direction path in GameState; the game loop
+        // will execute steps incrementally. Invalid payloads are dropped silently.
+        0x64 => match pg::parse_auto_walk(&mut msg) {
+            Ok(pkt) => {
+                eprintln!("[gameloop] auto-walk {} steps (0x64)", pkt.directions.len());
+                handle_auto_walk(player_creature_id, pkt.directions, state);
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] auto-walk parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
         // --- Walk N/E/S/W (single-byte opcode; no payload) ---
         // C++ protocolgame.cpp:551-562 dispatches Game::playerMove.  Our
         // pragmatic response is a fresh full 0x64 map description at the
         // new position so the client camera follows.  This is a deliberate
         // simplification: C++ sends 0x6D move + edge row/col updates
         // (0x65–0x68 server→client) for an incremental redraw.
-        0x65..=0x68 => {
-            let (dx, dy, dir) = match opcode {
-                0x65 => (0i32, -1i32, dir_north),
+        //
+        // 0x65=N, 0x66=E, 0x67=S, 0x68=W  (cardinal)
+        // 0x6A=NE, 0x6B=SE, 0x6C=SW, 0x6D=NW  (diagonal; C++ Direction_t 4-7)
+        0x65..=0x68 | 0x6A..=0x6D => {
+            let (dx, dy, dir): (i32, i32, u8) = match opcode {
+                0x65 => (0, -1, dir_north),
                 0x66 => (1, 0, dir_east),
                 0x67 => (0, 1, dir_south),
                 0x68 => (-1, 0, dir_west),
+                0x6A => (1, -1, 4), // NE
+                0x6B => (1, 1, 5),  // SE
+                0x6C => (-1, 1, 6), // SW
+                0x6D => (-1, -1, 7), // NW
                 _ => unreachable!(),
             };
             let new_x = player_pos.x as i32 + dx;
@@ -979,6 +1045,14 @@ where
             );
             DispatchResult::Response(render_map(dir, new_pos))
         }
+        // --- StopAutoWalk (0x69) ---
+        // C++ protocolgame.cpp:564 → playerStopAutoWalk: cancels the queued
+        // auto-walk path. No response packet is sent.
+        0x69 => {
+            eprintln!("[gameloop] stop auto-walk (0x69)");
+            handle_auto_walk(player_creature_id, vec![], state);
+            DispatchResult::NoResponse
+        }
         // --- Turn N/E/S/W (single-byte opcode; no payload). ---
         // Pragmatic response: re-emit the full map at the same position so
         // the new facing direction is visible.  A more faithful response
@@ -995,41 +1069,340 @@ where
             eprintln!("[gameloop] turn -> dir={dir}");
             DispatchResult::Response(render_map(dir, *player_pos))
         }
+        // --- EquipObject (0x77) — hotkey equip ---
+        // C++ protocolgame.cpp:1302 parseEquipObject: reads sprite_id (u16),
+        // dispatches g_game.playerEquipItem. Game logic not yet ported;
+        // we parse and log so the client message is consumed and the connection
+        // stays in sync.
+        0x77 => match pg::parse_equip_object(&mut msg) {
+            Ok(pkt) => {
+                eprintln!("[gameloop] equip object sprite_id={} (0x77)", pkt.sprite_id);
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] equip object parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- Throw / MoveThing (0x78) ---
+        // C++ protocolgame.cpp:1384 parseThrow: reads from_pos, sprite_id,
+        // from_stackpos, to_pos, count, dispatches g_game.playerMoveThing.
+        // Game logic not yet ported; parse and log to consume the bytes.
+        0x78 => match pg::parse_throw(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] throw sprite_id={} from=({},{},{}) stackpos={} to=({},{},{}) count={} (0x78)",
+                    pkt.sprite_id,
+                    pkt.from_x, pkt.from_y, pkt.from_z,
+                    pkt.from_stackpos,
+                    pkt.to_x, pkt.to_y, pkt.to_z,
+                    pkt.count
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] throw parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- LookInShop (0x79) ---
+        // C++ parseLookInShop: item_id(u16), count(u8). playerLookInShop not ported.
+        0x79 => match pg::parse_look_in_shop(&mut msg) {
+            Ok(pkt) => {
+                eprintln!("[gameloop] look in shop item_id={} count={} (0x79)", pkt.item_id, pkt.count);
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] look in shop parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- PlayerPurchase (0x7A) ---
+        // C++ parsePlayerPurchase: item_id(u16), sub_type(u8), count(u8),
+        // ignore_capacity(bool), buy_with_backpack(bool). playerPurchaseItem not ported.
+        0x7A => match pg::parse_player_purchase(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] player purchase item_id={} count={} ignore_cap={} backpack={} (0x7A)",
+                    pkt.item_id, pkt.count, pkt.ignore_capacity, pkt.buy_with_backpack
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] player purchase parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- PlayerSale (0x7B) ---
+        // C++ parsePlayerSale: item_id(u16), sub_type(u8), count(u8),
+        // ignore_equipped(bool). playerSellItem not ported.
+        0x7B => match pg::parse_player_sale(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] player sale item_id={} count={} ignore_equipped={} (0x7B)",
+                    pkt.item_id, pkt.count, pkt.ignore_equipped
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] player sale parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- CloseShop (0x7C) — no payload ---
+        // C++ case 0x7C: playerCloseShop. No parse needed; game logic not ported.
+        0x7C => {
+            eprintln!("[gameloop] close shop (0x7C)");
+            DispatchResult::NoResponse
+        }
+        // --- RequestTrade (0x7D) ---
+        // C++ parseRequestTrade: pos(x,y,z), sprite_id(u16), stackpos(u8), player_id(u32).
+        // playerRequestTrade not ported.
+        0x7D => match pg::parse_request_trade(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] request trade pos=({},{},{}) sprite_id={} stackpos={} player_id={} (0x7D)",
+                    pkt.pos_x, pkt.pos_y, pkt.pos_z, pkt.sprite_id, pkt.stackpos, pkt.player_id
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] request trade parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- LookInTrade (0x7E) ---
+        // C++ parseLookInTrade: counter_offer(bool), index(u8). playerLookInTrade not ported.
+        0x7E => match pg::parse_look_in_trade(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] look in trade counter_offer={} index={} (0x7E)",
+                    pkt.counter_offer, pkt.index
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] look in trade parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- AcceptTrade (0x7F) — no payload ---
+        // C++ case 0x7F: playerAcceptTrade. Game logic not ported.
+        0x7F => {
+            eprintln!("[gameloop] accept trade (0x7F)");
+            DispatchResult::NoResponse
+        }
+        // --- CloseTrade (0x80) — no payload ---
+        // C++ case 0x80: playerCloseTrade. Game logic not ported.
+        0x80 => {
+            eprintln!("[gameloop] close trade (0x80)");
+            DispatchResult::NoResponse
+        }
+        // --- UseItemEx (0x83) ---
+        // C++ parseUseItemEx: from_pos, sprite_id, from_stackpos, to_pos.
+        // playerUseItemEx not ported.
+        0x83 => match pg::parse_use_item_ex(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] use item ex sprite_id={} from=({},{},{}) stackpos={} to=({},{},{}) (0x83)",
+                    pkt.sprite_id,
+                    pkt.from_x, pkt.from_y, pkt.from_z,
+                    pkt.from_stackpos,
+                    pkt.to_x, pkt.to_y, pkt.to_z
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] use item ex parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- UseWithCreature (0x84) ---
+        // C++ parseUseWithCreature: pos, sprite_id, stackpos, creature_id.
+        // playerUseItemWithCreature not ported.
+        0x84 => match pg::parse_use_with_creature(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] use with creature sprite_id={} pos=({},{},{}) creature_id={} (0x84)",
+                    pkt.sprite_id, pkt.pos_x, pkt.pos_y, pkt.pos_z, pkt.creature_id
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] use with creature parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- RotateItem (0x85) ---
+        // C++ parseRotateItem: pos, sprite_id, stackpos. playerRotateItem not ported.
+        0x85 => match pg::parse_rotate_item(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] rotate item sprite_id={} pos=({},{},{}) stackpos={} (0x85)",
+                    pkt.sprite_id, pkt.pos_x, pkt.pos_y, pkt.pos_z, pkt.stackpos
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] rotate item parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- EditPodiumRequest (0x86) ---
+        // C++ parseEditPodiumRequest: pos, sprite_id, stackpos, outfit, direction.
+        // playerSetShowOffSocket not ported.
+        0x86 => match pg::parse_edit_podium_request(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] edit podium pos=({},{},{}) sprite_id={} dir={} (0x86)",
+                    pkt.pos_x, pkt.pos_y, pkt.pos_z, pkt.sprite_id, pkt.direction
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] edit podium parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- CloseContainer (0x87) ---
+        // C++ parseCloseContainer: container_id (u8). playerCloseContainer not ported.
+        0x87 => match pg::parse_close_container(&mut msg) {
+            Ok(pkt) => {
+                eprintln!("[gameloop] close container id={} (0x87)", pkt.container_id);
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] close container parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- UpArrowContainer (0x88) ---
+        // C++ parseUpArrowContainer: container_id (u8). playerMoveUpContainer not ported.
+        0x88 => match pg::parse_up_arrow_container(&mut msg) {
+            Ok(pkt) => {
+                eprintln!("[gameloop] up arrow container id={} (0x88)", pkt.container_id);
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] up arrow container parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- TextWindow (0x89) ---
+        // C++ parseTextWindow: window_text_id (u32), text (string).
+        // playerWriteItem not ported.
+        0x89 => match pg::parse_text_window(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] text window id={} text_len={} (0x89)",
+                    pkt.window_text_id, pkt.text.len()
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] text window parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- HouseWindow (0x8A) ---
+        // C++ parseHouseWindow: door_id (u8), id (u32), text (string).
+        // playerUpdateHouseWindow not ported.
+        0x8A => match pg::parse_house_window(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] house window door_id={} window_id={} (0x8A)",
+                    pkt.door_id, pkt.window_id
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] house window parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- WrapItem (0x8B) ---
+        // C++ parseWrapItem: pos, sprite_id, stackpos. playerWrapItem not ported.
+        0x8B => match pg::parse_wrap_item(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] wrap item sprite_id={} pos=({},{},{}) stackpos={} (0x8B)",
+                    pkt.sprite_id, pkt.pos_x, pkt.pos_y, pkt.pos_z, pkt.stackpos
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] wrap item parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- LookAt (0x8C) ---
+        // C++ parseLookAt: pos, item_id, stack_pos. playerLookAt not ported.
+        0x8C => match pg::parse_look_at_packet(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] look at item_id={} pos=({},{},{}) stack_pos={} (0x8C)",
+                    pkt.item_id, pkt.pos_x, pkt.pos_y, pkt.pos_z, pkt.stack_pos
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] look at parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- LookInBattleList (0x8D) ---
+        // C++ parseLookInBattleList: creature_id (u32). playerLookInBattleList not ported.
+        0x8D => match pg::parse_look_in_battle_list(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] look in battle list creature_id={} (0x8D)",
+                    pkt.creature_id
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] look in battle list parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
         // --- Say (0x96) ---
-        // Wire format (simplified C++ parseSay): [say_type:u8][text:string].
-        // The builtin "/pos" command echoes the player's coordinates; any
-        // other text is echoed back so the user sees their words.
+        // Wire format (C++ parseSay): [say_type:u8][text:string].
+        // The builtin "/pos" command responds with a TEXT_MESSAGE showing
+        // coordinates (dev helper).  All other text is echoed as a Talk
+        // (0xAA) packet mirroring C++ ProtocolGame::sendCreatureSay.
         0x96 => {
             match pg::parse_say_packet(&mut msg) {
                 Ok(say) => {
                     eprintln!("[gameloop] say type={} text={:?}", say.say_type, say.text);
-                    let text = if say.text.starts_with("/pos") {
-                        format!("x={}, y={}, z={}", player_pos.x, player_pos.y, player_pos.z)
+                    if say.text.starts_with("/pos") {
+                        let text = format!(
+                            "x={}, y={}, z={}",
+                            player_pos.x, player_pos.y, player_pos.z
+                        );
+                        DispatchResult::Response(pg::serialize_text_message(
+                            pg::text_message_class::MESSAGE_EVENT_ADVANCE,
+                            &text,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                            None,
+                        ))
                     } else {
-                        say.text.clone()
-                    };
-                    // Use MESSAGE_EVENT_ADVANCE (19) — white text rendered
-                    // OVER the player + in the console, much more visible
-                    // than MESSAGE_STATUS_DEFAULT (17 = small bottom status).
-                    let body = pg::serialize_text_message(
-                        pg::text_message_class::MESSAGE_EVENT_ADVANCE,
-                        &text,
-                        None,
-                        None,
-                        None,
-                        None,
-                        None,
-                        None,
-                    );
-                    let phex: String = body[..body.len().min(16)]
-                        .iter()
-                        .map(|b| format!("{b:02x} "))
-                        .collect();
-                    eprintln!(
-                        "[gameloop] text-msg response ({} bytes): {phex}",
-                        body.len()
-                    );
-                    DispatchResult::Response(body)
+                        use forgottenserver_game::chat::SpeakType;
+                        let speak_type =
+                            SpeakType::from_byte(say.say_type).unwrap_or(SpeakType::Say);
+                        let body = encode(&ServerPacket::Talk {
+                            speaker: player_name.to_string(),
+                            speaker_level: player_level,
+                            speak_type,
+                            channel_id: None,
+                            pos: Some(*player_pos),
+                            text: say.text,
+                        });
+                        DispatchResult::Response(body)
+                    }
                 }
                 Err(e) => {
                     eprintln!("[gameloop] say parse error: {e}");
@@ -1078,6 +1451,471 @@ where
                 DispatchResult::NoResponse
             }
         },
+        // --- GetChannels (0x97) ---
+        // C++ protocolgame.cpp:543 parsePacket case → parseRequestChannels → Game::getChannels
+        // No payload. Returns a ChannelList (0xAC) packet.
+        0x97 => {
+            eprintln!("[gameloop] get channels (0x97)");
+            DispatchResult::Response(handle_get_channels(chat))
+        }
+        // --- OpenChannel (0x98) ---
+        // C++ protocolgame.cpp:544 parsePacket case → parseOpenChannel → Game::playerOpenChannel
+        // Payload: channel_id (u16 LE). Returns OpenChannel ack (0xAB).
+        0x98 => match pg::parse_open_channel(&mut msg) {
+            Ok(pkt) => {
+                eprintln!("[gameloop] open channel id={} (0x98)", pkt.channel_id);
+                DispatchResult::Response(handle_open_channel(chat, session, pkt.channel_id))
+            }
+            Err(e) => {
+                eprintln!("[gameloop] open channel parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- CloseChannel (0x99) ---
+        // C++ protocolgame.cpp:545 parsePacket case → parseCloseChannel → Game::playerCloseChannel
+        // Payload: channel_id (u16 LE). No response packet.
+        0x99 => match pg::parse_close_channel(&mut msg) {
+            Ok(pkt) => {
+                eprintln!("[gameloop] close channel id={} (0x99)", pkt.channel_id);
+                handle_close_channel(chat, session, pkt.channel_id);
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] close channel parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- OpenPrivateChannel (0x9A) ---
+        // C++ protocolgame.cpp:546 parsePacket case → parseOpenPrivateChannel
+        // Payload: receiver name (string). Returns OpenPrivateChannel (0xAF).
+        0x9A => match pg::parse_open_private_channel(&mut msg) {
+            Ok(pkt) => {
+                eprintln!("[gameloop] open private channel receiver={:?} (0x9A)", pkt.receiver);
+                DispatchResult::Response(handle_open_private_channel(&pkt.receiver))
+            }
+            Err(e) => {
+                eprintln!("[gameloop] open private channel parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- Attack (0xA1) ---
+        // C++ protocolgame.cpp:688 case 0xA1 → parseAttack → reads creature_id (u32 LE)
+        // → Game::playerSetAttackedCreature(playerId, creature_id). No response packet.
+        0xA1 => match pg::parse_attack(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] attack creature_id=0x{:08x} (0xA1)",
+                    pkt.creature_id
+                );
+                state.set_attack_target(player_creature_id, pkt.creature_id);
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] attack parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- Follow (0xA2) ---
+        // C++ protocolgame.cpp:690 case 0xA2 → parseFollow → reads creature_id (u32 LE)
+        // → Game::playerFollowCreature: clears attack target, then sets follow creature
+        // (or clears follow if creature_id == 0 / creature not found). No response.
+        0xA2 => match pg::parse_follow(&mut msg) {
+            Ok(pkt) => {
+                use forgottenserver_map::pathfinder::Pathfinder;
+                eprintln!(
+                    "[gameloop] follow creature_id=0x{:08x} (0xA2)",
+                    pkt.creature_id
+                );
+                // Always clears attack target — mirrors C++ removeAttackedCreature.
+                state.set_attack_target(player_creature_id, 0);
+                if pkt.creature_id == 0 {
+                    // creature_id 0 → cancel follow
+                    state.set_follow_target(player_creature_id, 0, vec![]);
+                } else {
+                    // Look up target position; fall back to empty path if not in state.
+                    let target_pos = state
+                        .get_creature_position(pkt.creature_id)
+                        .or_else(|| state.get_player_position(pkt.creature_id));
+                    match target_pos {
+                        Some(tp) => {
+                            handle_follow(
+                                &Pathfinder,
+                                *player_pos,
+                                tp,
+                                player_creature_id,
+                                pkt.creature_id,
+                                state,
+                            );
+                        }
+                        None => {
+                            // Creature not yet visible — store intent with empty path.
+                            state.set_follow_target(player_creature_id, pkt.creature_id, vec![]);
+                        }
+                    }
+                }
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] follow parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- CloseNpcChannel (0x9E) — no payload ---
+        // C++ case 0x9E: playerCloseNpcChannel. Game logic not ported.
+        0x9E => {
+            eprintln!("[gameloop] close npc channel (0x9E)");
+            DispatchResult::NoResponse
+        }
+        // --- InviteToParty (0xA3) ---
+        // C++ parseInviteToParty: target_id (u32). playerInviteToParty not ported.
+        0xA3 => match pg::parse_invite_to_party(&mut msg) {
+            Ok(pkt) => {
+                eprintln!("[gameloop] invite to party target_id={} (0xA3)", pkt.target_id);
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] invite to party parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- JoinParty (0xA4) ---
+        // C++ parseJoinParty: target_id (u32). playerJoinParty not ported.
+        0xA4 => match pg::parse_join_party(&mut msg) {
+            Ok(pkt) => {
+                eprintln!("[gameloop] join party target_id={} (0xA4)", pkt.target_id);
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] join party parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- RevokePartyInvite (0xA5) ---
+        // C++ parseRevokePartyInvite: target_id (u32). playerRevokePartyInvitation not ported.
+        0xA5 => match pg::parse_revoke_party_invite(&mut msg) {
+            Ok(pkt) => {
+                eprintln!("[gameloop] revoke party invite target_id={} (0xA5)", pkt.target_id);
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] revoke party invite parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- PassPartyLeadership (0xA6) ---
+        // C++ parsePassPartyLeadership: target_id (u32). playerPassPartyLeadership not ported.
+        0xA6 => match pg::parse_pass_party_leadership(&mut msg) {
+            Ok(pkt) => {
+                eprintln!("[gameloop] pass party leadership target_id={} (0xA6)", pkt.target_id);
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] pass party leadership parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- LeaveParty (0xA7) — no payload ---
+        // C++ case 0xA7: playerLeaveParty. Game logic not ported.
+        0xA7 => {
+            eprintln!("[gameloop] leave party (0xA7)");
+            DispatchResult::NoResponse
+        }
+        // --- EnableSharedPartyExperience (0xA8) ---
+        // C++ parseEnableSharedPartyExperience: active (u8). playerEnableSharedPartyExperience not ported.
+        0xA8 => match pg::parse_enable_shared_party_experience(&mut msg) {
+            Ok(pkt) => {
+                eprintln!("[gameloop] enable shared party experience active={} (0xA8)", pkt.active);
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] enable shared party experience parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- CreatePrivateChannel (0xAA) — no payload ---
+        // C++ case 0xAA: playerCreatePrivateChannel. Game logic not ported.
+        0xAA => {
+            eprintln!("[gameloop] create private channel (0xAA)");
+            DispatchResult::NoResponse
+        }
+        // --- ChannelInvite (0xAB) ---
+        // C++ parseChannelInvite: name (string). playerChannelInvite not ported.
+        0xAB => match pg::parse_channel_invite(&mut msg) {
+            Ok(pkt) => {
+                eprintln!("[gameloop] channel invite name={:?} (0xAB)", pkt.name);
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] channel invite parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- ChannelExclude (0xAC) ---
+        // C++ parseChannelExclude: name (string). playerChannelExclude not ported.
+        0xAC => match pg::parse_channel_exclude(&mut msg) {
+            Ok(pkt) => {
+                eprintln!("[gameloop] channel exclude name={:?} (0xAC)", pkt.name);
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] channel exclude parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- UpdateContainer (0xCA) ---
+        // C++ parseUpdateContainer: container_id (u8). playerUpdateContainer not ported.
+        0xCA => match pg::parse_update_container(&mut msg) {
+            Ok(pkt) => {
+                eprintln!("[gameloop] update container id={} (0xCA)", pkt.container_id);
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] update container parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- BrowseField (0xCB) ---
+        // C++ parseBrowseField: pos_x(u16), pos_y(u16), pos_z(u8). playerBrowseField not ported.
+        0xCB => match pg::parse_browse_field(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] browse field pos=({},{},{}) (0xCB)",
+                    pkt.pos_x, pkt.pos_y, pkt.pos_z
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] browse field parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- SeekInContainer (0xCC) ---
+        // C++ parseSeekInContainer: container_id(u8), index(u16). playerSeekInContainer not ported.
+        0xCC => match pg::parse_seek_in_container(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] seek in container id={} index={} (0xCC)",
+                    pkt.container_id, pkt.index
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] seek in container parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- RequestOutfit (0xD2) — no payload ---
+        // C++ case 0xD2: playerRequestOutfit. Game logic not ported.
+        0xD2 => {
+            eprintln!("[gameloop] request outfit (0xD2)");
+            DispatchResult::NoResponse
+        }
+        // --- SetOutfit (0xD3) ---
+        // C++ parseSetOutfit → playerChangeOutfit: update outfit in state, broadcast to viewport.
+        // Broadcast delivery to other players' sockets is not yet implemented; we update state
+        // so the outfit is visible within this session's viewport queries.
+        0xD3 => match pg::parse_set_outfit(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] set outfit look_type={} look_mount={} (0xD3)",
+                    pkt.look_type, pkt.look_mount
+                );
+                let outfit = OutfitAppearance {
+                    look_type: pkt.look_type,
+                    look_head: pkt.look_head,
+                    look_body: pkt.look_body,
+                    look_legs: pkt.look_legs,
+                    look_feet: pkt.look_feet,
+                    look_addons: pkt.look_addons,
+                };
+                handle_set_outfit(player_creature_id, *player_pos, outfit, state);
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] set outfit parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- AddVip (0xDC) ---
+        // C++ parseAddVip: name (string). playerRequestAddVip not ported.
+        0xDC => match pg::parse_add_vip_by_name(&mut msg) {
+            Ok(pkt) => {
+                eprintln!("[gameloop] add vip name={:?} (0xDC)", pkt.name);
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] add vip parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- RemoveVip (0xDD) ---
+        // C++ parseRemoveVip → playerRequestRemoveVip: remove guid from player's VIP list.
+        0xDD => match pg::parse_remove_vip(&mut msg) {
+            Ok(pkt) => {
+                eprintln!("[gameloop] remove vip guid={} (0xDD)", pkt.guid);
+                handle_vip_remove(player_creature_id, pkt.guid, state);
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] remove vip parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- EditVip (0xDE) ---
+        // C++ parseEditVip: guid(u32), description(string), icon(u32), notify(bool).
+        // playerRequestEditVip not ported.
+        0xDE => match pg::parse_edit_vip(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] edit vip guid={} icon={} notify={} (0xDE)",
+                    pkt.guid, pkt.icon, pkt.notify
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] edit vip parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- MarketLeave (0xF4) — no payload ---
+        // C++ case 0xF4: parseMarketLeave → playerLeaveMarket. Game logic not ported.
+        0xF4 => {
+            eprintln!("[gameloop] market leave (0xF4)");
+            DispatchResult::NoResponse
+        }
+        // --- MarketBrowse (0xF5) ---
+        // C++ parseMarketBrowse: browse_id(u8), optional sprite_id(u16).
+        // playerBrowseMarket not ported.
+        0xF5 => match pg::parse_market_browse(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] market browse browse_id={} sprite_id={:?} (0xF5)",
+                    pkt.browse_id, pkt.sprite_id
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] market browse parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- MarketCreateOffer (0xF6) ---
+        // C++ parseMarketCreateOffer: offer_type(u8), item_id(u16), amount(u16),
+        // price(u32), anonymous(bool). playerCreateMarketOffer not ported.
+        0xF6 => match pg::parse_market_create_offer(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] market create offer type={} item_id={} amount={} price={} (0xF6)",
+                    pkt.offer_type, pkt.item_id, pkt.amount, pkt.price
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] market create offer parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- MarketCancelOffer (0xF7) ---
+        // C++ parseMarketCancelOffer: timestamp(u32), counter(u16).
+        // playerCancelMarketOffer not ported.
+        0xF7 => match pg::parse_market_cancel_offer(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] market cancel offer timestamp={} counter={} (0xF7)",
+                    pkt.timestamp, pkt.counter
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] market cancel offer parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- MarketAcceptOffer (0xF8) ---
+        // C++ parseMarketAcceptOffer: timestamp(u32), counter(u16), amount(u16).
+        // playerAcceptMarketOffer not ported.
+        0xF8 => match pg::parse_market_accept_offer(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] market accept offer timestamp={} counter={} amount={} (0xF8)",
+                    pkt.timestamp, pkt.counter, pkt.amount
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] market accept offer parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- ModalWindowAnswer (0xF9) ---
+        // C++ parseModalWindowAnswer: window_id(u32), button(u8), choice(u8).
+        // playerAnswerModalWindow not ported.
+        0xF9 => match pg::parse_modal_window_answer(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] modal window answer window_id={} button={} choice={} (0xF9)",
+                    pkt.window_id, pkt.button, pkt.choice
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] modal window answer parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- CancelAttackAndFollow (0xBE) ---
+        // C++ game.cpp:3220 playerCancelAttackAndFollow: clears attack target,
+        // clears follow target (creature_id=0), and stops auto-walk. No response.
+        0xBE => {
+            eprintln!("[gameloop] cancel attack and follow (0xBE)");
+            state.set_attack_target(player_creature_id, 0);
+            state.set_follow_target(player_creature_id, 0, vec![]);
+            handle_auto_walk(player_creature_id, vec![], state);
+            DispatchResult::NoResponse
+        }
+        // --- RuleViolationReport (0xF2) ---
+        // C++ protocolgame.cpp:767 → parseRuleViolationReport → playerReportRuleViolation
+        // → fires Lua onReportRuleViolation event. Lua events not yet ported; log the report.
+        0xF2 => match pg::parse_rule_violation_report(&mut msg) {
+            Ok(pkt) => {
+                eprintln!(
+                    "[gameloop] rule violation report type={} reason={} target={} comment={}",
+                    pkt.report_type, pkt.reason, pkt.target_name, pkt.comment
+                );
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] rule violation report parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- DebugAssert (0xE8) ---
+        // C++ protocolgame.cpp:763 → parseDebugAssert → game.playerDebugAssert (logs message).
+        // Rate-limiting (debugAssertSent flag) not implemented; Rust always processes.
+        0xE8 => match pg::parse_debug_assert(&mut msg) {
+            Ok(pkt) => {
+                use crate::game_handler::handle_debug_assert;
+                let msg_text = format!(
+                    "assert={} date={} desc={} comment={}",
+                    pkt.assert_line, pkt.date, pkt.description, pkt.comment
+                );
+                handle_debug_assert(&msg_text);
+                DispatchResult::NoResponse
+            }
+            Err(e) => {
+                eprintln!("[gameloop] debug assert parse error: {e}");
+                DispatchResult::NoResponse
+            }
+        },
+        // --- Acknowledged no-ops (C++ explicit break; — no game action, no response) ---
+        // 0x8E: join aggression  (protocolgame.cpp:660)
+        // 0xC9: update tile      (protocolgame.cpp:725)
+        // 0xE7: thank you        (protocolgame.cpp:760)
+        // 0xF3: get object info  (protocolgame.cpp:769)
+        0x8E | 0xC9 | 0xE7 | 0xF3 => {
+            eprintln!("[gameloop] acknowledged no-op opcode=0x{opcode:02x}");
+            DispatchResult::NoResponse
+        }
         _ => {
             eprintln!("[gameloop] unknown opcode: 0x{:02x}", opcode);
             DispatchResult::NoResponse
@@ -1175,6 +2013,40 @@ pub fn start_http_listener(
 }
 
 // ---------------------------------------------------------------------------
+// Pure regen helper — shared by mana and HP regen blocks in the game loop
+// ---------------------------------------------------------------------------
+
+/// Advance a regen accumulator by `elapsed_secs` and return how much to
+/// regenerate this tick together with the leftover accumulated seconds.
+///
+/// Mirrors the inline C++ pattern in `Game::checkCreatureWalk` /
+/// `Creature::gainHealth` tick logic: accumulate, divide, remainder.
+///
+/// Returns `(regen_amount, new_accumulated)`.
+/// * `elapsed_secs` — seconds that have passed since the last call
+/// * `accumulated`  — previously leftover seconds from prior calls
+/// * `tick_period`  — vocation `gain_*_ticks` value (period in seconds)
+/// * `amount_per_tick` — vocation `gain_*_amount` value
+///
+/// If `tick_period == 0` the function returns `(0, accumulated + elapsed_secs)`
+/// without panicking.
+pub(crate) fn apply_regen_tick(
+    elapsed_secs: u32,
+    accumulated: u32,
+    tick_period: u32,
+    amount_per_tick: u32,
+) -> (u32, u32) {
+    let total = accumulated.saturating_add(elapsed_secs);
+    if tick_period == 0 {
+        return (0, total);
+    }
+    let ticks = total / tick_period;
+    let remaining = total % tick_period;
+    let regen = ticks.saturating_mul(amount_per_tick);
+    (regen, remaining)
+}
+
+// ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
 
@@ -1225,7 +2097,7 @@ mod tests {
     // -----------------------------------------------------------------------
     #[test]
     fn boot_all_four_loaders_called_before_game_loop() {
-        let game_data = boot(&data_dir()).expect("boot should succeed with real data");
+        let game_data = boot(&data_dir(), "forgotten").expect("boot should succeed with real data");
 
         // Items: items.otb is non-empty in the real data set
         assert!(
@@ -1296,7 +2168,48 @@ mod tests {
     fn boot_loads_lua_scripts_from_data_scripts() {
         // Verify boot completes without panic; Lua script loading is now handled
         // by LuaEnvironment::load_scripts in the scripting crate.
-        let _game_data = boot(&data_dir()).expect("boot should succeed");
+        let _game_data = boot(&data_dir(), "forgotten").expect("boot should succeed");
+    }
+
+    // -----------------------------------------------------------------------
+    // Phase: Monsters::loadFromXml equivalent
+    // C++ behaviour: Monsters::loadFromXml(false) reads data/monster/monsters.xml
+    // then loads each referenced XML file into the Monsters registry.
+    // -----------------------------------------------------------------------
+    #[test]
+    fn boot_loads_monsters_from_data_monster_dir() {
+        let game_data = boot(&data_dir(), "forgotten").expect("boot should succeed");
+        assert!(
+            game_data.monsters.get_monster_count() > 0,
+            "monsters should be loaded from data/monster/monsters.xml"
+        );
+    }
+
+    // -----------------------------------------------------------------------
+    // Phase: boot map_name parameter (Game::loadMainMap equivalent)
+    // C++ behaviour: Game::loadMainMap(filename) prepends "data/world/" and
+    // appends ".otbm" to construct the full path.  Rust boot() takes a
+    // map_name parameter and constructs <data_dir>/world/<map_name>.otbm.
+    // -----------------------------------------------------------------------
+    #[test]
+    fn boot_unknown_map_name_returns_error_mentioning_path() {
+        let result = boot(&data_dir(), "no_such_map_xyzabc123");
+        assert!(
+            result.is_err(),
+            "boot must fail when the map file does not exist"
+        );
+        let Err(err) = result else { panic!("expected error") };
+        assert!(
+            err.contains("no_such_map_xyzabc123"),
+            "error must mention the missing map name, got: {err}"
+        );
+    }
+
+    #[test]
+    fn boot_known_map_name_succeeds() {
+        let result = boot(&data_dir(), "forgotten");
+        assert!(result.is_ok(), "boot with 'forgotten' map should succeed");
+        assert!(result.unwrap().map.get_tile_count() > 0, "map should have tiles");
     }
 
     // -----------------------------------------------------------------------
@@ -2088,7 +3001,11 @@ mod tests {
         dir: &mut u8,
         state: &mut GameState,
     ) -> DispatchResult {
+        use forgottenserver_game::chat::ChatManager;
+        use crate::channel_session::ChannelSession;
         let world = World::new();
+        let mut chat = ChatManager::new();
+        let mut session = ChannelSession::new(0);
         dispatch_opcode(
             opcode,
             payload,
@@ -2102,7 +3019,216 @@ mod tests {
             2,
             3,
             &|_d, _p| vec![0x64], // sentinel map body
+            "TestPlayer",
+            1,
+            &mut chat,
+            &mut session,
         )
+    }
+
+    /// Helper for channel-opcode tests that need explicit chat + session state.
+    fn dispatch_ch(
+        opcode: u8,
+        payload: &[u8],
+        pos: &mut Position,
+        dir: &mut u8,
+        state: &mut GameState,
+        chat: &mut forgottenserver_game::chat::ChatManager,
+        session: &mut crate::channel_session::ChannelSession,
+    ) -> DispatchResult {
+        let world = World::new();
+        dispatch_opcode(
+            opcode,
+            payload,
+            &world,
+            state,
+            0,
+            pos,
+            dir,
+            0,
+            1,
+            2,
+            3,
+            &|_d, _p| vec![0x64],
+            "TestPlayer",
+            1,
+            chat,
+            session,
+        )
+    }
+
+    // -----------------------------------------------------------------------
+    // Channel opcodes — 0x97 GetChannels, 0x98 OpenChannel,
+    //                   0x99 CloseChannel, 0x9A OpenPrivateChannel
+    //
+    // C++ cross-validation: protocolgame.cpp parsePacket cases 0x97-0x9A.
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn dispatch_get_channels_returns_channel_list_packet() {
+        use forgottenserver_game::chat::ChatManager;
+        use crate::channel_session::ChannelSession;
+        let mut chat = ChatManager::new();
+        let mut session = ChannelSession::new(0);
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch_ch(0x97, &[], &mut pos, &mut dir, &mut state, &mut chat, &mut session);
+        match r {
+            DispatchResult::Response(bytes) => {
+                assert_eq!(bytes[0], 0xAC, "GetChannels must start with 0xAC (ChannelList)")
+            }
+            _ => panic!("opcode 0x97 must return a Response with ChannelList (0xAC)"),
+        }
+    }
+
+    #[test]
+    fn dispatch_open_channel_returns_open_channel_ack() {
+        use forgottenserver_game::chat::ChatManager;
+        use crate::channel_session::ChannelSession;
+        let mut chat = ChatManager::new();
+        let mut session = ChannelSession::new(0);
+        let channel_id: u16 = 3; // CHANNEL_WORLD
+        let payload = channel_id.to_le_bytes();
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch_ch(0x98, &payload, &mut pos, &mut dir, &mut state, &mut chat, &mut session);
+        match r {
+            DispatchResult::Response(bytes) => {
+                assert_eq!(bytes[0], 0xAB, "OpenChannel ack must start with 0xAB")
+            }
+            _ => panic!("opcode 0x98 must return a Response with OpenChannel ack (0xAB)"),
+        }
+    }
+
+    #[test]
+    fn dispatch_close_channel_removes_channel_from_session() {
+        use forgottenserver_game::chat::ChatManager;
+        use crate::channel_session::ChannelSession;
+        let mut chat = ChatManager::new();
+        let mut session = ChannelSession::new(0);
+        let channel_id: u16 = 3; // CHANNEL_WORLD
+        // Subscribe and add so there is something to close.
+        chat.subscribe(channel_id, 0);
+        session.add_channel(channel_id);
+        assert!(session.open_channels().contains(&channel_id), "channel must be open before close");
+
+        let payload = channel_id.to_le_bytes();
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch_ch(0x99, &payload, &mut pos, &mut dir, &mut state, &mut chat, &mut session);
+        assert!(matches!(r, DispatchResult::NoResponse), "CloseChannel must return NoResponse");
+        assert!(
+            !session.open_channels().contains(&channel_id),
+            "channel must be removed from session after close"
+        );
+    }
+
+    #[test]
+    fn dispatch_open_private_channel_returns_open_private_channel_packet() {
+        use forgottenserver_game::chat::ChatManager;
+        use crate::channel_session::ChannelSession;
+        let mut chat = ChatManager::new();
+        let mut session = ChannelSession::new(0);
+        let receiver = "Alice";
+        let mut payload = Vec::new();
+        payload.extend_from_slice(&(receiver.len() as u16).to_le_bytes());
+        payload.extend_from_slice(receiver.as_bytes());
+
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch_ch(0x9A, &payload, &mut pos, &mut dir, &mut state, &mut chat, &mut session);
+        match r {
+            DispatchResult::Response(bytes) => {
+                assert_eq!(bytes[0], 0xAF, "OpenPrivateChannel must start with 0xAF")
+            }
+            _ => panic!("opcode 0x9A must return a Response with OpenPrivateChannel (0xAF)"),
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // Opcode 0x69 — StopAutoWalk, opcodes 0x6A-0x6D — Diagonal walk
+    //
+    // C++ cross-validation:
+    //   * protocolgame.cpp:564 case 0x69 → playerStopAutoWalk (cancels path)
+    //   * protocolgame.cpp:566-574 cases 0x6A-0x6D → playerMove with diagonal direction
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn dispatch_stop_auto_walk_clears_auto_walk_path() {
+        let mut state = GameState::new();
+        state.set_auto_walk(0, vec![1u8, 2u8, 3u8]);
+        assert!(state.get_auto_walk(0).map(|p| !p.is_empty()).unwrap_or(false), "path must be set before test");
+
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        // 0x69 falls to unknown → NoResponse; after implementation it cancels auto-walk
+        let r = dispatch(0x69, &[], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse), "stop auto-walk must return NoResponse");
+        // Side effect: path must be empty after cancellation
+        assert!(
+            state.get_auto_walk(0).map(|p| p.is_empty()).unwrap_or(true),
+            "auto-walk path must be cleared after 0x69"
+        );
+    }
+
+    #[test]
+    fn dispatch_walk_diagonal_ne_increments_x_decrements_y() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 2u8;
+        let mut state = GameState::new();
+        let r = dispatch(0x6A, &[], &mut pos, &mut dir, &mut state);
+        match r {
+            DispatchResult::Response(bytes) => assert_eq!(bytes[0], 0x64, "diagonal walk must return map body"),
+            _ => panic!("0x6A (walk NE) must return a Response"),
+        }
+        assert_eq!(pos, Position::new(101, 99, 7), "NE walk: x+1, y-1");
+        assert_eq!(dir, 4, "direction must be NE (4)");
+    }
+
+    #[test]
+    fn dispatch_walk_diagonal_se_increments_x_and_y() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0x6B, &[], &mut pos, &mut dir, &mut state);
+        match r {
+            DispatchResult::Response(bytes) => assert_eq!(bytes[0], 0x64),
+            _ => panic!("0x6B (walk SE) must return a Response"),
+        }
+        assert_eq!(pos, Position::new(101, 101, 7), "SE walk: x+1, y+1");
+        assert_eq!(dir, 5, "direction must be SE (5)");
+    }
+
+    #[test]
+    fn dispatch_walk_diagonal_sw_decrements_x_increments_y() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0x6C, &[], &mut pos, &mut dir, &mut state);
+        match r {
+            DispatchResult::Response(bytes) => assert_eq!(bytes[0], 0x64),
+            _ => panic!("0x6C (walk SW) must return a Response"),
+        }
+        assert_eq!(pos, Position::new(99, 101, 7), "SW walk: x-1, y+1");
+        assert_eq!(dir, 6, "direction must be SW (6)");
+    }
+
+    #[test]
+    fn dispatch_walk_diagonal_nw_decrements_x_and_y() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0x6D, &[], &mut pos, &mut dir, &mut state);
+        match r {
+            DispatchResult::Response(bytes) => assert_eq!(bytes[0], 0x64),
+            _ => panic!("0x6D (walk NW) must return a Response"),
+        }
+        assert_eq!(pos, Position::new(99, 99, 7), "NW walk: x-1, y-1");
+        assert_eq!(dir, 7, "direction must be NW (7)");
     }
 
     #[test]
@@ -2192,13 +3318,15 @@ mod tests {
     }
 
     #[test]
-    fn dispatch_say_arbitrary_text_echoes_it_back() {
-        let mut payload = vec![1u8];
+    fn dispatch_say_emits_talk_packet_for_regular_text() {
+        // Non-command say must produce a Talk (0xAA) packet — not TEXT_MESSAGE.
+        // C++ ProtocolGame::sendCreatureSay always uses 0xAA for player words.
+        let mut payload = vec![1u8]; // say_type = 1 (Say)
         let text = "hello world";
         payload.extend_from_slice(&(text.len() as u16).to_le_bytes());
         payload.extend_from_slice(text.as_bytes());
 
-        let mut pos = Position::new(100, 100, 7);
+        let mut pos = Position::new(100, 200, 7);
         let mut dir = 0u8;
         let mut state = GameState::new();
         let r = dispatch(0x96, &payload, &mut pos, &mut dir, &mut state);
@@ -2206,9 +3334,14 @@ mod tests {
             DispatchResult::Response(b) => b,
             _ => panic!("say must produce a Response"),
         };
-        let resp_len = u16::from_le_bytes([bytes[2], bytes[3]]) as usize;
-        let resp_text = std::str::from_utf8(&bytes[4..4 + resp_len]).unwrap();
-        assert_eq!(resp_text, "hello world");
+        assert_eq!(bytes[0], 0xAA, "say response must be a Talk packet (0xAA)");
+        // stmt_id [1..5], name_len [5..7], name, traded, level, speak_type, pos_x, pos_y, pos_z, text
+        // Verify text appears somewhere in the packet
+        let packet_str = String::from_utf8_lossy(&bytes);
+        assert!(
+            packet_str.contains("hello world"),
+            "talk packet must contain the spoken text"
+        );
     }
 
     #[test]
@@ -2246,6 +3379,778 @@ mod tests {
             _ => panic!("use item must produce a Response"),
         };
         assert_eq!(bytes[0], 0xB4, "fallback TextMessage opcode");
+    }
+
+    // -----------------------------------------------------------------------
+    // Opcode 0xA1 — parseAttack (set attack target)
+    // Opcode 0xBE — playerCancelAttackAndFollow (clear attack + follow + auto-walk)
+    //
+    // C++ cross-validation:
+    //   * protocolgame.cpp:688 case 0xA1 → parseAttack → reads creature_id(u32)
+    //     → Game::playerSetAttackedCreature(playerId, creature_id)
+    //   * protocolgame.cpp → game.cpp:3220 case 0xBE → playerCancelAttackAndFollow
+    //     → calls playerSetAttackedCreature(playerId, 0) + clears follow + stops auto-walk
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn dispatch_attack_stores_attack_target_in_state() {
+        let creature_id: u32 = 0x1000_0001;
+        let mut payload = Vec::new();
+        payload.extend_from_slice(&creature_id.to_le_bytes()); // creature_id u32 LE
+
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0xA1, &payload, &mut pos, &mut dir, &mut state);
+        assert!(
+            matches!(r, DispatchResult::NoResponse),
+            "parseAttack must return NoResponse"
+        );
+        assert_eq!(
+            state.get_attack_target(0),
+            Some(creature_id),
+            "attack target must be stored in GameState"
+        );
+    }
+
+    #[test]
+    fn dispatch_cancel_attack_and_follow_clears_all_combat_state() {
+        let mut state = GameState::new();
+        // Pre-populate attack target, follow target, auto-walk path
+        state.set_attack_target(0, 0x1000_0001);
+        state.set_follow_target(0, 0x1000_0002, vec![1u8, 2u8]);
+        state.set_auto_walk(0, vec![3u8, 4u8]);
+
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let r = dispatch(0xBE, &[], &mut pos, &mut dir, &mut state);
+        assert!(
+            matches!(r, DispatchResult::NoResponse),
+            "playerCancelAttackAndFollow must return NoResponse"
+        );
+        assert_eq!(
+            state.get_attack_target(0),
+            None,
+            "attack target must be cleared after 0xBE"
+        );
+        // Follow target creature_id should be 0 (cleared)
+        assert!(
+            state.get_follow_target(0).map(|(cid, _)| cid == 0).unwrap_or(true),
+            "follow target must be cleared after 0xBE"
+        );
+        assert!(
+            state.get_auto_walk(0).map(|p| p.is_empty()).unwrap_or(true),
+            "auto-walk path must be empty after 0xBE"
+        );
+    }
+
+    // -----------------------------------------------------------------------
+    // Opcode 0xA2 — parseFollow → playerFollowCreature
+    //
+    // C++ cross-validation:
+    //   * protocolgame.cpp:690 case 0xA2 → parseFollow → reads creature_id(u32)
+    //     → Game::playerFollowCreature(playerId, creatureId)
+    //   * game.cpp:3265 playerFollowCreature:
+    //       removeAttackedCreature (clears attack target)
+    //       if creatureId exists → setFollowCreature
+    //       else → removeFollowCreature
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn dispatch_follow_stores_follow_target_when_creature_known() {
+        let creature_id: u32 = 42;
+        let mut state = GameState::new();
+        // Register target creature's position so dispatch can pathfind.
+        state.set_creature_position(creature_id, Position::new(102, 100, 7));
+
+        let mut payload = Vec::new();
+        payload.extend_from_slice(&creature_id.to_le_bytes());
+
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let r = dispatch(0xA2, &payload, &mut pos, &mut dir, &mut state);
+        assert!(
+            matches!(r, DispatchResult::NoResponse),
+            "parseFollow must return NoResponse"
+        );
+        let follow = state.get_follow_target(0);
+        assert!(follow.is_some(), "follow target must be set after 0xA2");
+        assert_eq!(
+            follow.unwrap().0,
+            creature_id,
+            "follow target creature_id must match"
+        );
+    }
+
+    #[test]
+    fn dispatch_follow_always_clears_attack_target() {
+        let creature_id: u32 = 42;
+        let mut state = GameState::new();
+        state.set_attack_target(0, 99); // pre-set attack target
+        state.set_creature_position(creature_id, Position::new(102, 100, 7));
+
+        let mut payload = Vec::new();
+        payload.extend_from_slice(&creature_id.to_le_bytes());
+
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let _ = dispatch(0xA2, &payload, &mut pos, &mut dir, &mut state);
+        assert_eq!(
+            state.get_attack_target(0),
+            None,
+            "parseFollow must clear attack target (mirrors C++ removeAttackedCreature)"
+        );
+    }
+
+    #[test]
+    fn dispatch_follow_zero_clears_follow_target() {
+        let mut state = GameState::new();
+        state.set_follow_target(0, 42, vec![1u8, 2u8]); // pre-set follow target
+
+        let mut payload = Vec::new();
+        payload.extend_from_slice(&0u32.to_le_bytes()); // creature_id = 0
+
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let r = dispatch(0xA2, &payload, &mut pos, &mut dir, &mut state);
+        assert!(
+            matches!(r, DispatchResult::NoResponse),
+            "parseFollow with 0 must return NoResponse"
+        );
+        // Follow target should be cleared (creature_id=0) or removed
+        let follow = state.get_follow_target(0);
+        assert!(
+            follow.map(|(cid, _)| cid == 0).unwrap_or(true),
+            "follow target must be cleared when creature_id=0"
+        );
+    }
+
+    // -----------------------------------------------------------------------
+    // Opcode 0x64 — parseAutoWalk
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn dispatch_auto_walk_stores_path_in_state() {
+        let mut state = GameState::new();
+        // payload: numdirs=1, wire_dir=3 (NORTH → Direction_t 0)
+        let payload = &[1u8, 3u8];
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let r = dispatch(0x64, payload, &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse), "0x64 must return NoResponse");
+        let path = state.get_auto_walk(0).expect("auto-walk path must be stored");
+        assert_eq!(path, &vec![0u8], "wire byte 3 must map to DIRECTION_NORTH (0)");
+    }
+
+    #[test]
+    fn dispatch_auto_walk_reverses_wire_order() {
+        let mut state = GameState::new();
+        // payload: numdirs=2, wire=[3(NORTH),1(EAST)] → reversed → [EAST, NORTH] = [1, 0]
+        let payload = &[2u8, 3u8, 1u8];
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        dispatch(0x64, payload, &mut pos, &mut dir, &mut state);
+        let path = state.get_auto_walk(0).expect("path must be stored");
+        assert_eq!(path, &vec![1u8, 0u8]);
+    }
+
+    #[test]
+    fn dispatch_auto_walk_invalid_payload_does_not_store_path() {
+        let mut state = GameState::new();
+        // numdirs=0 → invalid → no path stored
+        let payload = &[0u8];
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let r = dispatch(0x64, payload, &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+        // path should not be set (or should be None)
+        assert!(state.get_auto_walk(0).map(|p| p.is_empty()).unwrap_or(true));
+    }
+
+    // -----------------------------------------------------------------------
+    // No-op opcodes: 0x8E, 0xC9, 0xE7, 0xF3
+    //   C++ case 0x8E: /* join aggression */ break;
+    //   C++ case 0xC9: /* update tile */     break;
+    //   C++ case 0xE7: /* thank you */       break;
+    //   C++ case 0xF3: /* get object info */ break;
+    // -----------------------------------------------------------------------
+
+    // -----------------------------------------------------------------------
+    // Opcode 0xF2 — parseRuleViolationReport
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn dispatch_rule_violation_report_returns_no_response() {
+        let mut state = GameState::new();
+        // payload: type=2(BOT), reason=1, target_name="Bot", comment="cheating"
+        let mut payload = Vec::new();
+        payload.push(2u8); // REPORT_TYPE_BOT
+        payload.push(1u8); // reason
+        // target_name = "Bot": length 3 (LE u16) + bytes
+        payload.extend_from_slice(&3u16.to_le_bytes());
+        payload.extend_from_slice(b"Bot");
+        // comment = "cheating": length 8 + bytes
+        payload.extend_from_slice(&8u16.to_le_bytes());
+        payload.extend_from_slice(b"cheating");
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let r = dispatch(0xF2, &payload, &mut pos, &mut dir, &mut state);
+        assert!(
+            matches!(r, DispatchResult::NoResponse),
+            "0xF2 rule violation report must return NoResponse"
+        );
+    }
+
+    // -----------------------------------------------------------------------
+    // Opcode 0xE8 — parseDebugAssert
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn dispatch_debug_assert_returns_no_response() {
+        let mut state = GameState::new();
+        // payload: 4 empty length-prefixed strings (2-byte len = 0 each)
+        let payload = &[0u8, 0, 0, 0, 0, 0, 0, 0];
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let r = dispatch(0xE8, payload, &mut pos, &mut dir, &mut state);
+        assert!(
+            matches!(r, DispatchResult::NoResponse),
+            "0xE8 debug assert must return NoResponse"
+        );
+    }
+
+    #[test]
+    fn dispatch_acknowledged_noop_opcodes_return_no_response() {
+        let mut state = GameState::new();
+        for op in [0x8Eu8, 0xC9, 0xE7, 0xF3] {
+            let mut pos = Position::new(100, 100, 7);
+            let mut dir = 0u8;
+            let r = dispatch(op, &[], &mut pos, &mut dir, &mut state);
+            assert!(
+                matches!(r, DispatchResult::NoResponse),
+                "opcode 0x{op:02X} must return NoResponse (C++ explicit no-op)"
+            );
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // 0x77 — parseEquipObject
+    // C++ protocolgame.cpp:1302 — reads sprite_id (u16), dispatches
+    // playerEquipItem. Game logic not ported; dispatch logs and returns
+    // NoResponse.
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn dispatch_equip_object_valid_payload_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // sprite_id = 2000 (0xD0, 0x07)
+        let r = dispatch(0x77, &[0xD0, 0x07], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_equip_object_empty_payload_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // Empty payload → parse error → must still return NoResponse (no crash)
+        let r = dispatch(0x77, &[], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    // -----------------------------------------------------------------------
+    // 0x83–0x8D — Item interaction and container opcodes
+    // C++ protocolgame.cpp cases 0x83-0x8D (parseUseItemEx, parseUseWithCreature,
+    // parseRotateItem, parseEditPodiumRequest, parseCloseContainer,
+    // parseUpArrowContainer, parseTextWindow, parseHouseWindow,
+    // parseWrapItem, parseLookAt, parseLookInBattleList).
+    // All return NoResponse; game logic not yet ported.
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn dispatch_use_item_ex_valid_payload_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // from: x=100,y=100,z=7, sprite_id=500, stackpos=2, to: x=101,y=100,z=7
+        let payload: &[u8] = &[100, 0, 100, 0, 7, 244, 1, 2, 101, 0, 100, 0, 7];
+        let r = dispatch(0x83, payload, &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_use_with_creature_valid_payload_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // pos: x=100,y=100,z=7, sprite_id=500, stackpos=2, creature_id=42
+        let payload: &[u8] = &[100, 0, 100, 0, 7, 244, 1, 2, 42, 0, 0, 0];
+        let r = dispatch(0x84, payload, &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_rotate_item_valid_payload_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // pos: x=100,y=100,z=7, sprite_id=500, stackpos=2
+        let payload: &[u8] = &[100, 0, 100, 0, 7, 244, 1, 2];
+        let r = dispatch(0x85, payload, &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_close_container_valid_payload_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // container_id=3
+        let r = dispatch(0x87, &[3], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_up_arrow_container_valid_payload_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // container_id=3
+        let r = dispatch(0x88, &[3], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_look_at_valid_payload_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // pos: x=100,y=100,z=7, sprite_id=500, stackpos=2
+        let payload: &[u8] = &[100, 0, 100, 0, 7, 244, 1, 2];
+        let r = dispatch(0x8C, payload, &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_look_in_battle_list_valid_payload_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // creature_id=42
+        let r = dispatch(0x8D, &[42, 0, 0, 0], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    // -----------------------------------------------------------------------
+    // 0x79–0x80 — Shop and Trade opcodes
+    // C++ protocolgame.cpp cases 0x79-0x80 (parseLookInShop, parsePlayerPurchase,
+    // parsePlayerSale, playerCloseShop, parseRequestTrade, parseLookInTrade,
+    // playerAcceptTrade, playerCloseTrade). All return NoResponse; game logic
+    // not yet ported.
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn dispatch_look_in_shop_valid_payload_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // item_id=100, count=1
+        let r = dispatch(0x79, &[100, 0, 1], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_look_in_shop_empty_payload_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0x79, &[], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_player_purchase_valid_payload_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // item_id=100, sub_type=0, count=5, ignore_capacity=0, buy_with_backpack=0
+        let r = dispatch(0x7A, &[100, 0, 0, 5, 0, 0], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_player_sale_valid_payload_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // item_id=100, sub_type=0, count=5, ignore_equipped=0
+        let r = dispatch(0x7B, &[100, 0, 0, 5, 0], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_close_shop_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0x7C, &[], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_request_trade_valid_payload_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // pos_x=100, pos_y=100, pos_z=7, sprite_id=500, stackpos=2, player_id=99
+        let r = dispatch(
+            0x7D,
+            &[100, 0, 100, 0, 7, 244, 1, 2, 99, 0, 0, 0],
+            &mut pos,
+            &mut dir,
+            &mut state,
+        );
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_look_in_trade_valid_payload_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // counter_offer=0, index=2
+        let r = dispatch(0x7E, &[0, 2], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_accept_trade_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0x7F, &[], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_close_trade_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0x80, &[], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    // -----------------------------------------------------------------------
+    // 0x78 — parseThrow (move/throw item from one tile to another)
+    // C++ protocolgame.cpp:597 → parseThrow → g_game.playerMoveThing.
+    // Wire: from_x(u16), from_y(u16), from_z(u8), sprite_id(u16),
+    //       from_stackpos(u8), to_x(u16), to_y(u16), to_z(u8), count(u8)
+    // Game logic not ported; dispatch parses and returns NoResponse.
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn dispatch_throw_valid_payload_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // from_x=100, from_y=100, from_z=7, sprite_id=500, from_stackpos=2,
+        // to_x=101, to_y=100, to_z=7, count=1
+        let payload: &[u8] = &[
+            100, 0, // from_x = 100
+            100, 0, // from_y = 100
+            7,      // from_z = 7
+            244, 1, // sprite_id = 500
+            2,      // from_stackpos = 2
+            101, 0, // to_x = 101
+            100, 0, // to_y = 100
+            7,      // to_z = 7
+            1,      // count = 1
+        ];
+        let r = dispatch(0x78, payload, &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_throw_empty_payload_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // Empty payload → parse error → must still return NoResponse
+        let r = dispatch(0x78, &[], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    // -----------------------------------------------------------------------
+    // 0x9E, 0xA3-0xA8, 0xAA-0xAC — Party and NPC channel opcodes
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn dispatch_close_npc_channel_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0x9E, &[], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_invite_to_party_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0xA3, &[42, 0, 0, 0], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_join_party_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0xA4, &[42, 0, 0, 0], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_revoke_party_invite_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0xA5, &[42, 0, 0, 0], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_pass_party_leadership_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0xA6, &[42, 0, 0, 0], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_leave_party_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0xA7, &[], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_enable_shared_party_experience_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0xA8, &[1], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_create_private_channel_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0xAA, &[], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_channel_invite_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // name = "Alice" (len=5, bytes 65,108,105,99,101)
+        let payload: &[u8] = &[5, 0, 65, 108, 105, 99, 101];
+        let r = dispatch(0xAB, payload, &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_channel_exclude_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // name = "Bob" (len=3, bytes 66,111,98)
+        let payload: &[u8] = &[3, 0, 66, 111, 98];
+        let r = dispatch(0xAC, payload, &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    // -----------------------------------------------------------------------
+    // 0xCA-0xCC — Container/field opcodes
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn dispatch_update_container_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // container_id=3
+        let r = dispatch(0xCA, &[3], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_browse_field_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // pos: x=100, y=100, z=7
+        let r = dispatch(0xCB, &[100, 0, 100, 0, 7], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_seek_in_container_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // container_id=3, index=5
+        let r = dispatch(0xCC, &[3, 5, 0], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    // -----------------------------------------------------------------------
+    // 0xD2-0xD3 — Outfit opcodes
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn dispatch_request_outfit_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0xD2, &[], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_set_outfit_updates_state() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // outfit: look_type=75, head=10, body=20, legs=30, feet=40, addons=3, no mount
+        // wire: look_type(u16 LE), head, body, legs, feet, addons, look_mount(u16 LE)
+        let payload: &[u8] = &[75, 0, 10, 20, 30, 40, 3, 0, 0];
+        let r = dispatch(0xD3, payload, &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+        let outfit = state.get_outfit(0).expect("outfit should be stored in state after 0xD3");
+        assert_eq!(outfit.look_type, 75);
+        assert_eq!(outfit.look_head, 10);
+        assert_eq!(outfit.look_body, 20);
+        assert_eq!(outfit.look_legs, 30);
+        assert_eq!(outfit.look_feet, 40);
+        assert_eq!(outfit.look_addons, 3);
+    }
+
+    // -----------------------------------------------------------------------
+    // 0xDC-0xDE — VIP opcodes
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn dispatch_add_vip_by_name_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // name = "Alice"
+        let payload: &[u8] = &[5, 0, 65, 108, 105, 99, 101];
+        let r = dispatch(0xDC, payload, &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_remove_vip_removes_from_state() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        state.add_vip(0, 42);
+        assert!(state.get_vip_list(0).contains(&42), "pre-condition: VIP 42 must be present");
+        let r = dispatch(0xDD, &[42, 0, 0, 0], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+        assert!(!state.get_vip_list(0).contains(&42), "VIP 42 should be removed after 0xDD");
+    }
+
+    #[test]
+    fn dispatch_remove_vip_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // guid=42
+        let r = dispatch(0xDD, &[42, 0, 0, 0], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    // -----------------------------------------------------------------------
+    // 0xF4-0xF9 — Market opcodes
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn dispatch_market_leave_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0xF4, &[], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_market_browse_own_offers_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // browse_id=0xFE (own offers)
+        let r = dispatch(0xF5, &[0xFE], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_market_create_offer_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // offer_type=0, item_id=100, amount=5, price=1000, anonymous=0
+        let r = dispatch(
+            0xF6,
+            &[0, 100, 0, 5, 0, 232, 3, 0, 0, 0],
+            &mut pos,
+            &mut dir,
+            &mut state,
+        );
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_market_cancel_offer_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // timestamp=1000, counter=0
+        let r = dispatch(0xF7, &[232, 3, 0, 0, 0, 0, 0, 0], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_market_accept_offer_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // timestamp=1000, counter=0, amount=3
+        let r = dispatch(0xF8, &[232, 3, 0, 0, 0, 0, 0, 0, 3, 0], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
+    }
+
+    #[test]
+    fn dispatch_modal_window_answer_returns_no_response() {
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        // window_id=1, button=0, choice=2
+        let r = dispatch(0xF9, &[1, 0, 0, 0, 0, 2], &mut pos, &mut dir, &mut state);
+        assert!(matches!(r, DispatchResult::NoResponse));
     }
 
     #[test]
@@ -2555,6 +4460,50 @@ mod tests {
         server_thread
             .join()
             .expect("handle_connection must not panic on implausible outer_len");
+    }
+
+    // -----------------------------------------------------------------------
+    // apply_regen_tick — pure regen accumulator logic
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn regen_tick_accumulates_and_returns_zero_before_threshold() {
+        // With tick_period=6 and only 4 seconds elapsed, no regen should fire.
+        let (amount, remaining) = apply_regen_tick(4, 0, 6, 10);
+        assert_eq!(amount, 0, "no regen before tick threshold");
+        assert_eq!(remaining, 4, "elapsed seconds are accumulated");
+    }
+
+    #[test]
+    fn regen_tick_fires_once_at_exact_threshold() {
+        // With tick_period=6 and 6 seconds elapsed, regen fires once for amount 10.
+        let (amount, remaining) = apply_regen_tick(6, 0, 6, 10);
+        assert_eq!(amount, 10, "regen fires once at exact threshold");
+        assert_eq!(remaining, 0, "nothing left over at exact multiple");
+    }
+
+    #[test]
+    fn regen_tick_fires_multiple_times_with_overflow() {
+        // 14 seconds, period=6: fires twice (6+6=12 ≤ 14), 2 seconds left over.
+        let (amount, remaining) = apply_regen_tick(14, 0, 6, 10);
+        assert_eq!(amount, 20, "regen fires twice for 14/6 ticks");
+        assert_eq!(remaining, 2, "2 seconds left over after 12 consumed");
+    }
+
+    #[test]
+    fn regen_tick_carries_forward_accumulated_secs() {
+        // 4s already accumulated + 3s new = 7 ≥ 6 → fires once, 1 leftover.
+        let (amount, remaining) = apply_regen_tick(3, 4, 6, 10);
+        assert_eq!(amount, 10, "fires once when accumulated + elapsed ≥ period");
+        assert_eq!(remaining, 1, "1 second left over");
+    }
+
+    #[test]
+    fn regen_tick_zero_period_returns_no_regen() {
+        // tick_period=0 must not panic (division by zero) and must return 0.
+        let (amount, remaining) = apply_regen_tick(100, 50, 0, 10);
+        assert_eq!(amount, 0, "zero period yields no regen");
+        assert_eq!(remaining, 150, "elapsed added to accumulated, no drain");
     }
 
     /// `frame_packet_seq` with small sequence numbers (0, 1, 2, ...) must

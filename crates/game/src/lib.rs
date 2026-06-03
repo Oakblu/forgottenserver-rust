@@ -6,6 +6,7 @@ pub mod game;
 pub mod game_loop;
 pub mod market;
 pub mod movement;
+pub mod monster_registry;
 pub mod npc_registry;
 pub mod party;
 pub mod quest_registry;

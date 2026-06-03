@@ -76,8 +76,10 @@ pub fn initialise_modules(config_path: &Path, data_dir: &Path) -> Result<Modules
         .load(config_path)
         .map_err(|e| anyhow!("Failed to load config: {e}"))?;
 
+    let map_name = config.get_string(forgottenserver_common::configmanager::StringKey::MapName).to_owned();
+    let map_name = if map_name.is_empty() { "forgotten".to_owned() } else { map_name };
     let game_data =
-        srv_boot::boot(data_dir).map_err(|e| anyhow!("Failed to load game data: {e}"))?;
+        srv_boot::boot(data_dir, &map_name).map_err(|e| anyhow!("Failed to load game data: {e}"))?;
 
     let game_state = Arc::new(Mutex::new(GameState::new()));
 

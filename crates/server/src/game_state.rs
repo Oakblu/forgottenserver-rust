@@ -111,6 +111,7 @@ pub struct GameState {
 
     // --- per-player runtime state ---
     player_positions: HashMap<u32, Position>,
+    attack_targets: HashMap<u32, u32>,             // player_id → creature_id (0 = none)
     follow_targets: HashMap<u32, (u32, Vec<u8>)>, // player_id → (creature_id, path)
     auto_walks: HashMap<u32, Vec<u8>>,            // player_id → direction bytes
     fight_modes: HashMap<u32, (u8, u8, bool)>,    // player_id → (fight, chase, secure)
@@ -272,6 +273,25 @@ impl GameState {
             .filter(|(_, &p)| pos.z == p.z && pos.distance(p) <= range)
             .min_by_key(|(_, &p)| pos.distance(p))
             .map(|(&id, &p)| (id, p))
+    }
+
+    // -----------------------------------------------------------------------
+    // Attack target state
+    // -----------------------------------------------------------------------
+
+    /// Set the current attack target for `player_id`. Mirrors C++
+    /// `Game::playerSetAttackedCreature`. Passing 0 clears the target.
+    pub fn set_attack_target(&mut self, player_id: u32, creature_id: u32) {
+        if creature_id == 0 {
+            self.attack_targets.remove(&player_id);
+        } else {
+            self.attack_targets.insert(player_id, creature_id);
+        }
+    }
+
+    /// Return the current attack target for `player_id`, or `None` if not attacking.
+    pub fn get_attack_target(&self, player_id: u32) -> Option<u32> {
+        self.attack_targets.get(&player_id).copied()
     }
 
     // -----------------------------------------------------------------------
@@ -778,6 +798,29 @@ mod tests {
         assert!(ids.contains(&1));
         assert!(ids.contains(&2));
         assert!(!ids.contains(&3));
+    }
+
+    // --- attack target ---
+
+    #[test]
+    fn set_and_get_attack_target() {
+        let mut gs = GameState::new();
+        gs.set_attack_target(1, 42);
+        assert_eq!(gs.get_attack_target(1), Some(42));
+    }
+
+    #[test]
+    fn set_attack_target_zero_clears_target() {
+        let mut gs = GameState::new();
+        gs.set_attack_target(1, 42);
+        gs.set_attack_target(1, 0);
+        assert_eq!(gs.get_attack_target(1), None);
+    }
+
+    #[test]
+    fn get_attack_target_none_for_unknown_player() {
+        let gs = GameState::new();
+        assert_eq!(gs.get_attack_target(999), None);
     }
 
     // --- follow ---

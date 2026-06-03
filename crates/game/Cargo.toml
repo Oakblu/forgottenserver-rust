@@ -15,6 +15,7 @@ roxmltree = "0.20"
 
 [dev-dependencies]
 criterion = { workspace = true }
+tempfile = "3"
 
 [[bench]]
 name = "combat"

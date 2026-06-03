@@ -22,6 +22,9 @@ pub enum ServerPacket {
         speaker_level: u16,
         speak_type: SpeakType,
         channel_id: Option<ChannelId>,
+        /// World position of the speaker; required for proximity speak types
+        /// (Say/Whisper/Yell) — mirrors C++ `sendCreatureSay` wire format.
+        pos: Option<Position>,
         text: String,
     },
     /// 0xAF — open a private chat session
@@ -211,8 +214,9 @@ pub fn encode(packet: &ServerPacket) -> Vec<u8> {
             speaker_level,
             speak_type,
             channel_id,
+            pos,
             text,
-        } => encode_talk(speaker, *speaker_level, speak_type, *channel_id, text),
+        } => encode_talk(speaker, *speaker_level, speak_type, *channel_id, pos.as_ref(), text),
         ServerPacket::OpenPrivateChannel { receiver } => encode_open_private_channel(receiver),
         ServerPacket::DamageEffect {
             creature_id,
@@ -309,11 +313,15 @@ fn encode_talk(
     speaker_level: u16,
     speak_type: &SpeakType,
     channel_id: Option<ChannelId>,
+    pos: Option<&Position>,
     text: &str,
 ) -> Vec<u8> {
     // Wire format (TFS 13.x / OTClient 1310):
     // [0xAA][stmt_id: u32][name: string][traded: u8 = 0x00][level: u16][speak_type: u8]
-    // [(channel_id: u16)?][text: string]
+    // Proximity (Say/Whisper/Yell): [pos_x: u16][pos_y: u16][pos_z: u8]
+    // Channel (ChannelYellow/Orange): [channel_id: u16]
+    // Private: (no suffix before text)
+    // [text: string]
     let stmt_id = TALK_STATEMENT_ID.fetch_add(1, Ordering::Relaxed).wrapping_add(1);
     let mut out = Vec::new();
     out.push(0xAA);
@@ -322,8 +330,20 @@ fn encode_talk(
     out.push(0x00); // "(Traded)" suffix — always 0x00 in normal play
     out.extend_from_slice(&speaker_level.to_le_bytes());
     out.push(speak_type.to_byte());
-    if let Some(cid) = channel_id {
-        out.extend_from_slice(&cid.to_le_bytes());
+    match speak_type {
+        SpeakType::Say | SpeakType::Whisper | SpeakType::Yell => {
+            if let Some(p) = pos {
+                out.extend_from_slice(&p.x.to_le_bytes());
+                out.extend_from_slice(&p.y.to_le_bytes());
+                out.push(p.z);
+            }
+        }
+        SpeakType::ChannelYellow | SpeakType::ChannelOrange => {
+            if let Some(cid) = channel_id {
+                out.extend_from_slice(&cid.to_le_bytes());
+            }
+        }
+        SpeakType::Private => {}
     }
     write_string(&mut out, text);
     out
@@ -660,12 +680,63 @@ mod tests {
     }
 
     #[test]
+    fn say_talk_packet_includes_position_after_speak_type() {
+        // C++ sendCreatureSay always includes pos for proximity speak types.
+        // Wire: 0xAA + stmt_id(4) + name_str + traded(1) + level(2) + speak_type(1)
+        //       + pos_x(2) + pos_y(2) + pos_z(1) + text_str
+        let encoded = encode(&ServerPacket::Talk {
+            speaker: "Bob".to_string(),
+            speaker_level: 10,
+            speak_type: SpeakType::Say,
+            channel_id: None,
+            pos: Some(Position::new(100, 200, 7)),
+            text: "hey".to_string(),
+        });
+        // Layout: [0]=0xAA [1..5]=stmt_id [5..7]=name_len("Bob"=3) [7..10]="Bob"
+        //         [10]=traded=0 [11..13]=level=10 [13]=speak_type=0x01
+        //         [14..16]=pos_x=100  [16..18]=pos_y=200  [18]=pos_z=7
+        //         [19..21]=text_len=3 [21..24]="hey"
+        assert_eq!(encoded[0], 0xAA);
+        let name_len = u16::from_le_bytes([encoded[5], encoded[6]]) as usize;
+        assert_eq!(name_len, 3);
+        assert_eq!(&encoded[7..10], b"Bob");
+        let pos_base = 10 + 1 + 2 + 1; // traded + level + speak_type
+        let pos_x = u16::from_le_bytes([encoded[pos_base], encoded[pos_base + 1]]);
+        let pos_y = u16::from_le_bytes([encoded[pos_base + 2], encoded[pos_base + 3]]);
+        let pos_z = encoded[pos_base + 4];
+        assert_eq!(pos_x, 100);
+        assert_eq!(pos_y, 200);
+        assert_eq!(pos_z, 7);
+    }
+
+    #[test]
+    fn channel_talk_packet_omits_position_includes_channel_id() {
+        let encoded = encode(&ServerPacket::Talk {
+            speaker: "Alice".to_string(),
+            speaker_level: 5,
+            speak_type: SpeakType::ChannelYellow,
+            channel_id: Some(5),
+            pos: None,
+            text: "hello".to_string(),
+        });
+        assert_eq!(encoded[0], 0xAA);
+        // speak_type byte is at [15] for "Alice" (5 chars)
+        // [0]=0xAA [1..5]=stmt_id [5..7]=name_len=5 [7..12]="Alice"
+        // [12]=traded=0 [13..15]=level [15]=speak_type=0x07
+        // [16..18]=channel_id [18..20]=text_len [20..25]=text
+        assert_eq!(encoded[15], SpeakType::ChannelYellow.to_byte());
+        let cid = u16::from_le_bytes([encoded[16], encoded[17]]);
+        assert_eq!(cid, 5);
+    }
+
+    #[test]
     fn talk_wire_format_has_stmt_id_and_level_before_speak_type() {
         let encoded = encode(&ServerPacket::Talk {
             speaker: "Alice".to_string(),
             speaker_level: 42,
             speak_type: SpeakType::Say,
             channel_id: None,
+            pos: Some(Position::new(1, 1, 7)),
             text: "hi".to_string(),
         });
         // [0] = 0xAA opcode

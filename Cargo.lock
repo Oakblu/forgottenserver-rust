@@ -843,6 +843,7 @@ dependencies = [
  "forgottenserver-map",
  "forgottenserver-world",
  "roxmltree",
+ "tempfile",
 ]
 
 [[package]]

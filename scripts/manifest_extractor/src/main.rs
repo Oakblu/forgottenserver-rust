@@ -533,7 +533,7 @@ fn emit_impl(i: &ItemImpl, ctx: &mut Ctx) {
                 } else if is_assoc {
                     "associated_function"
                 } else {
-                    "method"
+                    "impl_method"
                 }
                 .to_string();
                 let mut notes = vec![];
@@ -641,7 +641,7 @@ fn emit_fn(f: &ItemFn, ctx: &mut Ctx) {
 
     ctx.out.push(Symbol {
         file: ctx.file.clone(),
-        kind: "function".to_string(),
+        kind: "free_function".to_string(),
         qualified_name: qn,
         signature,
         visibility: vis_str(&f.vis),
@@ -858,13 +858,15 @@ fn sha_hex(bytes: &[u8]) -> String {
 }
 
 fn compact_tokens(t: &proc_macro2::TokenStream, max: usize) -> String {
-    let raw = t.to_string();
-    let single: String = raw.split_whitespace().collect::<Vec<_>>().join(" ");
-    if max > 0 && single.len() > max {
-        format!("{}…", &single[..max])
-    } else {
-        single
+    compact_str(t.to_string().split_whitespace().collect::<Vec<_>>().join(" "), max)
+}
+
+fn compact_str(s: String, max: usize) -> String {
+    if max == 0 || s.len() <= max {
+        return s;
     }
+    let boundary = s.floor_char_boundary(max);
+    format!("{}…", &s[..boundary])
 }
 
 fn sig_to_string(s: &Signature) -> String {
@@ -1275,4 +1277,150 @@ fn module_path_from_file(path: &Path, root: &Path) -> String {
         other => segs.push(other.to_string().replace('-', "_")),
     }
     segs.join("::")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn compact_str_truncates_at_char_boundary() {
+        // em dash is 3 bytes; truncating at byte 240 would panic without the fix
+        let em = "—"; // U+2014, 3 bytes: 0xE2 0x80 0x94
+        let s = "a".repeat(239) + em + "b";
+        // max=240 falls inside the em dash; must truncate to 239 chars ("a"×239)
+        let result = compact_str(s, 240);
+        assert!(result.starts_with(&"a".repeat(239)), "expected 239 a's, got: {result}");
+        assert!(result.ends_with("…"), "expected ellipsis suffix, got: {result}");
+        assert!(!result.contains("—"), "truncation must not include partial em dash");
+    }
+
+    #[test]
+    fn compact_str_exact_length_no_truncation() {
+        let s = "hello".to_string();
+        assert_eq!(compact_str(s.clone(), 5), "hello");
+    }
+
+    #[test]
+    fn compact_str_zero_max_no_truncation() {
+        let s = "hello world".to_string();
+        assert_eq!(compact_str(s, 0), "hello world");
+    }
+
+    #[test]
+    fn compact_str_ascii_truncation() {
+        let s = "abcdef".to_string();
+        let result = compact_str(s, 4);
+        assert_eq!(result, "abcd…");
+    }
+
+    #[test]
+    fn free_functions_use_free_function_kind() {
+        // Module-level functions (not inside impl blocks) must use kind "free_function"
+        // to match the format expected by the MIGRATION_LEDGER built against the old manifest.
+        let src = r#"
+pub fn do_work(x: u32) -> u32 { x + 1 }
+pub fn helper() {}
+#[test]
+fn test_helper() {}
+"#;
+        let file_ast = syn::parse_str::<syn::File>(src).expect("parse");
+        let lines: Vec<&str> = src.lines().collect();
+        let mut ctx = Ctx {
+            file: "fake.rs".to_string(),
+            src,
+            lines: &lines,
+            mod_path: "my_crate::fake".to_string(),
+            out: Vec::new(),
+        };
+        walk_items(&file_ast.items, &mut ctx);
+
+        let by_name: std::collections::HashMap<&str, &str> = ctx.out.iter()
+            .map(|s| (s.qualified_name.as_str(), s.kind.as_str()))
+            .collect();
+
+        assert_eq!(
+            by_name.get("my_crate::fake::do_work").copied(),
+            Some("free_function"),
+            "module-level function should be free_function"
+        );
+        assert_eq!(
+            by_name.get("my_crate::fake::helper").copied(),
+            Some("free_function"),
+            "module-level function should be free_function"
+        );
+        assert_eq!(
+            by_name.get("my_crate::fake::test_helper").copied(),
+            Some("free_function"),
+            "test function should also be free_function"
+        );
+    }
+
+    #[test]
+    fn method_qualified_names_include_impl_segment_and_correct_kind() {
+        // Methods on inherent impl blocks should use `<impl>` in the qualified name
+        // and kind "impl_method" to match the ledger format the build_seed script expects.
+        // Trait impl methods use `<impl TraitName for TypeName>` and kind "trait_impl_method".
+        let src = r#"
+pub struct Foo;
+impl Foo {
+    pub fn bar(&self) {}
+    pub fn baz(&self) -> u32 { 42 }
+}
+trait MyTrait { fn greet(&self); }
+impl MyTrait for Foo {
+    fn greet(&self) {}
+}
+"#;
+        let file_ast = syn::parse_str::<syn::File>(src).expect("parse");
+        let lines: Vec<&str> = src.lines().collect();
+        let mut ctx = Ctx {
+            file: "fake.rs".to_string(),
+            src,
+            lines: &lines,
+            mod_path: "my_crate::fake".to_string(),
+            out: Vec::new(),
+        };
+        walk_items(&file_ast.items, &mut ctx);
+
+        let inherent_methods: Vec<&Symbol> = ctx.out.iter()
+            .filter(|s| s.kind == "impl_method")
+            .collect();
+        let trait_methods: Vec<&Symbol> = ctx.out.iter()
+            .filter(|s| s.kind == "trait_impl_method")
+            .collect();
+
+        assert!(!inherent_methods.is_empty(), "expected inherent impl_method symbols");
+        assert!(!trait_methods.is_empty(), "expected trait_impl_method symbols");
+
+        // Inherent methods must use `<impl>` in qualified name
+        let inherent_qnames: Vec<&str> = inherent_methods.iter()
+            .map(|s| s.qualified_name.as_str())
+            .collect();
+        for qn in &inherent_qnames {
+            assert!(
+                qn.contains("::<impl>::"),
+                "inherent method qualified name must contain '::<impl>::': {qn}"
+            );
+        }
+        assert!(
+            inherent_qnames.contains(&"my_crate::fake::Foo::<impl>::bar"),
+            "expected Foo::<impl>::bar, got: {inherent_qnames:?}"
+        );
+        assert!(
+            inherent_qnames.contains(&"my_crate::fake::Foo::<impl>::baz"),
+            "expected Foo::<impl>::baz, got: {inherent_qnames:?}"
+        );
+
+        // Trait methods must use `<impl Trait for Type>` in qualified name
+        let trait_qnames: Vec<&str> = trait_methods.iter()
+            .map(|s| s.qualified_name.as_str())
+            .collect();
+        for qn in &trait_qnames {
+            assert!(
+                qn.contains("::<impl "),
+                "trait method qualified name must contain '::<impl ...>': {qn}"
+            );
+        }
+    }
 }
