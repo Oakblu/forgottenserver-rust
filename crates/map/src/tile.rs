@@ -1247,10 +1247,16 @@ impl Tile {
     // -----------------------------------------------------------------------
 
     /// Set the tile flags implied by the presence of `item` (e.g. TELEPORT,
-    /// MAGICFIELD, MAILBOX, TRASHHOLDER, BED).
+    /// MAGICFIELD, MAILBOX, TRASHHOLDER, BED, FLOORCHANGE).
     ///
     /// Mirrors C++ `void Tile::setTileFlags(const Item*)`.
     pub fn set_tile_flags_for_item(&mut self, item: &Item) {
+        // Floor-change: only set if tile doesn't already have a floor-change
+        // flag (mirrors C++ `if (!hasFlag(TILESTATE_FLOORCHANGE))`).
+        // floor_change bits share the same bit positions as flags::FLOORCHANGE_*.
+        if !self.has_floor_change() && item.item_type.floor_change != 0 {
+            self.flags |= item.item_type.floor_change as u32;
+        }
         if item.item_type.is_teleport() {
             self.set_flag(flags::TELEPORT);
         }
@@ -1282,6 +1288,11 @@ impl Tile {
     ///
     /// Mirrors C++ `void Tile::resetTileFlags(const Item*)`.
     pub fn reset_tile_flags_for_item(&mut self, item: &Item) {
+        // Floor-change: if the removed item had a floor-change flag, clear all
+        // floor-change bits (mirrors C++ `resetFlag(TILESTATE_FLOORCHANGE)`).
+        if item.item_type.floor_change != 0 {
+            self.reset_flag(flags::FLOORCHANGE);
+        }
         if item.item_type.is_teleport() {
             self.reset_flag(flags::TELEPORT);
         }
@@ -3107,6 +3118,38 @@ mod tests {
             t.set_tile_flags_for_item(&it);
             assert!(t.has_flag(flag), "kind {:?} should set flag {}", kind, flag);
         }
+    }
+
+    // --- set_tile_flags_for_item: floor_change propagation ---------------
+
+    #[test]
+    fn test_set_tile_flags_floor_change_down() {
+        let mut t = Tile::new(0, 0, 0);
+        let it = item_with(1, |d| d.floor_change = flags::FLOORCHANGE_DOWN as u8);
+        t.set_tile_flags_for_item(&it);
+        assert!(t.has_flag(flags::FLOORCHANGE_DOWN));
+        assert!(t.has_floor_change());
+    }
+
+    #[test]
+    fn test_set_tile_flags_floor_change_not_overwritten_when_already_set() {
+        let mut t = Tile::new(0, 0, 0);
+        t.set_flag(flags::FLOORCHANGE_NORTH);
+        let it = item_with(1, |d| d.floor_change = flags::FLOORCHANGE_DOWN as u8);
+        t.set_tile_flags_for_item(&it);
+        // Already has floor change → new item's floor_change is ignored
+        assert!(!t.has_flag(flags::FLOORCHANGE_DOWN));
+        assert!(t.has_flag(flags::FLOORCHANGE_NORTH));
+    }
+
+    #[test]
+    fn test_reset_tile_flags_clears_all_floorchange_bits() {
+        let mut t = Tile::new(0, 0, 0);
+        let it = item_with(1, |d| d.floor_change = flags::FLOORCHANGE_DOWN as u8);
+        t.set_tile_flags_for_item(&it);
+        assert!(t.has_floor_change());
+        t.reset_tile_flags_for_item(&it);
+        assert!(!t.has_floor_change());
     }
 
     // --- internal_add_item -----------------------------------------------

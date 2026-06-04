@@ -14,6 +14,7 @@ pub struct Action {
     pub unique_id: Option<u16>,
     pub action_id: Option<u16>,
     pub action_type: ActionType,
+    pub allow_far_use: bool,
 }
 
 impl Action {
@@ -24,6 +25,7 @@ impl Action {
             unique_id: None,
             action_id: None,
             action_type,
+            allow_far_use: false,
         }
     }
 }
@@ -106,6 +108,7 @@ mod tests {
             unique_id: Some(200),
             action_id: Some(300),
             action_type: ActionType::UseItemOn,
+            allow_far_use: false,
         };
         assert_eq!(action.script_name, "test");
         assert_eq!(action.item_id, Some(100));

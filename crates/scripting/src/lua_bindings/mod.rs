@@ -31,11 +31,13 @@
 
 use std::sync::{Arc, Mutex};
 
+pub mod action_player;
 pub mod classes;
 pub mod enums;
 pub mod misc_globals;
 pub mod position;
 pub mod table_enums;
+pub mod talkaction_player;
 
 /// Opaque handle stored on the Lua state via `set_app_data`.
 ///
@@ -82,6 +84,11 @@ pub struct LuaMoveEventStore(pub Arc<Mutex<Vec<classes::move_event::LuaMoveEvent
 /// Stores all creature events registered via `ce:register()` from Lua scripts.
 #[derive(Clone, Default)]
 pub struct LuaCreatureEventStore(pub Arc<Mutex<Vec<classes::creature_event::LuaCreatureEvent>>>);
+
+/// Shared buffer for magic effects emitted by `position:sendMagicEffect` during
+/// action/talkaction script execution. Set as Lua app_data before running scripts.
+#[derive(Clone, Default)]
+pub struct MagicEffectsBuffer(pub Arc<Mutex<Vec<(forgottenserver_common::position::Position, u8)>>>);
 
 /// The single Lua environment for the server process.
 ///
@@ -327,7 +334,50 @@ pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::R
             "getCurrencyItems",
             lua.create_function(|lua, _: ()| lua.create_table())?,
         )?;
+        // Stubs for game-world operations scripts call at runtime.
+        game_tbl.set("createMonster", lua.create_function(|_, _: mlua::MultiValue| Ok(mlua::Value::Nil))?)?;
+        game_tbl.set("createItem", lua.create_function(|_, _: mlua::MultiValue| Ok(mlua::Value::Nil))?)?;
+        game_tbl.set("getPlayers", lua.create_function(|lua, _: ()| lua.create_table())?)?;
+        game_tbl.set("getReturnMessage", lua.create_function(|_, code: i64| Ok(format!("error({code})")))?)?;
+        game_tbl.set("getRaid", lua.create_function(|_, _: mlua::MultiValue| Ok(mlua::Value::Nil))?)?;
+        game_tbl.set("startRaid", lua.create_function(|_, _: mlua::MultiValue| Ok(false))?)?;
+        game_tbl.set("broadcastMessage", lua.create_function(|_, _: mlua::MultiValue| Ok(()))?)?;
+        game_tbl.set("getSpectators", lua.create_function(|lua, _: mlua::MultiValue| lua.create_table())?)?;
+        game_tbl.set("getTowns", lua.create_function(|lua, _: ()| lua.create_table())?)?;
+        game_tbl.set("getTownByName", lua.create_function(|_, _: mlua::MultiValue| Ok(mlua::Value::Nil))?)?;
+        game_tbl.set("getHouses", lua.create_function(|lua, _: ()| lua.create_table())?)?;
+        game_tbl.set("reload", lua.create_function(|_, _: mlua::MultiValue| Ok(()))?)?;
+        game_tbl.set("sendAnimatedText", lua.create_function(|_, _: mlua::MultiValue| Ok(()))?)?;
     }
+
+    // String extension methods used by talkaction/action scripts.
+    // These mirror what data/global.lua defines but are loaded here so they
+    // are available in every fresh Lua VM without needing to load global.lua.
+    lua.load(r#"
+string.split = function(str, sep)
+    local res = {}
+    for v in str:gmatch("([^" .. sep .. "]+)") do
+        res[#res + 1] = v
+    end
+    return res
+end
+string.splitTrimmed = function(str, sep)
+    local res = {}
+    for v in str:gmatch("([^" .. sep .. "]+)") do
+        res[#res + 1] = v:match'^%s*(.*%S)' or ''
+    end
+    return res
+end
+string.trim = function(str)
+    return str:match'^()%s*$' and '' or str:match'^%s*(.*%S)'
+end
+table.contains = function(tbl, val)
+    for _, v in ipairs(tbl) do
+        if v == val then return true end
+    end
+    return false
+end
+"#).exec()?;
 
     class_table!("Spell", |_, _: mlua::MultiValue| Ok(
         classes::spell::LuaSpell::default()
@@ -445,35 +495,27 @@ pub fn install_bindings(lua: &mlua::Lua, game_state: GameStateHandle) -> mlua::R
         lua.create_function(|lua, _: mlua::Value| lua.create_table())?,
     )?;
 
-    // Stub class tables for entity/item globals used by compat.lua and scripts/lib.
-    // compat.lua extends these with methods via `function Player:foo(...)` — that syntax
-    // just sets table fields, which works fine on plain tables. Full UserData constructors
-    // follow when each class is fully wired; for now nil-indexing errors are prevented.
+    // Entity class stubs — callable (returns nil) so scripts can do `Player(name_or_id)`
+    // which returns nil when not found (no live game world in sandbox).
+    // `function Player:foo(...)` still works because __newindex uses raw_set.
     for name in &[
-        "Player",
-        "Creature",
-        "Monster",
-        "Npc",
-        "Item",
-        "Container",
-        "Teleport",
-        "Podium",
-        "Tile",
-        "ItemType",
-        "Vocation",
-        "Guild",
-        "Group",
-        "Party",
-        "House",
-        "MonsterType",
-        // compat.lua module-level: `numberToVariant = Variant`, `Variant.getNumber` etc.
+        "Player", "Creature", "Monster", "Npc",
+        "Item", "Container", "Teleport", "Podium",
+        "Tile", "ItemType", "Vocation", "Guild", "Group",
+        "Party", "House", "MonsterType",
         "Variant",
-        // Used by scripts (Town, Loot, MonsterSpell) as constructor/namespace tables
         "Town",
         "Loot",
         "MonsterSpell",
     ] {
-        lua.globals().set(*name, lua.create_table()?)?;
+        let tbl = lua.create_table()?;
+        let mt = lua.create_table()?;
+        mt.set("__call", lua.create_function(|_, _: mlua::MultiValue| Ok(mlua::Value::Nil))?)?;
+        mt.set("__newindex", lua.create_function(|_, (t, k, v): (mlua::Table, mlua::Value, mlua::Value)| {
+            t.raw_set(k, v)
+        })?)?;
+        tbl.set_metatable(Some(mt));
+        lua.globals().set(*name, tbl)?;
     }
 
     Ok(())

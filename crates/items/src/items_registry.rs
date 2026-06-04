@@ -46,13 +46,16 @@ pub mod slot_position {
 // ---------------------------------------------------------------------------
 
 pub mod tile_state_floor_change {
+    // Bit positions match C++ TILESTATE_FLOORCHANGE_* from tile.h exactly.
+    // These values are stored directly in ItemType.floor_change and also used
+    // as tile flag bits (flags::FLOORCHANGE_* share the same bit layout).
     pub const DOWN: u8 = 1 << 0;
     pub const NORTH: u8 = 1 << 1;
     pub const SOUTH: u8 = 1 << 2;
-    pub const SOUTH_ALT: u8 = 1 << 3;
-    pub const EAST: u8 = 1 << 4;
-    pub const EAST_ALT: u8 = 1 << 5;
-    pub const WEST: u8 = 1 << 6;
+    pub const EAST: u8 = 1 << 3;
+    pub const WEST: u8 = 1 << 4;
+    pub const SOUTH_ALT: u8 = 1 << 5;
+    pub const EAST_ALT: u8 = 1 << 6;
 }
 
 // ---------------------------------------------------------------------------

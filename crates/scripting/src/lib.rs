@@ -1,4 +1,5 @@
 pub mod actions;
+pub mod actions_xml;
 pub mod baseevents;
 pub mod chat_callbacks;
 pub mod creatureevent;

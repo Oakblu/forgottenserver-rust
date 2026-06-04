@@ -100,6 +100,14 @@ pub enum SpeakType {
     Private,       // 0x05
     ChannelYellow, // 0x07
     ChannelOrange, // 0x08
+    Spell,         // 0x09 (TALKTYPE_SPELL)
+    NpcTo,         // 0x0A (TALKTYPE_PRIVATE_NP)
+    NpcFrom,       // 0x0C (TALKTYPE_PRIVATE_PN)
+    Broadcast,     // 0x0D (TALKTYPE_BROADCAST)
+    ChannelRed,    // 0x0E (TALKTYPE_CHANNEL_R1)
+    MonsterSay,    // 0x24 (TALKTYPE_MONSTER_SAY)
+    MonsterYell,   // 0x25 (TALKTYPE_MONSTER_YELL)
+    Potion,        // 0x34 (TALKTYPE_POTION)
 }
 
 impl SpeakType {
@@ -111,6 +119,14 @@ impl SpeakType {
             0x05 => Some(Self::Private),
             0x07 => Some(Self::ChannelYellow),
             0x08 => Some(Self::ChannelOrange),
+            0x09 => Some(Self::Spell),
+            0x0A => Some(Self::NpcTo),
+            0x0C => Some(Self::NpcFrom),
+            0x0D => Some(Self::Broadcast),
+            0x0E => Some(Self::ChannelRed),
+            0x24 => Some(Self::MonsterSay),
+            0x25 => Some(Self::MonsterYell),
+            0x34 => Some(Self::Potion),
             _ => None,
         }
     }
@@ -123,6 +139,14 @@ impl SpeakType {
             Self::Private => 0x05,
             Self::ChannelYellow => 0x07,
             Self::ChannelOrange => 0x08,
+            Self::Spell => 0x09,
+            Self::NpcTo => 0x0A,
+            Self::NpcFrom => 0x0C,
+            Self::Broadcast => 0x0D,
+            Self::ChannelRed => 0x0E,
+            Self::MonsterSay => 0x24,
+            Self::MonsterYell => 0x25,
+            Self::Potion => 0x34,
         }
     }
 }

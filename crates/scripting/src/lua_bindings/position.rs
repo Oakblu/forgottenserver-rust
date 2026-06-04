@@ -113,14 +113,14 @@ impl UserData for LuaPosition {
 
         // ── sendMagicEffect ───────────────────────────────────────────
         // C++: bool sendMagicEffect(MagicEffectClasses effect, Player* player?)
-        // Stub returns true. Real impl needs g_game.addMagicEffect +
-        // spectator broadcast. Wired when the broadcast subsystem is
-        // reachable from scripting (likely with the Creature class
-        // follow-up).
+        // Captures the effect into MagicEffectsBuffer if set as app_data;
+        // otherwise no-ops. Returns true always.
         methods.add_method(
             "sendMagicEffect",
-            |lua, _this, (_effect, _player): (u16, Option<Value>)| {
-                let _ = lua.app_data_ref::<GameStateHandle>();
+            |lua, this, (effect, _player): (u16, Option<Value>)| {
+                if let Some(buf) = lua.app_data_ref::<crate::lua_bindings::MagicEffectsBuffer>() {
+                    buf.0.lock().unwrap().push((this.0, effect as u8));
+                }
                 Ok(true)
             },
         );

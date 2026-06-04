@@ -331,14 +331,18 @@ fn encode_talk(
     out.extend_from_slice(&speaker_level.to_le_bytes());
     out.push(speak_type.to_byte());
     match speak_type {
-        SpeakType::Say | SpeakType::Whisper | SpeakType::Yell => {
+        // Proximity types — always include position
+        SpeakType::Say | SpeakType::Whisper | SpeakType::Yell
+        | SpeakType::MonsterSay | SpeakType::MonsterYell | SpeakType::Potion
+        | SpeakType::Spell | SpeakType::NpcTo | SpeakType::NpcFrom
+        | SpeakType::Broadcast => {
             if let Some(p) = pos {
                 out.extend_from_slice(&p.x.to_le_bytes());
                 out.extend_from_slice(&p.y.to_le_bytes());
                 out.push(p.z);
             }
         }
-        SpeakType::ChannelYellow | SpeakType::ChannelOrange => {
+        SpeakType::ChannelYellow | SpeakType::ChannelOrange | SpeakType::ChannelRed => {
             if let Some(cid) = channel_id {
                 out.extend_from_slice(&cid.to_le_bytes());
             }

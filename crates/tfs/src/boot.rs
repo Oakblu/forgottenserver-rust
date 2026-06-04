@@ -165,8 +165,14 @@ pub fn start_listeners(modules: &Modules) -> Result<()> {
         modules.config.clone(),
         modules.game_state.clone(),
         modules.db.clone(),
-        modules.game_data.vocations.clone(),
-        modules.game_data.map.clone(),
+        srv_boot::GameListenerParams {
+            vocations: modules.game_data.vocations.clone(),
+            map: modules.game_data.map.clone(),
+            talk_actions: modules.game_data.talk_actions.clone(),
+            talkaction_script_dir: modules.game_data.talkaction_script_dir.clone(),
+            actions: modules.game_data.actions.clone(),
+            action_data_dir: modules.game_data.action_data_dir.clone(),
+        },
     )
     .map_err(|e| anyhow!("Failed to start game listener: {e}"))?;
     srv_boot::start_http_listener(

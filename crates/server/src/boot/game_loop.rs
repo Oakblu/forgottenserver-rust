@@ -1,3 +1,4 @@
+use std::path::Path;
 use std::sync::Arc;
 
 use forgottenserver_common::networkmessage::NetworkMessage;
@@ -8,6 +9,8 @@ use forgottenserver_database::iologindata::PlayerLoginData;
 use forgottenserver_entity::player::{base_speed, Player};
 use forgottenserver_game::chat::ChatManager;
 use forgottenserver_items::vocation::{Vocation, Vocations};
+use forgottenserver_scripting::actions::Actions;
+use forgottenserver_scripting::talkaction::TalkActions;
 use forgottenserver_world::map::Map;
 use forgottenserver_network::protocolgame as pg;
 use forgottenserver_world::World;
@@ -18,7 +21,7 @@ use crate::codec::{encode, ServerPacket};
 use crate::game_handler::{
     build_map_around_player, handle_auto_walk, handle_close_channel, handle_fight_modes,
     handle_follow, handle_get_channels, handle_open_channel, handle_open_private_channel,
-    handle_set_outfit, handle_use_item, handle_vip_remove,
+    handle_set_outfit, handle_vip_remove,
 };
 use crate::game_state::{GameState, OutfitAppearance};
 
@@ -36,6 +39,8 @@ pub(crate) enum DispatchResult {
     NoResponse,
     /// Send these bytes (already in `[opcode][fields]` form) framed via XTEA.
     Response(Vec<u8>),
+    /// Send multiple independent packets, each framed separately via XTEA.
+    MultiResponse(Vec<Vec<u8>>),
     /// Exit the game loop cleanly (logout).
     Break,
 }
@@ -72,6 +77,10 @@ pub(crate) fn run_game_loop(
     player_creature_id: u32,
     vocations: Arc<Vocations>,
     map: Arc<Map>,
+    talk_actions: Arc<TalkActions>,
+    script_dir: std::path::PathBuf,
+    actions: Arc<Actions>,
+    action_data_dir: std::path::PathBuf,
 ) -> LogoutSave {
     use std::io::{Read, Write};
 
@@ -322,6 +331,7 @@ pub(crate) fn run_game_loop(
             opcode,
             payload_slice,
             &world,
+            &map,
             &mut state,
             player_creature_id,
             &mut player_pos,
@@ -335,6 +345,10 @@ pub(crate) fn run_game_loop(
             player_data.level as u16,
             &mut chat,
             &mut channel_session,
+            &talk_actions,
+            &script_dir,
+            &actions,
+            &action_data_dir,
         );
 
         match response {
@@ -357,6 +371,28 @@ pub(crate) fn run_game_loop(
                     break;
                 }
             }
+            DispatchResult::MultiResponse(packets) => {
+                let mut send_failed = false;
+                for bytes in packets {
+                    let seq = server_seq;
+                    server_seq = server_seq.wrapping_add(1);
+                    let frame = if sequence_checksum {
+                        frame_packet_seq(&bytes, xtea_key, seq)
+                    } else {
+                        frame_packet(&bytes, xtea_key)
+                    };
+                    if let Err(e) = stream.write_all(&frame) {
+                        eprintln!(
+                            "[gameloop] exit: failed to send multi-response opcode=0x{opcode:02x}: {e}"
+                        );
+                        send_failed = true;
+                        break;
+                    }
+                }
+                if send_failed {
+                    break;
+                }
+            }
             DispatchResult::NoResponse => {}
         }
     }
@@ -372,12 +408,98 @@ pub(crate) fn run_game_loop(
     LogoutSave { pos: player_pos, health, mana, direction: player_dir }
 }
 
+/// Mirrors C++ `Tile::queryDestination`: given the player's computed
+/// destination `(x, y, z)`, redirects through any FLOORCHANGE tile to the
+/// correct final position.
+///
+/// Returns the (possibly adjusted) `(x, y, z)` the player should land on.
+fn query_destination(map: &Map, x: u16, y: u16, z: u8) -> (u16, u16, u8) {
+    use forgottenserver_map::tile::flags;
+
+    let Some(tile) = map.get_tile(x, y, z) else {
+        return (x, y, z);
+    };
+
+    if tile.has_flag(flags::FLOORCHANGE_DOWN) {
+        // Going to a lower floor (z+1). Look at the tile on the floor below
+        // to determine the exact landing coordinates.
+        let dz = z.saturating_add(1);
+        let mut dx = x;
+        let mut dy = y;
+
+        // South-alt staircase on the tile south of (dx, dy-1, dz)
+        let south_down = dy.checked_sub(1).and_then(|sy| map.get_tile(dx, sy, dz));
+        if south_down.is_some_and(|t| t.has_flag(flags::FLOORCHANGE_SOUTH_ALT)) {
+            dy = dy.wrapping_sub(2);
+            return (dx, dy, dz);
+        }
+
+        // East-alt staircase on the tile west of (dx-1, dy, dz)
+        let east_down = dx.checked_sub(1).and_then(|sx| map.get_tile(sx, dy, dz));
+        if east_down.is_some_and(|t| t.has_flag(flags::FLOORCHANGE_EAST_ALT)) {
+            dx = dx.wrapping_sub(2);
+            return (dx, dy, dz);
+        }
+
+        // Regular floor-down: directional offset from the below tile's flags
+        if let Some(down_tile) = map.get_tile(dx, dy, dz) {
+            if down_tile.has_flag(flags::FLOORCHANGE_NORTH) {
+                dy = dy.wrapping_add(1);
+            }
+            if down_tile.has_flag(flags::FLOORCHANGE_SOUTH) {
+                dy = dy.wrapping_sub(1);
+            }
+            if down_tile.has_flag(flags::FLOORCHANGE_SOUTH_ALT) {
+                dy = dy.wrapping_sub(2);
+            }
+            if down_tile.has_flag(flags::FLOORCHANGE_EAST) {
+                dx = dx.wrapping_sub(1);
+            }
+            if down_tile.has_flag(flags::FLOORCHANGE_EAST_ALT) {
+                dx = dx.wrapping_sub(2);
+            }
+            if down_tile.has_flag(flags::FLOORCHANGE_WEST) {
+                dx = dx.wrapping_add(1);
+            }
+        }
+        (dx, dy, dz)
+    } else if tile.has_floor_change() {
+        // Going to an upper floor (z-1).
+        let dz = z.wrapping_sub(1);
+        let mut dx = x;
+        let mut dy = y;
+
+        if tile.has_flag(flags::FLOORCHANGE_NORTH) {
+            dy = dy.wrapping_sub(1);
+        }
+        if tile.has_flag(flags::FLOORCHANGE_SOUTH) {
+            dy = dy.wrapping_add(1);
+        }
+        if tile.has_flag(flags::FLOORCHANGE_EAST) {
+            dx = dx.wrapping_add(1);
+        }
+        if tile.has_flag(flags::FLOORCHANGE_WEST) {
+            dx = dx.wrapping_sub(1);
+        }
+        if tile.has_flag(flags::FLOORCHANGE_SOUTH_ALT) {
+            dy = dy.wrapping_add(2);
+        }
+        if tile.has_flag(flags::FLOORCHANGE_EAST_ALT) {
+            dx = dx.wrapping_add(2);
+        }
+        (dx, dy, dz)
+    } else {
+        (x, y, z)
+    }
+}
+
 /// Dispatch a single client opcode and produce a response action.
 #[allow(clippy::too_many_arguments)]
 pub(crate) fn dispatch_opcode<F>(
     opcode: u8,
     payload_slice: &[u8],
     _world: &World,
+    map: &Map,
     state: &mut GameState,
     player_creature_id: u32,
     player_pos: &mut Position,
@@ -391,6 +513,10 @@ pub(crate) fn dispatch_opcode<F>(
     player_level: u16,
     chat: &mut ChatManager,
     session: &mut ChannelSession,
+    talk_actions: &TalkActions,
+    script_dir: &Path,
+    actions: &Actions,
+    action_data_dir: &Path,
 ) -> DispatchResult
 where
     F: Fn(u8, Position) -> Vec<u8>,
@@ -449,7 +575,80 @@ where
                 eprintln!("[gameloop] walk out of range: ({new_x},{new_y})");
                 return DispatchResult::NoResponse;
             }
-            let new_pos = Position::new(new_x as u16, new_y as u16, player_pos.z);
+
+            // Floor-change detection — mirrors C++ Game::internalMoveCreature.
+            // Diagonal moves never trigger floor changes (C++ diagonalMovement guard).
+            let current_z = player_pos.z;
+            let mut dest_z = current_z;
+            let is_diagonal = dir >= 4;
+            if !is_diagonal {
+                use forgottenserver_map::tile::flags;
+                let dest_x = new_x as u16;
+                let dest_y = new_y as u16;
+
+                // Try to go up: if current tile has height ≥ 3, check if the
+                // floor above the destination is accessible. Disabled at z=8
+                // (first underground floor) — mirrors C++ `currentPos.z != 8`.
+                if current_z != 8 {
+                    if let Some(cur_tile) = map.get_tile(player_pos.x, player_pos.y, current_z) {
+                        if cur_tile.has_height(3) {
+                            if let Some(up_z) = current_z.checked_sub(1) {
+                                let above_cur_clear = map
+                                    .get_tile(player_pos.x, player_pos.y, up_z)
+                                    .map(|t| t.get_ground().is_none() && !t.has_flag(flags::BLOCKSOLID))
+                                    .unwrap_or(true);
+                                if above_cur_clear {
+                                    if let Some(above_dest) = map.get_tile(dest_x, dest_y, up_z) {
+                                        if above_dest.get_ground().is_some()
+                                            && !above_dest.has_flag(flags::IMMOVABLEBLOCKSOLID)
+                                            && !above_dest.has_floor_change()
+                                        {
+                                            dest_z = up_z;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Try to go down: if destination tile at same z has no ground,
+                // check if the floor below has height ≥ 3. Disabled at z=7
+                // (surface) — mirrors C++ `currentPos.z != 7`.
+                if current_z != 7 && dest_z == current_z {
+                    let dest_same_z_empty = map
+                        .get_tile(dest_x, dest_y, current_z)
+                        .map(|t| t.get_ground().is_none() && !t.has_flag(flags::BLOCKSOLID))
+                        .unwrap_or(true);
+                    if dest_same_z_empty {
+                        let below_z = current_z.saturating_add(1);
+                        if let Some(below_dest) = map.get_tile(dest_x, dest_y, below_z) {
+                            if below_dest.has_height(3)
+                                && !below_dest.has_flag(flags::IMMOVABLEBLOCKSOLID)
+                            {
+                                dest_z = below_z;
+                            }
+                        }
+                    }
+                }
+
+                // Apply FLOORCHANGE redirect — mirrors C++ queryDestination.
+                // When the destination tile (at dest_z) carries a FLOORCHANGE
+                // flag the player is redirected to the appropriate floor+coords.
+                let (final_x, final_y, final_z) =
+                    query_destination(map, new_x as u16, new_y as u16, dest_z);
+                let new_pos = Position::new(final_x, final_y, final_z);
+                *player_pos = new_pos;
+                *player_dir = dir;
+                state.set_player_position(player_creature_id, new_pos);
+                eprintln!(
+                    "[gameloop] walk dir={dir} -> ({}, {}, {})",
+                    new_pos.x, new_pos.y, new_pos.z
+                );
+                return DispatchResult::Response(render_map(dir, new_pos));
+            }
+
+            let new_pos = Position::new(new_x as u16, new_y as u16, dest_z);
             *player_pos = new_pos;
             *player_dir = dir;
             state.set_player_position(player_creature_id, new_pos);
@@ -583,9 +782,54 @@ where
                     "[gameloop] use item id={} at ({},{},{}) idx={}",
                     use_pkt.item_id, use_pkt.pos_x, use_pkt.pos_y, use_pkt.pos_z, use_pkt.index
                 );
-                use forgottenserver_game::action_registry::ActionRegistry;
-                let bytes = handle_use_item(&ActionRegistry::new(), use_pkt.item_id);
-                DispatchResult::Response(bytes)
+                let item_pos = Position::new(use_pkt.pos_x, use_pkt.pos_y, use_pkt.pos_z);
+                if let Some(action) = actions.get_by_item_id(use_pkt.item_id) {
+                    let script_path = action_data_dir.join("scripts").join(&action.script_name);
+                    let lib_dir = action_data_dir.join("lib");
+                    use forgottenserver_scripting::lua_bindings::action_player::{execute_action, ActionContext};
+                    match execute_action(
+                        &script_path,
+                        Some(&lib_dir),
+                        ActionContext { item_id: use_pkt.item_id, item_pos, player_pos: *player_pos, player_name, player_level, has_access: true },
+                    ) {
+                        Ok(out) => {
+                            let mut responses: Vec<Vec<u8>> = Vec::new();
+                            for (msg_type, msg_text) in out.messages {
+                                responses.push(pg::serialize_text_message(
+                                    msg_type, &msg_text,
+                                    None, None, None, None, None, None,
+                                ));
+                            }
+                            for (say_type, say_text) in out.creature_says {
+                                use forgottenserver_game::chat::SpeakType;
+                                let speak = SpeakType::from_byte(say_type)
+                                    .unwrap_or(SpeakType::Say);
+                                responses.push(encode(&ServerPacket::Talk {
+                                    speaker: player_name.to_string(),
+                                    speaker_level: player_level,
+                                    speak_type: speak,
+                                    channel_id: None,
+                                    pos: Some(*player_pos),
+                                    text: say_text,
+                                }));
+                            }
+                            for (effect_pos, effect_type) in out.magic_effects {
+                                responses.push(pg::serialize_magic_effect(effect_pos.x, effect_pos.y, effect_pos.z, effect_type));
+                            }
+                            if responses.is_empty() {
+                                DispatchResult::NoResponse
+                            } else {
+                                DispatchResult::MultiResponse(responses)
+                            }
+                        }
+                        Err(e) => {
+                            eprintln!("[gameloop] action script error: {e}");
+                            DispatchResult::NoResponse
+                        }
+                    }
+                } else {
+                    DispatchResult::NoResponse
+                }
             }
             Err(e) => {
                 eprintln!("[gameloop] use item parse error: {e}");
@@ -740,12 +984,73 @@ where
             match pg::parse_say_packet(&mut msg) {
                 Ok(say) => {
                     eprintln!("[gameloop] say type={} text={:?}", say.say_type, say.text);
+
+                    // Try registered talkactions first.
+                    use forgottenserver_scripting::talkaction::TalkActionResult;
+                    let mut talkaction_responses: Vec<Vec<u8>> = Vec::new();
+                    let mut talkaction_matched = false;
+
+                    let ta_result = talk_actions.on_say(&say.text, |action, param| {
+                        talkaction_matched = true;
+                        let script_path = script_dir.join(&action.script_name);
+                        use forgottenserver_scripting::lua_bindings::talkaction_player::execute_talkaction;
+                        eprintln!("[gameloop] talkaction: script={} param={:?}", script_path.display(), param);
+                        match execute_talkaction(
+                            &script_path,
+                            &action.words,  // matched command word only (C++ passes words, not full text)
+                            param,
+                            *player_pos,
+                            player_name,
+                            player_level,
+                            true,
+                        ) {
+                            Ok(out) => {
+                                eprintln!("[gameloop] talkaction ok: {} messages, new_pos={:?}", out.messages.len(), out.new_pos);
+                                for (msg_type, msg_text) in out.messages {
+                                    eprintln!("[gameloop] talkaction message: type={msg_type} text={msg_text:?}");
+                                    talkaction_responses.push(pg::serialize_text_message(
+                                        msg_type,
+                                        &msg_text,
+                                        None,
+                                        None,
+                                        None,
+                                        None,
+                                        None,
+                                        None,
+                                    ));
+                                }
+                                if let Some(new_pos) = out.new_pos {
+                                    *player_pos = new_pos;
+                                    state.set_player_position(player_creature_id, new_pos);
+                                    talkaction_responses.push(render_map(*player_dir, *player_pos));
+                                }
+                                for (effect_pos, effect_type) in out.magic_effects {
+                                    talkaction_responses.push(pg::serialize_magic_effect(effect_pos.x, effect_pos.y, effect_pos.z, effect_type));
+                                }
+                                TalkActionResult::Break
+                            }
+                            Err(e) => {
+                                eprintln!("[gameloop] talkaction script error: {e}");
+                                TalkActionResult::Failed
+                            }
+                        }
+                    });
+
+                    if ta_result != TalkActionResult::Continue {
+                        return if talkaction_responses.is_empty() {
+                            DispatchResult::NoResponse
+                        } else {
+                            DispatchResult::MultiResponse(talkaction_responses)
+                        };
+                    }
+
+                    // Hardcoded /pos fallback (not in talkactions.xml).
                     if say.text.starts_with("/pos") {
                         let text = format!(
                             "x={}, y={}, z={}",
                             player_pos.x, player_pos.y, player_pos.z
                         );
-                        DispatchResult::Response(pg::serialize_text_message(
+                        return DispatchResult::Response(pg::serialize_text_message(
                             pg::text_message_class::MESSAGE_EVENT_ADVANCE,
                             &text,
                             None,
@@ -754,21 +1059,22 @@ where
                             None,
                             None,
                             None,
-                        ))
-                    } else {
-                        use forgottenserver_game::chat::SpeakType;
-                        let speak_type =
-                            SpeakType::from_byte(say.say_type).unwrap_or(SpeakType::Say);
-                        let body = encode(&ServerPacket::Talk {
-                            speaker: player_name.to_string(),
-                            speaker_level: player_level,
-                            speak_type,
-                            channel_id: None,
-                            pos: Some(*player_pos),
-                            text: say.text,
-                        });
-                        DispatchResult::Response(body)
+                        ));
                     }
+
+                    // Regular chat broadcast.
+                    use forgottenserver_game::chat::SpeakType;
+                    let speak_type =
+                        SpeakType::from_byte(say.say_type).unwrap_or(SpeakType::Say);
+                    let body = encode(&ServerPacket::Talk {
+                        speaker: player_name.to_string(),
+                        speaker_level: player_level,
+                        speak_type,
+                        channel_id: None,
+                        pos: Some(*player_pos),
+                        text: say.text,
+                    });
+                    DispatchResult::Response(body)
                 }
                 Err(e) => {
                     eprintln!("[gameloop] say parse error: {e}");
@@ -1194,6 +1500,8 @@ mod tests {
     use super::*;
     use forgottenserver_database::iologindata::PlayerLoginData;
     use forgottenserver_items::vocation::Vocations;
+    use forgottenserver_scripting::actions::Actions;
+    use forgottenserver_scripting::talkaction::TalkActions;
     use forgottenserver_world::map::Map;
 
     fn empty_vocations() -> Arc<Vocations> {
@@ -1243,13 +1551,19 @@ mod tests {
         dir: &mut u8,
         state: &mut GameState,
     ) -> DispatchResult {
+        use forgottenserver_scripting::actions::Actions;
+        use forgottenserver_scripting::talkaction::TalkActions;
         let world = World::new();
+        let map = Map::new();
         let mut chat = ChatManager::new();
         let mut session = ChannelSession::new(0);
+        let ta = TalkActions::new();
+        let acts = Actions::new();
         dispatch_opcode(
             opcode,
             payload,
             &world,
+            &map,
             state,
             0,
             pos,
@@ -1263,6 +1577,50 @@ mod tests {
             1,
             &mut chat,
             &mut session,
+            &ta,
+            std::path::Path::new(""),
+            &acts,
+            std::path::Path::new(""),
+        )
+    }
+
+    fn dispatch_with_map(
+        opcode: u8,
+        payload: &[u8],
+        pos: &mut Position,
+        dir: &mut u8,
+        state: &mut GameState,
+        map: &Map,
+    ) -> DispatchResult {
+        use forgottenserver_scripting::actions::Actions;
+        use forgottenserver_scripting::talkaction::TalkActions;
+        let world = World::new();
+        let mut chat = ChatManager::new();
+        let mut session = ChannelSession::new(0);
+        let ta = TalkActions::new();
+        let acts = Actions::new();
+        dispatch_opcode(
+            opcode,
+            payload,
+            &world,
+            map,
+            state,
+            0,
+            pos,
+            dir,
+            0,
+            1,
+            2,
+            3,
+            &|_d, _p| vec![0x64],
+            "TestPlayer",
+            1,
+            &mut chat,
+            &mut session,
+            &ta,
+            std::path::Path::new(""),
+            &acts,
+            std::path::Path::new(""),
         )
     }
 
@@ -1275,11 +1633,17 @@ mod tests {
         chat: &mut ChatManager,
         session: &mut ChannelSession,
     ) -> DispatchResult {
+        use forgottenserver_scripting::actions::Actions;
+        use forgottenserver_scripting::talkaction::TalkActions;
         let world = World::new();
+        let map = Map::new();
+        let ta = TalkActions::new();
+        let acts = Actions::new();
         dispatch_opcode(
             opcode,
             payload,
             &world,
+            &map,
             state,
             0,
             pos,
@@ -1293,6 +1657,10 @@ mod tests {
             1,
             chat,
             session,
+            &ta,
+            std::path::Path::new(""),
+            &acts,
+            std::path::Path::new(""),
         )
     }
 
@@ -1321,6 +1689,10 @@ mod tests {
                 0,
                 empty_vocations(),
                 empty_map(),
+                Arc::new(TalkActions::new()),
+                std::path::PathBuf::new(),
+                Arc::new(Actions::new()),
+                std::path::PathBuf::new(),
             );
         });
 
@@ -1354,6 +1726,10 @@ mod tests {
                 0,
                 empty_vocations(),
                 empty_map(),
+                Arc::new(TalkActions::new()),
+                std::path::PathBuf::new(),
+                Arc::new(Actions::new()),
+                std::path::PathBuf::new(),
             );
         });
 
@@ -1681,23 +2057,20 @@ mod tests {
     }
 
     #[test]
-    fn dispatch_use_item_returns_default_text_message() {
+    fn dispatch_use_item_unregistered_returns_no_response() {
+        // Item id 500 is not in the (empty) actions registry → NoResponse.
         let mut payload = Vec::new();
-        payload.extend_from_slice(&100u16.to_le_bytes());
-        payload.extend_from_slice(&100u16.to_le_bytes());
-        payload.push(7u8);
-        payload.extend_from_slice(&500u16.to_le_bytes());
-        payload.push(0u8);
+        payload.extend_from_slice(&100u16.to_le_bytes()); // pos_x
+        payload.extend_from_slice(&100u16.to_le_bytes()); // pos_y
+        payload.push(7u8);                                // pos_z
+        payload.extend_from_slice(&500u16.to_le_bytes()); // item_id
+        payload.push(0u8);                                // index
 
         let mut pos = Position::new(100, 100, 7);
         let mut dir = 0u8;
         let mut state = GameState::new();
         let r = dispatch(0x82, &payload, &mut pos, &mut dir, &mut state);
-        let bytes = match r {
-            DispatchResult::Response(b) => b,
-            _ => panic!("use item must produce a Response"),
-        };
-        assert_eq!(bytes[0], 0xB4);
+        assert!(matches!(r, DispatchResult::NoResponse));
     }
 
     #[test]
@@ -2472,6 +2845,10 @@ mod tests {
                 0,
                 empty_vocations(),
                 empty_map(),
+                Arc::new(TalkActions::new()),
+                std::path::PathBuf::new(),
+                Arc::new(Actions::new()),
+                std::path::PathBuf::new(),
             );
         });
 
@@ -2511,6 +2888,10 @@ mod tests {
                 0,
                 empty_vocations(),
                 empty_map(),
+                Arc::new(TalkActions::new()),
+                std::path::PathBuf::new(),
+                Arc::new(Actions::new()),
+                std::path::PathBuf::new(),
             );
         });
 
@@ -2549,6 +2930,10 @@ mod tests {
                 0,
                 empty_vocations(),
                 empty_map(),
+                Arc::new(TalkActions::new()),
+                std::path::PathBuf::new(),
+                Arc::new(Actions::new()),
+                std::path::PathBuf::new(),
             );
         });
 
@@ -2590,6 +2975,10 @@ mod tests {
                 0,
                 empty_vocations(),
                 empty_map(),
+                Arc::new(TalkActions::new()),
+                std::path::PathBuf::new(),
+                Arc::new(Actions::new()),
+                std::path::PathBuf::new(),
             );
         });
 
@@ -2641,6 +3030,10 @@ mod tests {
                 0,
                 empty_vocations(),
                 empty_map(),
+                Arc::new(TalkActions::new()),
+                std::path::PathBuf::new(),
+                Arc::new(Actions::new()),
+                std::path::PathBuf::new(),
             );
         });
 
@@ -3086,7 +3479,7 @@ mod tests {
         let server_thread = std::thread::spawn(move || {
             let (mut server_stream, _) = listener.accept().unwrap();
             server_stream.set_read_timeout(Some(std::time::Duration::from_secs(5))).unwrap();
-            run_game_loop(&mut server_stream, xtea_key, false, 2, test_player_data(), 0, empty_vocations(), empty_map());
+            run_game_loop(&mut server_stream, xtea_key, false, 2, test_player_data(), 0, empty_vocations(), empty_map(), Arc::new(TalkActions::new()), std::path::PathBuf::new(), Arc::new(Actions::new()), std::path::PathBuf::new());
         });
         let mut client = std::net::TcpStream::connect(format!("127.0.0.1:{port}")).unwrap();
         // outer_len = 0 triggers break
@@ -3109,7 +3502,7 @@ mod tests {
         let server_thread = std::thread::spawn(move || {
             let (mut server_stream, _) = listener.accept().unwrap();
             server_stream.set_read_timeout(Some(std::time::Duration::from_millis(5))).unwrap();
-            run_game_loop(&mut server_stream, xtea_key, false, 2, test_player_data(), 0, empty_vocations(), empty_map());
+            run_game_loop(&mut server_stream, xtea_key, false, 2, test_player_data(), 0, empty_vocations(), empty_map(), Arc::new(TalkActions::new()), std::path::PathBuf::new(), Arc::new(Actions::new()), std::path::PathBuf::new());
         });
         let mut client = std::net::TcpStream::connect(format!("127.0.0.1:{port}")).unwrap();
         client.set_read_timeout(Some(std::time::Duration::from_millis(200))).unwrap();
@@ -3136,7 +3529,7 @@ mod tests {
             let (mut server_stream, _) = listener.accept().unwrap();
             server_stream.set_read_timeout(Some(std::time::Duration::from_millis(5))).unwrap();
             // sequence_checksum=true — pings use frame_packet_seq (lines 220-221)
-            run_game_loop(&mut server_stream, xtea_key, true, 4, test_player_data(), 0, empty_vocations(), empty_map());
+            run_game_loop(&mut server_stream, xtea_key, true, 4, test_player_data(), 0, empty_vocations(), empty_map(), Arc::new(TalkActions::new()), std::path::PathBuf::new(), Arc::new(Actions::new()), std::path::PathBuf::new());
         });
         let mut client = std::net::TcpStream::connect(format!("127.0.0.1:{port}")).unwrap();
         client.set_read_timeout(Some(std::time::Duration::from_millis(200))).unwrap();
@@ -3163,7 +3556,7 @@ mod tests {
         let server_thread = std::thread::spawn(move || {
             let (mut server_stream, _) = listener.accept().unwrap();
             server_stream.set_read_timeout(Some(std::time::Duration::from_secs(5))).unwrap();
-            run_game_loop(&mut server_stream, xtea_key, false, 2, test_player_data(), 0, empty_vocations(), empty_map());
+            run_game_loop(&mut server_stream, xtea_key, false, 2, test_player_data(), 0, empty_vocations(), empty_map(), Arc::new(TalkActions::new()), std::path::PathBuf::new(), Arc::new(Actions::new()), std::path::PathBuf::new());
         });
         let mut client = std::net::TcpStream::connect(format!("127.0.0.1:{port}")).unwrap();
         let frame = make_xtea_frame(&[0x14], xtea_key); // logout opcode → DispatchResult::Break
@@ -3173,6 +3566,202 @@ mod tests {
     }
 
     // Cover run_game_loop DispatchResult::NoResponse (line 360): send 0x1E pong.
+    // -----------------------------------------------------------------------
+    // Stair / floor-change tests — mirrors C++ internalMoveCreature logic
+    // -----------------------------------------------------------------------
+
+    /// Build an Item with `has_height=true` (represents a stair/raised ground item).
+    fn make_height_item() -> forgottenserver_items::item::Item {
+        use forgottenserver_items::items_registry::ItemTypeData;
+        let data = ItemTypeData {
+            id: 1,
+            has_height: true,
+            ..Default::default()
+        };
+        forgottenserver_items::item::Item::new(std::sync::Arc::new(data), 1)
+    }
+
+    /// Build a plain ground item (no special flags).
+    fn make_ground_item() -> forgottenserver_items::item::Item {
+        use forgottenserver_items::items_registry::ItemTypeData;
+        let data = ItemTypeData {
+            id: 3,
+            ..Default::default()
+        };
+        forgottenserver_items::item::Item::new(std::sync::Arc::new(data), 1)
+    }
+
+    /// Set a tile's ground + 2 stacked items all with `has_height=true` so that
+    /// `tile.has_height(3)` returns `true` (C++ counts height items from ground +
+    /// stacked items; requires count ≥ 3).
+    fn set_high_tile(map: &mut Map, x: u16, y: u16, z: u8) {
+        use forgottenserver_map::tile::Tile;
+        let mut t = Tile::new(x, y, z);
+        t.set_ground(make_height_item());
+        t.add_item(make_height_item());
+        t.add_item(make_height_item());
+        map.set_tile(x, y, z, t);
+    }
+
+    /// Walk north on a tile with height ≥ 3 when the floor above the destination
+    /// is solid ground → the player should move up one z level (z decreases).
+    #[test]
+    fn walk_north_on_high_tile_goes_up_one_floor() {
+        use forgottenserver_map::tile::Tile;
+        let mut map = Map::new();
+
+        // Current tile (100,100,9) has height=3 (ground + 2 stacked height items).
+        set_high_tile(&mut map, 100, 100, 9);
+
+        // Above-current tile (100,100,8) has no ground — path is clear.
+        // (not added to map → get_tile returns None → treated as clear by our logic)
+
+        // Above-destination tile (100,99,8) has solid ground, no FLOORCHANGE, no IMMOVABLEBLOCKSOLID.
+        let mut above_dest = Tile::new(100, 99, 8);
+        above_dest.set_ground(make_ground_item());
+        map.set_tile(100, 99, 8, above_dest);
+
+        let mut pos = Position::new(100, 100, 9);
+        let mut dir = 2u8;
+        let mut state = GameState::new();
+        dispatch_with_map(0x65, &[], &mut pos, &mut dir, &mut state, &map);
+
+        assert_eq!(pos, Position::new(100, 99, 8), "player should move up one floor");
+    }
+
+    /// When the player is at z=8 (first underground floor), the up-check is
+    /// disabled — mirrors C++ `currentPos.z != 8` guard.
+    #[test]
+    fn walk_up_blocked_when_current_z_is_8() {
+        use forgottenserver_map::tile::Tile;
+        let mut map = Map::new();
+
+        set_high_tile(&mut map, 100, 100, 8);
+
+        // Tile above dest (100,99,7) is accessible ground — but the check is skipped.
+        let mut above_dest = Tile::new(100, 99, 7);
+        above_dest.set_ground(make_ground_item());
+        map.set_tile(100, 99, 7, above_dest);
+
+        let mut pos = Position::new(100, 100, 8);
+        let mut dir = 2u8;
+        let mut state = GameState::new();
+        dispatch_with_map(0x65, &[], &mut pos, &mut dir, &mut state, &map);
+
+        assert_eq!(pos, Position::new(100, 99, 8), "z must NOT change when current_z==8");
+    }
+
+    /// Walking into an empty tile (no ground) when the floor below has height ≥ 3
+    /// causes the player to drop one z level (z increases).
+    #[test]
+    fn walk_north_into_empty_tile_goes_down_one_floor() {
+        let mut map = Map::new();
+
+        // Current tile has ground (player can stand) but no special height.
+        use forgottenserver_map::tile::Tile;
+        let mut cur = Tile::new(100, 100, 6);
+        cur.set_ground(make_ground_item());
+        map.set_tile(100, 100, 6, cur);
+
+        // Destination at same z (100,99,6) has no ground → empty tile.
+        // Not added to map → None → treated as empty.
+
+        // Below the destination (100,99,7) has height=3 (ground + 2 stacked).
+        set_high_tile(&mut map, 100, 99, 7);
+
+        let mut pos = Position::new(100, 100, 6);
+        let mut dir = 2u8;
+        let mut state = GameState::new();
+        dispatch_with_map(0x65, &[], &mut pos, &mut dir, &mut state, &map);
+
+        assert_eq!(pos, Position::new(100, 99, 7), "player should drop one floor");
+    }
+
+    /// Diagonal movement never triggers floor-change detection.
+    #[test]
+    fn diagonal_walk_never_changes_floor() {
+        use forgottenserver_map::tile::Tile;
+        let mut map = Map::new();
+
+        // Same tile setup that would normally allow going up.
+        set_high_tile(&mut map, 100, 100, 9);
+
+        let mut above_dest = Tile::new(101, 99, 8);
+        above_dest.set_ground(make_ground_item());
+        map.set_tile(101, 99, 8, above_dest);
+
+        let mut pos = Position::new(100, 100, 9);
+        let mut dir = 2u8;
+        let mut state = GameState::new();
+        // 0x6A = NE (diagonal)
+        dispatch_with_map(0x6A, &[], &mut pos, &mut dir, &mut state, &map);
+
+        assert_eq!(pos.z, 9, "diagonal walk must not change floor");
+    }
+
+    /// When the tile above the destination has the FLOORCHANGE flag, going up is
+    /// suppressed — mirrors C++ `!tmpTile->hasFlag(TILESTATE_FLOORCHANGE)`.
+    #[test]
+    fn walk_up_blocked_when_above_dest_has_floorchange_flag() {
+        use forgottenserver_map::tile::{flags, Tile};
+        let mut map = Map::new();
+
+        set_high_tile(&mut map, 100, 100, 9);
+
+        // Above-dest has ground but also the FLOORCHANGE flag.
+        let mut above_dest = Tile::new(100, 99, 8);
+        above_dest.set_ground(make_ground_item());
+        above_dest.set_flag(flags::FLOORCHANGE_NORTH); // any FLOORCHANGE bit
+        map.set_tile(100, 99, 8, above_dest);
+
+        let mut pos = Position::new(100, 100, 9);
+        let mut dir = 2u8;
+        let mut state = GameState::new();
+        dispatch_with_map(0x65, &[], &mut pos, &mut dir, &mut state, &map);
+
+        assert_eq!(pos.z, 9, "FLOORCHANGE on above-dest must suppress the up-move");
+    }
+
+    /// When the current tile has no height (< 3), up-detection is skipped.
+    #[test]
+    fn walk_up_skipped_when_current_tile_has_no_height() {
+        use forgottenserver_map::tile::Tile;
+        let mut map = Map::new();
+
+        // Current tile has ground but no has_height items.
+        let mut cur = Tile::new(100, 100, 9);
+        cur.set_ground(make_ground_item());
+        map.set_tile(100, 100, 9, cur);
+
+        let mut above_dest = Tile::new(100, 99, 8);
+        above_dest.set_ground(make_ground_item());
+        map.set_tile(100, 99, 8, above_dest);
+
+        let mut pos = Position::new(100, 100, 9);
+        let mut dir = 2u8;
+        let mut state = GameState::new();
+        dispatch_with_map(0x65, &[], &mut pos, &mut dir, &mut state, &map);
+
+        assert_eq!(pos.z, 9, "no height on current tile means no floor change");
+    }
+
+    /// At z=7 (surface), the down-check is disabled — mirrors C++ `currentPos.z != 7`.
+    #[test]
+    fn walk_down_blocked_when_current_z_is_7() {
+        let mut map = Map::new();
+
+        // Destination at same z (100,99,7) has no ground → would normally trigger down.
+        // Below dest (100,99,8) has height=3 — but z=7 disables the down-check.
+        set_high_tile(&mut map, 100, 99, 8);
+
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 2u8;
+        let mut state = GameState::new();
+        dispatch_with_map(0x65, &[], &mut pos, &mut dir, &mut state, &map);
+
+        assert_eq!(pos.z, 7, "z must NOT change when current_z==7 (surface)");
+    }
+
     #[test]
     fn game_loop_pong_packet_gets_no_response_and_exits_on_close() {
         use std::io::Write as _;
@@ -3182,7 +3771,7 @@ mod tests {
         let server_thread = std::thread::spawn(move || {
             let (mut server_stream, _) = listener.accept().unwrap();
             server_stream.set_read_timeout(Some(std::time::Duration::from_secs(5))).unwrap();
-            run_game_loop(&mut server_stream, xtea_key, false, 2, test_player_data(), 0, empty_vocations(), empty_map());
+            run_game_loop(&mut server_stream, xtea_key, false, 2, test_player_data(), 0, empty_vocations(), empty_map(), Arc::new(TalkActions::new()), std::path::PathBuf::new(), Arc::new(Actions::new()), std::path::PathBuf::new());
         });
         let mut client = std::net::TcpStream::connect(format!("127.0.0.1:{port}")).unwrap();
         let frame = make_xtea_frame(&[0x1E], xtea_key); // pong → DispatchResult::NoResponse

@@ -280,6 +280,42 @@ impl Map {
         self.tiles.len()
     }
 
+    /// Post-processing pass: sets `FLOORCHANGE_*` tile flags for every tile
+    /// whose items carry a `floor_change` value.
+    ///
+    /// `get_floor_change(item_id)` returns the `floor_change` byte for the
+    /// given server item ID (0 = no floor change).  The bits match the
+    /// `flags::FLOORCHANGE_*` bit positions (same layout as C++ TILESTATE_*).
+    ///
+    /// Mirrors C++ `Tile::setTileFlags(item)` called inside `addThing` during
+    /// map loading, but applied here as a post-load pass because the OTBM
+    /// loader's simple registry lacks items.xml attribute data.
+    pub fn apply_floor_change_flags<F>(&mut self, get_floor_change: F)
+    where
+        F: Fn(u16) -> u8,
+    {
+        for tile in self.tiles.values_mut() {
+            if tile.has_floor_change() {
+                continue;
+            }
+            let fc = {
+                let ground_fc = tile.get_ground().map_or(0, |g| get_floor_change(g.get_id()));
+                if ground_fc != 0 {
+                    ground_fc
+                } else {
+                    tile.items()
+                        .iter()
+                        .map(|item| get_floor_change(item.get_id()))
+                        .find(|&fc| fc != 0)
+                        .unwrap_or(0)
+                }
+            };
+            if fc != 0 {
+                tile.flags |= fc as u32;
+            }
+        }
+    }
+
     // -----------------------------------------------------------------------
     // Dimensions
     // -----------------------------------------------------------------------

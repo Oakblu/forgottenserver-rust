@@ -2,7 +2,7 @@ pub mod connection;
 pub mod framing;
 pub mod game_loop;
 
-use std::{net::TcpListener, path::Path, sync::{Arc, Mutex}};
+use std::{net::TcpListener, path::{Path, PathBuf}, sync::{Arc, Mutex}};
 
 use forgottenserver_common::configmanager::{ConfigManager, IntegerKey, StringKey};
 use forgottenserver_database::database::Database;
@@ -14,10 +14,14 @@ use forgottenserver_game::{
     weapon_registry::{load_weapons_xml, WeaponRegistry},
 };
 use forgottenserver_items::{
+    items_registry::Items as FullItemRegistry,
     registry::ItemsRegistry,
     vocation::Vocations,
 };
 use forgottenserver_map::items_loader::load_items_otb;
+use forgottenserver_scripting::actions::Actions;
+use forgottenserver_scripting::actions_xml::{apply_parsed_action, parse_actions_xml};
+use forgottenserver_scripting::talkaction::{apply_parsed_talkaction, parse_talkactions_xml, TalkActions};
 use forgottenserver_world::{iomap::IoMap, map::Map};
 
 use crate::{
@@ -40,6 +44,14 @@ pub struct GameData {
     /// The loaded world map parsed from `<data_dir>/world/<mapName>.otbm`.
     /// Shared by all game listener connections via `Arc`.
     pub map: Arc<Map>,
+    /// Talkaction registry parsed from `<data_dir>/talkactions/talkactions.xml`.
+    pub talk_actions: Arc<TalkActions>,
+    /// Directory containing talkaction Lua scripts.
+    pub talkaction_script_dir: PathBuf,
+    /// Action registry parsed from `<data_dir>/actions/actions.xml`.
+    pub actions: Arc<Actions>,
+    /// Root of the actions data directory (contains `scripts/` and `lib/`).
+    pub action_data_dir: PathBuf,
 }
 
 /// Load all four game data registries from `data_dir` before entering the game loop.
@@ -77,14 +89,115 @@ pub fn boot(data_dir: &Path, map_name: &str) -> Result<GameData, String> {
     let map_path = data_dir.join("world").join(format!("{map_name}.otbm"));
     let map_bytes = std::fs::read(&map_path)
         .map_err(|e| format!("Cannot read map file {}: {e}", map_path.display()))?;
-    let map = IoMap::load_from_bytes(&map_bytes, &items)?;
+    let mut map = IoMap::load_from_bytes(&map_bytes, &items)?;
     eprintln!(
         ">> Loaded map: {} tiles, {}x{}",
         map.get_tile_count(),
         map.get_declared_width(),
         map.get_declared_height()
     );
+
+    // Post-process: apply FLOORCHANGE tile flags from items.xml.
+    // The OTBM loader uses a simple registry (no XML attribute data), so
+    // staircase items never set FLOORCHANGE flags during tile construction.
+    // We load items.xml here, build a server_id→floor_change lookup, and
+    // stamp the flags onto every tile that holds a staircase item.
+    let otb_path = data_dir.join("items/items.otb");
+    let items_xml_path = data_dir.join("items/items.xml");
+    if items_xml_path.exists() {
+        match (std::fs::read(&otb_path), std::fs::read_to_string(&items_xml_path)) {
+            (Ok(otb_bytes), Ok(xml)) => {
+                match FullItemRegistry::load_from_otb(&otb_bytes) {
+                    Ok(mut full_items) => {
+                        let _ = full_items.load_from_xml(&xml);
+                        let max_id = full_items.get_max_item_id();
+                        let floor_changes: Vec<(u16, u8)> = (1..=max_id)
+                            .filter_map(|id| {
+                                full_items.get_item_type(id).and_then(|it| {
+                                    if it.floor_change != 0 {
+                                        Some((id, it.floor_change))
+                                    } else {
+                                        None
+                                    }
+                                })
+                            })
+                            .collect();
+                        let lookup: std::collections::HashMap<u16, u8> =
+                            floor_changes.into_iter().collect();
+                        map.apply_floor_change_flags(|id| lookup.get(&id).copied().unwrap_or(0));
+                        eprintln!(">> Applied floor-change flags from items.xml");
+                    }
+                    Err(e) => eprintln!("[WARN] Failed to load items.otb for floor-change pass: {e}"),
+                }
+            }
+            (Err(e), _) => eprintln!("[WARN] Cannot read items.otb for floor-change pass: {e}"),
+            (_, Err(e)) => eprintln!("[WARN] Cannot read items.xml for floor-change pass: {e}"),
+        }
+    }
+
     let map = Arc::new(map);
+
+    let talkaction_script_dir = data_dir.join("talkactions").join("scripts");
+    let ta_xml_path = data_dir.join("talkactions").join("talkactions.xml");
+    let talk_actions = if ta_xml_path.exists() {
+        match std::fs::read_to_string(&ta_xml_path) {
+            Ok(xml) => match parse_talkactions_xml(&xml) {
+                Ok(parsed) => {
+                    for w in &parsed.warnings {
+                        eprintln!("[WARN] talkactions: {w}");
+                    }
+                    let mut ta = TalkActions::new();
+                    for row in &parsed.rows {
+                        apply_parsed_talkaction(&mut ta, row);
+                    }
+                    eprintln!(">> Loaded {} talkactions", parsed.rows.len());
+                    Arc::new(ta)
+                }
+                Err(e) => {
+                    eprintln!("[WARN] Failed to parse talkactions.xml: {e}");
+                    Arc::new(TalkActions::new())
+                }
+            },
+            Err(e) => {
+                eprintln!("[WARN] Cannot read talkactions.xml: {e}");
+                Arc::new(TalkActions::new())
+            }
+        }
+    } else {
+        eprintln!("[WARN] talkactions.xml not found: {}", ta_xml_path.display());
+        Arc::new(TalkActions::new())
+    };
+
+    let action_data_dir = data_dir.join("actions");
+    let actions_xml_path = action_data_dir.join("actions.xml");
+    let actions = if actions_xml_path.exists() {
+        match std::fs::read_to_string(&actions_xml_path) {
+            Ok(xml) => match parse_actions_xml(&xml) {
+                Ok(parsed) => {
+                    for w in &parsed.warnings {
+                        eprintln!("[WARN] actions: {w}");
+                    }
+                    let mut acts = Actions::new();
+                    for row in &parsed.rows {
+                        apply_parsed_action(&mut acts, row);
+                    }
+                    eprintln!(">> Loaded {} actions", parsed.rows.len());
+                    Arc::new(acts)
+                }
+                Err(e) => {
+                    eprintln!("[WARN] Failed to parse actions.xml: {e}");
+                    Arc::new(Actions::new())
+                }
+            },
+            Err(e) => {
+                eprintln!("[WARN] Cannot read actions.xml: {e}");
+                Arc::new(Actions::new())
+            }
+        }
+    } else {
+        eprintln!("[WARN] actions.xml not found: {}", actions_xml_path.display());
+        Arc::new(Actions::new())
+    };
 
     Ok(GameData {
         items,
@@ -94,6 +207,10 @@ pub fn boot(data_dir: &Path, map_name: &str) -> Result<GameData, String> {
         vocations,
         monsters,
         map,
+        talk_actions,
+        talkaction_script_dir,
+        actions,
+        action_data_dir,
     })
 }
 
@@ -125,19 +242,39 @@ pub fn start_admin_and_status(
     Ok(())
 }
 
+/// Game-data references needed by the game listener.
+///
+/// Bundles the six shared data items that were previously passed as individual
+/// arguments to `start_game_listener`.
+pub struct GameListenerParams {
+    pub vocations: Arc<Vocations>,
+    pub map: Arc<Map>,
+    pub talk_actions: Arc<TalkActions>,
+    pub talkaction_script_dir: PathBuf,
+    pub actions: Arc<Actions>,
+    pub action_data_dir: PathBuf,
+}
+
 /// Bind the game-protocol listener on the configured game port and spawn a
 /// background accept loop.
 pub fn start_game_listener(
     config: Arc<ConfigManager>,
     _game_state: Arc<Mutex<GameState>>,
     db: Arc<Mutex<Box<dyn Database + Send>>>,
-    vocations: Arc<Vocations>,
-    map: Arc<Map>,
+    params: GameListenerParams,
 ) -> Result<(), String> {
     let game_port = config.get_integer(IntegerKey::GamePort) as u16;
     let listener = TcpListener::bind(format!("0.0.0.0:{game_port}"))
         .map_err(|e| format!("Cannot bind game port {game_port}: {e}"))?;
-    let handler = Arc::new(GameLoginHandler::new(db, vocations, map));
+    let handler = Arc::new(GameLoginHandler::new(
+        db,
+        params.vocations,
+        params.map,
+        params.talk_actions,
+        params.talkaction_script_dir,
+        params.actions,
+        params.action_data_dir,
+    ));
     std::thread::spawn(move || {
         accept_loop(listener, handler);
     });
@@ -424,8 +561,14 @@ mod tests {
             config,
             game_state,
             empty_db(),
-            empty_vocations(),
-            empty_map(),
+            GameListenerParams {
+                vocations: empty_vocations(),
+                map: empty_map(),
+                talk_actions: Arc::new(forgottenserver_scripting::talkaction::TalkActions::new()),
+                talkaction_script_dir: std::path::PathBuf::new(),
+                actions: Arc::new(forgottenserver_scripting::actions::Actions::new()),
+                action_data_dir: std::path::PathBuf::new(),
+            },
         );
         assert!(res.is_ok(), "start_game_listener must bind successfully: {:?}", res);
 
@@ -454,8 +597,14 @@ mod tests {
             config,
             game_state,
             empty_db(),
-            empty_vocations(),
-            empty_map(),
+            GameListenerParams {
+                vocations: empty_vocations(),
+                map: empty_map(),
+                talk_actions: Arc::new(forgottenserver_scripting::talkaction::TalkActions::new()),
+                talkaction_script_dir: std::path::PathBuf::new(),
+                actions: Arc::new(forgottenserver_scripting::actions::Actions::new()),
+                action_data_dir: std::path::PathBuf::new(),
+            },
         );
         assert!(res.is_err());
         let err = res.unwrap_err();

@@ -1,6 +1,7 @@
 use std::{
     io::{Read, Write},
     net::TcpListener,
+    path::PathBuf,
     sync::{Arc, Mutex},
     time::Duration,
 };
@@ -13,6 +14,8 @@ use forgottenserver_database::iologindata::{
 };
 use forgottenserver_items::vocation::Vocations;
 use forgottenserver_network::protocolgame::{parse_first_packet, serialize_disconnect};
+use forgottenserver_scripting::actions::Actions;
+use forgottenserver_scripting::talkaction::TalkActions;
 use forgottenserver_world::map::Map;
 use forgottenserver_world::World;
 
@@ -58,6 +61,10 @@ pub struct GameLoginHandler {
     db: Arc<Mutex<Box<dyn Database + Send>>>,
     vocations: Arc<Vocations>,
     map: Arc<Map>,
+    talk_actions: Arc<TalkActions>,
+    script_dir: PathBuf,
+    actions: Arc<Actions>,
+    action_data_dir: PathBuf,
 }
 
 impl GameLoginHandler {
@@ -65,8 +72,12 @@ impl GameLoginHandler {
         db: Arc<Mutex<Box<dyn Database + Send>>>,
         vocations: Arc<Vocations>,
         map: Arc<Map>,
+        talk_actions: Arc<TalkActions>,
+        script_dir: PathBuf,
+        actions: Arc<Actions>,
+        action_data_dir: PathBuf,
     ) -> Self {
-        Self { db, vocations, map }
+        Self { db, vocations, map, talk_actions, script_dir, actions, action_data_dir }
     }
 
     /// Handle a single accepted TCP stream: send challenge, read first packet,
@@ -281,6 +292,10 @@ impl GameLoginHandler {
                     player_creature_id,
                     Arc::clone(&self.vocations),
                     Arc::clone(&self.map),
+                    Arc::clone(&self.talk_actions),
+                    self.script_dir.clone(),
+                    Arc::clone(&self.actions),
+                    self.action_data_dir.clone(),
                 );
                 eprintln!("[game] game loop exited");
                 let _ = stream.shutdown(std::net::Shutdown::Both);
@@ -443,7 +458,7 @@ mod tests {
 
         std::thread::spawn(move || {
             if let Ok((stream, _)) = listener.accept() {
-                GameLoginHandler::new(empty_db(), empty_vocations(), empty_map())
+                GameLoginHandler::new(empty_db(), empty_vocations(), empty_map(), Arc::new(forgottenserver_scripting::talkaction::TalkActions::new()), std::path::PathBuf::new(), Arc::new(forgottenserver_scripting::actions::Actions::new()), std::path::PathBuf::new())
                     .handle_connection(stream);
             }
         });
@@ -550,7 +565,7 @@ mod tests {
         forgottenserver_common::rsa::load_pem(forgottenserver_common::rsa::DEFAULT_KEY_PEM).ok();
 
         let db: Arc<Mutex<Box<dyn Database + Send>>> = Arc::new(Mutex::new(Box::new(RoundTripDb)));
-        let handler = GameLoginHandler::new(db, empty_vocations(), empty_map());
+        let handler = GameLoginHandler::new(db, empty_vocations(), empty_map(), Arc::new(forgottenserver_scripting::talkaction::TalkActions::new()), std::path::PathBuf::new(), Arc::new(forgottenserver_scripting::actions::Actions::new()), std::path::PathBuf::new());
 
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let port = listener.local_addr().unwrap().port();
@@ -669,7 +684,7 @@ mod tests {
 
         let db: Arc<Mutex<Box<dyn Database + Send>>> =
             Arc::new(Mutex::new(Box::new(InMemoryDb::new())));
-        let handler = GameLoginHandler::new(db, empty_vocations(), empty_map());
+        let handler = GameLoginHandler::new(db, empty_vocations(), empty_map(), Arc::new(forgottenserver_scripting::talkaction::TalkActions::new()), std::path::PathBuf::new(), Arc::new(forgottenserver_scripting::actions::Actions::new()), std::path::PathBuf::new());
 
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let port = listener.local_addr().unwrap().port();
@@ -709,7 +724,7 @@ mod tests {
     fn gameworld_auth_prefix_path_close_after_0x0a_then_large_outer_len() {
         use std::io::Read as IoRead;
         let handler =
-            GameLoginHandler::new(empty_db(), empty_vocations(), empty_map());
+            GameLoginHandler::new(empty_db(), empty_vocations(), empty_map(), Arc::new(forgottenserver_scripting::talkaction::TalkActions::new()), std::path::PathBuf::new(), Arc::new(forgottenserver_scripting::actions::Actions::new()), std::path::PathBuf::new());
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let port = listener.local_addr().unwrap().port();
 
@@ -752,7 +767,7 @@ mod tests {
     fn gameworld_auth_prefix_exceeds_512_bytes_closes_connection() {
         use std::io::Read as IoRead;
         let handler =
-            GameLoginHandler::new(empty_db(), empty_vocations(), empty_map());
+            GameLoginHandler::new(empty_db(), empty_vocations(), empty_map(), Arc::new(forgottenserver_scripting::talkaction::TalkActions::new()), std::path::PathBuf::new(), Arc::new(forgottenserver_scripting::actions::Actions::new()), std::path::PathBuf::new());
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let port = listener.local_addr().unwrap().port();
 
@@ -790,7 +805,7 @@ mod tests {
     fn gameworld_auth_prefix_path_eof_mid_prefix_closes_cleanly() {
         use std::io::Read as IoRead;
         let handler =
-            GameLoginHandler::new(empty_db(), empty_vocations(), empty_map());
+            GameLoginHandler::new(empty_db(), empty_vocations(), empty_map(), Arc::new(forgottenserver_scripting::talkaction::TalkActions::new()), std::path::PathBuf::new(), Arc::new(forgottenserver_scripting::actions::Actions::new()), std::path::PathBuf::new());
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let port = listener.local_addr().unwrap().port();
 
@@ -831,7 +846,7 @@ mod tests {
     fn outer_len_exceeds_32768_closes_connection() {
         use std::io::Read as IoRead;
         let handler =
-            GameLoginHandler::new(empty_db(), empty_vocations(), empty_map());
+            GameLoginHandler::new(empty_db(), empty_vocations(), empty_map(), Arc::new(forgottenserver_scripting::talkaction::TalkActions::new()), std::path::PathBuf::new(), Arc::new(forgottenserver_scripting::actions::Actions::new()), std::path::PathBuf::new());
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let port = listener.local_addr().unwrap().port();
 
@@ -891,7 +906,7 @@ mod tests {
     fn outer_len_too_short_closes_connection() {
         use std::io::Read as IoRead;
         let handler =
-            GameLoginHandler::new(empty_db(), empty_vocations(), empty_map());
+            GameLoginHandler::new(empty_db(), empty_vocations(), empty_map(), Arc::new(forgottenserver_scripting::talkaction::TalkActions::new()), std::path::PathBuf::new(), Arc::new(forgottenserver_scripting::actions::Actions::new()), std::path::PathBuf::new());
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let port = listener.local_addr().unwrap().port();
 
@@ -930,7 +945,7 @@ mod tests {
     fn body_read_failure_closes_connection_cleanly() {
         use std::io::Read as IoRead;
         let handler =
-            GameLoginHandler::new(empty_db(), empty_vocations(), empty_map());
+            GameLoginHandler::new(empty_db(), empty_vocations(), empty_map(), Arc::new(forgottenserver_scripting::talkaction::TalkActions::new()), std::path::PathBuf::new(), Arc::new(forgottenserver_scripting::actions::Actions::new()), std::path::PathBuf::new());
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let port = listener.local_addr().unwrap().port();
 
@@ -970,7 +985,7 @@ mod tests {
     #[test]
     fn challenge_write_failure_on_closed_client_does_not_panic() {
         let handler =
-            GameLoginHandler::new(empty_db(), empty_vocations(), empty_map());
+            GameLoginHandler::new(empty_db(), empty_vocations(), empty_map(), Arc::new(forgottenserver_scripting::talkaction::TalkActions::new()), std::path::PathBuf::new(), Arc::new(forgottenserver_scripting::actions::Actions::new()), std::path::PathBuf::new());
         let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
         let port = listener.local_addr().unwrap().port();
 
