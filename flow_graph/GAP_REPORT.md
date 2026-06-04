@@ -1,6 +1,6 @@
 # Flow Graph Gap Report
 
-_Generated 2026-05-30 — do not edit by hand. Re-run `make flow-gap`._
+_Generated 2026-06-03 — do not edit by hand. Re-run `make flow-gap`._
 
 ## Summary
 

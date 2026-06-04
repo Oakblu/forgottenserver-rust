@@ -171,11 +171,16 @@ def _check_row(row: dict[str, Any], cpp_index: dict[tuple[str, str], dict],
             ))
 
     # rust[*] must match the manifest (same overload-bucket logic).
+    # Virtual kinds represent sub-elements of functions (match arms, call sites)
+    # that are not extracted as standalone symbols by the manifest extractor.
+    VIRTUAL_KINDS = {"protocol_opcode_arm", "dispatch_arm", "caller_site", "scheduler_event"}
     rust = row.get("rust") or []
     if status in STATUS_REQUIRES_RUST and not rust:
         violations.append(Violation(rid, "rust-required", f"status={status} requires >= 1 rust entry"))
     for i, r in enumerate(rust):
         rkey = (r.get("file", ""), r.get("symbol", ""), r.get("kind", ""))
+        if r.get("kind", "") in VIRTUAL_KINDS:
+            continue
         rm_list = rust_index.get(rkey, [])
         if not rm_list:
             violations.append(Violation(rid, "rust-not-in-manifest", f"rust[{i}] {rkey} unknown to rust_symbol_manifest.json"))

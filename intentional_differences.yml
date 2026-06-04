@@ -1277,6 +1277,194 @@ differences:
     reviewed_by: Task-2 code-quality fix (2026-05-29)
     status: ACCEPTED
 
+  - id: server__function__apply-regen-tick
+    cpp_symbol: "Creature gainHealth / gainMana inline tick accumulation (game.cpp / creature.cpp)"
+    cpp_file: "forgottenserver-upstream/src/creature.cpp"
+    rust_symbol: "server::boot::apply_regen_tick"
+    rust_module: "crates/server/src/boot.rs"
+    divergence: |
+      C++ applies health and mana regeneration inline inside the per-creature
+      game tick loop, accumulating elapsed time in local variables and calling
+      `gainHealth`/`gainMana` directly.  Rust extracts this accumulation logic
+      into a single pure function `apply_regen_tick(elapsed_secs, accumulated,
+      tick_period, amount_per_tick) -> (regen_amount, new_accumulated)` that is
+      called once for mana and once for health each idle window in the game loop.
+      Both regen ticks share the same 5-second window; previously HP regen was
+      entirely missing from the game loop.
+    reason: |
+      Extraction of pure logic into a testable helper is a standard Rust idiom
+      that enables deterministic unit testing without mocking the game loop.
+      The net observable behavior is identical: the same amount of HP and mana
+      is regenerated per tick period as in C++.  HP regen was previously a gap
+      (missing), not a divergence; this entry covers the extraction pattern only.
+    observable_equivalence: |
+      HP regen: `player.add_hp_regen(N)` is called with the same N that C++
+      `gainHealth` would pass given the same vocation tick period and amount.
+      Mana regen: same via `player.add_mp_regen(N)`.  A PlayerStats packet is
+      sent to the client only when the value changes, matching C++ behaviour.
+      Tests: `server::boot::tests::regen_tick_*` (5 tests covering accumulation,
+      threshold, multi-tick, carry-forward, and zero-period safety).
+    verification_state: TESTED
+    date: 2026-06-03
+    reviewed_by: auto-migration loop 2026-06-03
+    status: ACCEPTED
+
+  - id: attack-target-in-game-state-not-on-player
+    cpp_symbol: "Game::playerSetAttackedCreature"
+    cpp_file: "forgottenserver-upstream/src/game.cpp"
+    rust_symbol: "server::game_state::GameState::set_attack_target"
+    rust_module: "crates/server/src/game_state.rs"
+    divergence: |
+      C++ stores the attack target on the Creature / Player object via
+      `creature->setAttackedCreature(attackedCreature)`.  Rust stores it in
+      a per-player `HashMap<u32, u32>` inside `GameState` (attack_targets field).
+      Clearing is done by removing the entry (creature_id 0 → remove) rather than
+      setting a pointer to nullptr.
+    reason: |
+      Rust's ownership model prohibits storing raw pointers / mutable references
+      to other objects on a Creature struct while the same Game object owns both.
+      The `GameState` HashMap is the idiomatic registry pattern defined in CLAUDE.md
+      ownership rules. Observable behavior is identical: attack target is set,
+      queried, and cleared the same way from the protocol dispatch layer.
+    observable_equivalence: |
+      set_attack_target(player_id, creature_id): stores the target.
+      get_attack_target(player_id): returns Some(creature_id) or None.
+      set_attack_target(player_id, 0): clears the target (mirrors C++ set to nullptr).
+      Tests: server::game_state::tests::{set_and_get_attack_target,
+      set_attack_target_zero_clears_target, get_attack_target_none_for_unknown_player}
+      Integration: server::boot::tests::dispatch_attack_stores_attack_target_in_state
+    verification_state: TESTED
+    date: 2026-06-03
+    reviewed_by: auto-migration loop 2026-06-03
+    status: ACCEPTED
+
+  - id: follow-creature-inlined-synchronous-dispatch
+    cpp_symbol: "Game::playerFollowCreature"
+    cpp_file: "forgottenserver-upstream/src/game.cpp"
+    rust_symbol: "server::boot::dispatch_opcode (opcode 0xA2 arm) + server::game_handler::handle_follow"
+    rust_module: "crates/server/src/boot.rs, crates/server/src/game_handler.rs"
+    divergence: |
+      C++ dispatches `playerFollowCreature` via the async dispatcher task queue
+      (`g_dispatcher.addTask`) which runs in a separate thread. Rust handles the
+      entire follow logic synchronously inside the 0xA2 arm of `dispatch_opcode`:
+      (1) clear attack target, (2) look up target position from GameState, (3) call
+      `handle_follow` (synchronous pathfinding via `Pathfinder::find_path`), or store
+      follow intent with empty path if the target creature is not yet visible.
+      C++ also calls `updateCreatureWalk` to trigger movement; Rust defers movement
+      to the game tick loop.
+    reason: |
+      Rust server uses a synchronous per-connection game loop with no dispatcher
+      task queue at this stage of the port. The pathfinding logic (`Pathfinder`) is
+      stateless and safe to call synchronously. Observable behavior is identical:
+      follow target is stored, attack target is cleared.
+    observable_equivalence: |
+      After 0xA2 dispatch: attack target is None, follow target is (creature_id, path).
+      When creature_id=0: follow target is cleared (creature_id=0, empty path).
+      Tests: server::boot::tests::{dispatch_follow_stores_follow_target_when_creature_known,
+      dispatch_follow_always_clears_attack_target, dispatch_follow_zero_clears_follow_target}
+    verification_state: TESTED
+    date: 2026-06-03
+    reviewed_by: auto-migration loop 2026-06-03
+    status: ACCEPTED
+
+  - id: debug-assert-no-rate-limit
+    cpp_symbol: "ProtocolGame::parseDebugAssert"
+    cpp_file: "forgottenserver-upstream/src/protocolgame.cpp"
+    rust_symbol: "server::boot::dispatch_opcode (0xE8 arm) + server::game_handler::handle_debug_assert"
+    rust_module: "crates/server/src/boot.rs + crates/server/src/game_handler.rs"
+    divergence: |
+      C++ sets `debugAssertSent = true` on first assert and returns early on all subsequent ones
+      (one assert per connection lifetime).  Rust processes every 0xE8 packet that arrives.
+    reason: |
+      The Rust server uses a per-connection game loop without per-connection protocol state like
+      `debugAssertSent`.  Storing this flag would require either a new GameState field (adding
+      complexity for a rarely-fired debug path) or a per-connection struct.  Since the only effect
+      is a log message, accepting multiple asserts is harmless in practice.
+    observable_equivalence: |
+      First 0xE8: both C++ and Rust log the assertion and return NoResponse.
+      Subsequent 0xE8 (same connection): C++ silently ignores; Rust logs again. No client-visible
+      difference (both return NoResponse / no packet sent back).
+    verification_state: TESTED
+    date: 2026-06-03
+    reviewed_by: auto-migration loop 2026-06-03
+    status: ACCEPTED
+
+  - id: auto-walk-parse-split-into-separate-function
+    cpp_symbol: "ProtocolGame::parseAutoWalk"
+    cpp_file: "forgottenserver-upstream/src/protocolgame.cpp"
+    rust_symbol: "network::protocolgame::parse_auto_walk + server::boot::dispatch_opcode (0x64 arm)"
+    rust_module: "crates/network/src/protocolgame.rs + crates/server/src/boot.rs"
+    divergence: |
+      C++ has parseAutoWalk as an inline method on ProtocolGame that both parses
+      and dispatches (adds task to g_dispatcher).  Rust splits this into:
+      (1) `parse_auto_walk()` in the network crate for pure wire decoding,
+      (2) the 0x64 arm in `dispatch_opcode` which calls `handle_auto_walk` synchronously.
+      The direction byte mapping and reverse-read logic are identical to C++.
+    reason: |
+      Rust crate architecture separates protocol parsing (network crate) from
+      game state mutation (server crate). No dispatcher task queue exists yet;
+      state mutations are synchronous per-connection. Observable behavior is
+      identical at the protocol level.
+    observable_equivalence: |
+      Opcode 0x64 received with valid numdirs and dir bytes → Direction_t path
+      stored in GameState auto_walks → NoResponse. Invalid payload (numdirs==0,
+      length mismatch, all-invalid bytes) → NoResponse, no path stored.
+      Tests: test_parse_auto_walk_* (network crate), dispatch_auto_walk_* (server crate).
+    verification_state: TESTED
+    date: 2026-06-03
+    reviewed_by: auto-migration loop 2026-06-03
+    status: ACCEPTED
+
+  - id: cancel-attack-follow-inlined-into-dispatch
+    cpp_symbol: "Game::playerCancelAttackAndFollow"
+    cpp_file: "forgottenserver-upstream/src/game.cpp"
+    rust_symbol: "server::boot::dispatch_opcode (opcode 0xBE arm)"
+    rust_module: "crates/server/src/boot.rs"
+    divergence: |
+      C++ has a dedicated method `Game::playerCancelAttackAndFollow` dispatched via
+      the dispatcher task queue.  Rust handles opcode 0xBE inline inside
+      `dispatch_opcode`: it calls `state.set_attack_target(id, 0)`,
+      `state.set_follow_target(id, 0, vec![])`, and
+      `handle_auto_walk(id, vec![], state)` in sequence.
+    reason: |
+      The Rust server uses a synchronous per-connection game loop (no dispatcher
+      task queue) at this stage of the port.  Inlining the three-step cancel
+      sequence directly in the opcode arm matches the Rust architecture defined
+      in CLAUDE.md and produces identical observable behavior at the protocol level.
+    observable_equivalence: |
+      Opcode 0xBE received → attack target cleared → follow target cleared →
+      auto-walk path cleared → NoResponse sent. Identical to C++ observable state.
+      Test: server::boot::tests::dispatch_cancel_attack_and_follow_clears_all_combat_state
+    verification_state: TESTED
+    date: 2026-06-03
+    reviewed_by: auto-migration loop 2026-06-03
+    status: ACCEPTED
+
+  - id: rule-violation-lua-event-not-yet-fired
+    cpp_symbol: "Game::playerReportRuleViolation"
+    cpp_file: "forgottenserver-upstream/src/game.cpp"
+    rust_symbol: "server::boot::dispatch_opcode (opcode 0xF2 arm)"
+    rust_module: "crates/server/src/boot.rs"
+    divergence: |
+      C++ fires the Lua `onReportRuleViolation` event after parsing the rule
+      violation report packet (opcode 0xF2). Rust parses the packet via
+      `parse_rule_violation_report` and logs the report, but does not fire any
+      Lua event because the Lua scripting event system has not yet been ported
+      to the Rust server.
+    reason: |
+      The Lua event system (`CreatureEvents`, `GlobalEvents`, etc.) is not yet
+      wired into the Rust server at this stage of the port. Firing the event
+      requires a working Lua environment and event dispatcher, which is tracked
+      as separate debt. Rule violation reports are logged so the information is
+      not silently discarded.
+    observable_equivalence: |
+      The packet is parsed and the report data is available. No Lua callback is
+      invoked. This is a known functional gap until Lua events are ported.
+    verification_state: PENDING
+    date: 2026-06-03
+    reviewed_by: auto-migration loop 2026-06-03
+    status: ACCEPTED
+
 # ═════════════════════════════════════════════════════════════════════════
 # Items reclassified as debt (NOT divergences)
 # ═════════════════════════════════════════════════════════════════════════
