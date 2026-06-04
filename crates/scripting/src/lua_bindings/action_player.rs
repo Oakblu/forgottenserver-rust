@@ -17,7 +17,7 @@ use forgottenserver_common::position::Position;
 use mlua::{UserData, UserDataFields, UserDataMethods, Value};
 
 use crate::lua_bindings::position::LuaPosition;
-use crate::lua_bindings::{GameStateHandle, LuaEnvironment};
+use crate::lua_bindings::LuaEnvironment;
 
 // ── ActionOutput ──────────────────────────────────────────────────────────────
 
@@ -32,6 +32,8 @@ pub struct ActionOutput {
     pub item_removed: bool,
     /// Magic effects queued by `position:sendMagicEffect(effect)`.
     pub magic_effects: Vec<(Position, u8)>,
+    /// New player position if `player:teleportTo(pos)` was called.
+    pub new_pos: Option<Position>,
 }
 
 // ── LuaActionGroup ────────────────────────────────────────────────────────────
@@ -226,16 +228,20 @@ pub struct ActionContext<'a> {
     pub has_access: bool,
 }
 
-/// Execute an action Lua script file.
+/// Execute an action Lua script file using a pre-built [`LuaEnvironment`].
 ///
-/// Creates a fresh Lua VM, optionally loads lib scripts from `lib_dir` (e.g.
-/// `data/actions/lib/`), loads `script_path`, then calls
+/// The caller is responsible for creating the environment and pre-loading any
+/// shared lib scripts once (e.g. from `data/actions/lib/`).  Per-call output
+/// state (`messages`, `new_pos`, etc.) is always fresh via new `Arc<Mutex<>>`
+/// allocations.
+///
+/// Loads `script_path`, then calls
 /// `onUse(player, item, fromPosition, target, toPosition, isHotkey)`.
 ///
 /// Returns [`ActionOutput`] on success, `Err(String)` on IO/Lua errors.
 pub fn execute_action(
+    env: &mut LuaEnvironment,
     script_path: &Path,
-    lib_dir: Option<&Path>,
     ctx: ActionContext<'_>,
 ) -> Result<ActionOutput, String> {
     let messages: Arc<Mutex<Vec<(u8, String)>>> = Arc::new(Mutex::new(Vec::new()));
@@ -263,17 +269,8 @@ pub fn execute_action(
 
     let magic_effects_buf = Arc::new(Mutex::new(Vec::<(Position, u8)>::new()));
 
-    let mut env = LuaEnvironment::new(GameStateHandle::default())
-        .map_err(|e| format!("Lua init failed: {e}"))?;
-
+    // Refresh per-call app_data so magic effects are captured fresh each call.
     env.lua.set_app_data(crate::lua_bindings::MagicEffectsBuffer(Arc::clone(&magic_effects_buf)));
-
-    // Load lib scripts so action scripts can call shared helpers (e.g. onUseRope).
-    if let Some(lib) = lib_dir {
-        if lib.exists() {
-            let _ = env.load_lib_scripts(lib);
-        }
-    }
 
     env.load_file(script_path)?;
 
@@ -313,12 +310,14 @@ pub fn execute_action(
     let says = std::mem::take(&mut *creature_says.lock().unwrap());
     let removed = *consumed.lock().unwrap();
     let effects = std::mem::take(&mut *magic_effects_buf.lock().unwrap());
+    let teleport_pos = new_pos.lock().unwrap().take();
 
     Ok(ActionOutput {
         messages: msgs,
         creature_says: says,
         item_removed: removed,
         magic_effects: effects,
+        new_pos: teleport_pos,
     })
 }
 
@@ -329,6 +328,7 @@ mod tests {
     use super::*;
     use std::io::Write as _;
     use tempfile::NamedTempFile;
+    use crate::lua_bindings::GameStateHandle;
 
     fn write_script(content: &str) -> NamedTempFile {
         let mut f = NamedTempFile::with_suffix(".lua").unwrap();
@@ -342,9 +342,10 @@ mod tests {
 
     fn run(script: &str, item_id: u16) -> ActionOutput {
         let f = write_script(script);
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
         execute_action(
+            &mut env,
             f.path(),
-            None,
             ActionContext { item_id, item_pos: default_pos(), player_pos: default_pos(), player_name: "Hero", player_level: 10, has_access: true },
         )
         .expect("execute_action failed")
@@ -447,9 +448,10 @@ mod tests {
     #[test]
     fn execute_action_no_on_use_returns_err() {
         let f = write_script("-- no onUse defined");
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
         let result = execute_action(
+            &mut env,
             f.path(),
-            None,
             ActionContext { item_id: 100, item_pos: default_pos(), player_pos: default_pos(), player_name: "P", player_level: 1, has_access: true },
         );
         assert!(result.is_err());
@@ -457,9 +459,10 @@ mod tests {
 
     #[test]
     fn execute_action_missing_script_returns_err() {
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
         let result = execute_action(
+            &mut env,
             Path::new("/nonexistent/path/action.lua"),
-            None,
             ActionContext { item_id: 100, item_pos: default_pos(), player_pos: default_pos(), player_name: "P", player_level: 1, has_access: true },
         );
         assert!(result.is_err());
@@ -472,9 +475,10 @@ mod tests {
                 error("intentional error")
             end"#,
         );
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
         let result = execute_action(
+            &mut env,
             f.path(),
-            None,
             ActionContext { item_id: 100, item_pos: default_pos(), player_pos: default_pos(), player_name: "P", player_level: 1, has_access: true },
         );
         assert!(result.is_err());
@@ -505,5 +509,46 @@ mod tests {
         assert!(out.messages.is_empty());
         assert!(out.creature_says.is_empty());
         assert!(!out.item_removed);
+        assert!(out.new_pos.is_none());
+    }
+
+    #[test]
+    fn execute_action_teleport_to_sets_new_pos() {
+        let out = run(
+            r#"function onUse(player, item, fromPos, target, toPos, isHotkey)
+                player:teleportTo(Position(200, 150, 5))
+                return true
+            end"#,
+            100,
+        );
+        let pos = out.new_pos.expect("teleportTo must set new_pos");
+        assert_eq!(pos.x, 200);
+        assert_eq!(pos.y, 150);
+        assert_eq!(pos.z, 5);
+    }
+
+    #[test]
+    fn execute_action_accepts_external_env() {
+        let f = write_script(
+            r#"function onUse(player, item, fromPos, target, toPos, hotkey)
+                player:sendTextMessage(22, "env ok")
+                return true
+            end"#,
+        );
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
+        let out = execute_action(
+            &mut env,
+            f.path(),
+            ActionContext {
+                item_id: 1,
+                item_pos: default_pos(),
+                player_pos: default_pos(),
+                player_name: "Hero",
+                player_level: 1,
+                has_access: true,
+            },
+        )
+        .expect("execute_action must succeed");
+        assert_eq!(out.messages[0].1, "env ok");
     }
 }

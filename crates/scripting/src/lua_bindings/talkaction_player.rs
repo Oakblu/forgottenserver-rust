@@ -20,7 +20,7 @@ use forgottenserver_common::position::Position;
 use mlua::{UserData, UserDataMethods, Value};
 
 use crate::lua_bindings::position::LuaPosition;
-use crate::lua_bindings::{GameStateHandle, LuaEnvironment};
+use crate::lua_bindings::LuaEnvironment;
 
 // ── Output ─────────────────────────────────────────────────────────────────
 
@@ -202,16 +202,18 @@ impl UserData for LuaTalkPlayer {
 
 /// Execute a talkaction Lua script file.
 ///
-/// Creates a fresh Lua state with full bindings, registers a minimal
-/// player userdata, loads `script_path`, and calls
-/// `onSay(player, words, param)`.
+/// Uses the provided `env` Lua environment (with full bindings already
+/// registered), registers a minimal player userdata, loads `script_path`,
+/// and calls `onSay(player, words, param)`.
 ///
 /// On success returns [`TalkActionOutput`] with collected messages and any
 /// position update the script requested via `player:teleportTo(pos)`.
 ///
 /// Returns `Err(String)` for IO / Lua errors — the caller should log and
 /// treat as a no-op rather than terminating the connection.
+#[allow(clippy::too_many_arguments)]
 pub fn execute_talkaction(
+    env: &mut LuaEnvironment,
     script_path: &Path,
     words: &str,
     param: &str,
@@ -232,9 +234,6 @@ pub fn execute_talkaction(
         level,
         has_access,
     };
-
-    let mut env = LuaEnvironment::new(GameStateHandle::default())
-        .map_err(|e| format!("Lua init failed: {e}"))?;
 
     env.lua.set_app_data(crate::lua_bindings::MagicEffectsBuffer(Arc::clone(&magic_effects_buf)));
 
@@ -272,6 +271,7 @@ pub fn execute_talkaction(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::lua_bindings::{GameStateHandle, LuaEnvironment};
     use std::io::Write as _;
     use tempfile::NamedTempFile;
 
@@ -293,8 +293,9 @@ mod tests {
                 return false
             end"#,
         );
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
         let out =
-            execute_talkaction(f.path(), "/test", "", default_pos(), "TestPlayer", 10, true)
+            execute_talkaction(&mut env, f.path(), "/test", "", default_pos(), "TestPlayer", 10, true)
                 .unwrap();
         assert_eq!(out.messages.len(), 1);
         assert_eq!(out.messages[0].0, 22);
@@ -311,7 +312,9 @@ mod tests {
                 return false
             end"#,
         );
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
         let out = execute_talkaction(
+            &mut env,
             f.path(),
             "/pos",
             "",
@@ -337,7 +340,9 @@ mod tests {
                 return false
             end"#,
         );
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
         let out = execute_talkaction(
+            &mut env,
             f.path(),
             "/up",
             "",
@@ -365,8 +370,9 @@ mod tests {
                 return false
             end"#,
         );
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
         let out =
-            execute_talkaction(f.path(), "/cmd", "", default_pos(), "Admin", 1, true).unwrap();
+            execute_talkaction(&mut env, f.path(), "/cmd", "", default_pos(), "Admin", 1, true).unwrap();
         assert_eq!(out.messages.len(), 1);
         assert_eq!(out.messages[0].1, "access granted");
     }
@@ -382,8 +388,9 @@ mod tests {
                 return false
             end"#,
         );
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
         let out =
-            execute_talkaction(f.path(), "/cmd", "", default_pos(), "Player", 1, false).unwrap();
+            execute_talkaction(&mut env, f.path(), "/cmd", "", default_pos(), "Player", 1, false).unwrap();
         assert!(out.messages.is_empty(), "non-admin should get no message");
     }
 
@@ -395,8 +402,9 @@ mod tests {
                 return false
             end"#,
         );
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
         let out =
-            execute_talkaction(f.path(), "/x", "", default_pos(), "P", 1, false).unwrap();
+            execute_talkaction(&mut env, f.path(), "/x", "", default_pos(), "P", 1, false).unwrap();
         assert_eq!(out.messages.len(), 1);
         assert_eq!(out.messages[0].0, 21); // MESSAGE_STATUS_SMALL
         assert_eq!(out.messages[0].1, "not allowed");
@@ -412,8 +420,9 @@ mod tests {
                 return false
             end"#,
         );
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
         let out =
-            execute_talkaction(f.path(), "/multi", "", default_pos(), "P", 1, true).unwrap();
+            execute_talkaction(&mut env, f.path(), "/multi", "", default_pos(), "P", 1, true).unwrap();
         assert_eq!(out.messages.len(), 3);
         assert_eq!(out.messages[0].1, "first");
         assert_eq!(out.messages[1].1, "second");
@@ -422,7 +431,9 @@ mod tests {
 
     #[test]
     fn execute_talkaction_missing_script_returns_err() {
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
         let result = execute_talkaction(
+            &mut env,
             Path::new("/nonexistent/path/does_not_exist.lua"),
             "/x",
             "",
@@ -446,7 +457,8 @@ mod tests {
                 error("intentional lua error")
             end"#,
         );
-        let result = execute_talkaction(f.path(), "/x", "", default_pos(), "P", 1, true);
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
+        let result = execute_talkaction(&mut env, f.path(), "/x", "", default_pos(), "P", 1, true);
         assert!(result.is_err(), "Lua error should propagate as Err");
         let msg = result.unwrap_err();
         assert!(msg.contains("intentional lua error"), "error should contain script message: {msg}");
@@ -460,7 +472,8 @@ mod tests {
                 return false
             end"#,
         );
-        let out = execute_talkaction(f.path(), "/test", "hello world", default_pos(), "P", 1, true)
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
+        let out = execute_talkaction(&mut env, f.path(), "/test", "hello world", default_pos(), "P", 1, true)
             .unwrap();
         assert_eq!(out.messages[0].1, "param=hello world");
     }
@@ -472,7 +485,8 @@ mod tests {
                 return false
             end"#,
         );
-        let out = execute_talkaction(f.path(), "/noop", "", default_pos(), "P", 1, true).unwrap();
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
+        let out = execute_talkaction(&mut env, f.path(), "/noop", "", default_pos(), "P", 1, true).unwrap();
         assert!(out.new_pos.is_none());
         assert!(out.messages.is_empty());
     }
@@ -488,7 +502,9 @@ mod tests {
                 return false
             end"#,
         );
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
         let out = execute_talkaction(
+            &mut env,
             f.path(),
             "/down",
             "",
@@ -512,9 +528,33 @@ mod tests {
             return;
         }
         let pos = default_pos();
-        let out = execute_talkaction(script_path, "/summon", "dog", pos, "Admin", 100, true)
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
+        let out = execute_talkaction(&mut env, script_path, "/summon", "dog", pos, "Admin", 100, true)
             .expect("execute_talkaction should not error");
         assert_eq!(out.messages.len(), 1, "Expected 1 cancel message, got {:?}", out.messages);
         assert_eq!(out.messages[0].1, "There is not enough room.");
+    }
+
+    #[test]
+    fn execute_talkaction_accepts_external_env() {
+        let f = write_script(
+            r#"function onSay(player, words, param)
+                player:sendTextMessage(22, "env ok")
+                return false
+            end"#,
+        );
+        let mut env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
+        let out = execute_talkaction(
+            &mut env,
+            f.path(),
+            "/test",
+            "",
+            default_pos(),
+            "TestPlayer",
+            10,
+            true,
+        )
+        .expect("execute_talkaction must succeed");
+        assert_eq!(out.messages[0].1, "env ok");
     }
 }

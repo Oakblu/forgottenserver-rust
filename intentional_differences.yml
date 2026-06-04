@@ -1390,29 +1390,37 @@ differences:
     status: ACCEPTED
 
   - id: auto-walk-parse-split-into-separate-function
-    cpp_symbol: "ProtocolGame::parseAutoWalk"
-    cpp_file: "forgottenserver-upstream/src/protocolgame.cpp"
+    cpp_symbol: "ProtocolGame::parseAutoWalk + Game::playerAutoWalk + Creature::startAutoWalk/addEventWalk/onWalk"
+    cpp_file: "forgottenserver-upstream/src/protocolgame.cpp + game.cpp + creature.cpp"
     rust_symbol: "network::protocolgame::parse_auto_walk + server::boot::dispatch_opcode (0x64 arm)"
-    rust_module: "crates/network/src/protocolgame.rs + crates/server/src/boot.rs"
+    rust_module: "crates/network/src/protocolgame.rs + crates/server/src/boot/game_loop.rs"
     divergence: |
-      C++ has parseAutoWalk as an inline method on ProtocolGame that both parses
-      and dispatches (adds task to g_dispatcher).  Rust splits this into:
-      (1) `parse_auto_walk()` in the network crate for pure wire decoding,
-      (2) the 0x64 arm in `dispatch_opcode` which calls `handle_auto_walk` synchronously.
-      The direction byte mapping and reverse-read logic are identical to C++.
+      C++ processes auto-walk steps one at a time via a scheduler: parseAutoWalk
+      stores the path, addEventWalk schedules checkCreatureWalk with a step-speed
+      delay, and onWalk pops one direction per tick — each step fires individually
+      with proper timing (~300-600 ms between steps).
+
+      Rust processes all steps synchronously when the 0x64 packet arrives: every
+      direction in the path is applied immediately (same floor-change logic as
+      directional walk 0x65-0x6D), player_pos is updated for each step, and a
+      MultiResponse is returned with one map-update packet per step. Walk animation
+      timing is driven by the client; the server delivers all map updates at once.
     reason: |
-      Rust crate architecture separates protocol parsing (network crate) from
-      game state mutation (server crate). No dispatcher task queue exists yet;
-      state mutations are synchronous per-connection. Observable behavior is
-      identical at the protocol level.
+      The Rust server uses a synchronous blocking I/O game loop with no scheduler
+      or background timer — there is no mechanism to fire timed callbacks per step.
+      Immediate processing keeps the server state (player_pos, GameState) in sync
+      with the client's predicted position and ensures the client receives map data
+      for each step it walks. The client handles walk animation timing locally.
     observable_equivalence: |
-      Opcode 0x64 received with valid numdirs and dir bytes → Direction_t path
-      stored in GameState auto_walks → NoResponse. Invalid payload (numdirs==0,
-      length mismatch, all-invalid bytes) → NoResponse, no path stored.
-      Tests: test_parse_auto_walk_* (network crate), dispatch_auto_walk_* (server crate).
+      Opcode 0x64 with valid path → all steps applied, server player_pos updated,
+      MultiResponse with one render_map per step. Invalid payload → NoResponse, no
+      position change. Client ends up at correct destination with correct map data;
+      walk animation may appear instant rather than per-step smooth.
+      Tests: dispatch_auto_walk_stores_path_in_state, dispatch_auto_walk_reverses_wire_order,
+             dispatch_auto_walk_invalid_payload_does_not_store_path.
     verification_state: TESTED
-    date: 2026-06-03
-    reviewed_by: auto-migration loop 2026-06-03
+    date: 2026-06-04
+    reviewed_by: systematic-debugging 2026-06-04
     status: ACCEPTED
 
   - id: cancel-attack-follow-inlined-into-dispatch
@@ -1519,3 +1527,24 @@ differences:
 #
 # Future bugs uncovered during equivalence work should be filed under
 # their MIGRATION_LEDGER.yml entry as PARTIAL gaps, not re-added here.
+
+  - id: floor-change-walk-full-map
+    cpp_symbol: "ProtocolGame::sendMoveCreature (floor change path, opcodes 0xBE/0xBF)"
+    rust_symbol: "dispatch_opcode walk handlers (floor change branch)"
+    divergence: >
+      When a walk step results in a floor change (dest_z != src_z), C++ sends opcode 0xBE
+      (upstairs) or 0xBF (downstairs) plus floor-strip descriptions. Rust sends a full 0x64
+      map description instead. Behaviour (player ends on correct tile) is identical; packet
+      size is larger.
+    reason: "0xBE/0xBF serializers not yet implemented; full 0x64 is byte-correct."
+    date: "2026-06-04"
+
+  - id: auto-walk-single-final-packet
+    cpp_symbol: "Game::playerAutoWalk / Creature::onWalk (per-step sendMoveCreature)"
+    rust_symbol: "dispatch_opcode opcode 0x64 handler"
+    divergence: >
+      C++ processes each auto-walk step via a timed event scheduler, sending one
+      sendMoveCreature packet per step as it executes. Rust processes all steps
+      synchronously on receipt and sends one packet for the final position only.
+    reason: "No scheduler present; per-step timing requires infrastructure not yet built."
+    date: "2026-06-04"

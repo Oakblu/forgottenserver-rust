@@ -19,9 +19,9 @@ use crate::boot::framing::{frame_packet, frame_packet_seq};
 use crate::channel_session::ChannelSession;
 use crate::codec::{encode, ServerPacket};
 use crate::game_handler::{
-    build_map_around_player, handle_auto_walk, handle_close_channel, handle_fight_modes,
-    handle_follow, handle_get_channels, handle_open_channel, handle_open_private_channel,
-    handle_set_outfit, handle_vip_remove,
+    build_map_around_player, build_turn_packet, build_walk_step_packet, handle_auto_walk,
+    handle_close_channel, handle_fight_modes, handle_follow, handle_get_channels,
+    handle_open_channel, handle_open_private_channel, handle_set_outfit, handle_vip_remove,
 };
 use crate::game_state::{GameState, OutfitAppearance};
 
@@ -160,6 +160,21 @@ pub(crate) fn run_game_loop(
     // Per-connection chat and channel session state.
     let mut chat = ChatManager::new();
     let mut channel_session = ChannelSession::new(player_creature_id);
+
+    // Per-connection persistent Lua environment — created once, reused for all
+    // script dispatches so we pay the VM startup cost only at login.
+    let mut lua_env = {
+        use forgottenserver_scripting::lua_bindings::{GameStateHandle, LuaEnvironment};
+        let mut env = LuaEnvironment::new(GameStateHandle::default())
+            .expect("Lua init failed — cannot serve scripts for this connection");
+        let actions_lib_dir = action_data_dir.join("lib");
+        if actions_lib_dir.exists() {
+            if let Err(e) = env.load_lib_scripts(&actions_lib_dir) {
+                eprintln!("[gameloop] Lua lib load warning: {e}");
+            }
+        }
+        env
+    };
 
     // Track consecutive read timeouts so we can send periodic server pings
     // (mirrors C++ Player::sendPing every 5s, player.cpp:871) without sitting
@@ -349,6 +364,7 @@ pub(crate) fn run_game_loop(
             &script_dir,
             &actions,
             &action_data_dir,
+            &mut lua_env,
         );
 
         match response {
@@ -517,6 +533,7 @@ pub(crate) fn dispatch_opcode<F>(
     script_dir: &Path,
     actions: &Actions,
     action_data_dir: &Path,
+    lua_env: &mut forgottenserver_scripting::lua_bindings::LuaEnvironment,
 ) -> DispatchResult
 where
     F: Fn(u8, Position) -> Vec<u8>,
@@ -549,8 +566,111 @@ where
         0x64 => match pg::parse_auto_walk(&mut msg) {
             Ok(pkt) => {
                 eprintln!("[gameloop] auto-walk {} steps (0x64)", pkt.directions.len());
-                handle_auto_walk(player_creature_id, pkt.directions, state);
-                DispatchResult::NoResponse
+                // Process every step server-side to keep state in sync, then
+                // send a single full-map confirmation for the final position.
+                // Sending one packet per step confuses OTClient's walk
+                // prediction, causing it to end at a wrong location.
+                let mut moved = false;
+                let mut last_old_pos: Option<Position> = None;
+                for dir_t in &pkt.directions {
+                    let (dx, dy, dir): (i32, i32, u8) = match dir_t {
+                        0 => (0, -1, dir_north), // N
+                        1 => (1, 0, dir_east),   // E
+                        2 => (0, 1, dir_south),  // S
+                        3 => (-1, 0, dir_west),  // W
+                        4 => (-1, 1, 6),         // SW
+                        5 => (1, 1, 5),          // SE
+                        6 => (-1, -1, 7),        // NW
+                        7 => (1, -1, 4),         // NE
+                        _ => continue,
+                    };
+                    let new_x = player_pos.x as i32 + dx;
+                    let new_y = player_pos.y as i32 + dy;
+                    if !(0..=u16::MAX as i32).contains(&new_x)
+                        || !(0..=u16::MAX as i32).contains(&new_y)
+                    {
+                        eprintln!("[gameloop] auto-walk out of range: ({new_x},{new_y}), stopping");
+                        break;
+                    }
+                    let current_z = player_pos.z;
+                    let mut dest_z = current_z;
+                    let is_diagonal = dir >= 4;
+                    let new_pos = if !is_diagonal {
+                        use forgottenserver_map::tile::flags;
+                        let dest_x = new_x as u16;
+                        let dest_y = new_y as u16;
+                        if current_z != 8 {
+                            if let Some(cur_tile) = map.get_tile(player_pos.x, player_pos.y, current_z) {
+                                if cur_tile.has_height(3) {
+                                    if let Some(up_z) = current_z.checked_sub(1) {
+                                        let above_cur_clear = map
+                                            .get_tile(player_pos.x, player_pos.y, up_z)
+                                            .map(|t| t.get_ground().is_none() && !t.has_flag(flags::BLOCKSOLID))
+                                            .unwrap_or(true);
+                                        if above_cur_clear {
+                                            if let Some(above_dest) = map.get_tile(dest_x, dest_y, up_z) {
+                                                if above_dest.get_ground().is_some()
+                                                    && !above_dest.has_flag(flags::IMMOVABLEBLOCKSOLID)
+                                                    && !above_dest.has_floor_change()
+                                                {
+                                                    dest_z = up_z;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if current_z != 7 && dest_z == current_z {
+                            let dest_same_z_empty = map
+                                .get_tile(dest_x, dest_y, current_z)
+                                .map(|t| t.get_ground().is_none() && !t.has_flag(flags::BLOCKSOLID))
+                                .unwrap_or(true);
+                            if dest_same_z_empty {
+                                let below_z = current_z.saturating_add(1);
+                                if let Some(below_dest) = map.get_tile(dest_x, dest_y, below_z) {
+                                    if below_dest.has_height(3)
+                                        && !below_dest.has_flag(flags::IMMOVABLEBLOCKSOLID)
+                                    {
+                                        dest_z = below_z;
+                                    }
+                                }
+                            }
+                        }
+                        let (final_x, final_y, final_z) =
+                            query_destination(map, dest_x, dest_y, dest_z);
+                        Position::new(final_x, final_y, final_z)
+                    } else {
+                        Position::new(new_x as u16, new_y as u16, dest_z)
+                    };
+                    last_old_pos = Some(*player_pos);
+                    *player_pos = new_pos;
+                    *player_dir = dir;
+                    state.set_player_position(player_creature_id, new_pos);
+                    eprintln!(
+                        "[gameloop] auto-walk step dir={dir} -> ({},{},{})",
+                        new_pos.x, new_pos.y, new_pos.z
+                    );
+                    moved = true;
+                }
+                handle_auto_walk(player_creature_id, vec![], state);
+                if moved {
+                    let final_pos = *player_pos;
+                    let final_dir = *player_dir;
+                    if let Some(old) = last_old_pos {
+                        if final_pos.z == old.z {
+                            DispatchResult::Response(build_walk_step_packet(
+                                map, old.x, old.y, old.z, final_pos.x, final_pos.y, final_pos.z,
+                            ))
+                        } else {
+                            DispatchResult::Response(render_map(final_dir, final_pos))
+                        }
+                    } else {
+                        DispatchResult::Response(render_map(final_dir, final_pos))
+                    }
+                } else {
+                    DispatchResult::NoResponse
+                }
             }
             Err(e) => {
                 eprintln!("[gameloop] auto-walk parse error: {e}");
@@ -575,7 +695,6 @@ where
                 eprintln!("[gameloop] walk out of range: ({new_x},{new_y})");
                 return DispatchResult::NoResponse;
             }
-
             // Floor-change detection — mirrors C++ Game::internalMoveCreature.
             // Diagonal moves never trigger floor changes (C++ diagonalMovement guard).
             let current_z = player_pos.z;
@@ -638,6 +757,8 @@ where
                 let (final_x, final_y, final_z) =
                     query_destination(map, new_x as u16, new_y as u16, dest_z);
                 let new_pos = Position::new(final_x, final_y, final_z);
+                let old_x = player_pos.x;
+                let old_y = player_pos.y;
                 *player_pos = new_pos;
                 *player_dir = dir;
                 state.set_player_position(player_creature_id, new_pos);
@@ -645,10 +766,18 @@ where
                     "[gameloop] walk dir={dir} -> ({}, {}, {})",
                     new_pos.x, new_pos.y, new_pos.z
                 );
-                return DispatchResult::Response(render_map(dir, new_pos));
+                return if new_pos.z == current_z {
+                    DispatchResult::Response(build_walk_step_packet(
+                        map, old_x, old_y, current_z, new_pos.x, new_pos.y, new_pos.z,
+                    ))
+                } else {
+                    DispatchResult::Response(render_map(dir, new_pos))
+                };
             }
 
             let new_pos = Position::new(new_x as u16, new_y as u16, dest_z);
+            let old_x = player_pos.x;
+            let old_y = player_pos.y;
             *player_pos = new_pos;
             *player_dir = dir;
             state.set_player_position(player_creature_id, new_pos);
@@ -656,7 +785,13 @@ where
                 "[gameloop] walk dir={dir} -> ({}, {}, {})",
                 new_pos.x, new_pos.y, new_pos.z
             );
-            DispatchResult::Response(render_map(dir, new_pos))
+            if new_pos.z == current_z {
+                DispatchResult::Response(build_walk_step_packet(
+                    map, old_x, old_y, current_z, new_pos.x, new_pos.y, new_pos.z,
+                ))
+            } else {
+                DispatchResult::Response(render_map(dir, new_pos))
+            }
         }
         0x69 => {
             eprintln!("[gameloop] stop auto-walk (0x69)");
@@ -673,7 +808,7 @@ where
             };
             *player_dir = dir;
             eprintln!("[gameloop] turn -> dir={dir}");
-            DispatchResult::Response(render_map(dir, *player_pos))
+            DispatchResult::Response(build_turn_packet(player_creature_id, *player_pos, dir))
         }
         0x77 => match pg::parse_equip_object(&mut msg) {
             Ok(pkt) => {
@@ -785,11 +920,10 @@ where
                 let item_pos = Position::new(use_pkt.pos_x, use_pkt.pos_y, use_pkt.pos_z);
                 if let Some(action) = actions.get_by_item_id(use_pkt.item_id) {
                     let script_path = action_data_dir.join("scripts").join(&action.script_name);
-                    let lib_dir = action_data_dir.join("lib");
                     use forgottenserver_scripting::lua_bindings::action_player::{execute_action, ActionContext};
                     match execute_action(
+                        lua_env,
                         &script_path,
-                        Some(&lib_dir),
                         ActionContext { item_id: use_pkt.item_id, item_pos, player_pos: *player_pos, player_name, player_level, has_access: true },
                     ) {
                         Ok(out) => {
@@ -815,6 +949,11 @@ where
                             }
                             for (effect_pos, effect_type) in out.magic_effects {
                                 responses.push(pg::serialize_magic_effect(effect_pos.x, effect_pos.y, effect_pos.z, effect_type));
+                            }
+                            if let Some(pos) = out.new_pos {
+                                *player_pos = pos;
+                                state.set_player_position(player_creature_id, pos);
+                                responses.push(render_map(*player_dir, pos));
                             }
                             if responses.is_empty() {
                                 DispatchResult::NoResponse
@@ -996,6 +1135,7 @@ where
                         use forgottenserver_scripting::lua_bindings::talkaction_player::execute_talkaction;
                         eprintln!("[gameloop] talkaction: script={} param={:?}", script_path.display(), param);
                         match execute_talkaction(
+                            lua_env,
                             &script_path,
                             &action.words,  // matched command word only (C++ passes words, not full text)
                             param,
@@ -1552,6 +1692,7 @@ mod tests {
         state: &mut GameState,
     ) -> DispatchResult {
         use forgottenserver_scripting::actions::Actions;
+        use forgottenserver_scripting::lua_bindings::{GameStateHandle, LuaEnvironment};
         use forgottenserver_scripting::talkaction::TalkActions;
         let world = World::new();
         let map = Map::new();
@@ -1559,6 +1700,7 @@ mod tests {
         let mut session = ChannelSession::new(0);
         let ta = TalkActions::new();
         let acts = Actions::new();
+        let mut lua_env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
         dispatch_opcode(
             opcode,
             payload,
@@ -1581,6 +1723,7 @@ mod tests {
             std::path::Path::new(""),
             &acts,
             std::path::Path::new(""),
+            &mut lua_env,
         )
     }
 
@@ -1593,12 +1736,14 @@ mod tests {
         map: &Map,
     ) -> DispatchResult {
         use forgottenserver_scripting::actions::Actions;
+        use forgottenserver_scripting::lua_bindings::{GameStateHandle, LuaEnvironment};
         use forgottenserver_scripting::talkaction::TalkActions;
         let world = World::new();
         let mut chat = ChatManager::new();
         let mut session = ChannelSession::new(0);
         let ta = TalkActions::new();
         let acts = Actions::new();
+        let mut lua_env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
         dispatch_opcode(
             opcode,
             payload,
@@ -1621,6 +1766,7 @@ mod tests {
             std::path::Path::new(""),
             &acts,
             std::path::Path::new(""),
+            &mut lua_env,
         )
     }
 
@@ -1634,11 +1780,13 @@ mod tests {
         session: &mut ChannelSession,
     ) -> DispatchResult {
         use forgottenserver_scripting::actions::Actions;
+        use forgottenserver_scripting::lua_bindings::{GameStateHandle, LuaEnvironment};
         use forgottenserver_scripting::talkaction::TalkActions;
         let world = World::new();
         let map = Map::new();
         let ta = TalkActions::new();
         let acts = Actions::new();
+        let mut lua_env = LuaEnvironment::new(GameStateHandle::default()).expect("lua init");
         dispatch_opcode(
             opcode,
             payload,
@@ -1661,6 +1809,7 @@ mod tests {
             std::path::Path::new(""),
             &acts,
             std::path::Path::new(""),
+            &mut lua_env,
         )
     }
 
@@ -1895,7 +2044,7 @@ mod tests {
         let mut state = GameState::new();
         let r = dispatch(0x6A, &[], &mut pos, &mut dir, &mut state);
         match r {
-            DispatchResult::Response(bytes) => assert_eq!(bytes[0], 0x64),
+            DispatchResult::Response(bytes) => assert_eq!(bytes[0], 0x6D, "diagonal same-floor walk must use 0x6D"),
             _ => panic!("0x6A (walk NE) must return a Response"),
         }
         assert_eq!(pos, Position::new(101, 99, 7));
@@ -1909,7 +2058,7 @@ mod tests {
         let mut state = GameState::new();
         let r = dispatch(0x6B, &[], &mut pos, &mut dir, &mut state);
         match r {
-            DispatchResult::Response(bytes) => assert_eq!(bytes[0], 0x64),
+            DispatchResult::Response(bytes) => assert_eq!(bytes[0], 0x6D, "diagonal same-floor walk must use 0x6D"),
             _ => panic!("0x6B (walk SE) must return a Response"),
         }
         assert_eq!(pos, Position::new(101, 101, 7));
@@ -1923,7 +2072,7 @@ mod tests {
         let mut state = GameState::new();
         let r = dispatch(0x6C, &[], &mut pos, &mut dir, &mut state);
         match r {
-            DispatchResult::Response(bytes) => assert_eq!(bytes[0], 0x64),
+            DispatchResult::Response(bytes) => assert_eq!(bytes[0], 0x6D, "diagonal same-floor walk must use 0x6D"),
             _ => panic!("0x6C (walk SW) must return a Response"),
         }
         assert_eq!(pos, Position::new(99, 101, 7));
@@ -1937,7 +2086,7 @@ mod tests {
         let mut state = GameState::new();
         let r = dispatch(0x6D, &[], &mut pos, &mut dir, &mut state);
         match r {
-            DispatchResult::Response(bytes) => assert_eq!(bytes[0], 0x64),
+            DispatchResult::Response(bytes) => assert_eq!(bytes[0], 0x6D, "diagonal same-floor walk must use 0x6D"),
             _ => panic!("0x6D (walk NW) must return a Response"),
         }
         assert_eq!(pos, Position::new(99, 99, 7));
@@ -1961,7 +2110,7 @@ mod tests {
         let r = dispatch(0x65, &[], &mut pos, &mut dir, &mut state);
         match r {
             DispatchResult::Response(bytes) => {
-                assert_eq!(bytes[0], 0x64);
+                assert_eq!(bytes[0], 0x6D, "same-floor walk must use incremental 0x6D packet");
             }
             _ => panic!("walk must produce a Response"),
         }
@@ -2156,24 +2305,31 @@ mod tests {
     #[test]
     fn dispatch_auto_walk_stores_path_in_state() {
         let mut state = GameState::new();
+        // Wire payload: numdirs=1, wire_byte=3 (North → Direction_t 0)
         let payload = &[1u8, 3u8];
         let mut pos = Position::new(100, 100, 7);
         let mut dir = 0u8;
         let r = dispatch(0x64, payload, &mut pos, &mut dir, &mut state);
-        assert!(matches!(r, DispatchResult::NoResponse));
-        let path = state.get_auto_walk(0).expect("auto-walk path must be stored");
-        assert_eq!(path, &vec![0u8]);
+        // All steps processed immediately; single map description for final position.
+        assert!(matches!(r, DispatchResult::Response(_)));
+        // Player walked one step north: y decreased by 1.
+        assert_eq!(pos, Position::new(100, 99, 7));
+        // Path is cleared in state after immediate processing.
+        let path = state.get_auto_walk(0).expect("auto-walk state must exist");
+        assert!(path.is_empty(), "path must be cleared after immediate processing");
     }
 
     #[test]
     fn dispatch_auto_walk_reverses_wire_order() {
         let mut state = GameState::new();
+        // Wire: numdirs=2, bytes=[3,1]. parse_auto_walk reverses and maps:
+        // wire-3→N(0), wire-1→E(1), reversed → [E(1), N(0)] (E first, N second).
         let payload = &[2u8, 3u8, 1u8];
         let mut pos = Position::new(100, 100, 7);
         let mut dir = 0u8;
         dispatch(0x64, payload, &mut pos, &mut dir, &mut state);
-        let path = state.get_auto_walk(0).expect("path must be stored");
-        assert_eq!(path, &vec![1u8, 0u8]);
+        // Both steps applied: East (+1,0) then North (0,-1).
+        assert_eq!(pos, Position::new(101, 99, 7));
     }
 
     #[test]
@@ -2185,6 +2341,27 @@ mod tests {
         let r = dispatch(0x64, payload, &mut pos, &mut dir, &mut state);
         assert!(matches!(r, DispatchResult::NoResponse));
         assert!(state.get_auto_walk(0).map(|p| p.is_empty()).unwrap_or(true));
+    }
+
+    #[test]
+    fn dispatch_auto_walk_same_floor_final_step_returns_incremental_packet() {
+        let mut state = GameState::new();
+        // payload: numdirs=1, wire_byte=1 (East)
+        // The auto-walk parser reads wire byte 1 as East (dir_east = 1 in dispatch helpers)
+        let payload = &[1u8, 1u8];
+        let mut pos = Position::new(100, 100, 7);
+        let mut dir = 0u8;
+        let r = dispatch(0x64, payload, &mut pos, &mut dir, &mut state);
+        match r {
+            DispatchResult::Response(bytes) => {
+                assert_eq!(
+                    bytes[0], 0x6D,
+                    "auto-walk same-floor final step must use incremental 0x6D, not full 0x64"
+                );
+            }
+            _ => panic!("auto-walk with a valid step must return a Response"),
+        }
+        assert_eq!(pos, Position::new(101, 100, 7));
     }
 
     #[test]
@@ -3760,6 +3937,23 @@ mod tests {
         dispatch_with_map(0x65, &[], &mut pos, &mut dir, &mut state, &map);
 
         assert_eq!(pos.z, 7, "z must NOT change when current_z==7 (surface)");
+    }
+
+    #[test]
+    fn dispatch_turn_returns_creature_turn_packet() {
+        let mut pos = Position::new(50, 60, 7);
+        let mut dir = 0u8;
+        let mut state = GameState::new();
+        let r = dispatch(0x6F, &[], &mut pos, &mut dir, &mut state);
+        match r {
+            DispatchResult::Response(bytes) => {
+                assert_eq!(bytes[0], 0x6B, "turn must respond with 0x6B (creature turn)");
+            }
+            _ => panic!("turn opcode must return a Response"),
+        }
+        // Position must not change on a turn.
+        assert_eq!(pos, Position::new(50, 60, 7));
+        assert_eq!(dir, 0); // dir_north = 0
     }
 
     #[test]

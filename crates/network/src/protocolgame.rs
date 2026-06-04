@@ -3056,6 +3056,123 @@ where
     out.get_output_buffer()[2..].to_vec()
 }
 
+/// Serialize the incremental walk-step update sent to the walking player for
+/// a non-teleport move.
+///
+/// Mirrors C++ `ProtocolGame::sendMoveCreature` (non-teleport branch):
+/// `protocolgame.cpp` lines 2795–2836.
+///
+/// The returned bytes are one network-message body (no outer framing):
+/// - `0x6D` creature-move: old_pos, old_stackpos, new_pos
+/// - `0x65`/`0x67` new row of tiles (if y changed — north/south)
+/// - `0x66`/`0x68` new column of tiles (if x changed — east/west)
+///
+/// For floor changes the caller must fall back to `serialize_map_description`
+/// (full map description); this function only handles the horizontal strip.
+///
+/// `old_stackpos` is the creature's index in the old tile's item stack (1 for a
+/// player standing on ground after the ground item at index 0).
+#[allow(clippy::too_many_arguments)]
+pub fn serialize_walk_step<F>(
+    old_x: u16,
+    old_y: u16,
+    old_z: u8,
+    old_stackpos: u8,
+    new_x: u16,
+    new_y: u16,
+    new_z: u8,
+    lookup: F,
+) -> Vec<u8>
+where
+    F: Fn(i32, i32, i32) -> Option<MapTile>,
+{
+    let mut out = OutputMessage::new();
+
+    // 0x6D: creature moved from (old_x, old_y, old_z) at old_stackpos to new pos.
+    out.add_u8(0x6D);
+    out.add_u16(old_x);
+    out.add_u16(old_y);
+    out.add_u8(old_z);
+    out.add_u8(old_stackpos);
+    out.add_u16(new_x);
+    out.add_u16(new_y);
+    out.add_u8(new_z);
+
+    let ox = old_x as i32;
+    let oy = old_y as i32;
+    let nx = new_x as i32;
+    let ny = new_y as i32;
+    let z = new_z as i32;
+
+    let (startz, endz, zstep): (i32, i32, i32) = if z > 7 {
+        (z - 2, std::cmp::min(MAP_MAX_LAYERS - 1, z + 2), 1)
+    } else {
+        (7, 0, -1)
+    };
+
+    // Each direction strip mirrors one C++ `GetMapDescription` call: fresh skip
+    // counter per opcode, flushed at the end of that strip.
+    macro_rules! direction_strip {
+        ($opcode:expr, $x0:expr, $y0:expr, $w:expr, $h:expr) => {{
+            out.add_u8($opcode);
+            let mut skip: i32 = -1;
+            let mut nz = startz;
+            while nz != endz + zstep {
+                let offset = z - nz;
+                append_floor_description(
+                    &mut out, $x0, $y0, nz, $w, $h, offset, &mut skip, &lookup,
+                );
+                nz += zstep;
+            }
+            if skip >= 0 {
+                out.add_u8(skip as u8);
+                out.add_u8(0xFF);
+            }
+        }};
+    }
+
+    // North/south row (y changed).
+    if oy > ny {
+        direction_strip!(
+            0x65,
+            ox - MAX_CLIENT_VIEWPORT_X,
+            ny - MAX_CLIENT_VIEWPORT_Y,
+            (MAX_CLIENT_VIEWPORT_X * 2) + 2,
+            1
+        );
+    } else if oy < ny {
+        direction_strip!(
+            0x67,
+            ox - MAX_CLIENT_VIEWPORT_X,
+            ny + MAX_CLIENT_VIEWPORT_Y + 1,
+            (MAX_CLIENT_VIEWPORT_X * 2) + 2,
+            1
+        );
+    }
+
+    // East/west column (x changed).
+    if ox < nx {
+        direction_strip!(
+            0x66,
+            nx + MAX_CLIENT_VIEWPORT_X + 1,
+            ny - MAX_CLIENT_VIEWPORT_Y,
+            1,
+            (MAX_CLIENT_VIEWPORT_Y * 2) + 2
+        );
+    } else if ox > nx {
+        direction_strip!(
+            0x68,
+            nx - MAX_CLIENT_VIEWPORT_X,
+            ny - MAX_CLIENT_VIEWPORT_Y,
+            1,
+            (MAX_CLIENT_VIEWPORT_Y * 2) + 2
+        );
+    }
+
+    out.write_message_length();
+    out.get_output_buffer()[2..].to_vec()
+}
+
 /// Append one floor's bytes (`GetFloorDescription`).
 ///
 /// Mirrors C++ `ProtocolGame::GetFloorDescription` in

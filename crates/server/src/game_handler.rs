@@ -115,6 +115,42 @@ pub fn build_map_around_player(
     })
 }
 
+/// Serialize the incremental walk-step packet for the walking player.
+///
+/// For a same-floor horizontal step this emits `0x6D` (creature move) plus the
+/// new edge-row or edge-column of tiles (`0x65`/`0x66`/`0x67`/`0x68`), which
+/// is what C++ `sendMoveCreature` sends.
+///
+/// The caller is responsible for using `build_map_around_player` (full map
+/// description) when `old_pos.z != new_pos.z` (floor change / teleport).
+pub fn build_walk_step_packet(
+    map: &Map,
+    old_x: u16,
+    old_y: u16,
+    old_z: u8,
+    new_x: u16,
+    new_y: u16,
+    new_z: u8,
+) -> Vec<u8> {
+    pg::serialize_walk_step(old_x, old_y, old_z, 1, new_x, new_y, new_z, |x, y, z| {
+        world_tile_lookup(map, x, y, z)
+    })
+}
+
+/// Serialize the creature-turn packet (`0x6B`) for a player rotating in place.
+///
+/// Mirrors C++ `ProtocolGame::sendCreatureTurn` which emits a `0x6B` opcode
+/// followed by position, stackpos, creature id, direction, and walkthrough flag.
+///
+/// `creature_id` is the 32-bit creature handle; `pos` is the player's current
+/// world position; `dir` is the new facing direction (0=N, 1=E, 2=S, 3=W).
+pub fn build_turn_packet(creature_id: u32, pos: Position, dir: u8) -> Vec<u8> {
+    let mut out = OutputMessage::new();
+    pg::serialize_creature_turn(&mut out, creature_id, pos.x, pos.y, pos.z, 1, dir, false);
+    out.write_message_length();
+    out.get_output_buffer()[2..].to_vec()
+}
+
 /// Run a serializer that writes into a caller-supplied `OutputMessage`, then
 /// extract the `[opcode][fields]` body (stripping the 2-byte length header).
 ///
@@ -2239,5 +2275,12 @@ mod tests {
         let result = world_tile_lookup(&map, 10, 10, 7).expect("tile must exist");
         let (_, meta) = result.down_items[0];
         assert!(meta.stackable, "stackable item must have stackable=true in ItemTypeMeta");
+    }
+
+    #[test]
+    fn build_turn_packet_starts_with_0x6b() {
+        use forgottenserver_common::position::Position;
+        let bytes = build_turn_packet(42, Position::new(100, 100, 7), 1);
+        assert_eq!(bytes[0], 0x6B, "turn packet opcode must be 0x6B");
     }
 }
