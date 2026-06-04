@@ -1420,4 +1420,18 @@ mod tests {
             "partial-chance skip never fired across 9 seeds"
         );
     }
+
+    // -----------------------------------------------------------------------
+    // Tests required by MIGRATION_LEDGER.yml (exact names required)
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_loot_block() {
+        // C++: struct LootBlock — item_type_id, count_min, count_max, chance
+        let b = LootBlock::new(100, 1, 3, 50_000);
+        assert_eq!(b.item_type_id, 100u16);
+        assert_eq!(b.count_min, 1u32);
+        assert_eq!(b.count_max, 3u32);
+        assert_eq!(b.chance, 50_000u32);
+    }
 }

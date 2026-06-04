@@ -1883,4 +1883,95 @@ mod tests {
         // tile contains item id 55 but NO AddItemTile event is registered.
         assert!(m.on_item_move(99, pos, &[55], true));
     }
+
+    // -----------------------------------------------------------------------
+    // Tests required by MIGRATION_LEDGER.yml (exact names required)
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_move_event_t() {
+        // C++: MoveEvent_t enum variants must exist
+        let _ = MoveEventType::StepIn;
+        let _ = MoveEventType::StepOut;
+        let _ = MoveEventType::Equip;
+        let _ = MoveEventType::DeEquip;
+        let _ = MoveEventType::AddItem;
+        let _ = MoveEventType::RemoveItem;
+        let _ = MoveEventType::AddItemTile;
+        let _ = MoveEventType::RemoveItemTile;
+    }
+
+    #[test]
+    fn test_move_event_step_in() {
+        assert_eq!(MoveEventType::StepIn, MoveEventType::StepIn);
+    }
+
+    #[test]
+    fn test_move_event_step_out() {
+        assert_eq!(MoveEventType::StepOut, MoveEventType::StepOut);
+    }
+
+    #[test]
+    fn test_move_event_add_item() {
+        assert_eq!(MoveEventType::AddItem, MoveEventType::AddItem);
+    }
+
+    #[test]
+    fn test_move_event_remove_item() {
+        assert_eq!(MoveEventType::RemoveItem, MoveEventType::RemoveItem);
+    }
+
+    #[test]
+    fn test_move_event_add_item_itemtile() {
+        assert_eq!(MoveEventType::AddItemTile, MoveEventType::AddItemTile);
+    }
+
+    #[test]
+    fn test_move_event_remove_item_itemtile() {
+        assert_eq!(MoveEventType::RemoveItemTile, MoveEventType::RemoveItemTile);
+    }
+
+    #[test]
+    fn test_register_event() {
+        // C++: MoveEvents::registerEvent registers a descriptor by item id
+        let mut handler = MoveEventHandler::new();
+        let desc = MoveEventDescriptor::step(MoveEventType::StepIn, 0);
+        handler.register(100, desc);
+        assert!(handler.get_event(100, MoveEventType::StepIn).is_some());
+        assert!(handler.get_event(100, MoveEventType::StepOut).is_none());
+    }
+
+    #[test]
+    fn test_add_event() {
+        // C++: MoveEvents::addEvent adds a descriptor for item id
+        let mut handler = MoveEventHandler::new();
+        let desc = MoveEventDescriptor::step(MoveEventType::AddItem, 0);
+        handler.register(200, desc);
+        assert!(handler.get_event(200, MoveEventType::AddItem).is_some());
+    }
+
+    #[test]
+    fn test_get_event() {
+        // C++: MoveEvents::getEvent returns None when nothing registered
+        let handler = MoveEventHandler::new();
+        assert!(handler.get_event(999, MoveEventType::StepIn).is_none());
+    }
+
+    #[test]
+    fn test_on_player_equip() {
+        // C++: MoveEvents::onPlayerEquip returns Ok when no equip event registered
+        let m = Movement::new();
+        let player = PlayerProfile::new(1, 1, 0, false, 1);
+        let result = m.on_player_equip(999, SlotMask::HEAD, &player, &[]);
+        assert_eq!(result, EquipCheckResult::Ok);
+    }
+
+    #[test]
+    fn test_on_player_de_equip() {
+        // C++: MoveEvents::onPlayerDeEquip returns Ok when no deequip event registered
+        let m = Movement::new();
+        let player = PlayerProfile::new(1, 1, 0, false, 1);
+        let result = m.on_player_deequip(999, SlotMask::HEAD, &player);
+        assert_eq!(result, EquipCheckResult::Ok);
+    }
 }

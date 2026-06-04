@@ -1613,4 +1613,48 @@ mod tests {
         assert_eq!(r.percent, 0);
         assert_eq!(r.chance, 0);
     }
+
+    // -----------------------------------------------------------------------
+    // Tests required by MIGRATION_LEDGER.yml (exact names required)
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_armor() {
+        // C++: BLOCK_ARMOR = 2 / monsters.h int32_t armor field
+        assert_eq!(BlockType::Armor as u8, 2);
+    }
+
+    #[test]
+    fn test_defense() {
+        // C++: BLOCK_DEFENSE = 1 / monsters.h int32_t defense field
+        assert_eq!(BlockType::Defense as u8, 1);
+    }
+
+    #[test]
+    fn test_outfit() {
+        // C++: Outfit_t struct with look_type, look_head, etc.
+        let o = Outfit::default();
+        assert_eq!(o.look_type, 0u16);
+        assert_eq!(o.look_head, 0u8);
+        assert_eq!(o.look_mount, 0u16);
+    }
+
+    #[test]
+    fn test_light() {
+        // C++: LightInfo struct with level and color
+        let l = LightInfo::default();
+        assert_eq!(l.level, 0u8);
+        assert_eq!(l.color, 215u8);
+    }
+
+    #[test]
+    fn test_event_type() {
+        // C++: MonstersEvent_t (eventType) in monsters.h — MONSTERS_EVENT_NONE=0 .. SAY=5
+        assert_eq!(MonstersEvent::None as u8, 0);
+        assert_eq!(MonstersEvent::Think as u8, 1);
+        assert_eq!(MonstersEvent::Appear as u8, 2);
+        assert_eq!(MonstersEvent::Disappear as u8, 3);
+        assert_eq!(MonstersEvent::Move as u8, 4);
+        assert_eq!(MonstersEvent::Say as u8, 5);
+    }
 }

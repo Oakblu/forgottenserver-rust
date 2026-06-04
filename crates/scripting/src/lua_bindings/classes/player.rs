@@ -347,4 +347,291 @@ mod tests {
             .unwrap();
         assert_eq!(xp, 123);
     }
+
+    #[test]
+    fn is_player_returns_true() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let v: bool = lua.load("return p:isPlayer()").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn get_level_returns_value() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let v: i64 = lua.load("return p:getLevel()").eval().unwrap();
+        assert!(v >= 0);
+    }
+
+    #[test]
+    fn get_level_percent_returns_value() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let v: i64 = lua.load("return p:getLevelPercent()").eval().unwrap();
+        assert!(v >= 0);
+    }
+
+    #[test]
+    fn get_magic_level_returns_value() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let v: i64 = lua.load("return p:getMagicLevel()").eval().unwrap();
+        assert!(v >= 0);
+    }
+
+    #[test]
+    fn get_base_magic_level_matches_magic_level() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let a: i64 = lua.load("return p:getMagicLevel()").eval().unwrap();
+        let b: i64 = lua.load("return p:getBaseMagicLevel()").eval().unwrap();
+        assert_eq!(a, b);
+    }
+
+    #[test]
+    fn mana_add_and_max() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let result: mlua::Result<bool> = lua.load("return p:addMana(100)").eval();
+        assert!(result.is_ok());
+        let mx: i64 = lua.load("return p:getMaxMana()").eval().unwrap();
+        assert!(mx >= 0);
+    }
+
+    #[test]
+    fn set_max_mana_mutates() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let v: i64 = lua
+            .load("p:setMaxMana(500); return p:getMaxMana()")
+            .eval()
+            .unwrap();
+        assert_eq!(v, 500);
+    }
+
+    #[test]
+    fn get_mana_spent_returns_value() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let v: i64 = lua.load("return p:getManaSpent()").eval().unwrap();
+        assert!(v >= 0);
+    }
+
+    #[test]
+    fn get_capacity_and_set() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let result: mlua::Result<()> = lua.load("p:setCapacity(10000)").exec();
+        assert!(result.is_ok());
+        let v: i64 = lua.load("return p:getCapacity()").eval().unwrap();
+        assert_eq!(v, 10000);
+    }
+
+    #[test]
+    fn get_free_capacity_returns_value() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let v: i64 = lua.load("return p:getFreeCapacity()").eval().unwrap();
+        assert!(v >= 0);
+    }
+
+    #[test]
+    fn soul_and_max_soul() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let ms: i64 = lua.load("return p:getMaxSoul()").eval().unwrap();
+        assert_eq!(ms, 200);
+        let result: mlua::Result<()> = lua.load("p:addSoul(10)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn stamina_stub() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let v: i64 = lua.load("return p:getStamina()").eval().unwrap();
+        assert!(v >= 0);
+    }
+
+    #[test]
+    fn skull_time_round_trip() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let v: i64 = lua
+            .load("p:setSkullTime(1000); return p:getSkullTime()")
+            .eval()
+            .unwrap();
+        assert_eq!(v, 1000);
+    }
+
+    #[test]
+    fn vocation_round_trip() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let v: i64 = lua
+            .load("p:setVocation(4); return p:getVocation()")
+            .eval()
+            .unwrap();
+        assert_eq!(v, 4);
+    }
+
+    #[test]
+    fn offline_training_skill_returns_value() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        // Default is Unset (-1) which matches C++ behavior
+        let result: mlua::Result<i64> = lua
+            .load("return p:getOfflineTrainingSkill()")
+            .eval();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn offline_training_time_returns_value() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let v: i64 = lua
+            .load("return p:getOfflineTrainingTime()")
+            .eval()
+            .unwrap();
+        assert!(v >= 0);
+    }
+
+    #[test]
+    fn get_account_id_returns_zero() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let v: i64 = lua.load("return p:getAccountId()").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn get_account_type_returns_one() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let v: i64 = lua.load("return p:getAccountType()").eval().unwrap();
+        assert_eq!(v, 1);
+    }
+
+    #[test]
+    fn get_client_returns_table() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let v: bool = lua
+            .load("local c = p:getClient(); return c ~= nil")
+            .eval()
+            .unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn get_bank_balance_returns_zero() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let v: i64 = lua.load("return p:getBankBalance()").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn is_pz_locked_returns_false() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let v: bool = lua.load("return p:isPzLocked()").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn get_instant_spells_returns_table() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let v: bool = lua
+            .load("return type(p:getInstantSpells()) == 'table'")
+            .eval()
+            .unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn networking_stubs_return_true() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let v: bool = lua
+            .load("return p:sendTextMessage(0, 'Hello')")
+            .eval()
+            .unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn remove_experience_returns_false() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let v: bool = lua.load("return p:removeExperience(100)").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn skill_stubs_return_zero() {
+        let lua = fresh_lua();
+        let p = Player::new(1, "T", 1);
+        lua.globals().set("p", LuaPlayer::new(p)).unwrap();
+        let v: i64 = lua.load("return p:getSkillLevel(0)").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn eq_same_arc() {
+        let lua = fresh_lua();
+        let p = LuaPlayer::new(Player::new(1, "T", 1));
+        let p2 = p.clone();
+        lua.globals().set("a", p).unwrap();
+        lua.globals().set("b", p2).unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn eq_different_arcs() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("a", LuaPlayer::new(Player::new(1, "A", 1)))
+            .unwrap();
+        lua.globals()
+            .set("b", LuaPlayer::new(Player::new(2, "B", 1)))
+            .unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaPlayer> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
 }

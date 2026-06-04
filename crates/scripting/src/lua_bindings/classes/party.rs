@@ -130,4 +130,159 @@ mod tests {
             .unwrap();
         assert_eq!(n, 1);
     }
+
+    #[test]
+    fn set_leader_and_get_leader() {
+        let lua = fresh_lua();
+        let p = Party::new(1);
+        lua.globals().set("p", LuaParty::new(p)).unwrap();
+        let result: mlua::Result<bool> = lua.load("p:setLeader(2); return true").eval();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_member_count_starts_at_zero() {
+        let lua = fresh_lua();
+        let p = Party::new(1);
+        lua.globals().set("p", LuaParty::new(p)).unwrap();
+        let v: i64 = lua.load("return p:getMemberCount()").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn get_members_returns_table() {
+        let lua = fresh_lua();
+        let p = Party::new(1);
+        lua.globals().set("p", LuaParty::new(p)).unwrap();
+        let v: bool = lua
+            .load("return type(p:getMembers()) == 'table'")
+            .eval()
+            .unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn remove_invite_from_empty_returns_false() {
+        let lua = fresh_lua();
+        let p = Party::new(1);
+        lua.globals().set("p", LuaParty::new(p)).unwrap();
+        let v: bool = lua.load("return p:removeInvite(99)").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn add_member_then_count() {
+        let lua = fresh_lua();
+        let p = Party::new(1);
+        lua.globals().set("p", LuaParty::new(p)).unwrap();
+        let v: bool = lua.load("return p:addMember(5)").eval().unwrap();
+        assert!(v);
+        let count: i64 = lua.load("return p:getMemberCount()").eval().unwrap();
+        assert_eq!(count, 1);
+    }
+
+    #[test]
+    fn remove_member_from_empty_returns_false() {
+        let lua = fresh_lua();
+        let p = Party::new(1);
+        lua.globals().set("p", LuaParty::new(p)).unwrap();
+        let v: bool = lua.load("return p:removeMember(99)").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn shared_experience_default_state() {
+        let lua = fresh_lua();
+        let p = Party::new(1);
+        lua.globals().set("p", LuaParty::new(p)).unwrap();
+        let active: bool = lua
+            .load("return p:isSharedExperienceActive()")
+            .eval()
+            .unwrap();
+        let enabled: bool = lua
+            .load("return p:isSharedExperienceEnabled()")
+            .eval()
+            .unwrap();
+        assert!(!active);
+        assert!(!enabled);
+    }
+
+    #[test]
+    fn set_shared_experience() {
+        let lua = fresh_lua();
+        let p = Party::new(1);
+        lua.globals().set("p", LuaParty::new(p)).unwrap();
+        let result: mlua::Result<bool> = lua.load("return p:setSharedExperience(true)").eval();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn disband_returns_true() {
+        let lua = fresh_lua();
+        let p = Party::new(1);
+        lua.globals().set("p", LuaParty::new(p)).unwrap();
+        let v: bool = lua.load("return p:disband()").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn share_experience_stub_returns_false() {
+        let lua = fresh_lua();
+        let p = Party::new(1);
+        lua.globals().set("p", LuaParty::new(p)).unwrap();
+        let v: bool = lua.load("return p:shareExperience()").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn is_member_sharing_exp_stub_returns_false() {
+        let lua = fresh_lua();
+        let p = Party::new(1);
+        lua.globals().set("p", LuaParty::new(p)).unwrap();
+        let v: bool = lua.load("return p:isMemberSharingExp()").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn get_invitees_returns_table() {
+        let lua = fresh_lua();
+        let p = Party::new(1);
+        lua.globals().set("p", LuaParty::new(p)).unwrap();
+        let v: bool = lua
+            .load("return type(p:getInvitees()) == 'table'")
+            .eval()
+            .unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn eq_same_arc() {
+        let lua = fresh_lua();
+        let p = LuaParty::new(Party::new(1));
+        let p2 = p.clone();
+        lua.globals().set("a", p).unwrap();
+        lua.globals().set("b", p2).unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn eq_different_arcs() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("a", LuaParty::new(Party::new(1)))
+            .unwrap();
+        lua.globals()
+            .set("b", LuaParty::new(Party::new(2)))
+            .unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaParty> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
 }

@@ -440,4 +440,131 @@ mod tests {
             "missing Content-Type header, got: {text:?}"
         );
     }
+
+    // ── dispatch_login: invalid login body (missing required fields) ─────────
+    // Lines 129-134: serde_json::from_value fails → errorCode 3
+
+    #[test]
+    fn login_type_with_missing_fields_returns_error_code_3() {
+        // "type" = "login" but missing "email" and "password" fields.
+        let body = b"{\"type\":\"login\"}";
+        let req = format!("POST / HTTP/1.0\r\nContent-Length: {}\r\n\r\n", body.len());
+        let mut full = req.into_bytes();
+        full.extend_from_slice(body);
+        let resp = roundtrip(make_session(empty_db()), &full);
+        let text = String::from_utf8_lossy(&resp);
+        assert!(
+            text.contains("\"errorCode\":3"),
+            "login with missing fields must return errorCode 3, got: {text:?}"
+        );
+    }
+
+    // ── dispatch_login: well-formed request but account not found ────────────
+    // Lines 136-148: handle_login_db called → DB returns empty → error response
+
+    #[test]
+    fn login_type_with_unknown_account_returns_error_response() {
+        // Supply a valid LoginRequest JSON but the DB has no such account.
+        let body = br#"{"type":"login","email":"unknown@test.com","password":"wrong"}"#;
+        let req = format!("POST / HTTP/1.0\r\nContent-Length: {}\r\n\r\n", body.len());
+        let mut full = req.into_bytes();
+        full.extend_from_slice(body);
+        let resp = roundtrip(make_session(empty_db()), &full);
+        let text = String::from_utf8_lossy(&resp);
+        // The DB has no records so handle_login_db must return an error code.
+        assert!(
+            text.contains("\"errorCode\""),
+            "login with unknown account must return an errorCode, got: {text:?}"
+        );
+    }
+
+    // ── reason_phrase coverage: 400, 401, 404, 500, and default ─────────────
+
+    #[test]
+    fn reason_phrase_covers_all_branches() {
+        assert_eq!(reason_phrase(200), "OK");
+        assert_eq!(reason_phrase(400), "Bad Request");
+        assert_eq!(reason_phrase(401), "Unauthorized");
+        assert_eq!(reason_phrase(404), "Not Found");
+        assert_eq!(reason_phrase(500), "Internal Server Error");
+        assert_eq!(reason_phrase(999), "OK"); // default branch
+    }
+
+    // ── read_request: partial-then-complete read path ────────────────────────
+    // Line 200: the Ok(httparse::Status::Partial) → Continue branch is exercised
+    // when the request arrives in two separate chunks.
+
+    #[test]
+    fn partial_request_read_continues_until_complete() {
+        use std::net::TcpListener;
+
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = listener.local_addr().unwrap().port();
+
+        let sess = make_session(empty_db());
+        std::thread::spawn(move || {
+            if let Ok((stream, _)) = listener.accept() {
+                sess.handle(stream);
+            }
+        });
+
+        let mut client = Client::connect(format!("127.0.0.1:{port}")).unwrap();
+        client
+            .set_write_timeout(Some(Duration::from_secs(5)))
+            .unwrap();
+        client
+            .set_read_timeout(Some(Duration::from_secs(5)))
+            .unwrap();
+
+        // Write the first half of the request header, pause, then write the rest.
+        // This forces the server to hit the Partial branch before completing.
+        client.write_all(b"GET / HTTP").unwrap();
+        std::thread::sleep(Duration::from_millis(20));
+        client.write_all(b"/1.0\r\n\r\n").unwrap();
+
+        let mut response = Vec::new();
+        let _ = client.read_to_end(&mut response);
+        let text = String::from_utf8_lossy(&response);
+        assert!(
+            text.contains("200"),
+            "partial-then-complete request must still produce a 200 response, got: {text:?}"
+        );
+    }
+
+    // ── handle() returns early (None from read_request) ─────────────────────
+    // When the client sends garbage that can never parse as HTTP headers,
+    // handle() must close the connection without panicking or sending a response.
+
+    #[test]
+    fn garbage_request_produces_no_response() {
+        use std::net::TcpListener;
+
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let port = listener.local_addr().unwrap().port();
+
+        let sess = make_session(empty_db());
+        std::thread::spawn(move || {
+            if let Ok((stream, _)) = listener.accept() {
+                sess.handle(stream);
+            }
+        });
+
+        let mut client = Client::connect(format!("127.0.0.1:{port}")).unwrap();
+        client
+            .set_read_timeout(Some(Duration::from_secs(3)))
+            .unwrap();
+
+        // Intentionally malformed — httparse returns Err for bad method chars.
+        client.write_all(b"\x00\x01\x02\x03 / HTTP/1.0\r\n\r\n").unwrap();
+        client.shutdown(std::net::Shutdown::Write).unwrap();
+
+        let mut response = Vec::new();
+        let _ = client.read_to_end(&mut response);
+        // Server should close without sending anything.
+        assert!(
+            response.is_empty(),
+            "garbage request must produce no response, got {} bytes",
+            response.len()
+        );
+    }
 }

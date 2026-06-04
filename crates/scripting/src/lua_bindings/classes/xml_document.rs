@@ -35,6 +35,8 @@ impl UserData for LuaXmlDocument {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+
     fn fresh_lua() -> mlua::Lua {
         let lua = mlua::Lua::new();
         crate::lua_bindings::install_bindings(
@@ -43,6 +45,36 @@ mod tests {
         )
         .unwrap();
         lua
+    }
+
+    #[test]
+    fn from_lua_with_xml_document_userdata_succeeds() {
+        use mlua::FromLua as _;
+        let lua = mlua::Lua::new();
+        let ud = lua.create_userdata(LuaXmlDocument).unwrap();
+        let val = mlua::Value::UserData(ud);
+        let result = LuaXmlDocument::from_lua(val, &lua);
+        assert!(result.is_ok(), "from_lua must succeed with XMLDocument userdata");
+    }
+
+    #[test]
+    fn from_lua_with_wrong_type_returns_error() {
+        use mlua::FromLua as _;
+        let lua = mlua::Lua::new();
+        let result = LuaXmlDocument::from_lua(mlua::Value::Integer(42), &lua);
+        assert!(result.is_err(), "from_lua must fail with non-userdata type");
+        if let Err(mlua::Error::FromLuaConversionError { to, .. }) = result {
+            assert_eq!(to, "LuaXmlDocument");
+        }
+    }
+
+    #[test]
+    fn xml_doc_delete_does_not_error() {
+        let lua = fresh_lua();
+        let result: mlua::Result<()> = lua
+            .load(r#"local doc = XMLDocument("test"); doc:delete()"#)
+            .exec();
+        assert!(result.is_ok(), "delete() should not error: {result:?}");
     }
 
     #[test]

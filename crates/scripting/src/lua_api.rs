@@ -1618,4 +1618,640 @@ mod tests {
         let api = LuaApi::new();
         assert!(!api.player_send_text_message(999, "Hello!"));
     }
+
+    // ── Additional coverage tests ─────────────────────────────────────────────
+
+    // Lines 248-250: get_pos_by_dir for South, East, West
+    #[test]
+    fn free_fn_get_pos_by_dir_south() {
+        let pos = Position::new(100, 100, 7);
+        let new_pos = get_pos_by_dir(pos, Direction::South);
+        assert_eq!(new_pos, Position::new(100, 101, 7));
+    }
+
+    #[test]
+    fn free_fn_get_pos_by_dir_east() {
+        let pos = Position::new(100, 100, 7);
+        let new_pos = get_pos_by_dir(pos, Direction::East);
+        assert_eq!(new_pos, Position::new(101, 100, 7));
+    }
+
+    #[test]
+    fn free_fn_get_pos_by_dir_west() {
+        let pos = Position::new(100, 100, 7);
+        let new_pos = get_pos_by_dir(pos, Direction::West);
+        assert_eq!(new_pos, Position::new(99, 100, 7));
+    }
+
+    // Lines 248-250: via LuaApi wrapper
+    #[test]
+    fn lua_api_get_pos_by_dir_south() {
+        let api = LuaApi::new();
+        let pos = Position::new(100, 100, 7);
+        assert_eq!(api.get_pos_by_dir(pos, Direction::South), Position::new(100, 101, 7));
+    }
+
+    #[test]
+    fn lua_api_get_pos_by_dir_east() {
+        let api = LuaApi::new();
+        let pos = Position::new(100, 100, 7);
+        assert_eq!(api.get_pos_by_dir(pos, Direction::East), Position::new(101, 100, 7));
+    }
+
+    #[test]
+    fn lua_api_get_pos_by_dir_west() {
+        let api = LuaApi::new();
+        let pos = Position::new(100, 100, 7);
+        assert_eq!(api.get_pos_by_dir(pos, Direction::West), Position::new(99, 100, 7));
+    }
+
+    // Lines 324-325: LuaApiStub::default()
+    #[test]
+    fn lua_api_stub_default_creates_empty_stub() {
+        let stub = LuaApiStub::default();
+        assert!(!stub.is_registered("anything"));
+    }
+
+    // Lines 372-376: load_file branches
+    #[test]
+    fn load_file_nonexistent_path_returns_err() {
+        let api = LuaApi::new();
+        let result = api.load_file("/path/to/nonexistent/script.lua");
+        assert!(matches!(result, LoadResult::Err(_)));
+    }
+
+    #[test]
+    fn load_file_invalid_extension_returns_err() {
+        let api = LuaApi::new();
+        let result = api.load_file("script.invalid");
+        assert!(matches!(result, LoadResult::Err(_)));
+    }
+
+    #[test]
+    fn load_file_valid_path_returns_ok() {
+        let api = LuaApi::new();
+        let result = api.load_file("/data/scripts/some_script.lua");
+        assert_eq!(result, LoadResult::Ok);
+    }
+
+    // Lines 380-384: load_string branches
+    #[test]
+    fn load_string_syntax_error_returns_err() {
+        let api = LuaApi::new();
+        let result = api.load_string("--SYNTAX_ERROR\nfunction bad( end");
+        assert!(matches!(result, LoadResult::Err(_)));
+    }
+
+    #[test]
+    fn load_string_valid_script_returns_ok() {
+        let api = LuaApi::new();
+        let result = api.load_string("x = 42");
+        assert_eq!(result, LoadResult::Ok);
+    }
+
+    #[test]
+    fn load_string_empty_returns_ok() {
+        let api = LuaApi::new();
+        let result = api.load_string("");
+        assert_eq!(result, LoadResult::Ok);
+    }
+
+    // Lines 514-551: Player getter functions (the ones not yet covered)
+    #[test]
+    fn get_player_max_health_returns_value() {
+        let mut api = LuaApi::new();
+        let mut p = PlayerData::new(1, "P");
+        p.max_health = 200;
+        api.add_player(p);
+        assert_eq!(api.get_player_max_health(1), Some(200));
+    }
+
+    #[test]
+    fn get_player_max_health_missing_returns_none() {
+        let api = LuaApi::new();
+        assert_eq!(api.get_player_max_health(999), None);
+    }
+
+    #[test]
+    fn get_player_mana_returns_value() {
+        let mut api = LuaApi::new();
+        let mut p = PlayerData::new(1, "P");
+        p.mana = 75;
+        api.add_player(p);
+        assert_eq!(api.get_player_mana(1), Some(75));
+    }
+
+    #[test]
+    fn get_player_mana_missing_returns_none() {
+        let api = LuaApi::new();
+        assert_eq!(api.get_player_mana(999), None);
+    }
+
+    #[test]
+    fn get_player_max_mana_returns_value() {
+        let mut api = LuaApi::new();
+        let mut p = PlayerData::new(1, "P");
+        p.max_mana = 150;
+        api.add_player(p);
+        assert_eq!(api.get_player_max_mana(1), Some(150));
+    }
+
+    #[test]
+    fn get_player_max_mana_missing_returns_none() {
+        let api = LuaApi::new();
+        assert_eq!(api.get_player_max_mana(999), None);
+    }
+
+    #[test]
+    fn get_player_level_missing_returns_none() {
+        let api = LuaApi::new();
+        assert_eq!(api.get_player_level(999), None);
+    }
+
+    #[test]
+    fn get_player_experience_returns_value() {
+        let mut api = LuaApi::new();
+        let mut p = PlayerData::new(1, "P");
+        p.experience = 123456;
+        api.add_player(p);
+        assert_eq!(api.get_player_experience(1), Some(123456));
+    }
+
+    #[test]
+    fn get_player_experience_missing_returns_none() {
+        let api = LuaApi::new();
+        assert_eq!(api.get_player_experience(999), None);
+    }
+
+    #[test]
+    fn get_player_vocation_returns_value() {
+        let mut api = LuaApi::new();
+        let mut p = PlayerData::new(1, "P");
+        p.vocation = 4;
+        api.add_player(p);
+        assert_eq!(api.get_player_vocation(1), Some(4));
+    }
+
+    #[test]
+    fn get_player_vocation_missing_returns_none() {
+        let api = LuaApi::new();
+        assert_eq!(api.get_player_vocation(999), None);
+    }
+
+    #[test]
+    fn get_player_name_returns_value() {
+        let mut api = LuaApi::new();
+        api.add_player(PlayerData::new(1, "Hero"));
+        assert_eq!(api.get_player_name(1), Some("Hero".to_string()));
+    }
+
+    #[test]
+    fn get_player_name_missing_returns_none() {
+        let api = LuaApi::new();
+        assert_eq!(api.get_player_name(999), None);
+    }
+
+    #[test]
+    fn get_player_guid_returns_value() {
+        let mut api = LuaApi::new();
+        api.add_player(PlayerData::new(1, "P"));
+        assert_eq!(api.get_player_guid(1), Some(1));
+    }
+
+    #[test]
+    fn get_player_guid_missing_returns_none() {
+        let api = LuaApi::new();
+        assert_eq!(api.get_player_guid(999), None);
+    }
+
+    #[test]
+    fn get_player_account_id_returns_value() {
+        let mut api = LuaApi::new();
+        let mut p = PlayerData::new(1, "P");
+        p.account_id = 42;
+        api.add_player(p);
+        assert_eq!(api.get_player_account_id(1), Some(42));
+    }
+
+    #[test]
+    fn get_player_account_id_missing_returns_none() {
+        let api = LuaApi::new();
+        assert_eq!(api.get_player_account_id(999), None);
+    }
+
+    #[test]
+    fn get_player_position_returns_value() {
+        let mut api = LuaApi::new();
+        let mut p = PlayerData::new(1, "P");
+        p.position = Position::new(100, 200, 7);
+        api.add_player(p);
+        assert_eq!(api.get_player_position(1), Some(Position::new(100, 200, 7)));
+    }
+
+    #[test]
+    fn get_player_position_missing_returns_none() {
+        let api = LuaApi::new();
+        assert_eq!(api.get_player_position(999), None);
+    }
+
+    #[test]
+    fn get_player_speed_returns_value() {
+        let mut api = LuaApi::new();
+        let mut p = PlayerData::new(1, "P");
+        p.speed = 300;
+        api.add_player(p);
+        assert_eq!(api.get_player_speed(1), Some(300));
+    }
+
+    #[test]
+    fn get_player_speed_missing_returns_none() {
+        let api = LuaApi::new();
+        assert_eq!(api.get_player_speed(999), None);
+    }
+
+    #[test]
+    fn get_player_skull_type_returns_value() {
+        let mut api = LuaApi::new();
+        let mut p = PlayerData::new(1, "P");
+        p.skull = 3;
+        api.add_player(p);
+        assert_eq!(api.get_player_skull_type(1), Some(3));
+    }
+
+    #[test]
+    fn get_player_skull_type_missing_returns_none() {
+        let api = LuaApi::new();
+        assert_eq!(api.get_player_skull_type(999), None);
+    }
+
+    #[test]
+    fn get_player_outfit_returns_value() {
+        let mut api = LuaApi::new();
+        let mut p = PlayerData::new(1, "P");
+        p.outfit.look_type = 128;
+        api.add_player(p);
+        let outfit = api.get_player_outfit(1).unwrap();
+        assert_eq!(outfit.look_type, 128);
+    }
+
+    #[test]
+    fn get_player_outfit_missing_returns_none() {
+        let api = LuaApi::new();
+        assert_eq!(api.get_player_outfit(999), None);
+    }
+
+    // Lines 561-627: Player setter functions (missing player paths)
+    #[test]
+    fn do_player_set_health_missing_player_returns_false() {
+        let mut api = LuaApi::new();
+        assert!(!api.do_player_set_health(999, 50));
+    }
+
+    #[test]
+    fn do_player_set_health_clamps_below_zero() {
+        let mut api = LuaApi::new();
+        api.add_player(PlayerData::new(1, "P"));
+        api.do_player_set_health(1, -100);
+        assert_eq!(api.get_player_health(1), Some(0));
+    }
+
+    #[test]
+    fn do_player_set_mana_returns_true_for_existing_player() {
+        let mut api = LuaApi::new();
+        api.add_player(PlayerData::new(1, "P"));
+        assert!(api.do_player_set_mana(1, 30));
+        assert_eq!(api.get_player_mana(1), Some(30));
+    }
+
+    #[test]
+    fn do_player_set_mana_missing_player_returns_false() {
+        let mut api = LuaApi::new();
+        assert!(!api.do_player_set_mana(999, 30));
+    }
+
+    #[test]
+    fn do_player_set_mana_clamps_to_max() {
+        let mut api = LuaApi::new();
+        let mut p = PlayerData::new(1, "P");
+        p.max_mana = 50;
+        api.add_player(p);
+        api.do_player_set_mana(1, 9999);
+        assert_eq!(api.get_player_mana(1), Some(50));
+    }
+
+    #[test]
+    fn do_player_set_experience_returns_true_for_existing_player() {
+        let mut api = LuaApi::new();
+        api.add_player(PlayerData::new(1, "P"));
+        assert!(api.do_player_set_experience(1, 9999));
+        assert_eq!(api.get_player_experience(1), Some(9999));
+    }
+
+    #[test]
+    fn do_player_set_experience_missing_player_returns_false() {
+        let mut api = LuaApi::new();
+        assert!(!api.do_player_set_experience(999, 100));
+    }
+
+    #[test]
+    fn do_player_set_level_returns_true_for_existing_player() {
+        let mut api = LuaApi::new();
+        api.add_player(PlayerData::new(1, "P"));
+        assert!(api.do_player_set_level(1, 50));
+        assert_eq!(api.get_player_level(1), Some(50));
+    }
+
+    #[test]
+    fn do_player_set_level_missing_player_returns_false() {
+        let mut api = LuaApi::new();
+        assert!(!api.do_player_set_level(999, 10));
+    }
+
+    #[test]
+    fn do_player_set_level_clamps_to_min_one() {
+        let mut api = LuaApi::new();
+        api.add_player(PlayerData::new(1, "P"));
+        api.do_player_set_level(1, 0);
+        assert_eq!(api.get_player_level(1), Some(1));
+    }
+
+    #[test]
+    fn do_player_set_outfit_returns_true_for_existing_player() {
+        let mut api = LuaApi::new();
+        api.add_player(PlayerData::new(1, "P"));
+        let outfit = Outfit {
+            look_type: 200,
+            ..Default::default()
+        };
+        assert!(api.do_player_set_outfit(1, outfit.clone()));
+        assert_eq!(api.get_player_outfit(1).unwrap().look_type, 200);
+    }
+
+    #[test]
+    fn do_player_set_outfit_missing_player_returns_false() {
+        let mut api = LuaApi::new();
+        assert!(!api.do_player_set_outfit(999, Outfit::default()));
+    }
+
+    #[test]
+    fn do_player_set_skull_type_returns_true_for_existing_player() {
+        let mut api = LuaApi::new();
+        api.add_player(PlayerData::new(1, "P"));
+        assert!(api.do_player_set_skull_type(1, 2));
+        assert_eq!(api.get_player_skull_type(1), Some(2));
+    }
+
+    #[test]
+    fn do_player_set_skull_type_missing_player_returns_false() {
+        let mut api = LuaApi::new();
+        assert!(!api.do_player_set_skull_type(999, 1));
+    }
+
+    #[test]
+    fn do_player_send_text_message_returns_true_for_existing_player() {
+        let mut api = LuaApi::new();
+        api.add_player(PlayerData::new(1, "P"));
+        assert!(api.do_player_send_text_message(1, "test"));
+    }
+
+    #[test]
+    fn do_player_send_text_message_returns_false_for_missing_player() {
+        let api = LuaApi::new();
+        assert!(!api.do_player_send_text_message(999, "test"));
+    }
+
+    // Lines 636-669: Creature functions (missing paths)
+    #[test]
+    fn get_creature_health_missing_returns_none() {
+        let api = LuaApi::new();
+        assert_eq!(api.get_creature_health(999), None);
+    }
+
+    #[test]
+    fn get_creature_max_health_missing_returns_none() {
+        let api = LuaApi::new();
+        assert_eq!(api.get_creature_max_health(999), None);
+    }
+
+    #[test]
+    fn get_creature_speed_returns_value() {
+        let mut api = LuaApi::new();
+        let mut c = CreatureData::new(1);
+        c.speed = 350;
+        api.add_creature(c);
+        assert_eq!(api.get_creature_speed(1), Some(350));
+    }
+
+    #[test]
+    fn get_creature_speed_missing_returns_none() {
+        let api = LuaApi::new();
+        assert_eq!(api.get_creature_speed(999), None);
+    }
+
+    #[test]
+    fn do_creature_add_health_missing_returns_none() {
+        let mut api = LuaApi::new();
+        assert_eq!(api.do_creature_add_health(999, 10), None);
+    }
+
+    #[test]
+    fn do_creature_add_health_clamps_below_zero() {
+        let mut api = LuaApi::new();
+        let mut c = CreatureData::new(1);
+        c.health = 10;
+        c.max_health = 100;
+        api.add_creature(c);
+        let result = api.do_creature_add_health(1, -50);
+        assert_eq!(result, Some(0));
+    }
+
+    #[test]
+    fn do_creature_add_health_clamps_to_max() {
+        let mut api = LuaApi::new();
+        let mut c = CreatureData::new(1);
+        c.health = 50;
+        c.max_health = 100;
+        api.add_creature(c);
+        let result = api.do_creature_add_health(1, 9999);
+        assert_eq!(result, Some(100));
+    }
+
+    #[test]
+    fn do_creature_change_direction_returns_true_for_existing_creature() {
+        let mut api = LuaApi::new();
+        api.add_creature(CreatureData::new(1));
+        assert!(api.do_creature_change_direction(1, Direction::North));
+    }
+
+    #[test]
+    fn do_creature_change_direction_missing_returns_false() {
+        let mut api = LuaApi::new();
+        assert!(!api.do_creature_change_direction(999, Direction::North));
+    }
+
+    #[test]
+    fn do_creature_change_direction_persists() {
+        let mut api = LuaApi::new();
+        api.add_creature(CreatureData::new(1));
+        api.do_creature_change_direction(1, Direction::East);
+        // Direction is stored; verify no panic and success
+        assert!(!api.creature_is_player(1));
+    }
+
+    // Lines 699-700: get_item_weight
+    #[test]
+    fn get_item_weight_returns_value() {
+        let mut api = LuaApi::new();
+        let mut item = ItemData::new(1, 2160);
+        item.weight = 3.5;
+        api.add_item(item);
+        let w = api.get_item_weight(1).unwrap();
+        assert!((w - 3.5).abs() < 1e-6);
+    }
+
+    #[test]
+    fn get_item_weight_missing_returns_none() {
+        let api = LuaApi::new();
+        assert_eq!(api.get_item_weight(999), None);
+    }
+
+    // Lines 812-813: db_store_query
+    #[test]
+    fn db_store_query_returns_empty_rows() {
+        let api = LuaApi::new();
+        let result = api.db_store_query("SELECT 1");
+        assert_eq!(result, DbResult::Rows(vec![]));
+    }
+
+    // Line 914: creature_get_max_health for player path
+    #[test]
+    fn creature_get_max_health_for_player() {
+        let mut api = LuaApi::new();
+        let mut p = PlayerData::new(1, "P");
+        p.max_health = 300;
+        api.add_player(p);
+        assert_eq!(api.creature_get_max_health(1), Some(300));
+    }
+
+    // creature_get_position for missing uid returns None
+    #[test]
+    fn creature_get_position_for_missing_returns_none() {
+        let api = LuaApi::new();
+        assert_eq!(api.creature_get_position(999), None);
+    }
+
+    // Lines 961-962: LuaApi::default()
+    #[test]
+    fn lua_api_default_creates_valid_api() {
+        let api = LuaApi::default();
+        assert!(!api.sandbox_config().allow_os_execute);
+        assert!(!api.sandbox_config().allow_io);
+        assert!(api.is_registered("getPlayerHealth"));
+    }
+
+    // Tile functions (additional coverage)
+    #[test]
+    fn get_tile_info_returns_info_for_added_tile() {
+        let mut api = LuaApi::new();
+        let pos = Position::new(100, 100, 7);
+        api.add_tile(TileInfo {
+            position: pos,
+            top_creature_uid: 5,
+            item_count: 3,
+            is_protection_zone: false,
+        });
+        let tile = api.get_tile_info(pos).unwrap();
+        assert_eq!(tile.item_count, 3);
+        assert_eq!(tile.top_creature_uid, 5);
+    }
+
+    #[test]
+    fn get_tile_info_missing_returns_none() {
+        let api = LuaApi::new();
+        assert!(api.get_tile_info(Position::new(999, 999, 7)).is_none());
+    }
+
+    #[test]
+    fn get_top_creature_returns_uid() {
+        let mut api = LuaApi::new();
+        let pos = Position::new(50, 50, 7);
+        api.add_tile(TileInfo {
+            position: pos,
+            top_creature_uid: 42,
+            item_count: 0,
+            is_protection_zone: true,
+        });
+        assert_eq!(api.get_top_creature(pos), Some(42));
+    }
+
+    #[test]
+    fn get_top_creature_missing_returns_none() {
+        let api = LuaApi::new();
+        assert!(api.get_top_creature(Position::new(1, 1, 7)).is_none());
+    }
+
+    #[test]
+    fn do_remove_item_with_items_returns_true() {
+        let mut api = LuaApi::new();
+        let pos = Position::new(10, 10, 7);
+        api.add_tile(TileInfo {
+            position: pos,
+            top_creature_uid: 0,
+            item_count: 2,
+            is_protection_zone: false,
+        });
+        assert!(api.do_remove_item(pos));
+    }
+
+    #[test]
+    fn do_remove_item_empty_tile_returns_false() {
+        let mut api = LuaApi::new();
+        let pos = Position::new(10, 10, 7);
+        api.add_tile(TileInfo {
+            position: pos,
+            top_creature_uid: 0,
+            item_count: 0,
+            is_protection_zone: false,
+        });
+        assert!(!api.do_remove_item(pos));
+    }
+
+    #[test]
+    fn do_remove_item_missing_tile_returns_false() {
+        let mut api = LuaApi::new();
+        assert!(!api.do_remove_item(Position::new(999, 999, 7)));
+    }
+
+    #[test]
+    fn do_create_item_creates_item_at_position() {
+        let mut api = LuaApi::new();
+        let pos = Position::new(100, 100, 7);
+        let uid = api.do_create_item(2160, pos);
+        assert_ne!(uid, 0);
+        assert_eq!(api.item_get_id(uid), Some(2160));
+    }
+
+    #[test]
+    fn item_get_action_id_returns_value_when_set() {
+        let mut api = LuaApi::new();
+        api.add_item(ItemData::new(1, 2160));
+        api.item_set_attribute(
+            1,
+            ItemAttr::Other("actionId".to_string()),
+            "1234".to_string(),
+        );
+        assert_eq!(api.item_get_action_id(1), Some("1234".to_string()));
+    }
+
+    #[test]
+    fn item_get_action_id_missing_item_returns_none() {
+        let api = LuaApi::new();
+        assert_eq!(api.item_get_action_id(999), None);
+    }
+
+    #[test]
+    fn get_event_callback_returns_none_for_unregistered() {
+        let api = LuaApi::new();
+        assert!(api.get_event_callback("onUnknown").is_none());
+    }
 }

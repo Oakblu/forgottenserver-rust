@@ -109,4 +109,101 @@ mod tests {
         let id: i64 = lua.load("return m:getId()").eval().unwrap();
         assert_eq!(id, 42);
     }
+
+    #[test]
+    fn get_target_count_returns_zero() {
+        let lua = fresh_lua();
+        let m = Monster::new(1, "Rat", 50);
+        lua.globals().set("m", LuaMonster::new(m)).unwrap();
+        let v: i64 = lua.load("return m:getTargetCount()").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn get_target_list_returns_table() {
+        let lua = fresh_lua();
+        let m = Monster::new(1, "Rat", 50);
+        lua.globals().set("m", LuaMonster::new(m)).unwrap();
+        let v: bool = lua
+            .load("return type(m:getTargetList()) == 'table'")
+            .eval()
+            .unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn select_target_returns_false() {
+        let lua = fresh_lua();
+        let m = Monster::new(1, "Rat", 50);
+        lua.globals().set("m", LuaMonster::new(m)).unwrap();
+        let v: bool = lua.load("return m:selectTarget(5)").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn search_target_returns_false() {
+        let lua = fresh_lua();
+        let m = Monster::new(1, "Rat", 50);
+        lua.globals().set("m", LuaMonster::new(m)).unwrap();
+        let v: bool = lua.load("return m:searchTarget()").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn set_idle_does_not_error() {
+        let lua = fresh_lua();
+        let m = Monster::new(1, "Rat", 50);
+        lua.globals().set("m", LuaMonster::new(m)).unwrap();
+        let result: mlua::Result<()> = lua.load("m:setIdle(true)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn is_idle_returns_false() {
+        let lua = fresh_lua();
+        let m = Monster::new(1, "Rat", 50);
+        lua.globals().set("m", LuaMonster::new(m)).unwrap();
+        let v: bool = lua.load("return m:isIdle()").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn stub_methods_do_not_error() {
+        let lua = fresh_lua();
+        let m = Monster::new(1, "Rat", 50);
+        lua.globals().set("m", LuaMonster::new(m)).unwrap();
+        let result: mlua::Result<()> = lua.load("m:isOpponent(); m:isFriend(); m:isMonster()").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn eq_same_arc_is_true() {
+        let lua = fresh_lua();
+        let m = LuaMonster::new(Monster::new(1, "Rat", 50));
+        let m2 = m.clone();
+        lua.globals().set("a", m).unwrap();
+        lua.globals().set("b", m2).unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn eq_different_arcs_is_false() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("a", LuaMonster::new(Monster::new(1, "Rat", 50)))
+            .unwrap();
+        lua.globals()
+            .set("b", LuaMonster::new(Monster::new(2, "Rat", 50)))
+            .unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaMonster> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
 }

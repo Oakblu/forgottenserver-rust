@@ -29,3 +29,41 @@ impl UserData for LuaDbInsert {
         methods.add_method("execute", |_, _this, ()| Ok(true));
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn fresh_lua() -> mlua::Lua {
+        let lua = mlua::Lua::new();
+        crate::lua_bindings::install_bindings(
+            &lua,
+            crate::lua_bindings::GameStateHandle::default(),
+        )
+        .unwrap();
+        lua
+    }
+
+    #[test]
+    fn add_row_returns_true() {
+        let lua = fresh_lua();
+        lua.globals().set("ins", LuaDbInsert).unwrap();
+        let v: bool = lua.load("return ins:addRow('val1')").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn execute_returns_true() {
+        let lua = fresh_lua();
+        lua.globals().set("ins", LuaDbInsert).unwrap();
+        let v: bool = lua.load("return ins:execute()").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaDbInsert> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
+}

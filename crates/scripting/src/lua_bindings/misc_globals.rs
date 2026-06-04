@@ -131,6 +131,123 @@ mod tests {
     }
 
     #[test]
+    fn is_type_returns_false_for_string_arg() {
+        let lua = fresh_lua();
+        let result: bool = lua
+            .load(r#"return isType("hello", "SomeType")"#)
+            .eval()
+            .unwrap();
+        assert!(!result, "isType should return false (stub)");
+    }
+
+    #[test]
+    fn is_type_returns_false_for_nil_arg() {
+        let lua = fresh_lua();
+        let result: bool = lua
+            .load(r#"return isType(nil, "Player")"#)
+            .eval()
+            .unwrap();
+        assert!(!result, "isType(nil, ...) should return false");
+    }
+
+    #[test]
+    fn rawgetmetatable_returns_non_nil_for_table_with_meta() {
+        let lua = fresh_lua();
+        // Create a table with a metatable and check rawgetmetatable returns it
+        let result: bool = lua
+            .load(r#"
+                local t = {}
+                local mt = {__index = function() end}
+                setmetatable(t, mt)
+                return rawgetmetatable(t) ~= nil
+            "#)
+            .eval()
+            .unwrap();
+        assert!(result, "rawgetmetatable should return the metatable for a table with one set");
+    }
+
+    #[test]
+    fn rawgetmetatable_called_without_error_on_bare_table() {
+        // Just ensure the function is callable with a table argument — no error
+        let lua = fresh_lua();
+        let result = lua.load("rawgetmetatable({})").exec();
+        assert!(result.is_ok(), "rawgetmetatable({{}}) should not error: {:?}", result);
+    }
+
+    #[test]
+    fn rawgetmetatable_is_callable_with_any_arg() {
+        // Verify the function is registered and callable — no error regardless of arg type
+        let lua = fresh_lua();
+        let result = lua.load("rawgetmetatable(42)").exec();
+        assert!(result.is_ok(), "rawgetmetatable(number) should not error: {:?}", result);
+    }
+
+    #[test]
+    fn table_create_returns_table() {
+        let lua = fresh_lua();
+        let result: bool = lua
+            .load(r#"return type(table.create(5)) == "table""#)
+            .eval()
+            .unwrap();
+        assert!(result, "table.create should return a table");
+    }
+
+    #[test]
+    fn table_pack_packs_arguments() {
+        let lua = fresh_lua();
+        let result: i64 = lua
+            .load(r#"local t = table.pack(10, 20, 30); return t.n"#)
+            .eval()
+            .unwrap();
+        assert_eq!(result, 3, "table.pack should set n = 3");
+    }
+
+    #[test]
+    fn table_pack_values_accessible_by_index() {
+        let lua = fresh_lua();
+        let v: i64 = lua
+            .load(r#"local t = table.pack("a", "b", "c"); return #t"#)
+            .eval()
+            .unwrap();
+        assert_eq!(v, 3);
+    }
+
+    #[test]
+    fn os_mtime_returns_positive_integer() {
+        let lua = fresh_lua();
+        let ms: i64 = lua.load("return os.mtime()").eval().unwrap();
+        assert!(ms > 0, "os.mtime() should return a positive timestamp in ms");
+    }
+
+    #[test]
+    fn packet_handler_register_is_callable() {
+        let lua = fresh_lua();
+        let result = lua
+            .load("local h = PacketHandler(0xE1); h:register()")
+            .exec();
+        assert!(result.is_ok(), "PacketHandler:register() should not error: {:?}", result);
+    }
+
+    #[test]
+    fn packet_handler_clear_is_callable() {
+        let lua = fresh_lua();
+        let result = lua
+            .load("local h = PacketHandler(0xE1); h:clear()")
+            .exec();
+        assert!(result.is_ok(), "PacketHandler:clear() should not error: {:?}", result);
+    }
+
+    #[test]
+    fn packet_handler_no_args_defaults_to_zero() {
+        let lua = fresh_lua();
+        let v: i64 = lua
+            .load("local h = PacketHandler(); return h.packetType")
+            .eval()
+            .unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
     fn create_combat_area_is_callable() {
         let lua = fresh_lua();
         let result = lua

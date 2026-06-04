@@ -4613,4 +4613,19 @@ mod tests {
         let item = Item::new(t, 1);
         assert!(!item.is_supply());
     }
+
+    // -----------------------------------------------------------------------
+    // Tests required by MIGRATION_LEDGER.yml (exact names required)
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_get_defense() {
+        // C++: int32_t Item::getDefense() — returns attribute override or type default
+        let t = Arc::new(ItemTypeData {
+            defense: 10,
+            ..Default::default()
+        });
+        let item = Item::new(t, 1);
+        assert_eq!(item.get_defense(), 10);
+    }
 }

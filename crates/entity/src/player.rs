@@ -417,6 +417,15 @@ pub struct Player {
     // An absent key means "no value set"; setting `None` removes the key
     // (mirrors C++ `storageMap.erase(key)` path in setStorageValue).
     storage: HashMap<u32, i32>,
+
+    // (8.5-g) Learned instant spells — mirrors C++ `learnedInstantSpellList`.
+    learned_spells: Vec<String>,
+
+    // (8.5-h) Unlocked outfits — mirrors C++ `player->outfits` (outfit_id, addons).
+    unlocked_outfits: Vec<(u16, u8)>,
+
+    // (8.5-i) Unlocked mounts — mirrors C++ `player->mounts` (mount_id).
+    unlocked_mounts: Vec<u16>,
 }
 
 impl Player {
@@ -494,6 +503,9 @@ impl Player {
             subscribed_channels: Vec::new(),
             client_version: 0,
             storage: HashMap::new(),
+            learned_spells: Vec::new(),
+            unlocked_outfits: Vec::new(),
+            unlocked_mounts: Vec::new(),
         }
     }
 
@@ -1729,6 +1741,52 @@ impl Player {
     /// Returns an iterator over all (key, value) storage pairs.
     pub fn storage_iter(&self) -> impl Iterator<Item = (u32, i32)> + '_ {
         self.storage.iter().map(|(&k, &v)| (k, v))
+    }
+
+    // -----------------------------------------------------------------------
+    // Learned spells — mirrors C++ learnedInstantSpellList
+    // -----------------------------------------------------------------------
+
+    pub fn learn_spell(&mut self, name: String) {
+        if !self.learned_spells.iter().any(|s| s == &name) {
+            self.learned_spells.push(name);
+        }
+    }
+
+    pub fn has_learned_spell(&self, name: &str) -> bool {
+        self.learned_spells.iter().any(|s| s == name)
+    }
+
+    pub fn learned_spells_iter(&self) -> impl Iterator<Item = &str> + '_ {
+        self.learned_spells.iter().map(String::as_str)
+    }
+
+    // -----------------------------------------------------------------------
+    // Unlocked outfits — mirrors C++ player->outfits (outfit_id, addons)
+    // -----------------------------------------------------------------------
+
+    pub fn unlock_outfit(&mut self, outfit_id: u16, addons: u8) {
+        if !self.unlocked_outfits.iter().any(|&(id, _)| id == outfit_id) {
+            self.unlocked_outfits.push((outfit_id, addons));
+        }
+    }
+
+    pub fn unlocked_outfits_iter(&self) -> impl Iterator<Item = (u16, u8)> + '_ {
+        self.unlocked_outfits.iter().copied()
+    }
+
+    // -----------------------------------------------------------------------
+    // Unlocked mounts — mirrors C++ player->mounts (mount_id)
+    // -----------------------------------------------------------------------
+
+    pub fn unlock_mount(&mut self, mount_id: u16) {
+        if !self.unlocked_mounts.contains(&mount_id) {
+            self.unlocked_mounts.push(mount_id);
+        }
+    }
+
+    pub fn unlocked_mounts_iter(&self) -> impl Iterator<Item = u16> + '_ {
+        self.unlocked_mounts.iter().copied()
     }
 
     // -----------------------------------------------------------------------
@@ -5192,5 +5250,44 @@ mod tests {
         bytes[10] = 0xFF;
         let result = VIPEntry::from_bytes(&bytes, 0);
         assert_eq!(result, Err(AttrError::InvalidStringLength));
+    }
+
+    // -----------------------------------------------------------------------
+    // Tests required by MIGRATION_LEDGER.yml
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_get_skull() {
+        // C++: Skulls_t Player::getSkull() const — delegates to skull field
+        let mut p = Player::new(1, "Tester", 1);
+        assert_eq!(p.get_skull(), Skull::None);
+        p.set_skull(Skull::Red);
+        assert_eq!(p.get_skull(), Skull::Red);
+    }
+
+    #[test]
+    fn test_get_inventory_item() {
+        // C++: Item* Player::getInventoryItem(slots_t slot) const
+        let mut p = Player::new(1, "Tester", 1);
+        assert!(p.get_inventory_item(InventorySlot::Head).is_none());
+        let item = make_item(100);
+        p.set_inventory_item(InventorySlot::Head, item);
+        assert!(p.get_inventory_item(InventorySlot::Head).is_some());
+    }
+
+    #[test]
+    fn test_get_max_depot_items() {
+        // C++: uint32_t Player::getMaxDepotItems() const — set by group loader
+        let mut p = Player::new(1, "Tester", 1);
+        p.set_max_depot_items(2000);
+        assert_eq!(p.get_max_depot_items(), 2000);
+    }
+
+    #[test]
+    fn test_get_max_vip_entries() {
+        // C++: uint32_t Player::getMaxVIPEntries() const — set by group loader
+        let mut p = Player::new(1, "Tester", 1);
+        p.set_max_vip_entries(200);
+        assert_eq!(p.get_max_vip_entries(), 200);
     }
 }

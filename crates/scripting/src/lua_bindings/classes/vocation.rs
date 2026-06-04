@@ -178,4 +178,185 @@ mod tests {
         let v: bool = lua.load("return a == b").eval().unwrap();
         assert!(v);
     }
+
+    #[test]
+    fn get_client_id_returns_value() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("v", LuaVocation::new(sample_vocation()))
+            .unwrap();
+        let n: i64 = lua.load("return v:getClientId()").eval().unwrap();
+        assert_eq!(n, 4);
+    }
+
+    #[test]
+    fn get_description_returns_string() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("v", LuaVocation::new(sample_vocation()))
+            .unwrap();
+        let s: String = lua.load("return v:getDescription()").eval().unwrap();
+        assert_eq!(s, "a Knight");
+    }
+
+    #[test]
+    fn get_attack_speed_returns_value() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("v", LuaVocation::new(sample_vocation()))
+            .unwrap();
+        let n: i64 = lua.load("return v:getAttackSpeed()").eval().unwrap();
+        assert_eq!(n, 2000);
+    }
+
+    #[test]
+    fn get_base_speed_returns_value() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("v", LuaVocation::new(sample_vocation()))
+            .unwrap();
+        let n: i64 = lua.load("return v:getBaseSpeed()").eval().unwrap();
+        assert_eq!(n, 220);
+    }
+
+    #[test]
+    fn get_capacity_gain_returns_field() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("v", LuaVocation::new(sample_vocation()))
+            .unwrap();
+        let n: i64 = lua.load("return v:getCapacityGain()").eval().unwrap();
+        assert!(n >= 0);
+    }
+
+    #[test]
+    fn get_health_gain_returns_field() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("v", LuaVocation::new(sample_vocation()))
+            .unwrap();
+        let result: mlua::Result<i64> = lua.load("return v:getHealthGain()").eval();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_health_gain_amount_returns_field() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("v", LuaVocation::new(sample_vocation()))
+            .unwrap();
+        let result: mlua::Result<i64> = lua.load("return v:getHealthGainAmount()").eval();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_health_gain_ticks_returns_field() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("v", LuaVocation::new(sample_vocation()))
+            .unwrap();
+        let result: mlua::Result<i64> = lua.load("return v:getHealthGainTicks()").eval();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_mana_gain_returns_field() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("v", LuaVocation::new(sample_vocation()))
+            .unwrap();
+        let result: mlua::Result<i64> = lua.load("return v:getManaGain()").eval();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_mana_gain_amount_returns_field() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("v", LuaVocation::new(sample_vocation()))
+            .unwrap();
+        let result: mlua::Result<i64> = lua.load("return v:getManaGainAmount()").eval();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_mana_gain_ticks_returns_field() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("v", LuaVocation::new(sample_vocation()))
+            .unwrap();
+        let result: mlua::Result<i64> = lua.load("return v:getManaGainTicks()").eval();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_max_soul_returns_field() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("v", LuaVocation::new(sample_vocation()))
+            .unwrap();
+        let result: mlua::Result<i64> = lua.load("return v:getMaxSoul()").eval();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_soul_gain_ticks_returns_field() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("v", LuaVocation::new(sample_vocation()))
+            .unwrap();
+        let result: mlua::Result<i64> = lua.load("return v:getSoulGainTicks()").eval();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_promotion_returns_from_vocation() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("v", LuaVocation::new(sample_vocation()))
+            .unwrap();
+        let result: mlua::Result<i64> = lua.load("return v:getPromotion()").eval();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_demotion_returns_from_vocation() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("v", LuaVocation::new(sample_vocation()))
+            .unwrap();
+        let result: mlua::Result<i64> = lua.load("return v:getDemotion()").eval();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_required_mana_spent_at_level_one() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("v", LuaVocation::new(sample_vocation()))
+            .unwrap();
+        // Level 1: mana_multiplier^0 * 1600 = 1 * 1600 = 1600
+        let n: i64 = lua.load("return v:getRequiredManaSpent(1)").eval().unwrap();
+        assert_eq!(n, 1600);
+    }
+
+    #[test]
+    fn inequality_different_ids() {
+        let lua = fresh_lua();
+        let mut v2 = sample_vocation();
+        v2.id = 99;
+        lua.globals()
+            .set("a", LuaVocation::new(sample_vocation()))
+            .unwrap();
+        lua.globals().set("b", LuaVocation::new(v2)).unwrap();
+        let eq: bool = lua.load("return a == b").eval().unwrap();
+        assert!(!eq);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaVocation> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
 }

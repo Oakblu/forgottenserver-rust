@@ -784,4 +784,270 @@ mod tests {
         assert_eq!(spell.inner.name, "Berserk");
         assert_eq!(spell.inner.words, "exori");
     }
+
+    #[test]
+    fn spell_group_setter_integer_attack() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        lua.load("s:group(1)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("s").unwrap();
+        let borrowed = ud.borrow::<LuaSpell>().unwrap();
+        assert_eq!(borrowed.inner.group as i64, 1); // Attack
+    }
+
+    #[test]
+    fn spell_group_setter_integer_healing() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        lua.load("s:group(2)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("s").unwrap();
+        let borrowed = ud.borrow::<LuaSpell>().unwrap();
+        assert_eq!(borrowed.inner.group as i64, 2); // Healing
+    }
+
+    #[test]
+    fn spell_group_setter_integer_support() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        lua.load("s:group(3)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("s").unwrap();
+        let borrowed = ud.borrow::<LuaSpell>().unwrap();
+        assert_eq!(borrowed.inner.group as i64, 3); // Support
+    }
+
+    #[test]
+    fn spell_group_setter_integer_special() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        lua.load("s:group(4)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("s").unwrap();
+        let borrowed = ud.borrow::<LuaSpell>().unwrap();
+        assert_eq!(borrowed.inner.group as i64, 4); // Special
+    }
+
+    #[test]
+    fn spell_group_setter_integer_unknown_defaults_to_none() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        lua.load("s:group(99)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("s").unwrap();
+        let borrowed = ud.borrow::<LuaSpell>().unwrap();
+        assert_eq!(borrowed.inner.group as i64, 0); // None
+    }
+
+    #[test]
+    fn spell_group_setter_nil_defaults_to_none() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        // Pass nil (non-string, non-integer) — should default to None
+        lua.load("s:group(nil)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("s").unwrap();
+        let borrowed = ud.borrow::<LuaSpell>().unwrap();
+        assert_eq!(borrowed.inner.group as i64, 0); // None
+    }
+
+    #[test]
+    fn spell_is_self_target_getter_default_false() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        let v: bool = lua.load("return s:isSelfTarget()").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn spell_is_self_target_setter_and_getter() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        lua.load("s:isSelfTarget(true)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("s").unwrap();
+        let borrowed = ud.borrow::<LuaSpell>().unwrap();
+        assert!(borrowed.inner.self_target);
+    }
+
+    #[test]
+    fn spell_is_blocking_setter_and_getter() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        lua.load("s:isBlocking(true)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("s").unwrap();
+        let borrowed = ud.borrow::<LuaSpell>().unwrap();
+        assert!(borrowed.inner.blocking_solid);
+    }
+
+    #[test]
+    fn spell_is_blocking_getter_default_false() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        let v: bool = lua.load("return s:isBlocking()").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn spell_is_blocking_walls_setter_and_getter() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        lua.load("s:isBlockingWalls(true)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("s").unwrap();
+        let borrowed = ud.borrow::<LuaSpell>().unwrap();
+        assert!(borrowed.inner.blocking_creature);
+    }
+
+    #[test]
+    fn spell_is_blocking_walls_getter_default_false() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        let v: bool = lua.load("return s:isBlockingWalls()").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn spell_is_pz_lock_setter_and_getter() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        lua.load("s:isPzLock(true)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("s").unwrap();
+        let borrowed = ud.borrow::<LuaSpell>().unwrap();
+        assert!(borrowed.inner.pz_lock);
+    }
+
+    #[test]
+    fn spell_is_pz_lock_getter_default_false() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        let v: bool = lua.load("return s:isPzLock()").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn spell_need_learn_setter_and_getter() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        lua.load("s:needLearn(true)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("s").unwrap();
+        let borrowed = ud.borrow::<LuaSpell>().unwrap();
+        assert!(borrowed.inner.learnable);
+    }
+
+    #[test]
+    fn spell_need_learn_getter_default_false() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        let v: bool = lua.load("return s:needLearn()").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn spell_rune_level_setter_and_getter() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        let v: i64 = lua.load("return s:runeLevel(5)").eval().unwrap();
+        assert_eq!(v, 5);
+        let ud: mlua::AnyUserData = lua.globals().get("s").unwrap();
+        let borrowed = ud.borrow::<LuaSpell>().unwrap();
+        assert_eq!(borrowed.rune_level, 5);
+    }
+
+    #[test]
+    fn spell_rune_magic_level_setter_and_getter() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        let v: i64 = lua.load("return s:runeMagicLevel(3)").eval().unwrap();
+        assert_eq!(v, 3);
+        let ud: mlua::AnyUserData = lua.globals().get("s").unwrap();
+        let borrowed = ud.borrow::<LuaSpell>().unwrap();
+        assert_eq!(borrowed.rune_magic_level, 3);
+    }
+
+    #[test]
+    fn spell_has_params_setter_and_getter() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        let v: bool = lua.load("return s:hasParams(true)").eval().unwrap();
+        assert!(v);
+        let ud: mlua::AnyUserData = lua.globals().get("s").unwrap();
+        let borrowed = ud.borrow::<LuaSpell>().unwrap();
+        assert!(borrowed.has_params);
+    }
+
+    #[test]
+    fn spell_has_params_getter_default_false() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        let v: bool = lua.load("return s:hasParams(false)").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn spell_has_player_name_param_setter_and_getter() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        let v: bool = lua
+            .load("return s:hasPlayerNameParam(true)")
+            .eval()
+            .unwrap();
+        assert!(v);
+        let ud: mlua::AnyUserData = lua.globals().get("s").unwrap();
+        let borrowed = ud.borrow::<LuaSpell>().unwrap();
+        assert!(borrowed.has_player_name_param);
+    }
+
+    #[test]
+    fn spell_has_player_name_param_getter_default_false() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        let v: bool = lua
+            .load("return s:hasPlayerNameParam(false)")
+            .eval()
+            .unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn spell_eq_same_fields() {
+        let lua = fresh_lua();
+        let s1 = LuaSpell::default();
+        let s2 = LuaSpell::default();
+        lua.globals().set("a", s1).unwrap();
+        lua.globals().set("b", s2).unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(v); // same spell_id (0) and name ("")
+    }
+
+    #[test]
+    fn spell_eq_different_ids() {
+        let lua = fresh_lua();
+        let mut s1 = LuaSpell::default();
+        s1.inner.spell_id = 1;
+        let s2 = LuaSpell::default();
+        lua.globals().set("a", s1).unwrap();
+        lua.globals().set("b", s2).unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn spell_is_enabled_setter_and_getter() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        lua.load("s:isEnabled(false)").exec().unwrap();
+        let v: bool = lua.load("return s:isEnabled()").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn spell_need_target_setter_and_getter() {
+        let lua = fresh_lua();
+        lua.globals().set("s", LuaSpell::default()).unwrap();
+        lua.load("s:needTarget(true)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("s").unwrap();
+        let borrowed = ud.borrow::<LuaSpell>().unwrap();
+        assert!(borrowed.inner.need_target);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaSpell> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
 }

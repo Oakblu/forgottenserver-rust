@@ -35,3 +35,58 @@ impl UserData for LuaDbTransaction {
         methods.add_method("rollback", |_, _this, ()| Ok(true));
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn fresh_lua() -> mlua::Lua {
+        let lua = mlua::Lua::new();
+        crate::lua_bindings::install_bindings(
+            &lua,
+            crate::lua_bindings::GameStateHandle::default(),
+        )
+        .unwrap();
+        lua
+    }
+
+    #[test]
+    fn begin_returns_true() {
+        let lua = fresh_lua();
+        lua.globals().set("tx", LuaDbTransaction).unwrap();
+        let v: bool = lua.load("return tx:begin()").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn commit_returns_true() {
+        let lua = fresh_lua();
+        lua.globals().set("tx", LuaDbTransaction).unwrap();
+        let v: bool = lua.load("return tx:commit()").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn rollback_returns_true() {
+        let lua = fresh_lua();
+        lua.globals().set("tx", LuaDbTransaction).unwrap();
+        let v: bool = lua.load("return tx:rollback()").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn eq_meta_returns_true() {
+        let lua = fresh_lua();
+        lua.globals().set("tx1", LuaDbTransaction).unwrap();
+        lua.globals().set("tx2", LuaDbTransaction).unwrap();
+        let v: bool = lua.load("return tx1 == tx2").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaDbTransaction> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
+}

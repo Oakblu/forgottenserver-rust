@@ -77,4 +77,67 @@ mod tests {
         // The stubs cover side-effecting setters; ensure one is callable.
         lua.load("n:setMasterPos({x=1,y=2,z=3})").exec().unwrap();
     }
+
+    #[test]
+    fn is_npc_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("n", LuaNpc::new(Npc::new("Mia"))).unwrap();
+        let result: mlua::Result<()> = lua.load("n:isNpc()").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_spectators_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("n", LuaNpc::new(Npc::new("Mia"))).unwrap();
+        let result: mlua::Result<()> = lua.load("n:getSpectators()").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_speech_bubble_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("n", LuaNpc::new(Npc::new("Mia"))).unwrap();
+        let result: mlua::Result<()> = lua.load("n:getSpeechBubble()").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn set_speech_bubble_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("n", LuaNpc::new(Npc::new("Mia"))).unwrap();
+        let result: mlua::Result<()> = lua.load("n:setSpeechBubble(1)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn eq_same_arc_is_true() {
+        let lua = fresh_lua();
+        let n = LuaNpc::new(Npc::new("Mia"));
+        let n2 = n.clone();
+        lua.globals().set("a", n).unwrap();
+        lua.globals().set("b", n2).unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn eq_different_arcs_is_false() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("a", LuaNpc::new(Npc::new("Mia")))
+            .unwrap();
+        lua.globals()
+            .set("b", LuaNpc::new(Npc::new("Mia")))
+            .unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaNpc> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
 }

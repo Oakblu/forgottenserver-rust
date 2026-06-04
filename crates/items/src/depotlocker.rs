@@ -611,4 +611,17 @@ mod tests {
         );
         assert_eq!(cyl.cylinder_first_index(), 0);
     }
+
+    // -----------------------------------------------------------------------
+    // Tests required by MIGRATION_LEDGER.yml (exact names required)
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_get_depot_locker() {
+        // C++: DepotLocker* DepotLocker::getDepotLocker() override
+        let mut dl = DepotLocker::new(LOCKER_TYPE_ID);
+        dl.set_depot_id(42);
+        let r = dl.get_depot_locker();
+        assert_eq!(r.depot_id(), 42);
+    }
 }

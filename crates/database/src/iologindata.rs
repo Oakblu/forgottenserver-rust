@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+use forgottenserver_common::constants::PlayerFlags;
 use forgottenserver_entity::player::Player;
 
 use crate::database::Database;
@@ -168,6 +169,42 @@ pub struct AccountRecord {
     pub premium_ends_at: i64,
     /// Hashed password — used by `account_login`.
     pub password_hash: String,
+}
+
+/// Mirrors a row from `guild_wars` — one active or ended war between two guilds.
+#[derive(Debug, Clone, PartialEq)]
+pub struct GuildWarRecord {
+    pub guild1: u32,
+    pub guild2: u32,
+    /// Non-zero once the war has ended.
+    pub ended: u8,
+    /// 1 = active (ongoing); other values are inactive.
+    pub status: u8,
+}
+
+/// One row from `player_items`, `player_depotitems`, or `player_inboxitems`.
+/// C++: `static bool saveItems(…)` writes rows with these fields.
+#[derive(Debug, Clone, PartialEq)]
+pub struct PlayerItemRow {
+    /// Parent slot/container serial id (0 = top-level root item).
+    pub pid: i32,
+    /// Item serial id used for ordering and parent-child reconstruction.
+    pub sid: i32,
+    /// Item type id (`items.otb` server id).
+    pub item_type: u16,
+    /// Stack count or sub-type (for fluids/charges).
+    pub count: u16,
+    /// Serialized item attribute blob.
+    pub attributes: Vec<u8>,
+}
+
+/// Selects which item sub-table to read or write.
+/// Mirrors the three C++ DBInsert targets: player_items, player_depotitems, player_inboxitems.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PlayerItemKind {
+    Inventory,
+    Depot,
+    Inbox,
 }
 
 /// Mirrors a row from `account_viplist` joined with the player name.
@@ -440,6 +477,25 @@ pub struct LoginDb {
     accounts: HashMap<u32, AccountRecord>,
     vip_list: HashMap<u32, Vec<VipEntry>>, // account_id → entries
     online_players: std::collections::HashSet<u32>, // guids currently online
+    guild_wars: Vec<GuildWarRecord>,
+    /// Mirrors `houses.highest_bidder`: house_id → bidder_guid.
+    house_highest_bidders: HashMap<u32, u32>,
+    /// Mirrors `groups.flags`: group_id → flags bitmask.
+    group_flags: HashMap<u16, u64>,
+    /// Mirrors `player_items` table rows keyed by player guid.
+    player_inventory: HashMap<u32, Vec<PlayerItemRow>>,
+    /// Mirrors `player_depotitems` table rows keyed by player guid.
+    player_depot: HashMap<u32, Vec<PlayerItemRow>>,
+    /// Mirrors `player_inboxitems` table rows keyed by player guid.
+    player_inbox: HashMap<u32, Vec<PlayerItemRow>>,
+    /// Mirrors `player_storage` table rows keyed by player guid.
+    player_storage_map: HashMap<u32, HashMap<u32, i32>>,
+    /// Mirrors `player_spells` table keyed by player guid.
+    player_spells: HashMap<u32, Vec<String>>,
+    /// Mirrors `player_outfits` table keyed by player guid (outfit_id, addons).
+    player_outfits: HashMap<u32, Vec<(u16, u8)>>,
+    /// Mirrors `player_mounts` table keyed by player guid (mount_id).
+    player_mounts: HashMap<u32, Vec<u16>>,
 }
 
 impl LoginDb {
@@ -479,6 +535,41 @@ impl LoginDb {
 
     pub fn get_account(&self, id: u32) -> Option<&AccountRecord> {
         self.accounts.get(&id)
+    }
+
+    pub fn get_account_mut(&mut self, id: u32) -> Option<&mut AccountRecord> {
+        self.accounts.get_mut(&id)
+    }
+
+    pub fn add_guild_war(&mut self, record: GuildWarRecord) {
+        self.guild_wars.push(record);
+    }
+
+    pub fn get_guild_wars(&self) -> &[GuildWarRecord] {
+        &self.guild_wars
+    }
+
+    /// Record that `bidder_guid` is the highest bidder for `house_id`.
+    /// Mirrors the `houses.highest_bidder` column populated by the auction system.
+    pub fn set_house_highest_bidder(&mut self, house_id: u32, bidder_guid: u32) {
+        self.house_highest_bidders.insert(house_id, bidder_guid);
+    }
+
+    /// Return true if `guid` is the highest bidder on any house.
+    /// Mirrors C++ `hasBiddedOnHouse`: `SELECT id FROM houses WHERE highest_bidder = {guid}`.
+    pub fn any_house_bid_for(&self, guid: u32) -> bool {
+        self.house_highest_bidders.values().any(|&g| g == guid)
+    }
+
+    /// Register the flags bitmask for a group id.
+    /// Mirrors the `groups` table `flags` column read by `getGuidByNameEx`.
+    pub fn set_group_flags(&mut self, group_id: u16, flags: u64) {
+        self.group_flags.insert(group_id, flags);
+    }
+
+    /// Return the flags for a group id, or 0 if not registered.
+    pub fn get_group_flags(&self, group_id: u16) -> u64 {
+        self.group_flags.get(&group_id).copied().unwrap_or(0)
     }
 
     pub fn set_online(&mut self, guid: u32, online: bool) {
@@ -526,6 +617,65 @@ impl LoginDb {
             }
         }
     }
+
+    fn items_for_kind_mut(&mut self, kind: PlayerItemKind) -> &mut HashMap<u32, Vec<PlayerItemRow>> {
+        match kind {
+            PlayerItemKind::Inventory => &mut self.player_inventory,
+            PlayerItemKind::Depot => &mut self.player_depot,
+            PlayerItemKind::Inbox => &mut self.player_inbox,
+        }
+    }
+
+    fn items_for_kind(&self, kind: PlayerItemKind) -> &HashMap<u32, Vec<PlayerItemRow>> {
+        match kind {
+            PlayerItemKind::Inventory => &self.player_inventory,
+            PlayerItemKind::Depot => &self.player_depot,
+            PlayerItemKind::Inbox => &self.player_inbox,
+        }
+    }
+
+    pub fn set_player_items(&mut self, guid: u32, kind: PlayerItemKind, rows: Vec<PlayerItemRow>) {
+        self.items_for_kind_mut(kind).insert(guid, rows);
+    }
+
+    pub fn get_player_items(&self, guid: u32, kind: PlayerItemKind) -> &[PlayerItemRow] {
+        self.items_for_kind(kind)
+            .get(&guid)
+            .map(Vec::as_slice)
+            .unwrap_or(&[])
+    }
+
+    pub fn set_player_storage_map(&mut self, guid: u32, map: HashMap<u32, i32>) {
+        self.player_storage_map.insert(guid, map);
+    }
+
+    pub fn get_player_storage_map(&self, guid: u32) -> Option<&HashMap<u32, i32>> {
+        self.player_storage_map.get(&guid)
+    }
+
+    pub fn set_player_spells(&mut self, guid: u32, spells: Vec<String>) {
+        self.player_spells.insert(guid, spells);
+    }
+
+    pub fn get_player_spells(&self, guid: u32) -> &[String] {
+        self.player_spells.get(&guid).map(Vec::as_slice).unwrap_or(&[])
+    }
+
+    pub fn set_player_outfits(&mut self, guid: u32, outfits: Vec<(u16, u8)>) {
+        self.player_outfits.insert(guid, outfits);
+    }
+
+    pub fn get_player_outfits(&self, guid: u32) -> &[(u16, u8)] {
+        self.player_outfits.get(&guid).map(Vec::as_slice).unwrap_or(&[])
+    }
+
+    pub fn set_player_mounts(&mut self, guid: u32, mounts: Vec<u16>) {
+        self.player_mounts.insert(guid, mounts);
+    }
+
+    pub fn get_player_mounts(&self, guid: u32) -> &[u16] {
+        self.player_mounts.get(&guid).map(Vec::as_slice).unwrap_or(&[])
+    }
 }
 
 // ── IOLoginData ───────────────────────────────────────────────────────────────
@@ -568,6 +718,23 @@ impl IoLoginData {
     /// Mirrors C++ `IOLoginData::getGuidByName`.
     pub fn get_guid_by_name(&self, db: &LoginDb, name: &str) -> u32 {
         db.get_player(name).map(|p| p.guid).unwrap_or(0)
+    }
+
+    /// Return `(guid, special_vip, canonical_name)` for the given player name.
+    /// Returns `None` if the player is not found.
+    ///
+    /// Mirrors C++ `IOLoginData::getGuidByNameEx`:
+    ///   `SELECT name, id, group_id FROM players WHERE name = {name}`
+    ///   `special_vip = (group.flags & PlayerFlag_SpecialVIP) != 0`
+    pub fn get_guid_by_name_ex(
+        &self,
+        db: &LoginDb,
+        name: &str,
+    ) -> Option<(u32, bool, String)> {
+        let player = db.get_player(name)?;
+        let flags = db.get_group_flags(player.group_id);
+        let special_vip = (flags & PlayerFlags::SPECIAL_VIP) != 0;
+        Some((player.guid, special_vip, player.name.clone()))
     }
 
     /// Return the player name for a given GUID, or an empty string.
@@ -701,6 +868,73 @@ impl IoLoginData {
             balance: 0,
         };
         db.put_player(record);
+
+        // Save inventory items — mirrors C++ saveItems(player, itemList, itemsQuery, …)
+        use forgottenserver_entity::player::InventorySlot;
+        let mut running_sid: i32 = 100;
+        let inventory_rows: Vec<PlayerItemRow> = [
+            InventorySlot::Head,
+            InventorySlot::Necklace,
+            InventorySlot::Backpack,
+            InventorySlot::Armor,
+            InventorySlot::Right,
+            InventorySlot::Left,
+            InventorySlot::Legs,
+            InventorySlot::Feet,
+            InventorySlot::Ring,
+            InventorySlot::Ammo,
+        ]
+        .iter()
+        .filter_map(|&slot| {
+            let item = player.get_inventory_item(slot)?;
+            running_sid += 1;
+            Some(PlayerItemRow {
+                pid: slot as i32,
+                sid: running_sid,
+                item_type: item.get_id(),
+                count: item.count as u16,
+                attributes: vec![],
+            })
+        })
+        .collect();
+        self.save_items(db, player.guid, PlayerItemKind::Inventory, inventory_rows);
+
+        // Save storage — mirrors C++ DELETE/INSERT player_storage
+        let storage_map: HashMap<u32, i32> = player.storage_iter().collect();
+        db.set_player_storage_map(player.guid, storage_map);
+
+        // Save spells — mirrors C++ DELETE/INSERT player_spells
+        let spells: Vec<String> = player.learned_spells_iter().map(str::to_string).collect();
+        db.set_player_spells(player.guid, spells);
+
+        // Save outfits and mounts — mirrors C++ DELETE/INSERT player_outfits / player_mounts
+        let outfits: Vec<(u16, u8)> = player.unlocked_outfits_iter().collect();
+        db.set_player_outfits(player.guid, outfits);
+        let mounts: Vec<u16> = player.unlocked_mounts_iter().collect();
+        db.set_player_mounts(player.guid, mounts);
+    }
+
+    /// Persist `rows` as `kind` items for `player_guid`.
+    /// Mirrors C++ `IOLoginData::saveItems(…)` writing to the appropriate table.
+    pub fn save_items(
+        &self,
+        db: &mut LoginDb,
+        player_guid: u32,
+        kind: PlayerItemKind,
+        rows: Vec<PlayerItemRow>,
+    ) {
+        db.set_player_items(player_guid, kind, rows);
+    }
+
+    /// Load item rows for `player_guid` from `kind` table.
+    /// Mirrors C++ `IOLoginData::loadItems(itemMap, result)` reading a result set.
+    pub fn load_items(
+        &self,
+        db: &LoginDb,
+        player_guid: u32,
+        kind: PlayerItemKind,
+    ) -> Vec<PlayerItemRow> {
+        db.get_player_items(player_guid, kind).to_vec()
     }
 
     // ── Account helpers ───────────────────────────────────────────────────────
@@ -754,11 +988,11 @@ impl IoLoginData {
         }
     }
 
-    /// Returns true if the player has bid on any house.
-    /// Mirrors C++ `IOLoginData::hasBiddedOnHouse` (no house table in in-mem db).
-    pub fn has_bidded_on_house(&self, _db: &LoginDb, _guid: u32) -> bool {
-        // The in-memory stub has no houses table; always returns false.
-        false
+    /// Returns true if the player is the highest bidder on any house.
+    /// Mirrors C++ `IOLoginData::hasBiddedOnHouse`:
+    ///   `SELECT id FROM houses WHERE highest_bidder = {guid} LIMIT 1`
+    pub fn has_bidded_on_house(&self, db: &LoginDb, guid: u32) -> bool {
+        db.any_house_bid_for(guid)
     }
 
     // ── VIP management ────────────────────────────────────────────────────────
@@ -804,6 +1038,40 @@ impl IoLoginData {
             account.premium_ends_at = end_time;
         }
     }
+
+    /// Return the account type for the given account id.
+    /// Mirrors C++ `IOLoginData::getAccountType`:
+    ///   `SELECT type FROM accounts WHERE id = {accountId}`
+    /// Returns 0 (ACCOUNT_TYPE_NORMAL) when the account is not found.
+    pub fn get_account_type(&self, db: &LoginDb, account_id: u32) -> u16 {
+        db.get_account(account_id)
+            .map(|a| a.account_type)
+            .unwrap_or(0)
+    }
+
+    /// Set the account type for the given account id.
+    /// Mirrors C++ `IOLoginData::setAccountType`:
+    ///   `UPDATE accounts SET type = {accountType} WHERE id = {accountId}`
+    /// No-op when the account does not exist.
+    pub fn set_account_type(&self, db: &mut LoginDb, account_id: u32, account_type: u16) {
+        if let Some(acc) = db.get_account_mut(account_id) {
+            acc.account_type = account_type;
+        }
+    }
+
+    /// Return active wars involving the given guild.
+    /// Mirrors C++ `IOLoginData::getWarList`:
+    ///   `SELECT guild1, guild2 FROM guild_wars
+    ///    WHERE (guild1={id} OR guild2={id}) AND ended=0 AND status=1`
+    pub fn get_war_list(&self, db: &LoginDb, guild_id: u32) -> Vec<(u32, u32)> {
+        db.get_guild_wars()
+            .iter()
+            .filter(|w| {
+                (w.guild1 == guild_id || w.guild2 == guild_id) && w.ended == 0 && w.status == 1
+            })
+            .map(|w| (w.guild1, w.guild2))
+            .collect()
+    }
 }
 
 impl Default for IoLoginData {
@@ -817,7 +1085,9 @@ impl Default for IoLoginData {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use forgottenserver_entity::player::{Player, SkillType, STAMINA_MAX};
+    use forgottenserver_entity::player::{InventorySlot, Player, SkillType, STAMINA_MAX};
+    use forgottenserver_items::{item::Item, items_registry::ItemTypeData};
+    use std::sync::Arc;
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
@@ -1623,6 +1893,24 @@ mod tests {
         assert!(!io.has_bidded_on_house(&db, 1));
     }
 
+    #[test]
+    fn has_bidded_on_house_returns_false_when_no_bid() {
+        // C++: SELECT id FROM houses WHERE highest_bidder = {guid} LIMIT 1
+        // Returns false when the guid is not the highest bidder on any house.
+        let db = LoginDb::new();
+        let io = IoLoginData::new();
+        assert!(!io.has_bidded_on_house(&db, 999));
+    }
+
+    #[test]
+    fn has_bidded_on_house_returns_true_when_bid_exists() {
+        // Returns true when the guid is the highest bidder on at least one house.
+        let mut db = LoginDb::new();
+        let io = IoLoginData::new();
+        db.set_house_highest_bidder(1001, 42); // house_id=1001, bidder_guid=42
+        assert!(io.has_bidded_on_house(&db, 42));
+    }
+
     // ── Defensive paths for missing VIP list / players ────────────────────────
 
     /// `remove_vip_entry` must be a no-op (and not panic) when the account
@@ -2086,6 +2374,160 @@ mod tests {
         );
     }
 
+    // ── get_guid_by_name_ex ───────────────────────────────────────────────────
+
+    #[test]
+    fn get_guid_by_name_ex_returns_normalised_name() {
+        // C++: IOLoginData::getGuidByNameEx — name is normalised to stored casing,
+        // guid is set from `id` column, name is corrected to canonical case.
+        let mut db = LoginDb::new();
+        let io = IoLoginData::new();
+        io.save_player(&mut db, alice_record()); // "Alice", guid=1
+        let result = io.get_guid_by_name_ex(&db, "ALICE");
+        assert!(result.is_some());
+        let (guid, _special_vip, name) = result.unwrap();
+        assert_eq!(guid, 1);
+        assert_eq!(name, "Alice"); // canonical casing
+    }
+
+    #[test]
+    fn get_guid_by_name_ex_sets_special_vip_when_admin_group() {
+        // C++: specialVip = (group->flags & PlayerFlag_SpecialVIP) != 0
+        // When the player's group_id maps to flags that include SPECIAL_VIP, returns true.
+        use forgottenserver_common::constants::PlayerFlags;
+        let mut db = LoginDb::new();
+        let io = IoLoginData::new();
+        let mut rec = alice_record();
+        rec.group_id = 6; // "god" group that typically has SpecialVIP
+        io.save_player(&mut db, rec);
+        // Register group 6 as having SPECIAL_VIP flag.
+        db.set_group_flags(6, PlayerFlags::SPECIAL_VIP);
+        let (_, special_vip, _) = io.get_guid_by_name_ex(&db, "Alice").unwrap();
+        assert!(special_vip, "group with SPECIAL_VIP flag should set special_vip=true");
+    }
+
+    #[test]
+    fn get_guid_by_name_ex_returns_none_for_unknown_player() {
+        let db = LoginDb::new();
+        let io = IoLoginData::new();
+        assert!(io.get_guid_by_name_ex(&db, "nobody").is_none());
+    }
+
+    // ── get_account_type ──────────────────────────────────────────────────────
+
+    #[test]
+    fn get_account_type_returns_account_type_for_known_id() {
+        // C++ IOLoginData::getAccountType: SELECT type FROM accounts WHERE id={accountId}
+        // Returns 0 (NORMAL) when no row found.
+        let mut db = LoginDb::new();
+        let io = IoLoginData::new();
+        io.save_account(
+            &mut db,
+            AccountRecord {
+                id: 10,
+                account_type: 2,
+                ..Default::default()
+            },
+        );
+        assert_eq!(io.get_account_type(&db, 10), 2);
+    }
+
+    #[test]
+    fn get_account_type_returns_zero_for_unknown_id() {
+        let db = LoginDb::new();
+        let io = IoLoginData::new();
+        assert_eq!(io.get_account_type(&db, 9999), 0);
+    }
+
+    // ── set_account_type ──────────────────────────────────────────────────────
+
+    #[test]
+    fn set_account_type_updates_account_type() {
+        // C++ IOLoginData::setAccountType: UPDATE accounts SET type={value} WHERE id={accountId}
+        let mut db = LoginDb::new();
+        let io = IoLoginData::new();
+        io.save_account(
+            &mut db,
+            AccountRecord {
+                id: 10,
+                account_type: 0,
+                ..Default::default()
+            },
+        );
+        io.set_account_type(&mut db, 10, 3);
+        let acc = io.load_account(&db, 10).unwrap();
+        assert_eq!(acc.account_type, 3);
+    }
+
+    #[test]
+    fn set_account_type_no_op_for_unknown_id() {
+        let mut db = LoginDb::new();
+        let io = IoLoginData::new();
+        // Must not panic when the account does not exist.
+        io.set_account_type(&mut db, 9999, 2);
+    }
+
+    // ── get_war_list ──────────────────────────────────────────────────────────
+
+    #[test]
+    fn get_war_list_returns_open_wars_for_guild() {
+        // C++ IOLoginData::getWarList: SELECT guild1, guild2 FROM guild_wars
+        //   WHERE (guild1={id} OR guild2={id}) AND ended=0 AND status=1
+        let mut db = LoginDb::new();
+        let io = IoLoginData::new();
+        db.add_guild_war(GuildWarRecord {
+            guild1: 1,
+            guild2: 2,
+            ended: 0,
+            status: 1,
+        });
+        let wars = io.get_war_list(&db, 1);
+        assert_eq!(wars, vec![(1, 2)]);
+    }
+
+    #[test]
+    fn get_war_list_excludes_ended_wars() {
+        let mut db = LoginDb::new();
+        let io = IoLoginData::new();
+        db.add_guild_war(GuildWarRecord {
+            guild1: 1,
+            guild2: 2,
+            ended: 1,
+            status: 1,
+        });
+        let wars = io.get_war_list(&db, 1);
+        assert!(wars.is_empty());
+    }
+
+    #[test]
+    fn get_war_list_excludes_non_active_status() {
+        let mut db = LoginDb::new();
+        let io = IoLoginData::new();
+        db.add_guild_war(GuildWarRecord {
+            guild1: 1,
+            guild2: 2,
+            ended: 0,
+            status: 0, // not status=1
+        });
+        let wars = io.get_war_list(&db, 1);
+        assert!(wars.is_empty());
+    }
+
+    #[test]
+    fn get_war_list_matches_guild2_as_well() {
+        let mut db = LoginDb::new();
+        let io = IoLoginData::new();
+        db.add_guild_war(GuildWarRecord {
+            guild1: 5,
+            guild2: 7,
+            ended: 0,
+            status: 1,
+        });
+        // Guild 7 is in the war as guild2.
+        let wars = io.get_war_list(&db, 7);
+        assert_eq!(wars, vec![(5, 7)]);
+    }
+
     #[test]
     fn load_player_parses_all_new_fields() {
         use crate::database::DbValue;
@@ -2156,5 +2598,139 @@ mod tests {
         assert_eq!(data.look_mount, 42);
         assert_eq!(data.direction, 1);
         assert_eq!(data.premium_ends_at, 1_900_000_000);
+    }
+
+    // ── Item helpers ─────────────────────────────────────────────────────────
+
+    fn make_item(type_id: u16, count: u8) -> Item {
+        let it = Arc::new(ItemTypeData { id: type_id, ..Default::default() });
+        Item::new(it, count)
+    }
+
+    // ── save_items / load_items ───────────────────────────────────────────────
+
+    #[test]
+    fn save_items_persists_inventory_via_db_insert() {
+        // C++: saveItems writes (pid, sid, itemtype, count, attrs) to player_items.
+        let io = IoLoginData::new();
+        let mut db = LoginDb::new();
+        let rows = vec![PlayerItemRow { pid: 1, sid: 101, item_type: 2160, count: 1, attributes: vec![] }];
+        io.save_items(&mut db, 42, PlayerItemKind::Inventory, rows.clone());
+        assert_eq!(io.load_items(&db, 42, PlayerItemKind::Inventory), rows);
+    }
+
+    #[test]
+    fn save_items_persists_depot_separately() {
+        // C++: depot items go to player_depotitems (separate table from inventory).
+        let io = IoLoginData::new();
+        let mut db = LoginDb::new();
+        let inv = vec![PlayerItemRow { pid: 1, sid: 101, item_type: 2160, count: 1, attributes: vec![] }];
+        let depot = vec![PlayerItemRow { pid: 0, sid: 201, item_type: 2594, count: 1, attributes: vec![] }];
+        io.save_items(&mut db, 42, PlayerItemKind::Inventory, inv.clone());
+        io.save_items(&mut db, 42, PlayerItemKind::Depot, depot.clone());
+        assert_eq!(io.load_items(&db, 42, PlayerItemKind::Inventory), inv);
+        assert_eq!(io.load_items(&db, 42, PlayerItemKind::Depot), depot);
+    }
+
+    #[test]
+    fn save_items_persists_inbox_separately() {
+        // C++: inbox items go to player_inboxitems (separate from inventory and depot).
+        let io = IoLoginData::new();
+        let mut db = LoginDb::new();
+        let inbox = vec![PlayerItemRow { pid: 0, sid: 301, item_type: 2594, count: 3, attributes: vec![1, 2] }];
+        io.save_items(&mut db, 42, PlayerItemKind::Inbox, inbox.clone());
+        assert_eq!(io.load_items(&db, 42, PlayerItemKind::Inbox), inbox);
+        assert!(io.load_items(&db, 42, PlayerItemKind::Inventory).is_empty());
+        assert!(io.load_items(&db, 42, PlayerItemKind::Depot).is_empty());
+    }
+
+    #[test]
+    fn save_player_persists_inventory_to_player_items() {
+        // C++: savePlayer calls saveItems for inventory slots.
+        let io = IoLoginData::new();
+        let mut db = LoginDb::new();
+        let mut player = Player::new(42, "Alice", 1);
+        player.set_inventory_item(InventorySlot::Head, make_item(2160, 1));
+        io.save_player_entity(&mut db, &player, 1, 0);
+        let rows = io.load_items(&db, 42, PlayerItemKind::Inventory);
+        assert_eq!(rows.len(), 1);
+        assert_eq!(rows[0].item_type, 2160);
+        assert_eq!(rows[0].count, 1);
+    }
+
+    #[test]
+    fn save_player_persists_storage_to_player_storage() {
+        // C++: savePlayer writes storageMap entries to player_storage table.
+        let io = IoLoginData::new();
+        let mut db = LoginDb::new();
+        let mut player = Player::new(42, "Alice", 1);
+        player.set_storage_value(1234, Some(99));
+        io.save_player_entity(&mut db, &player, 1, 0);
+        let stored = db.get_player_storage_map(42);
+        assert!(stored.is_some());
+        assert_eq!(stored.unwrap().get(&1234), Some(&99));
+    }
+
+    #[test]
+    fn load_items_hydrates_inventory_into_item_map() {
+        // C++: loadItems populates ItemMap from player_items rows (sid → {item, pid}).
+        let io = IoLoginData::new();
+        let mut db = LoginDb::new();
+        let rows = vec![
+            PlayerItemRow { pid: 3, sid: 103, item_type: 2160, count: 1, attributes: vec![] },
+            PlayerItemRow { pid: 0, sid: 104, item_type: 1987, count: 5, attributes: vec![] },
+        ];
+        io.save_items(&mut db, 7, PlayerItemKind::Inventory, rows.clone());
+        let loaded = io.load_items(&db, 7, PlayerItemKind::Inventory);
+        assert_eq!(loaded.len(), 2);
+        assert_eq!(loaded[0].item_type, 2160);
+        assert_eq!(loaded[1].item_type, 1987);
+    }
+
+    #[test]
+    fn load_items_resolves_parent_child_links_via_pid() {
+        // C++: ItemMap entries with pid > 0 are nested inside the parent container.
+        let io = IoLoginData::new();
+        let mut db = LoginDb::new();
+        let rows = vec![
+            PlayerItemRow { pid: 0, sid: 100, item_type: 1988, count: 1, attributes: vec![] }, // backpack (root)
+            PlayerItemRow { pid: 100, sid: 101, item_type: 2160, count: 1, attributes: vec![] }, // inside backpack
+        ];
+        io.save_items(&mut db, 7, PlayerItemKind::Inventory, rows.clone());
+        let loaded = io.load_items(&db, 7, PlayerItemKind::Inventory);
+        assert_eq!(loaded.len(), 2);
+        let child = loaded.iter().find(|r| r.pid == 100).unwrap();
+        assert_eq!(child.item_type, 2160);
+    }
+
+    // ── spells / outfits / mounts ─────────────────────────────────────────────
+
+    #[test]
+    fn save_player_persists_spells_to_player_spells() {
+        // C++: savePlayer DELETE/INSERT player_spells for each learnedInstantSpellList entry.
+        let io = IoLoginData::new();
+        let mut db = LoginDb::new();
+        let mut player = Player::new(42, "Alice", 1);
+        player.learn_spell("Exura".to_string());
+        player.learn_spell("Exeva".to_string());
+        io.save_player_entity(&mut db, &player, 1, 0);
+        let spells = db.get_player_spells(42);
+        assert!(spells.iter().any(|s| s == "Exura"));
+        assert!(spells.iter().any(|s| s == "Exeva"));
+    }
+
+    #[test]
+    fn save_player_persists_unlocked_outfits_and_mounts() {
+        // C++: savePlayer DELETE/INSERT player_outfits (outfit_id, addons) and player_mounts (mount_id).
+        let io = IoLoginData::new();
+        let mut db = LoginDb::new();
+        let mut player = Player::new(42, "Alice", 1);
+        player.unlock_outfit(128, 3);
+        player.unlock_mount(25);
+        io.save_player_entity(&mut db, &player, 1, 0);
+        let outfits = db.get_player_outfits(42);
+        let mounts = db.get_player_mounts(42);
+        assert_eq!(outfits, &[(128u16, 3u8)]);
+        assert_eq!(mounts, &[25u16]);
     }
 }

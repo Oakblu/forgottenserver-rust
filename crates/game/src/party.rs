@@ -291,4 +291,144 @@ mod tests {
             "trade must be closed for player 2 after close"
         );
     }
+
+    // ── Default impl (lines 13-14) ─────────────────────────────────────────────
+
+    #[test]
+    fn party_manager_default_is_same_as_new() {
+        let mut mgr = PartyManager::default();
+        // A fresh manager has no parties — leaving any player returns empty.
+        assert!(mgr.leave(1).is_empty());
+    }
+
+    // ── revoke_invite (lines 65-67) ────────────────────────────────────────────
+
+    #[test]
+    fn revoke_invite_does_nothing_without_a_party() {
+        // No party exists yet — should not panic.
+        let mut mgr = PartyManager::new();
+        mgr.revoke_invite(1, 2); // leader 1, player 2
+    }
+
+    #[test]
+    fn revoke_invite_removes_pending_invitation() {
+        let mut mgr = PartyManager::new();
+        // Create a party by having player 2 accept player 1's invite.
+        mgr.accept_invite(2, 1);
+        // Now revoke an (additional) invitation for player 3.
+        // Party exists for leader 1, so the inner `party.revoke_invitation` is called.
+        mgr.revoke_invite(1, 3);
+        // Party must still be intact (leader 1 still leads player 2).
+        let broadcasts = mgr.leave(1);
+        let notified: Vec<EntityId> = broadcasts.iter().map(|(id, _)| *id).collect();
+        assert!(notified.contains(&1), "leader must be notified of own leave");
+    }
+
+    // ── pass_leadership with no existing party (line 78) ──────────────────────
+
+    #[test]
+    fn pass_leadership_returns_empty_when_leader_has_no_party() {
+        let mut mgr = PartyManager::new();
+        let broadcasts = mgr.pass_leadership(1, 2);
+        assert!(
+            broadcasts.is_empty(),
+            "pass_leadership must return empty when the old leader has no party"
+        );
+    }
+
+    // ── pass_leadership else branch (lines 89-90): new leader is in member list
+
+    #[test]
+    fn pass_leadership_when_new_leader_was_already_a_member() {
+        let mut mgr = PartyManager::new();
+        // Leader=1, members=2,3
+        mgr.accept_invite(2, 1);
+        mgr.accept_invite(3, 1);
+        // Pass leadership to member 2 (who is in old_members, triggers the else branch).
+        let broadcasts = mgr.pass_leadership(1, 2);
+        assert!(!broadcasts.is_empty(), "Must broadcast leadership change");
+        for (_, new_leader) in &broadcasts {
+            assert_eq!(*new_leader, 2, "New leader must be player 2");
+        }
+    }
+
+    // ── leave: member leaves with remaining members (lines 140-148) ───────────
+
+    #[test]
+    fn member_leaving_when_others_remain_broadcasts_to_all_remaining() {
+        let mut mgr = PartyManager::new();
+        // Leader=1, members=2,3
+        mgr.accept_invite(2, 1);
+        mgr.accept_invite(3, 1);
+
+        // Member 3 leaves; leader 1 and member 2 remain.
+        let broadcasts = mgr.leave(3);
+
+        let notified_ids: Vec<EntityId> = broadcasts.iter().map(|(pid, _)| *pid).collect();
+        // Leader and remaining member must be notified.
+        assert!(notified_ids.contains(&1), "leader must be notified");
+        assert!(notified_ids.contains(&2), "remaining member must be notified");
+        // Remaining member list in each notification must be non-empty.
+        for (_, remaining) in &broadcasts {
+            assert!(
+                !remaining.is_empty(),
+                "remaining members must not be empty while party has members"
+            );
+        }
+    }
+
+    // ── leave: player who has no party (line 113 None branch) ─────────────────
+
+    #[test]
+    fn leave_for_player_with_no_party_returns_empty() {
+        let mut mgr = PartyManager::new();
+        assert!(mgr.leave(42).is_empty(), "unknown player has no party");
+    }
+
+    // ── set_shared_xp (lines 155-158) ─────────────────────────────────────────
+
+    #[test]
+    fn set_shared_xp_does_nothing_for_untracked_player() {
+        // Player 1 has no party — must not panic.
+        let mut mgr = PartyManager::new();
+        mgr.set_shared_xp(1, true);
+    }
+
+    #[test]
+    fn set_shared_xp_toggles_for_leader() {
+        let mut mgr = PartyManager::new();
+        mgr.accept_invite(2, 1); // leader=1
+        // Enabling shared XP for the leader must not panic.
+        mgr.set_shared_xp(1, true);
+        mgr.set_shared_xp(1, false);
+    }
+
+    #[test]
+    fn set_shared_xp_toggles_for_member() {
+        let mut mgr = PartyManager::new();
+        mgr.accept_invite(2, 1); // leader=1, member=2
+        // Enabling shared XP via a member's id must not panic.
+        mgr.set_shared_xp(2, true);
+        mgr.set_shared_xp(2, false);
+    }
+
+    // ── leave: member leaving disbands when last member goes (line 137) ────────
+
+    #[test]
+    fn last_member_leaving_disbands_party_and_notifies_both() {
+        let mut mgr = PartyManager::new();
+        mgr.accept_invite(2, 1); // leader=1, member=2
+
+        let broadcasts = mgr.leave(2);
+
+        let notified_ids: Vec<EntityId> = broadcasts.iter().map(|(pid, _)| *pid).collect();
+        assert!(notified_ids.contains(&1), "leader must be notified on disband");
+        assert!(notified_ids.contains(&2), "leaving member must be notified");
+        for (_, remaining) in &broadcasts {
+            assert!(
+                remaining.is_empty(),
+                "disbanded party must send empty remaining list"
+            );
+        }
+    }
 }

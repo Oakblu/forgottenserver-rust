@@ -79,4 +79,65 @@ mod tests {
             .unwrap();
         assert_eq!(z, 7);
     }
+
+    #[test]
+    fn get_destination_x_y_z_fields() {
+        let lua = fresh_lua();
+        let mut t = Teleport::new(1387);
+        t.set_dest_pos(Position::new(50, 60, 3));
+        lua.globals().set("tp", LuaTeleport::new(t)).unwrap();
+        let x: i64 = lua.load("return tp:getDestination().x").eval().unwrap();
+        let y: i64 = lua.load("return tp:getDestination().y").eval().unwrap();
+        let z: i64 = lua.load("return tp:getDestination().z").eval().unwrap();
+        assert_eq!(x, 50);
+        assert_eq!(y, 60);
+        assert_eq!(z, 3);
+    }
+
+    #[test]
+    fn set_destination_defaults_missing_fields() {
+        let lua = fresh_lua();
+        let t = Teleport::new(1387);
+        lua.globals().set("tp", LuaTeleport::new(t)).unwrap();
+        // Only x provided; y and z should default to 0
+        let result: mlua::Result<()> = lua
+            .load("tp:setDestination({x=100})")
+            .exec();
+        assert!(result.is_ok());
+        let y: i64 = lua.load("return tp:getDestination().y").eval().unwrap();
+        assert_eq!(y, 0);
+    }
+
+    #[test]
+    fn eq_same_type_id() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("a", LuaTeleport::new(Teleport::new(100)))
+            .unwrap();
+        lua.globals()
+            .set("b", LuaTeleport::new(Teleport::new(100)))
+            .unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn eq_different_type_id() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("a", LuaTeleport::new(Teleport::new(100)))
+            .unwrap();
+        lua.globals()
+            .set("b", LuaTeleport::new(Teleport::new(200)))
+            .unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaTeleport> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
 }

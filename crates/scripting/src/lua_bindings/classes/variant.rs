@@ -122,4 +122,36 @@ mod tests {
         let s: String = lua.load("return v:getString()").eval().unwrap();
         assert_eq!(s, "");
     }
+
+    #[test]
+    fn get_position_returns_default_for_non_position() {
+        let lua = fresh_lua();
+        let v = LuaVariant::new(InnerVariant::Number(5));
+        lua.globals().set("v", v).unwrap();
+        let x: u16 = lua.load("return v:getPosition().x").eval().unwrap();
+        assert_eq!(x, 0);
+    }
+
+    #[test]
+    fn get_position_for_target_position_variant() {
+        let lua = fresh_lua();
+        let v = LuaVariant::new(InnerVariant::TargetPosition(Position::new(7, 8, 9)));
+        lua.globals().set("v", v).unwrap();
+        let x: u16 = lua.load("return v:getPosition().x").eval().unwrap();
+        assert_eq!(x, 7);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaVariant> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn into_inner_roundtrip() {
+        let inner = InnerVariant::Number(99);
+        let wrapped = LuaVariant::new(inner.clone());
+        assert!(matches!(wrapped.into_inner(), InnerVariant::Number(99)));
+    }
 }

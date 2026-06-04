@@ -1078,4 +1078,298 @@ mod tests {
             "Scripts registered in mgr2 must not be visible in mgr1"
         );
     }
+
+    // ── Additional coverage tests ─────────────────────────────────────────────
+
+    #[test]
+    fn noop_engine_default_via_trait() {
+        // Line 65-66: Default::default() code path
+        let mut engine: NoopScriptEngine = Default::default();
+        assert!(engine.reset().is_ok());
+    }
+
+    #[test]
+    fn script_manager_get_script_interface_returns_engine_ref() {
+        // Lines 324-325: get_script_interface
+        let mgr = ScriptManager::new(Box::new(NoopScriptEngine::new()));
+        let _engine_ref: &dyn ScriptEngine = mgr.get_script_interface();
+    }
+
+    #[test]
+    fn script_manager_get_script_interface_for_event_returns_engine_ref() {
+        // Lines 328-329: get_script_interface_for_event
+        let mgr = ScriptManager::new(Box::new(NoopScriptEngine::new()));
+        let _engine_ref: &dyn ScriptEngine =
+            mgr.get_script_interface_for_event(EventType::Action);
+        let _engine_ref2: &dyn ScriptEngine =
+            mgr.get_script_interface_for_event(EventType::GlobalEvent);
+    }
+
+    #[test]
+    fn script_manager_script_names_iterator() {
+        // Lines 398-399: script_names()
+        let mut mgr = ScriptManager::new(Box::new(NoopScriptEngine::new()));
+        mgr.load("alpha", Path::new("a.lua")).unwrap();
+        mgr.load("beta", Path::new("b.lua")).unwrap();
+        let names: Vec<&str> = mgr.script_names().collect();
+        assert!(names.contains(&"alpha"));
+        assert!(names.contains(&"beta"));
+        assert_eq!(names.len(), 2);
+    }
+
+    #[test]
+    fn script_manager_mods_iterator() {
+        // Lines 432-433: mods()
+        let mut mgr = ScriptManager::new(Box::new(NoopScriptEngine::new()));
+        mgr.register_mod(ModBlock {
+            name: "Mod1".to_string(),
+            enabled: true,
+            ..Default::default()
+        });
+        mgr.register_mod(ModBlock {
+            name: "Mod2".to_string(),
+            enabled: false,
+            ..Default::default()
+        });
+        let mods: Vec<(&str, &ModBlock)> = mgr.mods().collect();
+        assert_eq!(mods.len(), 2);
+        let mod_names: Vec<&str> = mods.iter().map(|(k, _)| *k).collect();
+        assert!(mod_names.contains(&"Mod1"));
+        assert!(mod_names.contains(&"Mod2"));
+    }
+
+    #[test]
+    fn script_manager_libs_iterator() {
+        // Lines 436-437: libs()
+        let mut mgr = ScriptManager::new(Box::new(NoopScriptEngine::new()));
+        mgr.register_lib(
+            "lib_a",
+            LibBlock {
+                first: "first_a".to_string(),
+                second: "second_a".to_string(),
+            },
+        );
+        mgr.register_lib(
+            "lib_b",
+            LibBlock {
+                first: "first_b".to_string(),
+                second: "second_b".to_string(),
+            },
+        );
+        let libs: Vec<(&str, &LibBlock)> = mgr.libs().collect();
+        assert_eq!(libs.len(), 2);
+        let lib_names: Vec<&str> = libs.iter().map(|(k, _)| *k).collect();
+        assert!(lib_names.contains(&"lib_a"));
+        assert!(lib_names.contains(&"lib_b"));
+    }
+
+    #[test]
+    fn script_manager_load_errors_is_empty_initially() {
+        // Lines 446-447: load_errors()
+        let mgr = ScriptManager::new(Box::new(NoopScriptEngine::new()));
+        assert!(mgr.load_errors().is_empty());
+    }
+
+    #[test]
+    fn script_manager_reload_scripts_reloads_after_load_scripts() {
+        // Lines 385-387: reload_scripts when scripts_dir is set
+        let dir = tempfile::TempDir::new().unwrap();
+        std::fs::write(dir.path().join("test.lua"), "").unwrap();
+        let mut mgr = ScriptManager::new(Box::new(NoopScriptEngine::new()));
+        mgr.load_scripts(dir.path()).unwrap();
+        let count = mgr.reload_scripts().unwrap();
+        assert_eq!(count, 1);
+    }
+
+    // ── LuaScriptEngine additional coverage tests ─────────────────────────────
+
+    #[cfg(feature = "lua-scripting")]
+    mod lua_coverage_tests {
+        use super::*;
+
+        #[test]
+        fn script_value_to_lua_nil() {
+            // Line 147: ScriptValue::Nil -> mlua::Value::Nil
+            let mut engine = LuaScriptEngine::new();
+            engine
+                .lua
+                .load("function take_nil(v) return v == nil end")
+                .exec()
+                .unwrap();
+            let result = engine
+                .call_function("take_nil", &[ScriptValue::Nil])
+                .unwrap();
+            assert_eq!(result, ScriptValue::Bool(true));
+        }
+
+        #[test]
+        fn script_value_to_lua_bool_true() {
+            // Line 148: ScriptValue::Bool -> mlua::Value::Boolean
+            let mut engine = LuaScriptEngine::new();
+            engine
+                .lua
+                .load("function identity(b) return b end")
+                .exec()
+                .unwrap();
+            let result = engine
+                .call_function("identity", &[ScriptValue::Bool(true)])
+                .unwrap();
+            assert_eq!(result, ScriptValue::Bool(true));
+        }
+
+        #[test]
+        fn script_value_to_lua_bool_false() {
+            // Line 148: ScriptValue::Bool(false) path
+            let mut engine = LuaScriptEngine::new();
+            engine
+                .lua
+                .load("function identity(b) return b end")
+                .exec()
+                .unwrap();
+            let result = engine
+                .call_function("identity", &[ScriptValue::Bool(false)])
+                .unwrap();
+            assert_eq!(result, ScriptValue::Bool(false));
+        }
+
+        #[test]
+        fn script_value_to_lua_integer() {
+            // Line 149: ScriptValue::Integer -> mlua::Value::Integer
+            let mut engine = LuaScriptEngine::new();
+            engine
+                .lua
+                .load("function identity(n) return n end")
+                .exec()
+                .unwrap();
+            let result = engine
+                .call_function("identity", &[ScriptValue::Integer(999)])
+                .unwrap();
+            assert_eq!(result, ScriptValue::Integer(999));
+        }
+
+        #[test]
+        fn script_value_to_lua_float() {
+            // Line 150: ScriptValue::Float -> mlua::Value::Number
+            let mut engine = LuaScriptEngine::new();
+            engine
+                .lua
+                .load("function add_half(n) return n + 0.5 end")
+                .exec()
+                .unwrap();
+            let result = engine
+                .call_function("add_half", &[ScriptValue::Float(1.5)])
+                .unwrap();
+            assert_eq!(result, ScriptValue::Float(2.0));
+        }
+
+        #[test]
+        fn lua_value_to_script_float() {
+            // Line 166: mlua::Value::Number -> ScriptValue::Float
+            let mut engine = LuaScriptEngine::new();
+            engine
+                .lua
+                .load("function get_float() return 1.5 end")
+                .exec()
+                .unwrap();
+            let result = engine.call_function("get_float", &[]).unwrap();
+            assert!(matches!(result, ScriptValue::Float(_)));
+            if let ScriptValue::Float(f) = result {
+                assert!((f - 1.5).abs() < 1e-9);
+            }
+        }
+
+        #[test]
+        fn lua_value_to_script_table_returns_nil() {
+            // Line 174: mlua::Value::Table (other) -> ScriptValue::Nil
+            let mut engine = LuaScriptEngine::new();
+            engine
+                .lua
+                .load("function get_table() return {} end")
+                .exec()
+                .unwrap();
+            let result = engine.call_function("get_table", &[]).unwrap();
+            assert_eq!(result, ScriptValue::Nil);
+        }
+
+        #[test]
+        fn collect_lua_files_unreadable_dir_returns_err() {
+            // Line 110: collect_lua_files error path for non-existent dir
+            let mut paths = Vec::new();
+            let result = collect_lua_files(
+                Path::new("/nonexistent/path/xyz_12345_test"),
+                &mut paths,
+                false,
+            );
+            assert!(result.is_err());
+            if let Err(ScriptError::LoadFailed(msg)) = result {
+                assert!(msg.contains("cannot read directory"));
+            } else {
+                panic!("expected LoadFailed");
+            }
+        }
+
+        #[test]
+        fn load_dir_continues_after_script_error() {
+            // Lines 200-202: error branch in load_dir (script errors are logged, not fatal)
+            let dir = tempfile::TempDir::new().unwrap();
+            std::fs::write(dir.path().join("good.lua"), "good = true").unwrap();
+            // Invalid Lua syntax — will fail to load
+            std::fs::write(dir.path().join("bad.lua"), "this is not valid lua {{{{").unwrap();
+
+            let mut engine = LuaScriptEngine::new();
+            // load_dir should not fail overall, just skip the bad file
+            let count = engine.load_dir(dir.path()).unwrap();
+            // Only the good file should be loaded
+            assert_eq!(count, 1);
+        }
+
+        #[test]
+        fn script_manager_load_scripts_records_error_for_failed_file() {
+            // Lines 370-372: load_errors path in load_scripts
+            // We need a failing engine; use a LuaScriptEngine and a bad Lua file
+            let dir = tempfile::TempDir::new().unwrap();
+            // Bad Lua syntax
+            std::fs::write(dir.path().join("broken.lua"), "function {{{{ bad syntax").unwrap();
+
+            let mut mgr = ScriptManager::new(Box::new(LuaScriptEngine::new()));
+            let count = mgr.load_scripts(dir.path()).unwrap();
+            assert_eq!(count, 0);
+            assert_eq!(mgr.load_errors().len(), 1);
+            assert!(mgr.load_errors()[0].1.contains("broken") || !mgr.load_errors()[0].1.is_empty());
+        }
+
+        #[test]
+        fn script_manager_script_names_reflects_loaded_scripts() {
+            // Lines 398-399: script_names with actual lua engine
+            let dir = tempfile::TempDir::new().unwrap();
+            std::fs::write(dir.path().join("script_a.lua"), "a = 1").unwrap();
+            std::fs::write(dir.path().join("script_b.lua"), "b = 2").unwrap();
+
+            let mut mgr = ScriptManager::new(Box::new(LuaScriptEngine::new()));
+            mgr.load_scripts(dir.path()).unwrap();
+            let names: Vec<&str> = mgr.script_names().collect();
+            assert!(names.contains(&"script_a"));
+            assert!(names.contains(&"script_b"));
+        }
+
+        #[test]
+        fn script_manager_load_script_same_name_twice_does_not_duplicate_order() {
+            // Lines 364-367: branch in load_scripts where script name already in scripts
+            let dir = tempfile::TempDir::new().unwrap();
+            let f = dir.path().join("same.lua");
+            std::fs::write(&f, "x = 1").unwrap();
+
+            let mut mgr = ScriptManager::new(Box::new(LuaScriptEngine::new()));
+            // First load via load_scripts
+            mgr.load_scripts(dir.path()).unwrap();
+            // Second load via load_scripts (same dir, same file — simulates reload without clear)
+            mgr.load_scripts(dir.path()).unwrap();
+            // script_order should not have duplicates for "same"
+            let count = mgr
+                .script_names()
+                .filter(|n| *n == "same")
+                .count();
+            assert_eq!(count, 1);
+        }
+    }
 }

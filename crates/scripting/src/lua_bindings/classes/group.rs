@@ -149,4 +149,44 @@ mod tests {
         let v: i64 = lua.load("return g:getMaxDepotItems()").eval().unwrap();
         assert_eq!(v, 1000);
     }
+
+    #[test]
+    fn get_flags_returns_field() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("g", LuaGroup::new(sample_group()))
+            .unwrap();
+        let v: i64 = lua.load("return g:getFlags()").eval().unwrap();
+        assert_eq!(v, 0b1010);
+    }
+
+    #[test]
+    fn get_max_vip_entries_returns_field() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("g", LuaGroup::new(sample_group()))
+            .unwrap();
+        let v: i64 = lua.load("return g:getMaxVipEntries()").eval().unwrap();
+        assert_eq!(v, 50);
+    }
+
+    #[test]
+    fn inequality_different_groups() {
+        let lua = fresh_lua();
+        let mut g2 = sample_group();
+        g2.id = 99;
+        lua.globals()
+            .set("a", LuaGroup::new(sample_group()))
+            .unwrap();
+        lua.globals().set("b", LuaGroup::new(g2)).unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaGroup> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
 }

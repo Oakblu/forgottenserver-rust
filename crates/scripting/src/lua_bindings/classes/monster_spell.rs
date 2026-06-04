@@ -52,3 +52,65 @@ impl UserData for LuaMonsterSpell {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn fresh_lua() -> mlua::Lua {
+        let lua = mlua::Lua::new();
+        crate::lua_bindings::install_bindings(
+            &lua,
+            crate::lua_bindings::GameStateHandle::default(),
+        )
+        .unwrap();
+        lua
+    }
+
+    #[test]
+    fn set_type_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("spell", LuaMonsterSpell).unwrap();
+        let result: mlua::Result<()> = lua.load("spell:setType('melee')").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn set_interval_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("spell", LuaMonsterSpell).unwrap();
+        let result: mlua::Result<()> = lua.load("spell:setInterval(2000)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn set_chance_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("spell", LuaMonsterSpell).unwrap();
+        let result: mlua::Result<()> = lua.load("spell:setChance(100)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn set_combat_value_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("spell", LuaMonsterSpell).unwrap();
+        let result: mlua::Result<()> = lua.load("spell:setCombatValue(-100, -200)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn delete_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("spell", LuaMonsterSpell).unwrap();
+        let result: mlua::Result<()> = lua.load("spell:delete()").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaMonsterSpell> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
+}

@@ -1733,4 +1733,44 @@ mod tests {
         assert_eq!(CreatureIcon::FIRST as u8, 1);
         assert_eq!(CreatureIcon::LAST as u8, 21);
     }
+
+    // -----------------------------------------------------------------------
+    // Tests required by MIGRATION_LEDGER.yml (exact names required)
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_skull() {
+        // C++: Skulls_t with SKULL_NONE=0 .. SKULL_ORANGE=6 (const.h:485-491)
+        assert_eq!(Skull::None as u8, 0);
+        assert_eq!(Skull::Yellow as u8, 1);
+        assert_eq!(Skull::Green as u8, 2);
+        assert_eq!(Skull::White as u8, 3);
+        assert_eq!(Skull::Red as u8, 4);
+        assert_eq!(Skull::Black as u8, 5);
+        assert_eq!(Skull::Orange as u8, 6);
+    }
+
+    #[test]
+    fn test_experience() {
+        // C++: MESSAGE_EXPERIENCE = 26  (const.h:281)
+        assert_eq!(MessageClass::Experience as u8, 26);
+    }
+
+    #[test]
+    fn test_loot() {
+        // C++: MESSAGE_LOOT = 31  (const.h:287)
+        assert_eq!(MessageClass::Loot as u8, 31);
+    }
+
+    #[test]
+    fn test_monsters() {
+        // C++: RELOAD_TYPE_MONSTERS = 9  (const.h:675)
+        assert_eq!(ReloadType::Monsters as u8, 9);
+    }
+
+    #[test]
+    fn test_scripts() {
+        // C++: RELOAD_TYPE_SCRIPTS = 14  (const.h:680)
+        assert_eq!(ReloadType::Scripts as u8, 14);
+    }
 }

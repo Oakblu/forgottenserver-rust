@@ -132,4 +132,142 @@ mod tests {
             .unwrap();
         assert_eq!(counts, (2, 1));
     }
+
+    #[test]
+    fn get_id_returns_field() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("w", LuaModalWindow::new(42, "Title".into(), "Msg".into()))
+            .unwrap();
+        let v: i64 = lua.load("return w:getId()").eval().unwrap();
+        assert_eq!(v, 42);
+    }
+
+    #[test]
+    fn get_title_returns_field() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("w", LuaModalWindow::new(1, "Hello".into(), "World".into()))
+            .unwrap();
+        let v: String = lua.load("return w:getTitle()").eval().unwrap();
+        assert_eq!(v, "Hello");
+    }
+
+    #[test]
+    fn get_message_returns_field() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set(
+                "w",
+                LuaModalWindow::new(1, "Title".into(), "My message".into()),
+            )
+            .unwrap();
+        let v: String = lua.load("return w:getMessage()").eval().unwrap();
+        assert_eq!(v, "My message");
+    }
+
+    #[test]
+    fn set_title_mutates() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("w", LuaModalWindow::new(1, "Old".into(), "Msg".into()))
+            .unwrap();
+        let v: String = lua
+            .load(r#"w:setTitle("New"); return w:getTitle()"#)
+            .eval()
+            .unwrap();
+        assert_eq!(v, "New");
+    }
+
+    #[test]
+    fn set_message_mutates() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("w", LuaModalWindow::new(1, "T".into(), "Old".into()))
+            .unwrap();
+        let v: String = lua
+            .load(r#"w:setMessage("New"); return w:getMessage()"#)
+            .eval()
+            .unwrap();
+        assert_eq!(v, "New");
+    }
+
+    #[test]
+    fn has_priority_and_set_priority() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("w", LuaModalWindow::new(1, "T".into(), "M".into()))
+            .unwrap();
+        let v: bool = lua
+            .load("w:setPriority(true); return w:hasPriority()")
+            .eval()
+            .unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn get_default_enter_button_and_set() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("w", LuaModalWindow::new(1, "T".into(), "M".into()))
+            .unwrap();
+        let v: i64 = lua
+            .load("w:setDefaultEnterButton(5); return w:getDefaultEnterButton()")
+            .eval()
+            .unwrap();
+        assert_eq!(v, 5);
+    }
+
+    #[test]
+    fn send_to_player_returns_false() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("w", LuaModalWindow::new(1, "T".into(), "M".into()))
+            .unwrap();
+        let v: bool = lua.load("return w:sendToPlayer(nil)").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn delete_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("w", LuaModalWindow::new(1, "T".into(), "M".into()))
+            .unwrap();
+        let result: mlua::Result<()> = lua.load("w:delete()").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn eq_same_id_returns_true() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("a", LuaModalWindow::new(1, "T".into(), "M".into()))
+            .unwrap();
+        lua.globals()
+            .set("b", LuaModalWindow::new(1, "T".into(), "M".into()))
+            .unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn eq_different_id_returns_false() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("a", LuaModalWindow::new(1, "T".into(), "M".into()))
+            .unwrap();
+        lua.globals()
+            .set("b", LuaModalWindow::new(2, "T".into(), "M".into()))
+            .unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaModalWindow> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
 }

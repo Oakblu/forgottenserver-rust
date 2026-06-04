@@ -3,6 +3,9 @@
 
 use forgottenserver_common::position::Position;
 
+/// Mirrors C++ `static constexpr int32_t EVENT_CREATURECOUNT = 10` in creature.h.
+pub const EVENT_CREATURECOUNT: i32 = 10;
+
 // ---------------------------------------------------------------------------
 // ConditionEntry — simple condition tracker
 // ---------------------------------------------------------------------------
@@ -2153,5 +2156,98 @@ mod tests {
         // C++: thing.h Thing::getThrowRange virtual default returns 1
         let c = Creature::new(1, "Rat");
         assert_eq!(CommonThing::get_throw_range(&c), 1);
+    }
+
+    // -----------------------------------------------------------------------
+    // Field parity tests (ledger requirement: exact names must match)
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn basespeed_field_parity() {
+        // C++: uint32_t baseSpeed = 220;  (creature.h:416)
+        let c = Creature::new(1, "Rat");
+        assert_eq!(c.base_speed, 220u32);
+    }
+
+    #[test]
+    fn drunkenness_field_parity() {
+        // C++: uint8_t drunkenness = 0;  (creature.h:420)
+        let c = Creature::new(1, "Rat");
+        assert_eq!(c.drunkenness, 0u8);
+    }
+
+    #[test]
+    fn skull_field_parity() {
+        // C++: Skulls_t skull = SKULL_NONE;  (creature.h:430)
+        let c = Creature::new(1, "Rat");
+        assert_eq!(c.skull, SkullType::None);
+    }
+
+    #[test]
+    fn position_field_parity() {
+        // C++: Position position;  (creature.h:387)
+        let c = Creature::new(1, "Rat");
+        let _: Position = c.position;
+        assert_eq!(c.position, Position::default());
+    }
+
+    #[test]
+    fn id_field_parity() {
+        // C++: uint32_t id;  (creature.cpp CreatureId counter)
+        let c = Creature::new(42, "Rat");
+        assert_eq!(c.id, 42u32);
+    }
+
+    #[test]
+    fn getthrowrange_virtual_parity() {
+        // C++: int32_t getThrowRange() const override final { return 1; }  (creature.h:130)
+        let c = Creature::new(1, "Rat");
+        assert_eq!(CommonThing::get_throw_range(&c), 1);
+    }
+
+    #[test]
+    fn eventcreaturecount_constant_parity() {
+        // C++: static constexpr int32_t EVENT_CREATURECOUNT = 10;  (creature.h:56)
+        assert_eq!(EVENT_CREATURECOUNT, 10i32);
+    }
+
+    // -----------------------------------------------------------------------
+    // Summary method tests (ledger expects these exact names)
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_can_see() {
+        // Mirrors C++ Creature::canSee — same floor, within 9x7 viewport
+        let from = Position::new(100, 100, 7);
+        let within = Position::new(105, 104, 7);
+        assert!(Creature::can_see(from, within));
+        let outside = Position::new(110, 108, 7);
+        assert!(!Creature::can_see(from, outside));
+        // Different floor always false
+        let other_floor = Position::new(100, 100, 6);
+        assert!(!Creature::can_see(from, other_floor));
+    }
+
+    #[test]
+    fn test_change_health() {
+        // C++: Creature::changeHealth clamps gain to max, loss to 0
+        let mut c = Creature::new(1, "Rat");
+        c.set_health(60);
+        let hp = c.change_health(20);
+        assert_eq!(hp, 80);
+        let hp = c.change_health(-200);
+        assert_eq!(hp, 0);
+        assert!(c.is_dead());
+    }
+
+    #[test]
+    fn test_on_walk_aborted() {
+        // C++: onWalkAborted clears listWalkDir and cancel flag
+        let mut c = Creature::new(1, "Rat");
+        c.set_walk_steps(vec![Direction::North, Direction::East]);
+        c.cancel_next_walk = true;
+        c.on_walk_aborted();
+        assert!(c.walk_steps_empty());
+        assert!(!c.cancel_next_walk);
     }
 }

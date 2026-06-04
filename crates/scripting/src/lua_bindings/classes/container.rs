@@ -121,4 +121,107 @@ mod tests {
         let v: i64 = lua.load("return c:getEmptySlots()").eval().unwrap();
         assert_eq!(v, 20);
     }
+
+    #[test]
+    fn get_item_holding_count_returns_zero_for_empty() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("c", LuaContainer::new(sample_container()))
+            .unwrap();
+        let v: i64 = lua.load("return c:getItemHoldingCount()").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn get_item_count_by_id_returns_zero_for_absent_item() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("c", LuaContainer::new(sample_container()))
+            .unwrap();
+        let v: i64 = lua.load("return c:getItemCountById(5)").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn has_item_returns_false_for_absent() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("c", LuaContainer::new(sample_container()))
+            .unwrap();
+        let v: bool = lua.load("return c:hasItem(99)").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn get_corpse_owner_returns_zero() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("c", LuaContainer::new(sample_container()))
+            .unwrap();
+        let v: i64 = lua.load("return c:getCorpseOwner()").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn get_item_returns_nil() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("c", LuaContainer::new(sample_container()))
+            .unwrap();
+        let v: mlua::Value = lua.load("return c:getItem(0)").eval().unwrap();
+        assert!(matches!(v, mlua::Value::Nil));
+    }
+
+    #[test]
+    fn get_items_returns_table() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("c", LuaContainer::new(sample_container()))
+            .unwrap();
+        let v: bool = lua
+            .load("return type(c:getItems()) == 'table'")
+            .eval()
+            .unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn add_item_returns_nil() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("c", LuaContainer::new(sample_container()))
+            .unwrap();
+        let v: mlua::Value = lua.load("return c:addItem(nil)").eval().unwrap();
+        assert!(matches!(v, mlua::Value::Nil));
+    }
+
+    #[test]
+    fn add_item_ex_returns_zero() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("c", LuaContainer::new(sample_container()))
+            .unwrap();
+        let v: i64 = lua.load("return c:addItemEx(nil)").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn eq_meta_returns_false() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("a", LuaContainer::new(sample_container()))
+            .unwrap();
+        lua.globals()
+            .set("b", LuaContainer::new(sample_container()))
+            .unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaContainer> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
 }

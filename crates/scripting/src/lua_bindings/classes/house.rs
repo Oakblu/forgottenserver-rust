@@ -142,4 +142,185 @@ mod tests {
             .unwrap();
         assert_eq!(r, 750);
     }
+
+    #[test]
+    fn get_id_returns_field() {
+        let lua = fresh_lua();
+        let h = House::new(42, "Test House", 100, 2);
+        lua.globals().set("h", LuaHouse::new(h)).unwrap();
+        let v: i64 = lua.load("return h:getId()").eval().unwrap();
+        assert_eq!(v, 42);
+    }
+
+    #[test]
+    fn get_town_returns_field() {
+        let lua = fresh_lua();
+        let h = House::new(1, "Test", 100, 5);
+        lua.globals().set("h", LuaHouse::new(h)).unwrap();
+        let v: i64 = lua.load("return h:getTown()").eval().unwrap();
+        assert_eq!(v, 5);
+    }
+
+    #[test]
+    fn get_exit_position_returns_table() {
+        let lua = fresh_lua();
+        let h = House::new(1, "Test", 100, 1);
+        lua.globals().set("h", LuaHouse::new(h)).unwrap();
+        let v: bool = lua
+            .load("local p = h:getExitPosition(); return p ~= nil")
+            .eval()
+            .unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn owner_guid_round_trip() {
+        let lua = fresh_lua();
+        let h = House::new(1, "Test", 100, 1);
+        lua.globals().set("h", LuaHouse::new(h)).unwrap();
+        let v: i64 = lua
+            .load("h:setOwnerGuid(123); return h:getOwnerGuid()")
+            .eval()
+            .unwrap();
+        assert_eq!(v, 123);
+    }
+
+    #[test]
+    fn get_owner_name_returns_string() {
+        let lua = fresh_lua();
+        let h = House::new(1, "Test", 100, 1);
+        lua.globals().set("h", LuaHouse::new(h)).unwrap();
+        let result: mlua::Result<String> = lua.load("return h:getOwnerName()").eval();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_tile_count_returns_zero() {
+        let lua = fresh_lua();
+        let h = House::new(1, "Test", 100, 1);
+        lua.globals().set("h", LuaHouse::new(h)).unwrap();
+        let v: i64 = lua.load("return h:getTileCount()").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn get_bed_count_returns_zero() {
+        let lua = fresh_lua();
+        let h = House::new(1, "Test", 100, 1);
+        lua.globals().set("h", LuaHouse::new(h)).unwrap();
+        let v: i64 = lua.load("return h:getBedCount()").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn get_door_count_returns_zero() {
+        let lua = fresh_lua();
+        let h = House::new(1, "Test", 100, 1);
+        lua.globals().set("h", LuaHouse::new(h)).unwrap();
+        let v: i64 = lua.load("return h:getDoorCount()").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn paid_until_round_trip() {
+        let lua = fresh_lua();
+        let h = House::new(1, "Test", 100, 1);
+        lua.globals().set("h", LuaHouse::new(h)).unwrap();
+        let v: i64 = lua
+            .load("h:setPaidUntil(9999999); return h:getPaidUntil()")
+            .eval()
+            .unwrap();
+        assert_eq!(v, 9999999);
+    }
+
+    #[test]
+    fn pay_rent_warnings_round_trip() {
+        let lua = fresh_lua();
+        let h = House::new(1, "Test", 100, 1);
+        lua.globals().set("h", LuaHouse::new(h)).unwrap();
+        let v: i64 = lua
+            .load("h:setPayRentWarnings(3); return h:getPayRentWarnings()")
+            .eval()
+            .unwrap();
+        assert_eq!(v, 3);
+    }
+
+    #[test]
+    fn kick_player_returns_false() {
+        let lua = fresh_lua();
+        let h = House::new(1, "Test", 100, 1);
+        lua.globals().set("h", LuaHouse::new(h)).unwrap();
+        let v: bool = lua.load("return h:kickPlayer(nil)").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn can_edit_access_list_returns_false() {
+        let lua = fresh_lua();
+        let h = House::new(1, "Test", 100, 1);
+        lua.globals().set("h", LuaHouse::new(h)).unwrap();
+        let v: bool = lua.load("return h:canEditAccessList(nil)").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn get_door_id_by_position_returns_zero() {
+        let lua = fresh_lua();
+        let h = House::new(1, "Test", 100, 1);
+        lua.globals().set("h", LuaHouse::new(h)).unwrap();
+        let v: i64 = lua.load("return h:getDoorIdByPosition(nil)").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn start_trade_returns_false() {
+        let lua = fresh_lua();
+        let h = House::new(1, "Test", 100, 1);
+        lua.globals().set("h", LuaHouse::new(h)).unwrap();
+        let v: bool = lua.load("return h:startTrade(nil)").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn get_tiles_returns_table() {
+        let lua = fresh_lua();
+        let h = House::new(1, "Test", 100, 1);
+        lua.globals().set("h", LuaHouse::new(h)).unwrap();
+        let v: bool = lua
+            .load("return type(h:getTiles()) == 'table'")
+            .eval()
+            .unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn eq_same_arc() {
+        let lua = fresh_lua();
+        let h = LuaHouse::new(House::new(1, "Test", 100, 1));
+        let h2 = h.clone();
+        lua.globals().set("a", h).unwrap();
+        lua.globals().set("b", h2).unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn eq_different_arcs() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("a", LuaHouse::new(House::new(1, "A", 100, 1)))
+            .unwrap();
+        lua.globals()
+            .set("b", LuaHouse::new(House::new(2, "B", 200, 2)))
+            .unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaHouse> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
 }

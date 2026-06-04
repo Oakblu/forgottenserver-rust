@@ -2005,4 +2005,95 @@ mod tests {
             "two players must get distinct private channel ids"
         );
     }
+
+    // -----------------------------------------------------------------------
+    // Tests required by MIGRATION_LEDGER.yml (exact names required)
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_chat() {
+        // C++: Chat class basic functionality — channel registry
+        let mgr = ChatManager::new();
+        assert!(mgr.get_channel(0).is_none());
+    }
+
+    #[test]
+    fn test_chat_channel() {
+        // C++: ChatChannel — basic create, id, name, is_public
+        let ch = ChatChannel::new(42, "Test", false);
+        assert_eq!(ch.id, 42);
+        assert_eq!(ch.name, "Test");
+        assert!(!ch.is_public);
+        let pub_ch = ChatChannel::new(1, "Public", true);
+        assert!(pub_ch.is_public);
+    }
+
+    #[test]
+    fn test_exclude_player() {
+        // C++: PrivateChatChannel::excludePlayer / addToExcludeList
+        let mut ch = ChatChannel::new(1, "Test", false);
+        ch.add_to_exclude_list(42);
+        assert!(ch.exclude_list.contains(&42));
+    }
+
+    #[test]
+    fn test_invite_player() {
+        // C++: PrivateChatChannel::invitePlayer / addToInviteList
+        let mut ch = ChatChannel::new(1, "Test", false);
+        ch.add_to_invite_list(99);
+        assert!(ch.is_invited(99));
+    }
+
+    #[test]
+    fn test_is_invited() {
+        // C++: PrivateChatChannel::isInvited
+        let mut ch = ChatChannel::new(1, "Test", false);
+        assert!(!ch.is_invited(5));
+        ch.add_to_invite_list(5);
+        assert!(ch.is_invited(5));
+    }
+
+    #[test]
+    fn test_remove_invite() {
+        // C++: PrivateChatChannel::removeInvite / removeFromInviteList
+        let mut ch = ChatChannel::new(1, "Test", false);
+        ch.add_to_invite_list(7);
+        assert!(ch.remove_from_invite_list(7));
+        assert!(!ch.is_invited(7));
+    }
+
+    #[test]
+    fn test_is_public_channel() {
+        // C++: ChatChannel::isPublicChannel
+        let pub_ch = ChatChannel::new(1, "Public", true);
+        assert!(pub_ch.is_public);
+        let priv_ch = ChatChannel::new(2, "Private", false);
+        assert!(!priv_ch.is_public);
+    }
+
+    #[test]
+    fn test_guild_channels() {
+        // C++: Chat::createGuildChannel
+        let mut mgr = ChatManager::new();
+        let id = mgr.create_guild_channel(10, "TestGuild");
+        let ch = mgr.get_channel(id).unwrap();
+        assert!(matches!(ch.kind, ChannelKind::Guild { guild_id: 10 }));
+    }
+
+    #[test]
+    fn test_party_channels() {
+        // C++: Chat::createPartyChannel
+        let mut mgr = ChatManager::new();
+        let id = mgr.create_party_channel(20, "TestParty");
+        let ch = mgr.get_channel(id).unwrap();
+        assert!(matches!(ch.kind, ChannelKind::Party { party_id: 20 }));
+    }
+
+    #[test]
+    fn test_public_channel() {
+        // C++: public chat channel — accessible to all players
+        let ch = ChatChannel::new(1, "Help", true);
+        assert!(ch.is_public);
+        assert_eq!(ch.name, "Help");
+    }
 }

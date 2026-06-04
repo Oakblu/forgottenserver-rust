@@ -168,4 +168,99 @@ mod tests {
         );
         assert!(mgr.get_trade_for_player(2).is_none());
     }
+
+    // ── Default impl (lines 37-38) ─────────────────────────────────────────────
+
+    #[test]
+    fn trade_manager_default_is_fresh() {
+        let mgr = TradeManager::default();
+        // A fresh manager has no trades.
+        assert!(mgr.get_trade_for_player(1).is_none());
+    }
+
+    // ── AlreadyInTrade error (line 58) ─────────────────────────────────────────
+
+    #[test]
+    fn open_fails_when_initiator_already_in_trade() {
+        let mut mgr = TradeManager::new();
+        mgr.open(1, 2, item(100)).unwrap();
+        // Player 1 is already in a trade — a second open must fail.
+        let err = mgr.open(1, 3, item(200));
+        assert_eq!(err, Err(TradeError::AlreadyInTrade));
+    }
+
+    #[test]
+    fn open_fails_when_target_already_in_trade() {
+        let mut mgr = TradeManager::new();
+        mgr.open(1, 2, item(100)).unwrap();
+        // Player 2 is already in a trade.
+        let err = mgr.open(3, 2, item(300));
+        assert_eq!(err, Err(TradeError::AlreadyInTrade));
+    }
+
+    // ── inspect returns None for initiator (line 81) ───────────────────────────
+
+    #[test]
+    fn inspect_returns_none_for_initiator() {
+        let mut mgr = TradeManager::new();
+        let trade_id = mgr.open(1, 2, item(100)).unwrap();
+        // The initiator cannot see their own item via inspect.
+        assert!(
+            mgr.inspect(trade_id, 1).is_none(),
+            "initiator must not see their own item"
+        );
+    }
+
+    #[test]
+    fn inspect_returns_item_for_target() {
+        let mut mgr = TradeManager::new();
+        let trade_id = mgr.open(1, 2, item(100)).unwrap();
+        let seen = mgr.inspect(trade_id, 2);
+        assert!(seen.is_some(), "target must be able to inspect the offer");
+        assert_eq!(seen.unwrap().type_id, 100);
+    }
+
+    #[test]
+    fn inspect_returns_none_for_nonexistent_trade() {
+        let mgr = TradeManager::new();
+        assert!(mgr.inspect(999, 1).is_none());
+    }
+
+    // ── accept with non-existent trade_id (line 90) ────────────────────────────
+
+    #[test]
+    fn accept_nonexistent_trade_returns_pending() {
+        let mut mgr = TradeManager::new();
+        // Trade ID 999 does not exist — accept must return Pending (not panic).
+        let result = mgr.accept(999, 1);
+        assert_eq!(
+            result,
+            TradeResult::Pending,
+            "accept on non-existent trade must return Pending"
+        );
+    }
+
+    // ── accept: target accepts before initiator ────────────────────────────────
+
+    #[test]
+    fn accept_target_then_initiator_completes() {
+        let mut mgr = TradeManager::new();
+        let trade_id = mgr.open(1, 2, item(50)).unwrap();
+        assert_eq!(mgr.accept(trade_id, 2), TradeResult::Pending);
+        assert_eq!(mgr.accept(trade_id, 1), TradeResult::Completed);
+        assert!(mgr.get_trade_for_player(1).is_none());
+        assert!(mgr.get_trade_for_player(2).is_none());
+    }
+
+    // ── next_id increments across multiple opens ────────────────────────────────
+
+    #[test]
+    fn open_assigns_distinct_trade_ids() {
+        let mut mgr = TradeManager::new();
+        // First trade between 1 and 2, then second trade between 3 and 4.
+        let id1 = mgr.open(1, 2, item(10)).unwrap();
+        mgr.close(id1);
+        let id2 = mgr.open(3, 4, item(20)).unwrap();
+        assert_ne!(id1, id2, "each open must produce a distinct trade ID");
+    }
 }

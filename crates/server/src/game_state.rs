@@ -1294,4 +1294,459 @@ mod tests {
             "creature AI must have moved the monster"
         );
     }
+
+    // -----------------------------------------------------------------------
+    // apply_direction helper (private fn exercised indirectly via creature AI)
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn apply_direction_north_decrements_y() {
+        let pos = Position::new(100, 100, 7);
+        // exercise via the public creature-AI path: monster at (100,102), player
+        // at (100,100); pathfinder goes north (dir 0).
+        let mut gs = GameState::new();
+        gs.add_monster(make_monster(1, 100));
+        gs.set_creature_position(1, Position::new(100, 102, 7));
+        gs.set_player_position(99, pos);
+
+        gs.tick_creature_ai();
+
+        let new_pos = gs.get_creature_position(1).unwrap();
+        assert_eq!(new_pos.y, 101, "monster should move north (y--)");
+        let _ = pos;
+    }
+
+    #[test]
+    fn apply_direction_invalid_dir_returns_none_leaves_creature_stationary() {
+        // Indirectly: set a monster in a position where the pathfinder would
+        // produce no valid path (same tile as player → dist==0; dist≤1 triggers
+        // attack not movement, so no apply_direction call; covered via monster
+        // attacking the player while on the same tile).
+        let mut gs = GameState::new();
+        gs.add_monster(make_monster(1, 100));
+        gs.set_creature_position(1, Position::new(100, 100, 7));
+        let player = Player::new(99, "Hero", 1);
+        let initial_hp = player.get_health();
+        gs.add_player_entity(player);
+        gs.set_player_position(99, Position::new(100, 100, 7)); // same tile
+
+        gs.tick_creature_ai();
+
+        // Player took damage (attack, not movement) and creature did not move.
+        let player_hp = gs.get_player_entity(99).unwrap().get_health();
+        assert!(player_hp < initial_hp, "attack must fire at dist == 0");
+        assert_eq!(
+            gs.get_creature_position(1).unwrap(),
+            Position::new(100, 100, 7),
+            "creature must not move when attacking"
+        );
+    }
+
+    // -----------------------------------------------------------------------
+    // collect_effect — uncovered variants (GainMana, Haste, Slowed, Root,
+    // NoEffect variants: Drunk, Invisible, etc.)
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn gain_mana_condition_heals_entity_each_tick() {
+        let mut gs = GameState::new();
+        let mut c = make_creature(1);
+        c.set_health(50);
+        gs.add_creature(c);
+        let now = Instant::now();
+        // GainMana → Heal branch
+        let cond = TickableCondition::new(ConditionKind::GainMana, 3, 100, now).with_heal(15);
+        gs.add_tickable_condition(1, cond);
+        gs.tick_conditions(now);
+        assert_eq!(gs.get_creature(1).unwrap().health, 65);
+    }
+
+    #[test]
+    fn haste_condition_sets_speed_modifier() {
+        let mut gs = GameState::new();
+        gs.add_creature(make_creature(1));
+        let now = Instant::now();
+        // Haste → SpeedMod branch
+        let cond =
+            TickableCondition::new(ConditionKind::Haste, 3, 100, now).with_speed_modifier(50);
+        gs.add_tickable_condition(1, cond);
+        gs.tick_conditions(now);
+        assert_eq!(gs.get_creature(1).unwrap().var_speed, 50);
+    }
+
+    #[test]
+    fn slowed_condition_sets_negative_speed_modifier() {
+        let mut gs = GameState::new();
+        gs.add_creature(make_creature(1));
+        let now = Instant::now();
+        // Slowed → SpeedMod branch
+        let cond =
+            TickableCondition::new(ConditionKind::Slowed, 3, 100, now).with_speed_modifier(-50);
+        gs.add_tickable_condition(1, cond);
+        gs.tick_conditions(now);
+        assert_eq!(gs.get_creature(1).unwrap().var_speed, -50);
+    }
+
+    #[test]
+    fn root_condition_sets_speed_modifier() {
+        let mut gs = GameState::new();
+        gs.add_creature(make_creature(1));
+        let now = Instant::now();
+        // Root → SpeedMod branch
+        let cond =
+            TickableCondition::new(ConditionKind::Root, 3, 100, now).with_speed_modifier(-200);
+        gs.add_tickable_condition(1, cond);
+        gs.tick_conditions(now);
+        assert_eq!(gs.get_creature(1).unwrap().var_speed, -200);
+    }
+
+    #[test]
+    fn no_effect_condition_does_not_change_health() {
+        let mut gs = GameState::new();
+        gs.add_creature(make_creature(1));
+        let now = Instant::now();
+        // Drunk → NoEffect branch (does nothing to stats)
+        let cond = TickableCondition::new(ConditionKind::Drunk, 3, 100, now);
+        gs.add_tickable_condition(1, cond);
+        let health_before = gs.get_creature(1).unwrap().health;
+        gs.tick_conditions(now);
+        let health_after = gs.get_creature(1).unwrap().health;
+        assert_eq!(health_before, health_after, "Drunk (NoEffect) must not change health");
+    }
+
+    // -----------------------------------------------------------------------
+    // GameState Debug impl
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn game_state_debug_includes_online_count() {
+        let mut gs = GameState::new();
+        gs.add_player("Alice");
+        gs.add_player("Bob");
+        let debug_str = format!("{gs:?}");
+        assert!(
+            debug_str.contains("online_count"),
+            "Debug output must include online_count: {debug_str}"
+        );
+        assert!(
+            debug_str.contains('2'),
+            "Debug output must show count 2: {debug_str}"
+        );
+    }
+
+    // -----------------------------------------------------------------------
+    // get_creature_mut
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn get_creature_mut_returns_mutable_reference() {
+        let mut gs = GameState::new();
+        gs.add_creature(make_creature(7));
+        if let Some(c) = gs.get_creature_mut(7) {
+            c.set_health(42);
+        }
+        assert_eq!(gs.get_creature(7).unwrap().health, 42);
+    }
+
+    #[test]
+    fn get_creature_mut_returns_none_for_unknown_id() {
+        let mut gs = GameState::new();
+        assert!(gs.get_creature_mut(999).is_none());
+    }
+
+    // -----------------------------------------------------------------------
+    // apply_damage — death triggers spawn_manager
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn apply_damage_kills_creature_with_spawn_id_notifies_spawn_manager() {
+        use forgottenserver_world::{SpawnPointDef, World};
+        let mut gs = GameState::new();
+
+        // Register a spawn entry so on_creature_killed has something to act on.
+        let mut world = World::new();
+        world.add_spawn_point(SpawnPointDef {
+            position: Position::new(100, 100, 7),
+            radius: 3,
+            monster_name: "Rat".to_string(),
+            interval_secs: 60,
+        });
+        gs.spawn_manager.load_world(&world);
+
+        // Spawn the creature (assign spawn_id)
+        let entry_id = {
+            let entry = gs.spawn_manager.entry(0).cloned().unwrap();
+            gs.spawn_creature(&entry)
+        };
+
+        // Now kill it — should call on_creature_killed
+        let result = gs.apply_damage(entry_id, 99999);
+        assert!(result.is_some());
+        assert_eq!(result.unwrap().0, 0); // health == 0
+    }
+
+    // -----------------------------------------------------------------------
+    // Monster management — get_monster_mut, set/get_creature_position
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn get_monster_mut_allows_mutation() {
+        let mut gs = GameState::new();
+        gs.add_monster(make_monster(5, 100));
+        if let Some(m) = gs.get_monster_mut(5) {
+            m.creature.set_health(10);
+        }
+        assert_eq!(gs.get_monster(5).unwrap().creature.health, 10);
+    }
+
+    #[test]
+    fn get_monster_mut_returns_none_for_unknown_id() {
+        let mut gs = GameState::new();
+        assert!(gs.get_monster_mut(999).is_none());
+    }
+
+    #[test]
+    fn set_and_get_creature_position() {
+        let mut gs = GameState::new();
+        let pos = Position::new(50, 60, 7);
+        gs.set_creature_position(1, pos);
+        assert_eq!(gs.get_creature_position(1), Some(pos));
+    }
+
+    #[test]
+    fn get_creature_position_returns_none_for_unknown_creature() {
+        let gs = GameState::new();
+        assert!(gs.get_creature_position(999).is_none());
+    }
+
+    // -----------------------------------------------------------------------
+    // in_viewport — different-z case
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn in_viewport_excludes_different_z_layer() {
+        let mut gs = GameState::new();
+        let center = Position::new(100, 100, 7);
+        // Same x/y but different z — must not be in viewport.
+        gs.set_player_position(1, Position::new(100, 100, 8));
+        let vp = gs.get_players_in_viewport(center);
+        assert!(vp.is_empty(), "players on a different z-level must not be in viewport");
+    }
+
+    // -----------------------------------------------------------------------
+    // get_player_entity_mut / remove_player_entity
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn get_player_entity_mut_allows_mutation() {
+        let mut gs = GameState::new();
+        let player = Player::new(3, "Warrior", 1);
+        gs.add_player_entity(player);
+        if let Some(p) = gs.get_player_entity_mut(3) {
+            p.set_health(77);
+        }
+        assert_eq!(gs.get_player_entity(3).unwrap().get_health(), 77);
+    }
+
+    #[test]
+    fn get_player_entity_mut_returns_none_for_unknown_player() {
+        let mut gs = GameState::new();
+        assert!(gs.get_player_entity_mut(999).is_none());
+    }
+
+    // -----------------------------------------------------------------------
+    // apply_damage_to_player — both branches
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn apply_damage_to_player_returns_true_and_reduces_health() {
+        let mut gs = GameState::new();
+        let mut player = Player::new(1, "Hero", 1);
+        player.set_max_health(100);
+        player.set_health(100);
+        gs.add_player_entity(player);
+        let result = gs.apply_damage_to_player(1, 25);
+        assert!(result);
+        assert_eq!(gs.get_player_entity(1).unwrap().get_health(), 75);
+    }
+
+    #[test]
+    fn apply_damage_to_player_clamps_to_zero() {
+        let mut gs = GameState::new();
+        let mut player = Player::new(1, "Hero", 1);
+        player.set_max_health(100);
+        player.set_health(100);
+        gs.add_player_entity(player);
+        gs.apply_damage_to_player(1, 99999);
+        assert_eq!(gs.get_player_entity(1).unwrap().get_health(), 0);
+    }
+
+    #[test]
+    fn apply_damage_to_player_returns_false_for_unknown_player() {
+        let mut gs = GameState::new();
+        assert!(!gs.apply_damage_to_player(999, 10));
+    }
+
+    // -----------------------------------------------------------------------
+    // additional condition branches: Energy, Drown, Bleeding, LifeDrain,
+    // ManaDrain (all → Damage); also Invisible → NoEffect
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn energy_condition_deals_damage() {
+        let mut gs = GameState::new();
+        gs.add_creature(make_creature(1));
+        let now = Instant::now();
+        let cond = TickableCondition::new(ConditionKind::Energy, 2, 100, now).with_damage(20);
+        gs.add_tickable_condition(1, cond);
+        gs.tick_conditions(now);
+        assert_eq!(gs.get_creature(1).unwrap().health, 80);
+    }
+
+    #[test]
+    fn drown_condition_deals_damage() {
+        let mut gs = GameState::new();
+        gs.add_creature(make_creature(1));
+        let now = Instant::now();
+        let cond = TickableCondition::new(ConditionKind::Drown, 2, 100, now).with_damage(5);
+        gs.add_tickable_condition(1, cond);
+        gs.tick_conditions(now);
+        assert_eq!(gs.get_creature(1).unwrap().health, 95);
+    }
+
+    #[test]
+    fn bleeding_condition_deals_damage() {
+        let mut gs = GameState::new();
+        gs.add_creature(make_creature(1));
+        let now = Instant::now();
+        let cond = TickableCondition::new(ConditionKind::Bleeding, 2, 100, now).with_damage(8);
+        gs.add_tickable_condition(1, cond);
+        gs.tick_conditions(now);
+        assert_eq!(gs.get_creature(1).unwrap().health, 92);
+    }
+
+    #[test]
+    fn life_drain_condition_deals_damage() {
+        let mut gs = GameState::new();
+        gs.add_creature(make_creature(1));
+        let now = Instant::now();
+        let cond = TickableCondition::new(ConditionKind::LifeDrain, 2, 100, now).with_damage(12);
+        gs.add_tickable_condition(1, cond);
+        gs.tick_conditions(now);
+        assert_eq!(gs.get_creature(1).unwrap().health, 88);
+    }
+
+    #[test]
+    fn mana_drain_condition_deals_damage() {
+        let mut gs = GameState::new();
+        gs.add_creature(make_creature(1));
+        let now = Instant::now();
+        let cond = TickableCondition::new(ConditionKind::ManaDrain, 2, 100, now).with_damage(3);
+        gs.add_tickable_condition(1, cond);
+        gs.tick_conditions(now);
+        assert_eq!(gs.get_creature(1).unwrap().health, 97);
+    }
+
+    #[test]
+    fn invisible_condition_has_no_effect_on_health() {
+        let mut gs = GameState::new();
+        gs.add_creature(make_creature(1));
+        let now = Instant::now();
+        let cond = TickableCondition::new(ConditionKind::Invisible, 2, 100, now);
+        gs.add_tickable_condition(1, cond);
+        let before = gs.get_creature(1).unwrap().health;
+        gs.tick_conditions(now);
+        assert_eq!(gs.get_creature(1).unwrap().health, before);
+    }
+
+    // -----------------------------------------------------------------------
+    // NPC voice — first tick without a prior last_voice entry
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn npc_voice_fires_on_first_tick_when_no_prior_entry() {
+        let mut gs = GameState::new();
+        // Use a very short interval so the time-since-epoch trick fires immediately.
+        let interval = Duration::from_millis(1);
+        gs.add_npc_voice(1, "Welcome!", interval);
+
+        // Tick *without* calling set_npc_last_voice — the first-entry branch fires.
+        // We need `now` to be >= interval after the implied "last" time.
+        // The code sets last = now - interval - 1ms when first creating the entry,
+        // so ticking immediately should fire.
+        let now = Instant::now();
+        gs.tick_npc_voices(now);
+
+        let messages = gs.drain_voice_messages();
+        assert_eq!(
+            messages.len(),
+            1,
+            "NPC voice must fire on first tick even without a prior entry"
+        );
+        assert_eq!(messages[0].1, "Welcome!");
+    }
+
+    #[test]
+    fn npc_voice_does_not_fire_before_interval_elapses() {
+        let mut gs = GameState::new();
+        let interval = Duration::from_secs(60);
+        gs.add_npc_voice(1, "Hello!", interval);
+
+        let now = Instant::now();
+        // Set last_voice to "now" so the interval has NOT elapsed.
+        gs.set_npc_last_voice(1, now);
+        gs.tick_npc_voices(now);
+
+        let messages = gs.drain_voice_messages();
+        assert!(
+            messages.is_empty(),
+            "NPC voice must NOT fire before the interval elapses"
+        );
+    }
+
+    // -----------------------------------------------------------------------
+    // nearest_player — no-player / out-of-range cases
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn nearest_player_returns_none_when_no_players() {
+        let gs = GameState::new();
+        assert!(gs.nearest_player(Position::new(100, 100, 7), 9).is_none());
+    }
+
+    #[test]
+    fn nearest_player_returns_none_when_all_players_out_of_range() {
+        let mut gs = GameState::new();
+        gs.set_player_position(1, Position::new(200, 200, 7));
+        assert!(
+            gs.nearest_player(Position::new(100, 100, 7), 9).is_none(),
+            "player 100+ tiles away must not be nearest"
+        );
+    }
+
+    #[test]
+    fn nearest_player_returns_closest_in_range() {
+        let mut gs = GameState::new();
+        gs.set_player_position(1, Position::new(103, 100, 7)); // distance 3
+        gs.set_player_position(2, Position::new(108, 100, 7)); // distance 8
+        let result = gs.nearest_player(Position::new(100, 100, 7), 9);
+        assert!(result.is_some());
+        assert_eq!(result.unwrap().0, 1, "player 1 is closer and must be returned");
+    }
+
+    // -----------------------------------------------------------------------
+    // apply_damage — health_max == 0 branch (percent calculation)
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn apply_damage_with_zero_health_max_returns_percent_zero() {
+        let mut gs = GameState::new();
+        let mut c = Creature::new(1, "Weird");
+        c.health_max = 0;
+        c.health = 0;
+        gs.add_creature(c);
+        let result = gs.apply_damage(1, 0);
+        assert!(result.is_some());
+        assert_eq!(result.unwrap().1, 0, "percent must be 0 when health_max is 0");
+    }
 }

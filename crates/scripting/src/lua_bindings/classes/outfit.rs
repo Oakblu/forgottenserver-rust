@@ -92,4 +92,20 @@ mod tests {
         let eq: bool = lua.load("return a == b").eval().unwrap();
         assert!(!eq);
     }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaOutfit> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn default_outfit_equals_itself() {
+        let lua = fresh_lua();
+        let a = LuaOutfit::new(Outfit::default());
+        lua.globals().set("a", a).unwrap();
+        let eq: bool = lua.load("return a == a").eval().unwrap();
+        assert!(eq);
+    }
 }

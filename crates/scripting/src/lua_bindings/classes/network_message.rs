@@ -178,4 +178,128 @@ mod tests {
         let v: i64 = lua.load("return m:len()").eval().unwrap();
         assert_eq!(v, 0);
     }
+
+    #[test]
+    fn add_u16_then_get_u16_roundtrips() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("m", LuaNetworkMessage::new(NetworkMessage::new()))
+            .unwrap();
+        lua.load("m:addU16(1000); m:seek(0)").exec().unwrap();
+        let v: i64 = lua.load("return m:getU16()").eval().unwrap();
+        assert_eq!(v, 1000);
+    }
+
+    #[test]
+    fn add_u64_then_get_u64_roundtrips() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("m", LuaNetworkMessage::new(NetworkMessage::new()))
+            .unwrap();
+        lua.load("m:addU64(999999); m:seek(0)").exec().unwrap();
+        let v: i64 = lua.load("return m:getU64()").eval().unwrap();
+        assert_eq!(v, 999999);
+    }
+
+    #[test]
+    fn add_string_then_get_string_roundtrips() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("m", LuaNetworkMessage::new(NetworkMessage::new()))
+            .unwrap();
+        lua.load("m:addString('hello'); m:seek(0)").exec().unwrap();
+        let v: String = lua.load("return m:getString()").eval().unwrap();
+        assert_eq!(v, "hello");
+    }
+
+    #[test]
+    fn add_double_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("m", LuaNetworkMessage::new(NetworkMessage::new()))
+            .unwrap();
+        let result: mlua::Result<()> = lua.load("m:addDouble(3.14)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn add_item_stub_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("m", LuaNetworkMessage::new(NetworkMessage::new()))
+            .unwrap();
+        let result: mlua::Result<()> = lua.load("m:addItem(nil)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn add_item_id_stub_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("m", LuaNetworkMessage::new(NetworkMessage::new()))
+            .unwrap();
+        let result: mlua::Result<()> = lua.load("m:addItemId(100)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn send_to_player_stub_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("m", LuaNetworkMessage::new(NetworkMessage::new()))
+            .unwrap();
+        let result: mlua::Result<()> = lua.load("m:sendToPlayer(nil)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn tell_returns_cursor_position() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("m", LuaNetworkMessage::new(NetworkMessage::new()))
+            .unwrap();
+        lua.load("m:addByte(1)").exec().unwrap();
+        let pos: i64 = lua.load("return m:tell()").eval().unwrap();
+        assert!(pos >= 0);
+    }
+
+    #[test]
+    fn skip_bytes_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("m", LuaNetworkMessage::new(NetworkMessage::new()))
+            .unwrap();
+        let result: mlua::Result<()> = lua.load("m:addU32(0); m:seek(0); m:skipBytes(2)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn delete_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("m", LuaNetworkMessage::new(NetworkMessage::new()))
+            .unwrap();
+        let result: mlua::Result<()> = lua.load("m:delete()").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn eq_meta_returns_false() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("a", LuaNetworkMessage::new(NetworkMessage::new()))
+            .unwrap();
+        lua.globals()
+            .set("b", LuaNetworkMessage::new(NetworkMessage::new()))
+            .unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaNetworkMessage> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
 }

@@ -160,4 +160,69 @@ mod tests {
         assert_eq!(count, 1, "register() must add the action to LuaActionStore");
         assert!(store.0.lock().unwrap()[0].item_ids.contains(&1234));
     }
+
+    #[test]
+    fn aid_setter_stores_value() {
+        let lua = fresh_lua();
+        lua.globals().set("a", LuaAction::default()).unwrap();
+        lua.load("a:aid(500)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("a").unwrap();
+        let borrowed = ud.borrow::<LuaAction>().unwrap();
+        assert_eq!(borrowed.action_id, 500);
+    }
+
+    #[test]
+    fn uid_setter_stores_value() {
+        let lua = fresh_lua();
+        lua.globals().set("a", LuaAction::default()).unwrap();
+        lua.load("a:uid(999)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("a").unwrap();
+        let borrowed = ud.borrow::<LuaAction>().unwrap();
+        assert_eq!(borrowed.unique_id, 999);
+    }
+
+    #[test]
+    fn allow_far_use_setter() {
+        let lua = fresh_lua();
+        lua.globals().set("a", LuaAction::default()).unwrap();
+        lua.load("a:allowFarUse(true)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("a").unwrap();
+        let borrowed = ud.borrow::<LuaAction>().unwrap();
+        assert!(borrowed.allow_far_use);
+    }
+
+    #[test]
+    fn block_walls_setter() {
+        let lua = fresh_lua();
+        lua.globals().set("a", LuaAction::default()).unwrap();
+        lua.load("a:blockWalls(true)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("a").unwrap();
+        let borrowed = ud.borrow::<LuaAction>().unwrap();
+        assert!(borrowed.block_walls);
+    }
+
+    #[test]
+    fn check_floor_setter() {
+        let lua = fresh_lua();
+        lua.globals().set("a", LuaAction::default()).unwrap();
+        lua.load("a:checkFloor(true)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("a").unwrap();
+        let borrowed = ud.borrow::<LuaAction>().unwrap();
+        assert!(borrowed.check_floor);
+    }
+
+    #[test]
+    fn on_use_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("a", LuaAction::default()).unwrap();
+        let result: mlua::Result<()> = lua.load("a:onUse(function() end)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaAction> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
 }

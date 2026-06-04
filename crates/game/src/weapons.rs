@@ -1721,4 +1721,17 @@ mod tests {
         let registered = weapons.get_by_item_id(bow_id).expect("bow must be registered");
         assert!(registered.attack > 0, "distance weapon must have non-zero attack");
     }
+
+    // -----------------------------------------------------------------------
+    // Tests required by MIGRATION_LEDGER.yml (exact names required)
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_get_weapon() {
+        // C++: Weapons::getWeapon — returns None for unknown item id, Some for registered
+        let mut weapons = Weapons::new();
+        assert!(weapons.get_by_item_id(12345).is_none());
+        weapons.register(Weapon::new(12345, WeaponKind::Melee, 1, 20, 0));
+        assert!(weapons.get_by_item_id(12345).is_some());
+    }
 }

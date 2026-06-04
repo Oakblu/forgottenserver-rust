@@ -482,4 +482,59 @@ mod tests {
         tasks.flush(&mut db);
         assert_eq!(*log.lock().unwrap(), vec![1, 2, 3]);
     }
+
+    // ── Equivalence: C++ DatabaseTasks::start / threadMain ────────────────────
+    //
+    // C++ contract:
+    //   DatabaseTasks::start() — launches a background worker thread and connects
+    //   a dedicated DB handle.  After start() the queue accepts tasks.
+    //
+    //   DatabaseTasks::threadMain() — worker loop: blocks on condvar, pops one
+    //   task, executes it via runTask(), repeats until shutdown signalled.
+    //
+    // Rust equivalence:
+    //   DatabaseTasks::new() is the Rust equivalent of start() — puts the queue
+    //   into the running (non-stopped) state.  There is no background thread;
+    //   flush() drives execution synchronously (the dispatcher calls flush() on
+    //   each game tick, matching the observable batch-execution contract).
+
+    #[test]
+    fn start_launches_worker_thread() {
+        // C++ DatabaseTasks::start() launches the worker thread.
+        // Rust equivalent: DatabaseTasks::new() creates a live, non-stopped queue.
+        // Observable contract: after new(), tasks can be enqueued and executed.
+        let mut db = InMemoryDb::new();
+        let mut tasks = DatabaseTasks::new();
+        assert!(!tasks.is_stopped(), "new() must put queue in live state (mirrors C++ start())");
+        tasks.add_task("SELECT 1").expect("queue must accept tasks after start");
+        tasks.flush(&mut db);
+        assert_eq!(tasks.executed_order(), &["SELECT 1"], "task must execute after start");
+    }
+
+    #[test]
+    fn thread_main_runs_until_shutdown_signal() {
+        // C++ DatabaseTasks::threadMain() loops until a shutdown signal is set.
+        // Rust equivalent: stop() marks the queue stopped; subsequent add_task() calls
+        // are rejected (mimicking the thread exiting on shutdown signal).
+        // Tasks queued before stop() are still flushed (drain on shutdown).
+        let mut db = InMemoryDb::new();
+        let mut tasks = DatabaseTasks::new();
+        tasks.add_task("SELECT before_shutdown").unwrap();
+        tasks.stop();
+        // After stop, new tasks are rejected
+        assert!(
+            tasks.add_task("SELECT after_shutdown").is_err(),
+            "thread_main must stop accepting tasks after shutdown signal"
+        );
+        // Tasks queued before stop are still flushed (C++ flushes on shutdown too)
+        tasks.flush(&mut db);
+        assert!(
+            tasks.executed_order().contains(&"SELECT before_shutdown".to_string()),
+            "tasks enqueued before shutdown must still be executed (drain)"
+        );
+        assert!(
+            !tasks.executed_order().contains(&"SELECT after_shutdown".to_string()),
+            "tasks rejected by stop() must not appear in executed order"
+        );
+    }
 }

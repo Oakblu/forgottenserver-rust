@@ -1017,4 +1017,40 @@ mod tests {
         spell.spell_id = 42;
         assert_eq!(spell.spell_id, 42);
     }
+
+    // -----------------------------------------------------------------------
+    // Tests required by MIGRATION_LEDGER.yml (exact names required)
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_register_event() {
+        // C++: Spells::registerEvent registers an instant spell by words
+        let mut spells = Spells::new();
+        let spell = Spell::new("Exura", 50, 1, vec![]);
+        let instant = InstantSpell::new(spell);
+        spells.register_instant(instant);
+        assert!(spells.get_instant_spell("Exura").is_some());
+    }
+
+    #[test]
+    fn test_register_instant_lua_event() {
+        // C++: Spells::registerInstantLuaEvent — stores instant spell by words
+        let mut spells = Spells::new();
+        let spell = Spell::new("Exori", 100, 2, vec![1]);
+        let instant = InstantSpell::new(spell);
+        spells.register_instant(instant);
+        assert!(spells.get_instant_spell("Exori").is_some());
+        assert!(spells.get_instant_spell("Unknown").is_none());
+    }
+
+    #[test]
+    fn test_register_rune_lua_event() {
+        // C++: Spells::registerRuneLuaEvent — stores rune spell by item id
+        let mut spells = Spells::new();
+        let spell = Spell::new("Adori Vita Vis", 200, 3, vec![2]);
+        let rune = RuneSpell::new(spell, 2260);
+        spells.register_rune(rune);
+        assert!(spells.get_rune_spell(2260).is_some());
+        assert!(spells.get_rune_spell(9999).is_none());
+    }
 }

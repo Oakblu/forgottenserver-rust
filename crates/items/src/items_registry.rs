@@ -7255,4 +7255,25 @@ mod tests {
         // client_id=65535 has never been mapped → None
         assert!(reg.get_item_type_by_client_id(65535).is_none());
     }
+
+    // -----------------------------------------------------------------------
+    // Tests required by MIGRATION_LEDGER.yml (exact names required)
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_reload() {
+        // C++: Items::reload() — clears state and reloads from scratch
+        let mut reg = registry_with(1, 100);
+        let node = OtbItemNode {
+            server_id: 7,
+            client_id: 107,
+            group: ItemGroup::Weapon as u8,
+            ..Default::default()
+        };
+        let otb = build_otb(3, CLIENT_VERSION_LAST, 1, &[node]);
+        let xml = r#"<items><item id="7" name="sword"/></items>"#;
+        reg.reload(&otb, xml).expect("reload ok");
+        assert!(reg.get_item_type(7).is_some());
+        assert_eq!(reg.get_item_type(7).unwrap().name, "sword");
+    }
 }

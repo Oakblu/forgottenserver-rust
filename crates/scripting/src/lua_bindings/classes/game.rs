@@ -94,3 +94,156 @@ impl UserData for LuaGame {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn fresh_lua() -> mlua::Lua {
+        let lua = mlua::Lua::new();
+        crate::lua_bindings::install_bindings(
+            &lua,
+            crate::lua_bindings::GameStateHandle::default(),
+        )
+        .unwrap();
+        lua
+    }
+
+    #[test]
+    fn get_game_state_returns_zero() {
+        let lua = fresh_lua();
+        lua.globals().set("Game", LuaGame).unwrap();
+        let v: i64 = lua.load("return Game:getGameState()").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn get_monster_count_returns_zero() {
+        let lua = fresh_lua();
+        lua.globals().set("Game", LuaGame).unwrap();
+        let v: i64 = lua.load("return Game:getMonsterCount()").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn get_npc_count_returns_zero() {
+        let lua = fresh_lua();
+        lua.globals().set("Game", LuaGame).unwrap();
+        let v: i64 = lua.load("return Game:getNpcCount()").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn get_player_count_returns_zero() {
+        let lua = fresh_lua();
+        lua.globals().set("Game", LuaGame).unwrap();
+        let v: i64 = lua.load("return Game:getPlayerCount()").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn get_world_type_returns_zero() {
+        let lua = fresh_lua();
+        lua.globals().set("Game", LuaGame).unwrap();
+        let v: i64 = lua.load("return Game:getWorldType()").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn get_experience_for_level_returns_value() {
+        let lua = fresh_lua();
+        lua.globals().set("Game", LuaGame).unwrap();
+        // Level 2 should return a positive experience value
+        let v: i64 = lua
+            .load("return Game:getExperienceForLevel(2)")
+            .eval()
+            .unwrap();
+        assert!(v > 0);
+    }
+
+    #[test]
+    fn get_experience_stage_returns_one() {
+        let lua = fresh_lua();
+        lua.globals().set("Game", LuaGame).unwrap();
+        let v: i64 = lua
+            .load("return Game:getExperienceStage(10)")
+            .eval()
+            .unwrap();
+        assert_eq!(v, 1);
+    }
+
+    #[test]
+    fn get_client_version_returns_table() {
+        let lua = fresh_lua();
+        lua.globals().set("Game", LuaGame).unwrap();
+        let v: bool = lua
+            .load("local t = Game:getClientVersion(); return t ~= nil")
+            .eval()
+            .unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn constructor_stub_returns_nil() {
+        let lua = fresh_lua();
+        lua.globals().set("Game", LuaGame).unwrap();
+        let v: mlua::Value = lua.load("return Game:createItem(1)").eval().unwrap();
+        assert!(matches!(v, mlua::Value::Nil));
+    }
+
+    #[test]
+    fn aggregate_getter_returns_table() {
+        let lua = fresh_lua();
+        lua.globals().set("Game", LuaGame).unwrap();
+        let v: bool = lua
+            .load("local t = Game:getPlayers(); return type(t) == 'table'")
+            .eval()
+            .unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn mutator_stub_returns_false() {
+        let lua = fresh_lua();
+        lua.globals().set("Game", LuaGame).unwrap();
+        let v: bool = lua.load("return Game:setGameState(4)").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn get_item_attribute_by_name_returns_zero() {
+        let lua = fresh_lua();
+        lua.globals().set("Game", LuaGame).unwrap();
+        let v: i64 = lua
+            .load("return Game:getItemAttributeByName('test')")
+            .eval()
+            .unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn get_vocations_returns_table() {
+        let lua = fresh_lua();
+        lua.globals().set("Game", LuaGame).unwrap();
+        let v: bool = lua
+            .load("local t = Game:getVocations(); return type(t) == 'table'")
+            .eval()
+            .unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn reload_returns_false() {
+        let lua = fresh_lua();
+        lua.globals().set("Game", LuaGame).unwrap();
+        let v: bool = lua.load("return Game:reload(1)").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaGame> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
+}

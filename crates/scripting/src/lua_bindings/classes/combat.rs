@@ -120,4 +120,87 @@ mod tests {
             "setParameter with integer should still work: {result:?}"
         );
     }
+
+    #[test]
+    fn delete_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("c", LuaCombat::new()).unwrap();
+        let result: mlua::Result<()> = lua.load("c:delete()").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn clear_conditions_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("c", LuaCombat::new()).unwrap();
+        let result: mlua::Result<()> = lua.load("c:clearConditions()").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn add_condition_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("c", LuaCombat::new()).unwrap();
+        let result: mlua::Result<()> = lua.load("c:addCondition(nil)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn set_area_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("c", LuaCombat::new()).unwrap();
+        let result: mlua::Result<()> = lua.load("c:setArea(nil)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn set_formula_stores_values() {
+        let lua = fresh_lua();
+        lua.globals().set("c", LuaCombat::new()).unwrap();
+        let result: mlua::Result<()> = lua.load("c:setFormula(0, 1.0, 2.0, 3.0, 4.0)").exec();
+        assert!(result.is_ok());
+        let ud: mlua::AnyUserData = lua.globals().get("c").unwrap();
+        let b = ud.borrow::<LuaCombat>().unwrap();
+        assert!(b.0.formula.is_some());
+    }
+
+    #[test]
+    fn set_callback_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("c", LuaCombat::new()).unwrap();
+        let result: mlua::Result<()> = lua.load("c:setCallback(1, 'onGetFormulaValues')").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_parameter_returns_zero() {
+        let lua = fresh_lua();
+        lua.globals().set("c", LuaCombat::new()).unwrap();
+        let v: i64 = lua.load("return c:getParameter(1)").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn execute_returns_true() {
+        let lua = fresh_lua();
+        lua.globals().set("c", LuaCombat::new()).unwrap();
+        let v: bool = lua.load("return c:execute(nil, nil)").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn eq_meta_returns_false() {
+        let lua = fresh_lua();
+        lua.globals().set("a", LuaCombat::new()).unwrap();
+        lua.globals().set("b", LuaCombat::new()).unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaCombat> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
 }

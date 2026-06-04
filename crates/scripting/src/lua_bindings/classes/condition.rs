@@ -183,4 +183,117 @@ mod tests {
             "Condition:setParameter with integer should still work: {result:?}"
         );
     }
+
+    #[test]
+    fn get_type_returns_value() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("c", LuaCondition::new(sample_condition()))
+            .unwrap();
+        let v: i64 = lua.load("return c:getType()").eval().unwrap();
+        assert_eq!(v, 1);
+    }
+
+    #[test]
+    fn get_sub_id_returns_value() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("c", LuaCondition::new(sample_condition()))
+            .unwrap();
+        let v: i64 = lua.load("return c:getSubId()").eval().unwrap();
+        assert_eq!(v, 7);
+    }
+
+    #[test]
+    fn get_end_time_returns_zero() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("c", LuaCondition::new(sample_condition()))
+            .unwrap();
+        let v: i64 = lua.load("return c:getEndTime()").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn get_icons_returns_zero() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("c", LuaCondition::new(sample_condition()))
+            .unwrap();
+        let v: i64 = lua.load("return c:getIcons()").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn get_parameter_returns_zero() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("c", LuaCondition::new(sample_condition()))
+            .unwrap();
+        let v: i64 = lua.load("return c:getParameter(1)").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn clone_returns_copy() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("c", LuaCondition::new(sample_condition()))
+            .unwrap();
+        let result: mlua::Result<bool> = lua
+            .load("local c2 = c:clone(); return c2 ~= nil")
+            .eval();
+        assert!(result.is_ok());
+        assert!(result.unwrap());
+    }
+
+    #[test]
+    fn add_damage_returns_false() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("c", LuaCondition::new(sample_condition()))
+            .unwrap();
+        let v: bool = lua.load("return c:addDamage(1, 1, 1)").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn set_outfit_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("c", LuaCondition::new(sample_condition()))
+            .unwrap();
+        let result: mlua::Result<()> = lua.load("c:setOutfit(nil)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn set_formula_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("c", LuaCondition::new(sample_condition()))
+            .unwrap();
+        let result: mlua::Result<()> = lua.load("c:setFormula(1.0, 2.0, 3.0, 4.0)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn eq_meta_returns_false() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("a", LuaCondition::new(sample_condition()))
+            .unwrap();
+        lua.globals()
+            .set("b", LuaCondition::new(sample_condition()))
+            .unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaCondition> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
 }

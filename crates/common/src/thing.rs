@@ -1285,4 +1285,47 @@ mod tests {
         assert!(c.get_creature().is_some());
         assert!(c.is_creature());
     }
+
+    // -----------------------------------------------------------------------
+    // Tests required by MIGRATION_LEDGER.yml (exact names required)
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_is_pushable() {
+        // C++: virtual bool isPushable() const — default returns false
+        let t = DefaultThing;
+        assert!(!t.is_pushable());
+    }
+
+    #[test]
+    fn test_get_description() {
+        // C++: virtual std::string getDescription(int32_t) const — default empty
+        let t = DefaultThing;
+        assert_eq!(t.get_description(0), "");
+    }
+
+    #[test]
+    fn test_get_thing_index() {
+        // C++: virtual int32_t getThingIndex(const Thing*) const — default -1
+        let t = DefaultThing;
+        let child = DefaultThing;
+        assert_eq!(t.get_thing_index(&child), -1);
+    }
+
+    #[test]
+    fn test_get_item_type_count() {
+        // C++: virtual uint32_t getItemTypeCount(uint16_t, int32_t) const — default 0
+        let t = DefaultThing;
+        assert_eq!(t.get_item_type_count(1, 0), 0);
+    }
+
+    #[test]
+    fn test_get_all_item_type_count() {
+        // C++: virtual std::map& getAllItemTypeCount(std::map&) const — default identity
+        let t = DefaultThing;
+        let mut map = std::collections::HashMap::new();
+        map.insert(1u32, 5u32);
+        let result = t.get_all_item_type_count(&mut map);
+        assert_eq!(result.get(&1), Some(&5u32));
+    }
 }

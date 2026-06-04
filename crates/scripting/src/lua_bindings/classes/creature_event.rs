@@ -165,4 +165,62 @@ mod tests {
             "function-declaration syntax on CreatureEvent should not error: {result:?}"
         );
     }
+
+    #[test]
+    fn type_setter_stores_value() {
+        let lua = fresh_lua();
+        lua.globals().set("ce", LuaCreatureEvent::default()).unwrap();
+        lua.load("ce:type(3)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("ce").unwrap();
+        let borrowed = ud.borrow::<LuaCreatureEvent>().unwrap();
+        assert_eq!(borrowed.event_type, 3);
+    }
+
+    #[test]
+    fn on_logout_records_callback() {
+        let lua = fresh_lua();
+        lua.globals().set("ce", LuaCreatureEvent::default()).unwrap();
+        lua.load("ce:onLogout(function() end)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("ce").unwrap();
+        let borrowed = ud.borrow::<LuaCreatureEvent>().unwrap();
+        assert!(borrowed.registered_callbacks.contains(&"onLogout".to_string()));
+    }
+
+    #[test]
+    fn on_death_records_callback() {
+        let lua = fresh_lua();
+        lua.globals().set("ce", LuaCreatureEvent::default()).unwrap();
+        lua.load("ce:onDeath(function() end)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("ce").unwrap();
+        let borrowed = ud.borrow::<LuaCreatureEvent>().unwrap();
+        assert!(borrowed.registered_callbacks.contains(&"onDeath".to_string()));
+    }
+
+    #[test]
+    fn on_think_records_callback() {
+        let lua = fresh_lua();
+        lua.globals().set("ce", LuaCreatureEvent::default()).unwrap();
+        lua.load("ce:onThink(function() end)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("ce").unwrap();
+        let borrowed = ud.borrow::<LuaCreatureEvent>().unwrap();
+        assert!(borrowed.registered_callbacks.contains(&"onThink".to_string()));
+    }
+
+    #[test]
+    fn duplicate_callback_is_not_added_twice() {
+        let lua = fresh_lua();
+        lua.globals().set("ce", LuaCreatureEvent::default()).unwrap();
+        lua.load("ce:onLogin(function() end); ce:onLogin(function() end)").exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("ce").unwrap();
+        let borrowed = ud.borrow::<LuaCreatureEvent>().unwrap();
+        let count = borrowed.registered_callbacks.iter().filter(|s| *s == "onLogin").count();
+        assert_eq!(count, 1);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaCreatureEvent> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
 }

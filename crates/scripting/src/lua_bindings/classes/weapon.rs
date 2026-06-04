@@ -112,4 +112,103 @@ mod tests {
         let id: i64 = lua.load("return w:id()").eval().unwrap();
         assert_eq!(id, 2400);
     }
+
+    #[test]
+    fn level_returns_min_level() {
+        let lua = fresh_lua();
+        let w = Weapon::new(2400, WeaponKind::Melee, 10, 30, 20);
+        lua.globals().set("w", LuaWeapon::new(w)).unwrap();
+        let v: i64 = lua.load("return w:level()").eval().unwrap();
+        assert_eq!(v, 10);
+    }
+
+    #[test]
+    fn magic_level_returns_min_mag_level() {
+        let lua = fresh_lua();
+        let mut w = LuaWeapon::default();
+        w.0.min_mag_level = 5;
+        lua.globals().set("w", w).unwrap();
+        let v: i64 = lua.load("return w:magicLevel()").eval().unwrap();
+        assert_eq!(v, 5);
+    }
+
+    #[test]
+    fn attack_returns_attack() {
+        let lua = fresh_lua();
+        let w = Weapon::new(2400, WeaponKind::Melee, 10, 30, 20);
+        lua.globals().set("w", LuaWeapon::new(w)).unwrap();
+        let v: i64 = lua.load("return w:attack()").eval().unwrap();
+        assert_eq!(v, 30);
+    }
+
+    #[test]
+    fn defense_returns_defense() {
+        let lua = fresh_lua();
+        let w = Weapon::new(2400, WeaponKind::Melee, 10, 30, 20);
+        lua.globals().set("w", LuaWeapon::new(w)).unwrap();
+        let v: i64 = lua.load("return w:defense()").eval().unwrap();
+        assert_eq!(v, 20);
+    }
+
+    #[test]
+    fn range_returns_shoot_range() {
+        let lua = fresh_lua();
+        let mut w = LuaWeapon::default();
+        w.0.shoot_range = 7;
+        lua.globals().set("w", w).unwrap();
+        let v: i64 = lua.load("return w:range()").eval().unwrap();
+        assert_eq!(v, 7);
+    }
+
+    #[test]
+    fn element_returns_element_type() {
+        let lua = fresh_lua();
+        let w = LuaWeapon::default(); // ElementType::None = 0
+        lua.globals().set("w", w).unwrap();
+        let v: i64 = lua.load("return w:element()").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn stub_setters_do_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("w", LuaWeapon::default()).unwrap();
+        let stubs = [
+            "w:action(1)",
+            "w:ammoType(1)",
+            "w:breakChance(10)",
+            "w:mana(50)",
+            "w:manaPercent(5)",
+            "w:soul(1)",
+            "w:vocation('knight')",
+            "w:premium(true)",
+            "w:wieldUnproperly(false)",
+            "w:register()",
+            "w:onUseWeapon(function() end)",
+            "w:shootType(1)",
+            "w:charges(3)",
+            "w:duration(1000)",
+            "w:transformEquipTo(100)",
+            "w:transformDeEquipTo(101)",
+            "w:slotType(1)",
+            "w:decayTo(0)",
+            "w:damage(10, 20)",
+            "w:extraElement(1, 5)",
+            "w:health(10)",
+            "w:healthPercent(5)",
+            "w:hitChance(50)",
+            "w:maxHitChance(100)",
+        ];
+        for stmt in &stubs {
+            let result = lua.load(*stmt).exec();
+            assert!(result.is_ok(), "stub '{}' should not error: {:?}", stmt, result);
+        }
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaWeapon> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
 }

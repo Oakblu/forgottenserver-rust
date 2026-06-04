@@ -93,6 +93,31 @@ mod tests {
     }
 
     #[test]
+    fn from_lua_with_wrong_type_returns_error() {
+        use mlua::FromLua as _;
+        let lua = mlua::Lua::new();
+        let result = LuaPodium::from_lua(mlua::Value::Integer(99), &lua);
+        assert!(result.is_err(), "from_lua must fail for non-userdata");
+        if let Err(mlua::Error::FromLuaConversionError { to, .. }) = result {
+            assert_eq!(to, "LuaPodium");
+        }
+    }
+
+    #[test]
+    fn set_direction_north_east_west_all_work() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("p", LuaPodium::new(Podium::new(100)))
+            .unwrap();
+        // North=0, East=1, South=2, West=3
+        for (d, expected) in [(0i64, 0i64), (1, 1), (3, 3)] {
+            let code = format!("p:setDirection({d}); return p:getDirection()");
+            let v: i64 = lua.load(&code).eval().unwrap();
+            assert_eq!(v, expected, "direction {d} should round-trip");
+        }
+    }
+
+    #[test]
     fn get_direction_returns_default_south() {
         let lua = fresh_lua();
         lua.globals()
@@ -114,5 +139,152 @@ mod tests {
             .eval()
             .unwrap();
         assert_eq!(v, 1); // East
+    }
+
+    #[test]
+    fn set_direction_unknown_clamps_to_south() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("p", LuaPodium::new(Podium::new(100)))
+            .unwrap();
+        let v: i64 = lua
+            .load("p:setDirection(99); return p:getDirection()")
+            .eval()
+            .unwrap();
+        assert_eq!(v, 2); // South fallback
+    }
+
+    #[test]
+    fn get_outfit_returns_outfit_userdata() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("p", LuaPodium::new(Podium::new(100)))
+            .unwrap();
+        let result: mlua::Result<bool> = lua
+            .load("return p:getOutfit() ~= nil")
+            .eval();
+        assert!(result.is_ok());
+        assert!(result.unwrap());
+    }
+
+    #[test]
+    fn set_outfit_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("p", LuaPodium::new(Podium::new(100)))
+            .unwrap();
+        let result: mlua::Result<()> = lua
+            .load("local o = p:getOutfit(); p:setOutfit(o)")
+            .exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn has_show_platform_flag_true_by_default() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("p", LuaPodium::new(Podium::new(100)))
+            .unwrap();
+        // Flag 0 = ShowPlatform — set by default in Podium::new
+        let v: bool = lua.load("return p:hasFlag(0)").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn has_show_outfit_flag_false_by_default() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("p", LuaPodium::new(Podium::new(100)))
+            .unwrap();
+        // Flag 1 = ShowOutfit — not set by default
+        let v: bool = lua.load("return p:hasFlag(1)").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn set_flag_and_has_flag() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("p", LuaPodium::new(Podium::new(100)))
+            .unwrap();
+        let v: bool = lua
+            .load("p:setFlag(0, true); return p:hasFlag(0)")
+            .eval()
+            .unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn set_flag_with_false_clears_flag() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("p", LuaPodium::new(Podium::new(100)))
+            .unwrap();
+        let v: bool = lua
+            .load("p:setFlag(1, true); p:setFlag(1, false); return p:hasFlag(1)")
+            .eval()
+            .unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn has_flag_unknown_returns_false() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("p", LuaPodium::new(Podium::new(100)))
+            .unwrap();
+        let v: bool = lua.load("return p:hasFlag(99)").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn set_flag_unknown_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("p", LuaPodium::new(Podium::new(100)))
+            .unwrap();
+        let result: mlua::Result<()> = lua.load("p:setFlag(99, true)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn eq_meta_same_type_id() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("a", LuaPodium::new(Podium::new(100)))
+            .unwrap();
+        lua.globals()
+            .set("b", LuaPodium::new(Podium::new(100)))
+            .unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn eq_meta_different_type_id() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("a", LuaPodium::new(Podium::new(100)))
+            .unwrap();
+        lua.globals()
+            .set("b", LuaPodium::new(Podium::new(200)))
+            .unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn all_valid_flag_indices_can_be_set() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("p", LuaPodium::new(Podium::new(100)))
+            .unwrap();
+        // Test all three valid flag indices: 0=ShowPlatform, 1=ShowOutfit, 2=ShowMount
+        // Each should be settable to true and readable back
+        for i in 0..=2i64 {
+            let code = format!("p:setFlag({i}, true); return p:hasFlag({i})");
+            let v: bool = lua.load(&code).eval().unwrap();
+            assert!(v, "flag {i} should be set");
+        }
     }
 }

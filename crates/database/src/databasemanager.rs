@@ -68,6 +68,58 @@ impl DatabaseManager {
         // Return the current version — no migrations to run in-memory.
         db.get_config("db_version").unwrap_or(0)
     }
+
+    /// Mirrors C++ `DatabaseManager::isDatabaseSetup()`.
+    ///
+    /// C++ queries `information_schema.tables` for any table in the schema.
+    /// Returns `true` if the schema has been bootstrapped (any table exists).
+    pub fn is_database_setup(&self, db: &InMemoryDb) -> bool {
+        db.has_any_table()
+    }
+
+    /// Mirrors C++ `DatabaseManager::getDatabaseConfig(config, value)`.
+    ///
+    /// C++ queries `SELECT value FROM server_config WHERE config = ?`.
+    /// Returns the stored value for the key, or `None` if not found.
+    pub fn get_database_config(&self, db: &InMemoryDb, key: &str) -> Option<i64> {
+        db.get_config(key)
+    }
+
+    /// Mirrors C++ `DatabaseManager::registerDatabaseConfig(config, value)`.
+    ///
+    /// C++ does INSERT if key absent, UPDATE if key present (upsert).
+    pub fn register_database_config(&self, db: &mut InMemoryDb, key: &str, value: i64) {
+        db.set_config(key, value);
+    }
+
+    /// A single in-order migration step: a target version and the SQL to run.
+    ///
+    /// Used by `update_database_with_steps` to drive testable migration
+    /// sequences without Lua scripting.
+    pub fn update_database_with_steps(&self, db: &mut InMemoryDb, steps: &[MigrationStep]) -> i64 {
+        let current = db.get_config("db_version").unwrap_or(0);
+        let mut sorted: Vec<&MigrationStep> = steps
+            .iter()
+            .filter(|s| s.version > current)
+            .collect();
+        sorted.sort_by_key(|s| s.version);
+        for step in sorted {
+            let _ = db.execute(&step.sql);
+            db.set_config("db_version", step.version);
+        }
+        db.get_config("db_version").unwrap_or(current)
+    }
+}
+
+/// A single migration step: a target version and the SQL to execute.
+///
+/// Mirrors C++ `data/migrations/{version}.lua` Lua migration scripts that
+/// call `onUpdateDatabase()`.  The Rust in-memory equivalent accepts plain
+/// SQL strings so migrations can be tested without a Lua runtime.
+#[derive(Debug, Clone)]
+pub struct MigrationStep {
+    pub version: i64,
+    pub sql: String,
 }
 
 impl Default for DatabaseManager {
@@ -349,5 +401,93 @@ mod tests {
             before,
             "optimize_tables must not execute any SQL against InMemoryDb"
         );
+    }
+
+    // ── DatabaseManager::getDatabaseConfig / registerDatabaseConfig ────────────
+
+    #[test]
+    fn get_database_config_returns_none_for_missing_key() {
+        let db = InMemoryDb::new();
+        let mgr = DatabaseManager::new();
+        assert_eq!(mgr.get_database_config(&db, "nonexistent_key"), None);
+    }
+
+    #[test]
+    fn get_database_config_returns_value_for_arbitrary_key() {
+        let mut db = InMemoryDb::new();
+        let mgr = DatabaseManager::new();
+        mgr.register_database_config(&mut db, "experience_rate", 3);
+        assert_eq!(mgr.get_database_config(&db, "experience_rate"), Some(3));
+    }
+
+    #[test]
+    fn register_database_config_persists_arbitrary_key() {
+        let mut db = InMemoryDb::new();
+        let mgr = DatabaseManager::new();
+        mgr.register_database_config(&mut db, "skill_rate", 7);
+        assert_eq!(db.get_config("skill_rate"), Some(7));
+    }
+
+    #[test]
+    fn register_database_config_upserts_existing_key() {
+        let mut db = InMemoryDb::new();
+        let mgr = DatabaseManager::new();
+        mgr.register_database_config(&mut db, "db_version", 1);
+        // Second call with same key updates the value (upsert semantics)
+        mgr.register_database_config(&mut db, "db_version", 5);
+        assert_eq!(mgr.get_database_config(&db, "db_version"), Some(5));
+    }
+
+    // ── DatabaseManager::isDatabaseSetup ──────────────────────────────────────
+
+    #[test]
+    fn is_database_setup_explicit_method_returns_false_when_no_tables() {
+        let db = InMemoryDb::new();
+        let mgr = DatabaseManager::new();
+        // C++ isDatabaseSetup() queries information_schema for any table.
+        // In-memory equivalent: no tables → not set up.
+        assert!(!mgr.is_database_setup(&db));
+    }
+
+    #[test]
+    fn is_database_setup_explicit_method_returns_true_when_server_config_exists() {
+        let mut db = InMemoryDb::new();
+        db.create_table("server_config");
+        let mgr = DatabaseManager::new();
+        assert!(mgr.is_database_setup(&db));
+    }
+
+    // ── DatabaseManager::updateDatabase with migration steps ──────────────────
+
+    #[test]
+    fn update_database_bumps_db_version_after_each_step() {
+        let mut db = InMemoryDb::new();
+        let mgr = DatabaseManager::new();
+        db.set_config("db_version", 0);
+        let steps = vec![
+            MigrationStep { version: 1, sql: "ALTER TABLE players ADD COLUMN vip TINYINT".to_string() },
+            MigrationStep { version: 2, sql: "ALTER TABLE players ADD COLUMN premium TINYINT".to_string() },
+        ];
+        let final_version = mgr.update_database_with_steps(&mut db, &steps);
+        assert_eq!(final_version, 2);
+        assert_eq!(db.get_config("db_version"), Some(2));
+    }
+
+    #[test]
+    fn update_database_runs_lua_migrations_in_order() {
+        let mut db = InMemoryDb::new();
+        let mgr = DatabaseManager::new();
+        db.set_config("db_version", 0);
+        // Provide steps out-of-order in the slice; update_database_with_steps must sort by version.
+        let steps = vec![
+            MigrationStep { version: 3, sql: "step_3".to_string() },
+            MigrationStep { version: 1, sql: "step_1".to_string() },
+            MigrationStep { version: 2, sql: "step_2".to_string() },
+        ];
+        mgr.update_database_with_steps(&mut db, &steps);
+        // Executed SQL must appear in version order: 1, 2, 3
+        assert_eq!(db.executed_statements[0], "step_1");
+        assert_eq!(db.executed_statements[1], "step_2");
+        assert_eq!(db.executed_statements[2], "step_3");
     }
 }

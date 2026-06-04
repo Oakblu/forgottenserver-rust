@@ -1132,4 +1132,21 @@ mod tests {
         p.invite_player(100);
         assert_eq!(p.get_invitees(), &[99, 100]);
     }
+
+    // -----------------------------------------------------------------------
+    // Tests required by MIGRATION_LEDGER.yml (exact names required)
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_can_open_corpse() {
+        // C++: bool Party::canOpenCorpse(uint32_t playerId) const
+        let mut p = Party::new(1); // leader = 1
+        // Leader can open corpse
+        assert!(p.can_open_corpse(1));
+        // Member can also open corpse
+        p.join_party(2);
+        assert!(p.can_open_corpse(2));
+        // Non-member cannot
+        assert!(!p.can_open_corpse(99));
+    }
 }

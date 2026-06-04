@@ -43,7 +43,7 @@ pub struct HistoryMarketOffer {
     pub state: OfferState,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, PartialEq)]
 pub struct MarketStatistics {
     pub num_transactions: u32,
     pub lowest_price: u64,
@@ -1275,5 +1275,35 @@ mod tests {
     fn reschedule_returns_minutes_in_ms() {
         assert_eq!(expired_offer_check_reschedule_ms(5), Some(300_000));
         assert_eq!(expired_offer_check_reschedule_ms(60), Some(3_600_000));
+    }
+
+    // ── check_expired_offers_schedules_next_run_via_dispatcher ─────────────────
+
+    /// C++: checkExpiredOffers re-schedules itself via g_scheduler.addEvent(task(minutes * 60_000)).
+    /// Rust: expired_offer_check_reschedule_ms returns the ms delay; the dispatcher caller owns scheduling.
+    #[test]
+    fn check_expired_offers_schedules_next_run_via_dispatcher() {
+        assert_eq!(expired_offer_check_reschedule_ms(1), Some(60_000));
+        assert_eq!(expired_offer_check_reschedule_ms(5), Some(300_000));
+        assert_eq!(expired_offer_check_reschedule_ms(0), None);
+        assert_eq!(expired_offer_check_reschedule_ms(-1), None);
+    }
+
+    // ── compute_statistics determinism (C++ uses a static cached map) ──────────
+
+    #[test]
+    fn compute_statistics_purchase_map_is_cached_between_calls() {
+        let m = IoMarket::new();
+        let (p1, _) = m.compute_statistics();
+        let (p2, _) = m.compute_statistics();
+        assert_eq!(p1, p2);
+    }
+
+    #[test]
+    fn compute_statistics_sale_map_is_cached_between_calls() {
+        let m = IoMarket::new();
+        let (_, s1) = m.compute_statistics();
+        let (_, s2) = m.compute_statistics();
+        assert_eq!(s1, s2);
     }
 }

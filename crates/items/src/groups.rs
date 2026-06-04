@@ -992,4 +992,24 @@ mod tests {
         assert!(g.has_flag(PlayerFlags::CAN_BROADCAST));
         assert!(!g.has_flag(PlayerFlags::CAN_EDIT_HOUSES));
     }
+
+    // -----------------------------------------------------------------------
+    // Tests required by MIGRATION_LEDGER.yml (exact names required)
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn test_load_from_xml() {
+        // C++: Groups::load() — parses groups.xml and populates group registry
+        let xml = r#"<?xml version="1.0" encoding="UTF-8"?>
+        <groups>
+            <group id="1" name="Player" access="0" maxdepotitems="2000" maxvipentries="200" flags="0"/>
+        </groups>"#;
+        let groups = Groups::load_from_xml(xml).unwrap();
+        let g = groups.get_group(1);
+        assert!(g.is_some());
+        let g = g.unwrap();
+        assert_eq!(g.name, "Player");
+        assert_eq!(g.max_depot_items, 2000);
+        assert_eq!(g.max_vip_entries, 200);
+    }
 }

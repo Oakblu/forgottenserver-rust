@@ -40,3 +40,76 @@ impl UserData for LuaXmlNode {
         });
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn fresh_lua() -> mlua::Lua {
+        let lua = mlua::Lua::new();
+        crate::lua_bindings::install_bindings(
+            &lua,
+            crate::lua_bindings::GameStateHandle::default(),
+        )
+        .unwrap();
+        lua
+    }
+
+    #[test]
+    fn name_returns_empty_string() {
+        let lua = fresh_lua();
+        lua.globals().set("n", LuaXmlNode).unwrap();
+        let v: String = lua.load("return n:name()").eval().unwrap();
+        assert_eq!(v, "");
+    }
+
+    #[test]
+    fn attribute_returns_empty_string() {
+        let lua = fresh_lua();
+        lua.globals().set("n", LuaXmlNode).unwrap();
+        let v: String = lua.load("return n:attribute('id')").eval().unwrap();
+        assert_eq!(v, "");
+    }
+
+    #[test]
+    fn first_child_returns_nil() {
+        let lua = fresh_lua();
+        lua.globals().set("n", LuaXmlNode).unwrap();
+        let v: mlua::Value = lua.load("return n:firstChild()").eval().unwrap();
+        assert!(matches!(v, mlua::Value::Nil));
+    }
+
+    #[test]
+    fn next_sibling_returns_nil() {
+        let lua = fresh_lua();
+        lua.globals().set("n", LuaXmlNode).unwrap();
+        let v: mlua::Value = lua.load("return n:nextSibling()").eval().unwrap();
+        assert!(matches!(v, mlua::Value::Nil));
+    }
+
+    #[test]
+    fn delete_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("n", LuaXmlNode).unwrap();
+        let result: mlua::Result<()> = lua.load("n:delete()").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn children_returns_iterator_that_loops_zero_times() {
+        let lua = fresh_lua();
+        lua.globals().set("n", LuaXmlNode).unwrap();
+        let count: i64 = lua
+            .load("local c = 0; for _ in n:children() do c = c + 1 end; return c")
+            .eval()
+            .unwrap();
+        assert_eq!(count, 0);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaXmlNode> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
+}

@@ -563,4 +563,138 @@ mod tests {
             "unrecognised backend string must return Err"
         );
     }
+
+    // -----------------------------------------------------------------------
+    // initialise_modules — covered in unit tests using real workspace fixtures.
+    // These tests match the coverage obligation for lines 73-177.
+    // -----------------------------------------------------------------------
+
+    fn workspace_root() -> std::path::PathBuf {
+        // CARGO_MANIFEST_DIR is crates/tfs/; workspace root is two levels up.
+        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .unwrap()
+            .parent()
+            .unwrap()
+            .to_path_buf()
+    }
+
+    fn fixture_config() -> std::path::PathBuf {
+        std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("tests")
+            .join("fixtures")
+            .join("config.lua")
+    }
+
+    #[test]
+    fn initialise_modules_succeeds_with_fixture_config_and_real_data_dir() {
+        let config_path = fixture_config();
+        let data_dir = workspace_root().join("data");
+
+        // This exercises lines 73-152: load config, call srv_boot::boot(),
+        // build GameState, construct Modules, etc.
+        let modules = initialise_modules(&config_path, &data_dir)
+            .expect("initialise_modules must succeed with fixture config and real data");
+
+        // Verify the returned Modules bundle has meaningful state.
+        assert!(
+            modules.config.get_string(
+                forgottenserver_common::configmanager::StringKey::ServerName
+            ).contains("Poketibia"),
+            "config must have been loaded from fixture"
+        );
+        // GameState must be alive.
+        let gs = modules.game_state.lock().unwrap();
+        assert_eq!(gs.online_player_count(), 0, "new game state must have 0 players");
+    }
+
+    #[test]
+    fn initialise_modules_missing_config_returns_err() {
+        let data_dir = workspace_root().join("data");
+
+        let result = initialise_modules(
+            std::path::Path::new("/nonexistent/path/config.lua"),
+            &data_dir,
+        );
+        match result {
+            Ok(_) => panic!("initialise_modules must fail when config file is missing"),
+            Err(e) => {
+                let err_msg = e.to_string();
+                assert!(
+                    err_msg.contains("Failed to load config"),
+                    "error must mention config loading: {err_msg}"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn initialise_modules_bad_data_dir_returns_err() {
+        let config_path = fixture_config();
+
+        let result = initialise_modules(
+            &config_path,
+            std::path::Path::new("/nonexistent/data"),
+        );
+        match result {
+            Ok(_) => panic!("initialise_modules must fail when data directory is missing"),
+            Err(e) => {
+                let err_msg = e.to_string();
+                assert!(
+                    err_msg.contains("Failed to load game data"),
+                    "error must mention game data loading: {err_msg}"
+                );
+            }
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // connect_database with Auto backend — exercises resolve_backend + InMemory.
+    // -----------------------------------------------------------------------
+
+    #[cfg(feature = "mariadb")]
+    #[test]
+    fn resolve_backend_auto_with_mysql_credentials_returns_mariadb() {
+        use forgottenserver_common::configmanager::{ConfigManager, StringKey};
+        let mut config = ConfigManager::new();
+        config.set_string(StringKey::MysqlHost, "localhost");
+        config.set_string(StringKey::MysqlDb, "tibia");
+        let result = resolve_backend(DbBackend::Auto, &config);
+        assert_eq!(result, DbBackend::MariaDb, "Auto with host+db must resolve to MariaDb");
+    }
+
+    #[test]
+    fn connect_database_auto_with_no_credentials_uses_in_memory() {
+        use forgottenserver_common::configmanager::ConfigManager;
+        let config = ConfigManager::new();
+        // Auto with no credentials → InMemory.
+        let result = connect_database(DbBackend::Auto, &config);
+        assert!(result.is_ok(), "Auto backend (no credentials) must return Ok(InMemoryDb)");
+    }
+
+    // -----------------------------------------------------------------------
+    // signal_handler — call via libc::raise(SIGTERM) after install.
+    // Using SIGTERM (not SIGINT) avoids interfering with Ctrl-C handling.
+    // We restore the flag after the test.
+    // -----------------------------------------------------------------------
+
+    #[test]
+    fn signal_handler_sets_shutdown_flag_on_sigterm() {
+        // Reset the flag before the test.
+        SHUTDOWN.store(false, Ordering::SeqCst);
+        install_signal_handlers();
+
+        // Raise SIGTERM — the handler should set SHUTDOWN to true.
+        unsafe { libc::raise(libc::SIGTERM) };
+
+        assert!(
+            SHUTDOWN.load(Ordering::SeqCst),
+            "signal_handler must set SHUTDOWN flag on SIGTERM"
+        );
+
+        // Restore for other tests.
+        SHUTDOWN.store(false, Ordering::SeqCst);
+        // Restore default signal handler.
+        unsafe { libc::signal(libc::SIGTERM, libc::SIG_DFL) };
+    }
 }

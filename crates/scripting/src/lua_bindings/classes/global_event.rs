@@ -167,4 +167,89 @@ mod tests {
         assert_eq!(store.0.lock().unwrap().len(), 1);
         assert_eq!(store.0.lock().unwrap()[0].name, "Save");
     }
+
+    #[test]
+    fn type_setter_accepts_string_integer() {
+        let lua = fresh_lua();
+        lua.globals().set("e", LuaGlobalEvent::default()).unwrap();
+        lua.load(r#"e:type("2")"#).exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("e").unwrap();
+        let borrowed = ud.borrow::<LuaGlobalEvent>().unwrap();
+        assert_eq!(borrowed.event_type, 2);
+    }
+
+    #[test]
+    fn type_setter_returns_zero_for_non_parseable_string() {
+        let lua = fresh_lua();
+        lua.globals().set("e", LuaGlobalEvent::default()).unwrap();
+        lua.load(r#"e:type("not_a_number")"#).exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("e").unwrap();
+        let borrowed = ud.borrow::<LuaGlobalEvent>().unwrap();
+        assert_eq!(borrowed.event_type, 0);
+    }
+
+    #[test]
+    fn type_setter_returns_zero_for_other_types() {
+        let lua = fresh_lua();
+        lua.globals().set("e", LuaGlobalEvent::default()).unwrap();
+        lua.load(r#"e:type(nil)"#).exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("e").unwrap();
+        let borrowed = ud.borrow::<LuaGlobalEvent>().unwrap();
+        assert_eq!(borrowed.event_type, 0);
+    }
+
+    #[test]
+    fn on_startup_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("e", LuaGlobalEvent::default()).unwrap();
+        let result: mlua::Result<()> = lua.load("e:onStartup(function() end)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn on_shutdown_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("e", LuaGlobalEvent::default()).unwrap();
+        let result: mlua::Result<()> = lua.load("e:onShutdown(function() end)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn on_record_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("e", LuaGlobalEvent::default()).unwrap();
+        let result: mlua::Result<()> = lua.load("e:onRecord(function() end)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn on_save_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("e", LuaGlobalEvent::default()).unwrap();
+        let result: mlua::Result<()> = lua.load("e:onSave(function() end)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn on_think_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("e", LuaGlobalEvent::default()).unwrap();
+        let result: mlua::Result<()> = lua.load("e:onThink(function() end)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn on_time_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("e", LuaGlobalEvent::default()).unwrap();
+        let result: mlua::Result<()> = lua.load("e:onTime(function() end)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaGlobalEvent> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
 }

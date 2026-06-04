@@ -186,4 +186,49 @@ mod tests {
         assert_eq!(store.0.lock().unwrap().len(), 1);
         assert_eq!(store.0.lock().unwrap()[0].word, "/ban");
     }
+
+    #[test]
+    fn account_type_setter_stores_value() {
+        let lua = fresh_lua();
+        lua.globals().set("t", LuaTalkAction::default()).unwrap();
+        lua.load(r#"t:accountType(3)"#).exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("t").unwrap();
+        let borrowed = ud.borrow::<LuaTalkAction>().unwrap();
+        assert_eq!(borrowed.account_type, 3);
+    }
+
+    #[test]
+    fn on_say_does_not_error() {
+        let lua = fresh_lua();
+        lua.globals().set("t", LuaTalkAction::default()).unwrap();
+        let result: mlua::Result<()> = lua.load("t:onSay(function() end)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn access_with_non_int_non_bool_returns_zero() {
+        let lua = fresh_lua();
+        lua.globals().set("t", LuaTalkAction::default()).unwrap();
+        lua.load(r#"t:access(nil)"#).exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("t").unwrap();
+        let borrowed = ud.borrow::<LuaTalkAction>().unwrap();
+        assert_eq!(borrowed.access, 0);
+    }
+
+    #[test]
+    fn access_with_bool_false_stores_zero() {
+        let lua = fresh_lua();
+        lua.globals().set("t", LuaTalkAction::default()).unwrap();
+        lua.load(r#"t:access(false)"#).exec().unwrap();
+        let ud: mlua::AnyUserData = lua.globals().get("t").unwrap();
+        let borrowed = ud.borrow::<LuaTalkAction>().unwrap();
+        assert_eq!(borrowed.access, 0);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaTalkAction> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
 }

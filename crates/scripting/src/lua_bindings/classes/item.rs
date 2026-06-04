@@ -264,4 +264,274 @@ mod tests {
             .unwrap();
         assert_eq!(s, "seven");
     }
+
+    #[test]
+    fn get_id_returns_field() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let v: i64 = lua.load("return i:getId()").eval().unwrap();
+        assert!(v >= 0);
+    }
+
+    #[test]
+    fn get_name_returns_string() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let result: mlua::Result<String> = lua.load("return i:getName()").eval();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_weight_returns_field() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let v: i64 = lua.load("return i:getWeight()").eval().unwrap();
+        assert!(v >= 0);
+    }
+
+    #[test]
+    fn get_action_id_and_set_action_id() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let v: i64 = lua
+            .load("i:setActionId(500); return i:getActionId()")
+            .eval()
+            .unwrap();
+        assert_eq!(v, 500);
+    }
+
+    #[test]
+    fn get_unique_id_returns_field() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let v: i64 = lua.load("return i:getUniqueId()").eval().unwrap();
+        assert!(v >= 0);
+    }
+
+    #[test]
+    fn is_store_item_returns_false() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let v: bool = lua.load("return i:isStoreItem()").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn is_item_returns_true() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let v: bool = lua.load("return i:isItem()").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn is_loaded_from_map_returns_false() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let v: bool = lua.load("return i:isLoadedFromMap()").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn stub_string_methods_return_empty() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let v: String = lua.load("return i:getArticle()").eval().unwrap();
+        assert_eq!(v, "");
+    }
+
+    #[test]
+    fn stub_int_methods_return_zero() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let v: i64 = lua.load("return i:getCharges()").eval().unwrap();
+        assert_eq!(v, 0);
+    }
+
+    #[test]
+    fn stub_bool_methods_return_false() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let v: bool = lua.load("return i:hasAttribute(1)").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn get_attribute_returns_nil() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let v: mlua::Value = lua.load("return i:getAttribute(1)").eval().unwrap();
+        assert!(matches!(v, mlua::Value::Nil));
+    }
+
+    #[test]
+    fn set_attribute_returns_true() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let v: bool = lua.load("return i:setAttribute(1, 5)").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn remove_attribute_returns_true() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let v: bool = lua.load("return i:removeAttribute(1)").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn set_boost_percent_does_not_error() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let result: mlua::Result<()> = lua.load("i:setBoostPercent(10)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn set_reflect_does_not_error() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let result: mlua::Result<()> = lua.load("i:setReflect(nil)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn set_store_item_does_not_error() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let result: mlua::Result<()> = lua.load("i:setStoreItem(true)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_parent_returns_nil() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let v: mlua::Value = lua.load("return i:getParent()").eval().unwrap();
+        assert!(matches!(v, mlua::Value::Nil));
+    }
+
+    #[test]
+    fn get_top_parent_returns_nil() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let v: mlua::Value = lua.load("return i:getTopParent()").eval().unwrap();
+        assert!(matches!(v, mlua::Value::Nil));
+    }
+
+    #[test]
+    fn get_tile_returns_nil() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let v: mlua::Value = lua.load("return i:getTile()").eval().unwrap();
+        assert!(matches!(v, mlua::Value::Nil));
+    }
+
+    #[test]
+    fn get_position_returns_table() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let v: bool = lua
+            .load("return type(i:getPosition()) == 'table'")
+            .eval()
+            .unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn lifecycle_stub_returns_false() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let v: bool = lua.load("return i:remove()").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn custom_attribute_float_round_trip() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let v: f64 = lua
+            .load(r#"i:setCustomAttribute("weight", 2.75); return i:getCustomAttribute("weight")"#)
+            .eval()
+            .unwrap();
+        assert!((v - 2.75_f64).abs() < 0.001);
+    }
+
+    #[test]
+    fn custom_attribute_float_key_stringifies() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        // Float key 3.5 → "3" (truncated via as i64)
+        let result: mlua::Result<bool> =
+            lua.load(r#"i:setCustomAttribute(3.5, "test"); return true"#).eval();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_custom_attribute_missing_returns_nil() {
+        let lua = fresh_lua();
+        let it = Item::new(Arc::new(ItemTypeData::default()), 1);
+        lua.globals().set("i", LuaItem::new(it)).unwrap();
+        let v: mlua::Value = lua
+            .load(r#"return i:getCustomAttribute("missing")"#)
+            .eval()
+            .unwrap();
+        assert!(matches!(v, mlua::Value::Nil));
+    }
+
+    #[test]
+    fn eq_same_arc() {
+        let lua = fresh_lua();
+        let it = LuaItem::new(Item::new(Arc::new(ItemTypeData::default()), 1));
+        let it2 = it.clone();
+        lua.globals().set("a", it).unwrap();
+        lua.globals().set("b", it2).unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn eq_different_arcs() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("a", LuaItem::new(Item::new(Arc::new(ItemTypeData::default()), 1)))
+            .unwrap();
+        lua.globals()
+            .set("b", LuaItem::new(Item::new(Arc::new(ItemTypeData::default()), 1)))
+            .unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaItem> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
 }

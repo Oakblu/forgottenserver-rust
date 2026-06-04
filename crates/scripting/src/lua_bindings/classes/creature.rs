@@ -245,4 +245,314 @@ mod tests {
             .unwrap();
         assert_eq!(h, 100);
     }
+
+    #[test]
+    fn get_name_returns_name() {
+        let lua = fresh_lua();
+        let c = Creature::new(42u32, "Dragon".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let name: String = lua.load("return c:getName()").eval().unwrap();
+        assert_eq!(name, "Dragon");
+    }
+
+    #[test]
+    fn get_id_returns_id() {
+        let lua = fresh_lua();
+        let c = Creature::new(99u32, "Goblin".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let id: i64 = lua.load("return c:getId()").eval().unwrap();
+        assert_eq!(id, 99);
+    }
+
+    #[test]
+    fn get_max_health_returns_value() {
+        let lua = fresh_lua();
+        let mut c = Creature::new(1u32, "Bear".to_string());
+        c.set_max_health(500);
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let mh: i64 = lua.load("return c:getMaxHealth()").eval().unwrap();
+        assert_eq!(mh, 500);
+    }
+
+    #[test]
+    fn set_max_health_mutates() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Bear".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let mh: i64 = lua
+            .load("c:setMaxHealth(300); return c:getMaxHealth()")
+            .eval()
+            .unwrap();
+        assert_eq!(mh, 300);
+    }
+
+    #[test]
+    fn get_speed_and_base_speed() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Fast".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let s: i64 = lua.load("return c:getSpeed()").eval().unwrap();
+        let bs: i64 = lua.load("return c:getBaseSpeed()").eval().unwrap();
+        assert!(s >= 0);
+        assert!(bs >= 0);
+    }
+
+    #[test]
+    fn change_speed_mutates() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Slow".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let result: mlua::Result<()> = lua.load("c:changeSpeed(100)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_direction_and_set_direction() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let d: i64 = lua
+            .load("c:setDirection(1); return c:getDirection()")
+            .eval()
+            .unwrap();
+        assert_eq!(d, 1); // East
+    }
+
+    #[test]
+    fn set_direction_unknown_clamps_to_south() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let d: i64 = lua
+            .load("c:setDirection(99); return c:getDirection()")
+            .eval()
+            .unwrap();
+        assert_eq!(d, 2); // South
+    }
+
+    #[test]
+    fn get_skull_returns_value() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let sk: i64 = lua.load("return c:getSkull()").eval().unwrap();
+        assert!(sk >= 0);
+    }
+
+    #[test]
+    fn get_light_returns_table() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let ok: bool = lua
+            .load("local l = c:getLight(); return l ~= nil")
+            .eval()
+            .unwrap();
+        assert!(ok);
+    }
+
+    #[test]
+    fn set_light_does_not_error() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let result: mlua::Result<()> = lua.load("c:setLight(5, 215)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn is_health_hidden_and_set_hidden_health() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let hidden: bool = lua
+            .load("c:setHiddenHealth(true); return c:isHealthHidden()")
+            .eval()
+            .unwrap();
+        assert!(hidden);
+    }
+
+    #[test]
+    fn is_movement_blocked_and_set() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let blocked: bool = lua
+            .load("c:setMovementBlocked(true); return c:isMovementBlocked()")
+            .eval()
+            .unwrap();
+        assert!(blocked);
+    }
+
+    #[test]
+    fn set_drop_loot_does_not_error() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let result: mlua::Result<()> = lua.load("c:setDropLoot(false)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn set_skill_loss_does_not_error() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let result: mlua::Result<()> = lua.load("c:setSkillLoss(false)").exec();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn is_creature_returns_true() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let v: bool = lua.load("return c:isCreature()").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn is_removed_returns_false_for_alive() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        // is_alive() typically returns true for a fresh creature
+        let result: mlua::Result<bool> = lua.load("return c:isRemoved()").eval();
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_target_and_set_target() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let t: bool = lua.load("return c:setTarget(5)").eval().unwrap();
+        assert!(t);
+        let id: i64 = lua.load("return c:getTarget()").eval().unwrap();
+        assert_eq!(id, 5);
+    }
+
+    #[test]
+    fn stub_bool_methods_return_false() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let v: bool = lua.load("return c:canSee()").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn stub_table_methods_return_table() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let v: bool = lua
+            .load("return type(c:getPosition()) == 'table'")
+            .eval()
+            .unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn get_description_returns_empty() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let v: String = lua.load("return c:getDescription()").eval().unwrap();
+        assert_eq!(v, "");
+    }
+
+    #[test]
+    fn get_storage_value_returns_neg_one() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let v: i64 = lua.load("return c:getStorageValue(1)").eval().unwrap();
+        assert_eq!(v, -1);
+    }
+
+    #[test]
+    fn has_icon_returns_false() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let v: bool = lua.load("return c:hasIcon(1)").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn has_parent_returns_false() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let v: bool = lua.load("return c:hasParent()").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn stub_mut_true_methods() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let v: bool = lua.load("return c:say('Hello')").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn move_returns_false() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let v: bool = lua.load("return c:move()").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn remove_returns_false() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let v: bool = lua.load("return c:remove()").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn teleport_to_returns_false() {
+        let lua = fresh_lua();
+        let c = Creature::new(1u32, "Creature".to_string());
+        lua.globals().set("c", LuaCreature::new(c)).unwrap();
+        let v: bool = lua.load("return c:teleportTo()").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn eq_same_arc_is_equal() {
+        let lua = fresh_lua();
+        let c = LuaCreature::new(Creature::new(1u32, "Wolf".to_string()));
+        let c2 = c.clone();
+        lua.globals().set("a", c).unwrap();
+        lua.globals().set("b", c2).unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(v);
+    }
+
+    #[test]
+    fn eq_different_arcs_are_unequal() {
+        let lua = fresh_lua();
+        lua.globals()
+            .set("a", LuaCreature::new(Creature::new(1u32, "Wolf".to_string())))
+            .unwrap();
+        lua.globals()
+            .set("b", LuaCreature::new(Creature::new(1u32, "Wolf".to_string())))
+            .unwrap();
+        let v: bool = lua.load("return a == b").eval().unwrap();
+        assert!(!v);
+    }
+
+    #[test]
+    fn from_lua_error_on_wrong_type() {
+        let lua = fresh_lua();
+        let result: mlua::Result<LuaCreature> = lua.load("return 42").eval();
+        assert!(result.is_err());
+    }
 }

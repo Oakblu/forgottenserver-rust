@@ -1544,4 +1544,237 @@ mod tests {
             "disabled onTurn must not be registered"
         );
     }
+
+    // ── Coverage: register_party_method individual branches ──────────────────
+
+    /// Exercises every arm of register_party_method via parse_events_xml.
+    #[test]
+    fn parse_events_xml_registers_all_party_methods() {
+        let xml = r#"<events>
+            <event class="Party" method="onJoin"             enabled="1" />
+            <event class="Party" method="onLeave"            enabled="1" />
+            <event class="Party" method="onDisband"          enabled="1" />
+            <event class="Party" method="onShareExperience"  enabled="1" />
+            <event class="Party" method="onInvite"           enabled="1" />
+            <event class="Party" method="onRevokeInvitation" enabled="1" />
+            <event class="Party" method="onPassLeadership"   enabled="1" />
+        </events>"#;
+        let mut cb = EventsCallbacks::new();
+        let warnings = cb.parse_events_xml(xml).unwrap();
+        assert!(warnings.is_empty(), "no warnings expected: {warnings:?}");
+        assert_eq!(cb.get_party_callback(&PartyEvent::OnJoin), Some("party.lua"));
+        assert_eq!(cb.get_party_callback(&PartyEvent::OnLeave), Some("party.lua"));
+        assert_eq!(cb.get_party_callback(&PartyEvent::OnDisband), Some("party.lua"));
+        assert_eq!(
+            cb.get_party_callback(&PartyEvent::OnShareExperience),
+            Some("party.lua")
+        );
+        assert_eq!(cb.get_party_callback(&PartyEvent::OnInvite), Some("party.lua"));
+        assert_eq!(
+            cb.get_party_callback(&PartyEvent::OnRevokeInvitation),
+            Some("party.lua")
+        );
+        assert_eq!(
+            cb.get_party_callback(&PartyEvent::OnPassLeadership),
+            Some("party.lua")
+        );
+        assert_eq!(cb.total_registered(), 7);
+    }
+
+    /// Unknown Party method emits a warning (exercises the `_ => return false` branch
+    /// in register_party_method, line 243).
+    #[test]
+    fn parse_events_xml_unknown_party_method_emits_warning() {
+        let xml = r#"<events>
+            <event class="Party" method="onUnknown" enabled="1" />
+        </events>"#;
+        let mut cb = EventsCallbacks::new();
+        let warnings = cb.parse_events_xml(xml).unwrap();
+        assert_eq!(warnings.len(), 1);
+        assert!(
+            warnings[0].contains("Unknown Party method: onUnknown"),
+            "{}",
+            warnings[0]
+        );
+        assert_eq!(cb.total_registered(), 0);
+    }
+
+    // ── Coverage: register_player_method individual branches ─────────────────
+
+    /// Exercises every arm of register_player_method via parse_events_xml.
+    #[test]
+    fn parse_events_xml_registers_all_player_methods() {
+        let xml = r#"<events>
+            <event class="Player" method="onBrowseField"          enabled="1" />
+            <event class="Player" method="onLook"                 enabled="1" />
+            <event class="Player" method="onLookInBattleList"     enabled="1" />
+            <event class="Player" method="onLookInTrade"          enabled="1" />
+            <event class="Player" method="onLookInShop"           enabled="1" />
+            <event class="Player" method="onLookInMarket"         enabled="1" />
+            <event class="Player" method="onTradeRequest"         enabled="1" />
+            <event class="Player" method="onTradeAccept"          enabled="1" />
+            <event class="Player" method="onTradeCompleted"       enabled="1" />
+            <event class="Player" method="onPodiumRequest"        enabled="1" />
+            <event class="Player" method="onPodiumEdit"           enabled="1" />
+            <event class="Player" method="onMoveItem"             enabled="1" />
+            <event class="Player" method="onItemMoved"            enabled="1" />
+            <event class="Player" method="onMoveCreature"         enabled="1" />
+            <event class="Player" method="onReportRuleViolation"  enabled="1" />
+            <event class="Player" method="onReportBug"            enabled="1" />
+            <event class="Player" method="onRotateItem"           enabled="1" />
+            <event class="Player" method="onTurn"                 enabled="1" />
+            <event class="Player" method="onGainExperience"       enabled="1" />
+            <event class="Player" method="onLoseExperience"       enabled="1" />
+            <event class="Player" method="onGainSkillTries"       enabled="1" />
+            <event class="Player" method="onWrapItem"             enabled="1" />
+            <event class="Player" method="onInventoryUpdate"      enabled="1" />
+            <event class="Player" method="onNetworkMessage"       enabled="1" />
+            <event class="Player" method="onSpellCheck"           enabled="1" />
+        </events>"#;
+        let mut cb = EventsCallbacks::new();
+        let warnings = cb.parse_events_xml(xml).unwrap();
+        assert!(warnings.is_empty(), "no warnings expected: {warnings:?}");
+        assert_eq!(cb.get_player_callback(&PlayerEvent::BrowseField), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::Look), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::LookInBattleList), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::LookInTrade), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::LookInShop), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::LookInMarket), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::TradeRequest), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::TradeAccept), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::TradeCompleted), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::PodiumRequest), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::PodiumEdit), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::MoveItem), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::ItemMoved), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::MoveCreature), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::ReportRuleViolation), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::ReportBug), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::RotateItem), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::Turn), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::GainExperience), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::LoseExperience), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::GainSkillTries), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::WrapItem), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::InventoryUpdate), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::NetworkMessage), Some("player.lua"));
+        assert_eq!(cb.get_player_callback(&PlayerEvent::SpellCheck), Some("player.lua"));
+        assert_eq!(cb.total_registered(), 25);
+    }
+
+    /// Unknown Player method emits a warning (exercises the `_ => return false` branch
+    /// in register_player_method, line 276).
+    #[test]
+    fn parse_events_xml_unknown_player_method_emits_warning() {
+        let xml = r#"<events>
+            <event class="Player" method="onSomethingUnknown" enabled="1" />
+        </events>"#;
+        let mut cb = EventsCallbacks::new();
+        let warnings = cb.parse_events_xml(xml).unwrap();
+        assert_eq!(warnings.len(), 1);
+        assert!(
+            warnings[0].contains("Unknown Player method: onSomethingUnknown"),
+            "{}",
+            warnings[0]
+        );
+        assert_eq!(cb.total_registered(), 0);
+    }
+
+    // ── Coverage: register_monster_method unknown branch (line 286) ──────────
+
+    /// Unknown Monster method emits a warning (exercises the `_ => return false` branch
+    /// in register_monster_method, line 286).
+    #[test]
+    fn parse_events_xml_unknown_monster_method_emits_warning() {
+        let xml = r#"<events>
+            <event class="Monster" method="onUnknownMonsterMethod" enabled="1" />
+        </events>"#;
+        let mut cb = EventsCallbacks::new();
+        let warnings = cb.parse_events_xml(xml).unwrap();
+        assert_eq!(warnings.len(), 1);
+        assert!(
+            warnings[0].contains("Unknown Monster method: onUnknownMonsterMethod"),
+            "{}",
+            warnings[0]
+        );
+        assert_eq!(cb.total_registered(), 0);
+    }
+
+    /// Exercises both Monster methods via parse_events_xml.
+    #[test]
+    fn parse_events_xml_registers_all_monster_methods() {
+        let xml = r#"<events>
+            <event class="Monster" method="onDropLoot" enabled="1" />
+            <event class="Monster" method="onSpawn"    enabled="1" />
+        </events>"#;
+        let mut cb = EventsCallbacks::new();
+        let warnings = cb.parse_events_xml(xml).unwrap();
+        assert!(warnings.is_empty(), "no warnings expected: {warnings:?}");
+        assert_eq!(
+            cb.get_monster_callback(&MonsterEvent::OnDropLoot),
+            Some("monster.lua")
+        );
+        assert_eq!(
+            cb.get_monster_callback(&MonsterEvent::OnSpawn),
+            Some("monster.lua")
+        );
+    }
+
+    /// Unknown Creature method emits a warning.
+    #[test]
+    fn parse_events_xml_unknown_creature_method_emits_warning() {
+        let xml = r#"<events>
+            <event class="Creature" method="onSomethingUnknown" enabled="1" />
+        </events>"#;
+        let mut cb = EventsCallbacks::new();
+        let warnings = cb.parse_events_xml(xml).unwrap();
+        assert_eq!(warnings.len(), 1);
+        assert!(
+            warnings[0].contains("Unknown Creature method: onSomethingUnknown"),
+            "{}",
+            warnings[0]
+        );
+        assert_eq!(cb.total_registered(), 0);
+    }
+
+    /// parse_events_xml with all Creature methods.
+    #[test]
+    fn parse_events_xml_registers_all_creature_methods() {
+        let xml = r#"<events>
+            <event class="Creature" method="onChangeOutfit"  enabled="1" />
+            <event class="Creature" method="onAreaCombat"    enabled="1" />
+            <event class="Creature" method="onTargetCombat"  enabled="1" />
+            <event class="Creature" method="onHear"          enabled="1" />
+            <event class="Creature" method="onChangeZone"    enabled="1" />
+            <event class="Creature" method="onUpdateStorage" enabled="1" />
+        </events>"#;
+        let mut cb = EventsCallbacks::new();
+        let warnings = cb.parse_events_xml(xml).unwrap();
+        assert!(warnings.is_empty(), "no warnings expected: {warnings:?}");
+        assert_eq!(
+            cb.get_creature_callback(&CreatureEvent::OnChangeOutfit),
+            Some("creature.lua")
+        );
+        assert_eq!(
+            cb.get_creature_callback(&CreatureEvent::OnAreaCombat),
+            Some("creature.lua")
+        );
+        assert_eq!(
+            cb.get_creature_callback(&CreatureEvent::OnTargetCombat),
+            Some("creature.lua")
+        );
+        assert_eq!(
+            cb.get_creature_callback(&CreatureEvent::OnHear),
+            Some("creature.lua")
+        );
+        assert_eq!(
+            cb.get_creature_callback(&CreatureEvent::OnChangeZone),
+            Some("creature.lua")
+        );
+        assert_eq!(
+            cb.get_creature_callback(&CreatureEvent::OnUpdateStorage),
+            Some("creature.lua")
+        );
+        assert_eq!(cb.total_registered(), 6);
+    }
 }
