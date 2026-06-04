@@ -235,4 +235,100 @@ mod tests {
         });
         assert_eq!(r.get(1).unwrap().attack, 25);
     }
+
+    // ── WeaponRegistry::len (lines 39-40) ─────────────────────────────────────
+
+    #[test]
+    fn weapon_registry_len_returns_count() {
+        let mut r = WeaponRegistry::new();
+        assert_eq!(r.len(), 0);
+        r.register(WeaponDef {
+            item_id: 10,
+            weapon_type: WeaponType::Melee,
+            attack: 10,
+            defense: 5,
+            min_level: 0,
+            vocations: vec![],
+            element: None,
+        });
+        assert_eq!(r.len(), 1);
+        r.register(WeaponDef {
+            item_id: 20,
+            weapon_type: WeaponType::Distance,
+            attack: 20,
+            defense: 0,
+            min_level: 5,
+            vocations: vec![],
+            element: None,
+        });
+        assert_eq!(r.len(), 2);
+    }
+
+    #[test]
+    fn weapon_registry_len_zero_when_empty() {
+        assert_eq!(WeaponRegistry::new().len(), 0);
+    }
+
+    // ── load_weapons_xml: unknown element tag (lines 85-87) ───────────────────
+
+    #[test]
+    fn load_weapons_xml_skips_unknown_element_tags() {
+        // Write a temp XML with an unknown element type.
+        let xml = r#"<?xml version="1.0" encoding="UTF-8"?>
+<weapons>
+  <melee id="1" attack="10" defense="5"/>
+  <unknown_tag id="2" attack="99"/>
+</weapons>"#;
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("weapons_with_unknown.xml");
+        std::fs::write(&path, xml).unwrap();
+
+        let registry = load_weapons_xml(&path).expect("load must succeed despite unknown element");
+        // Only the melee weapon is loaded; unknown_tag is silently skipped.
+        assert_eq!(registry.len(), 1, "only valid weapons should be loaded");
+        assert!(registry.get(1).is_some());
+        assert!(registry.get(2).is_none());
+    }
+
+    // ── load_weapons_xml: weapon node missing 'id' (line 93 Err branch) ───────
+
+    #[test]
+    fn load_weapons_xml_skips_weapon_without_id() {
+        // A melee node without an `id` attribute triggers a parse error and
+        // must be silently skipped (the Err branch on line 93).
+        let xml = r#"<?xml version="1.0" encoding="UTF-8"?>
+<weapons>
+  <melee attack="10" defense="5"/>
+  <melee id="42" attack="20" defense="10"/>
+</weapons>"#;
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("weapons_missing_id.xml");
+        std::fs::write(&path, xml).unwrap();
+
+        let registry = load_weapons_xml(&path).expect("load must succeed with partial valid data");
+        // The weapon without 'id' is skipped; only id=42 is loaded.
+        assert_eq!(registry.len(), 1);
+        assert!(registry.get(42).is_some());
+    }
+
+    // ── load_weapons_xml: malformed XML returns error ─────────────────────────
+
+    #[test]
+    fn load_weapons_xml_malformed_xml_returns_error() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("bad.xml");
+        std::fs::write(&path, "<<< not xml >>>").unwrap();
+        assert!(load_weapons_xml(&path).is_err());
+    }
+
+    // ── load_weapons_xml: missing <weapons> root element ─────────────────────
+
+    #[test]
+    fn load_weapons_xml_missing_weapons_root_returns_error() {
+        let xml = r#"<?xml version="1.0"?><root><melee id="1"/></root>"#;
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("no_root.xml");
+        std::fs::write(&path, xml).unwrap();
+        assert!(load_weapons_xml(&path).is_err());
+    }
 }

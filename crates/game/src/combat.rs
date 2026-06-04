@@ -2030,4 +2030,113 @@ mod tests {
         );
         assert_eq!(result, ReturnValue::NoError);
     }
+
+    // ─── NEW: ReturnValue uncovered variants ──────────────────────────────────
+
+    /// Exercises the `ReturnValue` variants that are not returned by any
+    /// existing combat helper (they exist for future use / completeness).
+    #[test]
+    fn return_value_all_variants_are_distinct() {
+        let variants = [
+            ReturnValue::NoError,
+            ReturnValue::NotEnoughRoom,
+            ReturnValue::YouMayNotAttackThisPlayer,
+            ReturnValue::YouMayNotAttackThisCreature,
+            ReturnValue::ActionNotPermittedInProtectionZone,
+            ReturnValue::ActionNotPermittedInNoPvpZone,
+            ReturnValue::YouMayNotAttackAPersonInProtectionZone,
+            ReturnValue::TurnSecureModeToAttackUnmarkedPlayers,
+            ReturnValue::FirstGoDownstairs,
+            ReturnValue::FirstGoUpstairs,
+            ReturnValue::NotEnoughMana,
+        ];
+        // Every variant must differ from every other.
+        for i in 0..variants.len() {
+            for j in (i + 1)..variants.len() {
+                assert_ne!(variants[i], variants[j], "variants[{i}] == variants[{j}]");
+            }
+        }
+    }
+
+    #[test]
+    fn return_value_not_enough_room_is_not_no_error() {
+        assert_ne!(ReturnValue::NotEnoughRoom, ReturnValue::NoError);
+    }
+
+    #[test]
+    fn return_value_turn_secure_mode_variant() {
+        // Ensure the variant is constructible and comparable.
+        let v = ReturnValue::TurnSecureModeToAttackUnmarkedPlayers;
+        assert_ne!(v, ReturnValue::NoError);
+        assert_ne!(v, ReturnValue::YouMayNotAttackThisPlayer);
+    }
+
+    #[test]
+    fn return_value_first_go_downstairs_variant() {
+        let v = ReturnValue::FirstGoDownstairs;
+        assert_ne!(v, ReturnValue::FirstGoUpstairs);
+    }
+
+    #[test]
+    fn return_value_first_go_upstairs_variant() {
+        let v = ReturnValue::FirstGoUpstairs;
+        assert_ne!(v, ReturnValue::NoError);
+    }
+
+    #[test]
+    fn return_value_not_enough_mana_variant() {
+        let v = ReturnValue::NotEnoughMana;
+        assert_ne!(v, ReturnValue::NoError);
+    }
+
+    // ─── NEW: CombatOrigin uncovered variants ─────────────────────────────────
+
+    #[test]
+    fn combat_origin_all_variants_are_distinct() {
+        let origins = [
+            CombatOrigin::None,
+            CombatOrigin::Spell,
+            CombatOrigin::Melee,
+            CombatOrigin::Ranged,
+            CombatOrigin::Condition,
+            CombatOrigin::Wand,
+            CombatOrigin::Reflect,
+        ];
+        for i in 0..origins.len() {
+            for j in (i + 1)..origins.len() {
+                assert_ne!(origins[i], origins[j], "origins[{i}] == origins[{j}]");
+            }
+        }
+    }
+
+    #[test]
+    fn combat_origin_melee_variant() {
+        let o = CombatOrigin::Melee;
+        assert_ne!(o, CombatOrigin::None);
+        assert_ne!(o, CombatOrigin::Spell);
+    }
+
+    #[test]
+    fn combat_origin_ranged_variant() {
+        let o = CombatOrigin::Ranged;
+        assert_ne!(o, CombatOrigin::Melee);
+    }
+
+    #[test]
+    fn combat_origin_condition_variant() {
+        let o = CombatOrigin::Condition;
+        assert_ne!(o, CombatOrigin::Spell);
+    }
+
+    #[test]
+    fn combat_origin_default_is_none() {
+        assert_eq!(CombatOrigin::default(), CombatOrigin::None);
+    }
+
+    #[test]
+    fn combat_origin_debug_shows_name() {
+        assert_eq!(format!("{:?}", CombatOrigin::Melee), "Melee");
+        assert_eq!(format!("{:?}", CombatOrigin::Ranged), "Ranged");
+        assert_eq!(format!("{:?}", CombatOrigin::Condition), "Condition");
+    }
 }
